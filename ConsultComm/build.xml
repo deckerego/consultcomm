@@ -1,6 +1,9 @@
-<project default="compile">
+<?xml version="1.0"?>
 
+<project name="ConsultComm" basedir="." default="all">
   <property name="src" value="./"/>
+
+  <target name="all" depends="compile"/>
 
   <target name="init">
     <tstamp/>
@@ -13,8 +16,8 @@
       </classpath>
     </javac>
   </target>
-
-  <target name="dist" depends="compile">
+  
+  <target name="dist" depends="all">
     <jar jarfile="CsltComm.jar" manifest="CsltMfst">
       <fileset dir="${src}" includes="*.class"/>
       <fileset dir="${src}" includes="graphics/*.gif"/>
@@ -43,5 +46,4 @@
   <target name="realclean" depends="clean">
     <delete file="CsltComm.jar"/>
   </target>
-
 </project>
