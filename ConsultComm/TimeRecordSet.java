@@ -80,6 +80,17 @@ class TimeRecordSet {
     }
     return parseSeconds(total);
   }
+  public String[] getAllProjects() {
+    String[] names = new String[timeRecords.size()];
+    Enumeration records = timeRecords.elements();
+    int i = 0;
+    
+    while (records.hasMoreElements()) {
+      TimeRecord record = (TimeRecord)records.nextElement();
+      names[i++] = record.projectName;
+    }
+    return names;
+  }
   
   public DefaultTableModel toTableModel(int timeFormat){
     DefaultTableModel model = new javax.swing.table.DefaultTableModel(
