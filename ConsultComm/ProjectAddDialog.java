@@ -24,6 +24,13 @@ public class ProjectAddDialog extends javax.swing.JDialog {
     }
     initComponents();
     setLocationRelativeTo(frame);
+    
+    //Set the value for the project name field 
+    for(int i=0; i<fieldTable.getRowCount(); i++) {
+      if(fieldTable.getValueAt(i, 0).equals(projectField)) {
+        fieldTable.setValueAt(project, i, 2);
+      }
+    }
   }
   
   /** This method is called from within the constructor to
@@ -49,6 +56,7 @@ public class ProjectAddDialog extends javax.swing.JDialog {
     titleLabel.setForeground(java.awt.Color.black);
     getContentPane().add(titleLabel, java.awt.BorderLayout.NORTH);
     
+    fieldScrollPane.setPreferredSize(new java.awt.Dimension(387, 254));
     fieldTable.setModel(dbConnection.tableMap.toTableModel());
     fieldScrollPane.setViewportView(fieldTable);
     
