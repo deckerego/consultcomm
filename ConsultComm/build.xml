@@ -18,6 +18,7 @@
     <jar destfile="CsltComm.jar">
       <fileset dir="${src}">
         <include name="*.class"/>
+        <include name="graphics/*.gif"/>
         <include name="help/*"/>
         <exclude name="help/CVS"/>
         <exclude name="help/*~"/>
