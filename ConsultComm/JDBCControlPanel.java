@@ -24,6 +24,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private final static int HOUR_QUARTER = 1;
   private final static int HOUR_TENTH = 2;
   private final static String odbcDriverName = "sun.jdbc.odbc.JdbcOdbcDriver";
+
   private String name = "";
   private String url = "";
   private static String userName = "";
@@ -34,7 +35,6 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private static String projectTable="";
   private static String projectField="";
   private static boolean projectValidate;
-  private int dateFormat;
   private int hourFormat;
   private boolean projectCase;
   private Vector errorList;
@@ -86,8 +86,6 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     optionInputPanel = new javax.swing.JPanel();
     hourLabel = new javax.swing.JLabel();
     hourComboBox = new javax.swing.JComboBox();
-    dateLabel = new javax.swing.JLabel();
-    dateComboBox = new javax.swing.JComboBox();
     projectCaseCheckBox = new javax.swing.JCheckBox();
     projValidateCheckBox = new javax.swing.JCheckBox();
     projDBLabel = new javax.swing.JLabel();
@@ -279,18 +277,6 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
     optionInputPanel.add(hourComboBox, gridBagConstraints2);
-    
-    dateLabel.setText("Date Type:");
-    gridBagConstraints2 = new java.awt.GridBagConstraints();
-    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    optionInputPanel.add(dateLabel, gridBagConstraints2);
-    
-    dateComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SQL Date", "SQL Timestamp", "Decimal Date (ccyymmdd)" }));
-    dateComboBox.setSelectedIndex(dateFormat);
-    gridBagConstraints2 = new java.awt.GridBagConstraints();
-    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
-    optionInputPanel.add(dateComboBox, gridBagConstraints2);
     
     projectCaseCheckBox.setSelected(projectCase);
     projectCaseCheckBox.setForeground(new java.awt.Color(102, 102, 153));
@@ -512,7 +498,6 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     }
     projectValidate = projValidateCheckBox.isSelected();
     hourFormat = hourComboBox.getSelectedIndex();
-    dateFormat = dateComboBox.getSelectedIndex();
     projectCase = projectCaseCheckBox.isSelected();
     for(int i=0; i < tableMap.size(); i++) {
       String value = (String)fieldMapping.getValueAt(i, 2);
@@ -550,7 +535,6 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         
         newNode = doc.createElement("options");
         newNode.setAttribute("hourFormat", ""+hourFormat);
-        newNode.setAttribute("dateFormat", ""+dateFormat);
         newNode.setAttribute("projectCase", ""+projectCase);
         newNode.setAttribute("projectValidate", ""+projectValidate);
         newNode.setAttribute("projectDatabase", projectDatabase);
@@ -609,7 +593,6 @@ public class JDBCControlPanel extends javax.swing.JFrame {
           Node option = options.item(0);
           attributes = option.getAttributes();
           hourFormat = Integer.parseInt(attributes.getNamedItem("hourFormat").getNodeValue());
-          dateFormat = Integer.parseInt(attributes.getNamedItem("dateFormat").getNodeValue());
           if(attributes.getNamedItem("projectCase") != null)
             projectCase = Boolean.valueOf(attributes.getNamedItem("projectCase").getNodeValue()).booleanValue();
           if(attributes.getNamedItem("projectValidate") != null)
@@ -716,7 +699,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
           TimeRecord record = times.elementAt(j);
           FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$HOURS"); //Find out how many hours exist
           java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.getValue(record);
-          if((hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) || ! record.billable) continue;
+          if(hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) continue;
           Object[] statement = new Object[tableMap.size()];
           for(int i=0; i < statement.length; i++) {
             FieldMap fieldMap = tableMap.elementAt(i);
@@ -882,8 +865,6 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     private javax.swing.JPanel optionInputPanel;
     private javax.swing.JLabel hourLabel;
     private javax.swing.JComboBox hourComboBox;
-    private javax.swing.JLabel dateLabel;
-    private javax.swing.JComboBox dateComboBox;
     private javax.swing.JCheckBox projectCaseCheckBox;
     private javax.swing.JCheckBox projValidateCheckBox;
     private javax.swing.JLabel projDBLabel;
@@ -1038,17 +1019,19 @@ public class JDBCControlPanel extends javax.swing.JFrame {
               if(sqlType != java.sql.Types.CHAR) throw new ClassCastException("Must be CHAR SQL type for username");
               else realValue = userName;
             } else if(value.equals("DATE")) {
-              switch(dateFormat) {
-                case DATE_SQLDATE:
-                  if(sqlType != java.sql.Types.DATE) throw new ClassCastException("Must be DATE SQL type for entry date");
-                  else realValue = new java.sql.Date(System.currentTimeMillis());
+              switch(sqlType) {
+                case java.sql.Types.DATE:
+                  realValue = new java.sql.Date(System.currentTimeMillis());
                   break;
-                case DATE_SQLTIMESTAMP:
-                  if(sqlType != java.sql.Types.TIMESTAMP) throw new ClassCastException("Must be TIMESTAMP SQL type for entry timestamp");
-                  else realValue = new java.sql.Timestamp(System.currentTimeMillis());
+                case java.sql.Types.TIMESTAMP:
+                  realValue = new java.sql.Timestamp(System.currentTimeMillis());
                   break;
-                case DATE_CCYYMMDD:
-                  if(sqlType != java.sql.Types.DECIMAL) throw new ClassCastException("Must be DECIMAL type for entry date");
+                case java.sql.Types.TIME:
+                  realValue = new java.sql.Time(System.currentTimeMillis());
+                  break;
+                case java.sql.Types.INTEGER:
+                case java.sql.Types.DECIMAL:
+                case java.sql.Types.NUMERIC:
                   Calendar today = Calendar.getInstance();
                   int year = today.get(Calendar.YEAR);
                   int month = today.get(Calendar.MONTH)+1;
@@ -1074,6 +1057,20 @@ public class JDBCControlPanel extends javax.swing.JFrame {
                   break;
                 default:
                   realValue = record.getHours(60, 2);
+              }
+            } else if(value.equals("BILLABLE")) {
+              switch(sqlType) {
+                case java.sql.Types.CHAR:
+                  realValue = record.billable ? "Y" : "N";
+                  break;
+                case java.sql.Types.BIT:
+                  realValue = new Boolean(record.billable);
+                  break;
+                case java.sql.Types.INTEGER:
+                  realValue = record.billable ? new Integer(-1) : new Integer(0);
+                  break;
+                default:
+                  throw new ClassCastException("Unknown conversion for billable flag");
               }
             } else {
               System.err.println("Unknown expression variable: "+value);
