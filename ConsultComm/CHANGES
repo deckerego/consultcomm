@@ -1,8 +1,27 @@
-Consultant Communicator 2.2.1
-Release 5/11/02
+Consultant Communicator 2.3.1
+Release 9/25/02
 First Released 11/99
 
 REVISION HISTORY -
+	o 2.3.1	   [09/25/02]
+		- Fixed problem where hitting OK in prefs would set the
+		  start/stop button to START whether or not the timer was
+		  actually running
+		- Fixed problem in JDBC field mapping where old field
+		  mappings weren't being deleted and replacement entries
+		  were just appended to the end of the list
+		- Fixed various bugs in Win32 code for WinXP
+		- Converted more dialog boxes to use line wrapping
+		- Updated install docs for ant build
+		- Only have to sign-on once per export (project add dialog
+		  remembers your username and password)
+	o 2.3	   [06/19/02]
+		- Added Win32 support for pausing/switching projects after
+		  mouse or keyboard has been idle
+		- Right and left mouse buttons now scroll forward and 
+		  backward through the total time indicators
+		- Upgraded release packages to use InstallAnywhere 5
+		- Dialog boxes wrap text
 	o 2.2.1	   [05/15/02]
 		- Fixed bug where upgrading to 2.2 caused the total time
 		  text at the bottom to disappear
