@@ -2,12 +2,12 @@
 <project basedir="." default="dist">
   <taskdef classname="com.izforge.izpack.ant.IzPackTask" name="izpack"/>
 
-  <property name="release" value="3.1rc1"/>
+  <property name="release" value="3.1rc2"/>
   <property name="src" value="ConsultComm/"/>
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
   <property name="izpackdir" value="/usr/local/IzPack"/>
-  <property name="revision" value="4"/>
+  <property name="revision" value="1"/>
 
   <target name="build">
     <ant dir="${src}" inheritAll="false" target="all"/>
@@ -21,11 +21,8 @@
     <ant target="tarball"/>
     <ant target="zip"/>
     <ant target="rpm"/>
-    <ant target="installer"/>
-  </target>
-
-  <target depends="build" name="installer">
-    <izpack basedir="${src}" input="izpack_installer.xml" installerType="standard" izPackDir="${izpackdir}" output="${releasename}_Installer.jar"/>
+    <ant target="izpack"/>
+    <ant target="win32_installer"/>
   </target>
 
   <target depends="build" name="X">
@@ -38,6 +35,8 @@
         <include name="build.xml"/>
 	<include name="consultcomm.spec"/>
         <include name="${src}/ConsultComm"/>
+        <include name="${src}/ConsultComm.bat"/>
+        <include name="${src}/ConsultComm.desktop"/>
         <include name="${src}/*.java"/>
         <include name="${src}/*.form"/>
         <include name="${src}/help/*"/>
@@ -94,20 +93,38 @@
     <zip zipfile="${releasename}.zip">
       <zipfileset dir="${src}" prefix="${releasename}">
         <include name="ConsultComm"/>
+        <include name="ConsultComm.bat"/>
         <include name="plugins/*.jar"/>
-        <include name="syslibs/nativeskinwin32.dll"/>
-        <include name="syslibs/nativeskinwin32JAWT.dll"/>
         <include name="*.jar"/>
         <include name="README"/>
         <include name="AUTHORS"/>
         <include name="COPYING"/>
         <include name="CHANGES"/>
       </zipfileset>
+      <zipfileset dir="${src}/help" includes="faq.html" fullpath="${releasename}/FAQ.html"/>
     </zip>
   </target>
 
-  <target name="sfrelease">
-    <copy file="ConsultComm_Windows_Build_Output/Web_Installers/InstData/Windows/NoVM/CsltComm.exe" tofile="${releasename}.exe"/>
+  <target depends="build" name="izpack">
+    <izpack basedir="${src}" input="izpack_installer.xml" installerType="standard" izPackDir="${izpackdir}" output="${releasename}_Installer.jar"/>
+  </target>
+
+  <target depends="izpack" name="win32_installer">
+    <zip zipfile="${releasename}_WinInstall.zip">
+      <zipfileset dir="." prefix="${releasename}">
+        <include name="${releasename}_Installer.jar"/>
+        <include name="Setup.exe"/>
+        <include name="Setup.exe.manifest"/>
+        <include name="launcher.ini"/>
+      </zipfileset>
+      <zipfileset dir="${src}" prefix="${releasename}">
+        <include name="README"/>
+        <include name="AUTHORS"/>
+        <include name="COPYING"/>
+        <include name="CHANGES"/>
+      </zipfileset>
+      <zipfileset dir="${src}/help" includes="faq.html" fullpath="${releasename}/FAQ.html"/>
+    </zip>
   </target>
 
   <target name="clean">
@@ -116,6 +133,7 @@
     <delete file="${releasename}.zip"/>
     <delete file="${releasename}.exe"/>
     <delete file="${releasename}-${revision}.i586.rpm"/>
+    <delete file="${releasename}_WinInstall.zip"/>
     <ant dir="${src}" inheritAll="false" target="clean"/>
     <ant dir="TimeOutBean" inheritAll="false" target="clean"/>
     <ant dir="JDBCBean" inheritAll="false" target="clean"/>

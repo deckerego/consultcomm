@@ -51,15 +51,15 @@
             <description>Base Installation</description>
             <fileset dir="." targetdir="$INSTALL_PATH">
                 <include name="plugins/*.jar"/>
-                <include name="syslibs/nativeskinwin32.dll"/>
-                <include name="syslibs/nativeskinwin32JAWT.dll"/>
                 <include name="graphics/icon.ico"/>
                 <include name="*.jar"/>
+                <include name="README"/>
                 <include name="README"/>
                 <include name="AUTHORS"/>
                 <include name="COPYING"/>
                 <include name="CHANGES"/>
             </fileset>
+            <singlefile src="./help/faq.html" target="$INSTALL_PATH/FAQ.html"/>
         </pack>
         <pack name="JDBC Connectivity" required="no">
             <description>Database connectivity for exporting/validating tasks against a JDBC-compliant database</description>
