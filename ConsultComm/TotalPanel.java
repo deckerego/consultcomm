@@ -47,6 +47,11 @@ public class TotalPanel extends javax.swing.JPanel {
         if (minutes < 10) return ""+hours+":0"+minutes;
         else return ""+hours+":"+minutes;
     }
+    
+    public void repaint() {
+        if(valueLabel != null) valueLabel.setText((String)values.elementAt(timesClicked));
+        super.repaint();
+    }        
 
     /** This method is called from within the constructor to
      * initialize the form.

@@ -592,6 +592,7 @@ private TableTree timeList;
                     if ((timeFormat == SECONDS) || (currSeconds % 60 == 0)){
                         timeList.setRecordAt(times.elementAt(selectedIndex), selectedIndex, 1);
                         timeList.repaint();
+                        totalPanel.repaint();
                     }
                     //If the user requested a save now, do it
                     if (currSeconds % saveInterval == 0) savePrefs();
