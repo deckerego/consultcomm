@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="all" name="TotalTimes">
+  <property name="src" value="./"/>
+
+  <target depends="compile" name="all"/>
+
+  <target name="init">
+    <tstamp/>
+  </target>
+
+  <target depends="init" name="compile">
+    <javac deprecation="on" optimize="on" srcdir="${src}" classpath="${src}:${src}/.."/>
+    <jar destfile="${src}/../plugins/TotalTimes.jar">
+      <fileset dir="${src}" includes="*.class"/>
+      <fileset dir="${src}" includes="*.gif"/>
+      <manifest>
+        <attribute name="Java-Bean" value="true"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir="${src}" includes="*.class"/>
+    </delete>
+  </target>
+
+  <target depends="clean" name="realclean">
+    <delete>
+      <fileset dir="${src}" includes="*~"/>
+    </delete>
+  </target>
+</project>
