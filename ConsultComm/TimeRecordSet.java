@@ -80,12 +80,14 @@ class TimeRecordSet {
     }
     return parseSeconds(total);
   }
-  public String getCountdownTimeString(long minutes) {
+  public String getCountdownTimeString(long minutes, int criteria) {
     long total = minutes*60;
     Enumeration records = timeRecords.elements();
     while (records.hasMoreElements()) {
       TimeRecord record = (TimeRecord)records.nextElement();
-      if(record.export) total -= record.seconds;
+      if(record.export && criteria == ClntComm.SHOW_EXPORT) total -= record.seconds;
+      else if(record.billable && criteria == ClntComm.SHOW_BILLABLE) total -= record.seconds;
+      else if(criteria == ClntComm.SHOW_TOTAL) total -= record.seconds;
     }
     return parseSeconds(total);
   }

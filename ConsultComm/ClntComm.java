@@ -440,7 +440,9 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         break;
       case SHOW_COUNTDOWN:
         totalText.setText("Remaining:");
-        totalTime.setText(times.getCountdownTimeString(countdownMinutes));
+        if(attributeSet(SHOW_EXPORT)) totalTime.setText(times.getCountdownTimeString(countdownMinutes, SHOW_EXPORT));
+        else if(attributeSet(SHOW_BILLABLE)) totalTime.setText(times.getCountdownTimeString(countdownMinutes, SHOW_BILLABLE));
+        else totalTime.setText(times.getCountdownTimeString(countdownMinutes, SHOW_TOTAL));
         break;
       case SHOW_COUNTPAY:
         totalText.setText("Earned:");
