@@ -32,7 +32,7 @@ public class CsltComm extends javax.swing.JFrame {
   
   /** Creates new form CsltComm */
   public CsltComm() {
-    appIcon = getImage("graphics/icon.gif");
+    appIcon = CsltComm.getImage(this, "graphics/icon.gif");
     Skin skin = null;
     
     try {
@@ -78,7 +78,7 @@ public class CsltComm extends javax.swing.JFrame {
     getContentPane().add(projectList);
 
     if(animateIcons) {
-      Image clockIcon = getImage("graphics/BlueBar.gif");
+      Image clockIcon = CsltComm.getImage(this, "graphics/BlueBar.gif");
       iconPanel = new AnimatePanel(clockIcon);      
       getContentPane().add(iconPanel);
       iconPanel.start();
@@ -216,26 +216,49 @@ public class CsltComm extends javax.swing.JFrame {
     }
   }
   
-  /**
-   * @param args the command line arguments
-   */
   public static void main(String args[]) {
     new CsltComm().show();
   }
   
-  private Image getImage(String path) {
-    //Load the animated icon from the JAR file... note that we can't just to a getImage()
-    //anymore - we have to input the image data as a byte stream.
+  /**
+   * Translate a file from a bytestream in the JAR file
+   * @param parent The parent object that is loading the file
+   * @param path The relative path to the file stored in a Java Archive
+   */
+  static File getFile(Object parent, String path) {
+    File file = new File(path);
+    byte[] tn = null;
+    InputStream in = parent.getClass().getResourceAsStream(path);
+    //Delete when we exit if the file doesn't already exist
+    if(! file.exists()) file.deleteOnExit(); 
+    try{
+      FileOutputStream fout = new FileOutputStream(file);
+      int length = in.available();
+      tn = new byte[length];
+      in.read(tn);
+      fout.write(tn);
+    } catch(Exception e){
+      System.out.println("Error loading file "+path+": "+e);
+    }
+    return file;
+  }
+  
+  /**
+   * Translate an image from a bytestream in the JAR file
+   * @param parent The parent object that is loading the file
+   * @param path The relative path to the file stored in a Java Archive
+   */
+  static Image getImage(Object parent, String path) {
     Image image = null;
     byte[] tn = null;
-    InputStream in = getClass().getResourceAsStream(path);
+    InputStream in = parent.getClass().getResourceAsStream(path);
     try{
       int length = in.available();
       tn = new byte[length];
       in.read(tn);
       image = Toolkit.getDefaultToolkit().createImage(tn);
     } catch(Exception e){
-      System.out.println("Error loading graphic "+path+": "+e);
+      System.out.println("Error loading image "+path+": "+e);
     }
     return image;
   }
