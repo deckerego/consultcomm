@@ -259,6 +259,12 @@ public class ClntComm extends javax.swing.JPanel {
       TimeRecord record = times.elementAt(selectedIndex); //find current selected record
       times.sort(column);
       timeList.setModel(new TableTreeModel(times, timeFormat));
+      ListSelectionModel rowSM = timeList.getSelectionModel();
+      rowSM.addListSelectionListener(new ListSelectionListener() {
+          public void valueChanged(ListSelectionEvent evt) {
+              selectionChanged(evt);
+          }
+      });
       setSelectedIndex(times.indexOf(record)); //restore selected record
   }
   
