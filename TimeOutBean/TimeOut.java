@@ -86,6 +86,7 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
         
         if(use && timeoutLibrary){
             idleSeconds = (int)(getIdleTime()/1000L);
+            System.out.println("Idle: "+getIdleTime());
             if(isChangeProject()) checkInvalidProject();
         }
         
@@ -95,8 +96,7 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
                 clntComm.toggleTimer();
             } else {
                 System.out.println("getIndex: " + clntComm.getSelectedIndex());
-                savedProject =
-                clntComm.getTimes().elementAt(clntComm.getSelectedIndex()).getProjectName();
+                savedProject = clntComm.getTimes().elementAt(clntComm.getSelectedIndex()).getProjectName();
                 System.out.println("setIndex1: " + clntComm.getTimes().indexOfProject(this.getProject()));
                 clntComm.setSelectedIndex(clntComm.getTimes().indexOfProject(this.getProject()));
             }
@@ -118,27 +118,23 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
      * Translate a file from a bytestream in the JAR file
      * @param path The relative path to the file stored in a Java Archive
      */
-    private File getNativeLibrary(String path) {
-        File file = null;
-        byte[] tn = null;
-        InputStream in = this.getClass().getResourceAsStream(path);
-        String fileName = path.substring(path.lastIndexOf('/'));
-
-        if(in != null) {
-            try{
-                file = new File(PluginManager.libsdir, fileName);
-                file.createNewFile();
-                file.deleteOnExit();
-                FileOutputStream fout = new FileOutputStream(file);
-                int length = in.available();
-                tn = new byte[length];
-                in.read(tn);
-                fout.write(tn);
-            } catch(Exception e){
-                System.out.println("Error loading file "+path+": "+e);
+    private void getNativeLibrary(String path) {
+        try{
+            String fileName = path.substring(path.lastIndexOf('/'));
+            File file = new File(PluginManager.libsdir, fileName);
+            InputStream in = new BufferedInputStream(this.getClass().getResourceAsStream(path));
+            OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
+            byte[] buffer = new byte[4096];
+            while(true) {
+                int nBytes = in.read(buffer);
+                if (nBytes <= 0) break;
+                out.write(buffer, 0, nBytes);
             }
+            out.flush();
+            out.close();
+            in.close();
+        } catch(Exception e){
+            System.out.println("Error loading file "+path+": "+e);
         }
-        
-        return file;
     }
 }
