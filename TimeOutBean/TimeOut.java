@@ -8,13 +8,13 @@
 
 import java.beans.*;
 import javax.swing.*;
+import java.io.*;
 
 /**
  *
  * @author  jellis
  */
-public class TimeOut extends Object implements java.io.Serializable,
-                                               java.lang.Cloneable,PropertyChangeListener{
+public class TimeOut extends Object implements java.io.Serializable, java.lang.Cloneable, PropertyChangeListener{
     public static final int IDLE_PAUSE = ClntComm.IDLE_PAUSE;
     public static final int IDLE_PROJECT = ClntComm.IDLE_PROJECT;
     public JFrame parentFrame = new JFrame();
@@ -28,24 +28,20 @@ public class TimeOut extends Object implements java.io.Serializable,
     private boolean paused = false;//means paused the ClntComm is paused by Timeout
     private ClntComm clntComm;
     private String savedProject;
-    /** Holds value of property use. */
+    
     private boolean use = true;
-    
-    /** Holds value of property seconds. */
     private int seconds = 0;
-    
-    /** Holds value of property changeProject. */
     private boolean changeProject;
-    
-    /** Holds value of property pauseTimer. */
     private boolean pauseTimer;
-    
-    /** Holds value of property project. */
     private String project;
     
     private native long getIdleTime();
     
-    static {
+    /** Creates new TimeOut */
+    public TimeOut() {
+        idleSeconds = -1;
+        getNativeLibrary("X/libtimeout.so");
+        getNativeLibrary("Win32/timeout.dll");
         try {
             System.loadLibrary("timeout");
             timeoutLibrary = true;
@@ -56,42 +52,17 @@ public class TimeOut extends Object implements java.io.Serializable,
         }
     }
     
-    /** Creates new TimeOut */
-    public TimeOut() {
-        idleSeconds = -1;
-    }
-    
-    public String[] getProjectNames(){
-        return clntComm.getTimes().getAllProjects();
-    }
-    
-    /** Getter for property use.
-     * @return Value of property use.
-     */
-    public boolean isUse() {
-        return this.use;
-    }
-    
-    /** Setter for property use.
-     * @param use New value of property use.
-     */
-    public void setUse(boolean use) {
-        this.use = use;
-    }
-    
-    /** Getter for property seconds.
-     * @return Value of property seconds.
-     */
-    public int getSeconds() {
-        return this.seconds;
-    }
-    
-    /** Setter for property seconds.
-     * @param seconds New value of property seconds.
-     */
-    public void setSeconds(int seconds) {
-        this.seconds = seconds;
-    }
+    public String[] getProjectNames(){ return clntComm.getTimes().getAllProjects(); }
+    public boolean isUse() { return this.use; }
+    public void setUse(boolean use) { this.use = use; }
+    public int getSeconds() { return this.seconds; }
+    public void setSeconds(int seconds) { this.seconds = seconds; }
+    public boolean isChangeProject() { return this.changeProject; }
+    public void setChangeProject(boolean changeProject) { this.changeProject = changeProject; }
+    public boolean isPauseTimer() { return this.pauseTimer; }
+    public void setPauseTimer(boolean pauseTimer) { this.pauseTimer = pauseTimer; }
+    public String getProject() { return this.project; }
+    public void setProject(String project) { this.project = project; }
     
     private void checkInvalidProject(){
         boolean containsProject = false;
@@ -109,27 +80,23 @@ public class TimeOut extends Object implements java.io.Serializable,
     }
     
     public void propertyChange(java.beans.PropertyChangeEvent propertyChangeEvent) {
-        if(clntComm == null){
-            clntComm = (ClntComm)propertyChangeEvent.getSource();
-        }
-     
+        if(clntComm == null) clntComm = (ClntComm)propertyChangeEvent.getSource();
+        
         running = clntComm.isRunning();
         
         if(use && timeoutLibrary){
             idleSeconds = (int)(getIdleTime()/1000L);
-            if(isChangeProject()){
-                checkInvalidProject();
-            }
+            if(isChangeProject()) checkInvalidProject();
         }
-       
+        
         
         if(use && idleSeconds > seconds && running && !paused) {
-            if(isPauseTimer()){
+            if(isPauseTimer()) {
                 clntComm.toggleTimer();
-            }else{
+            } else {
                 System.out.println("getIndex: " + clntComm.getSelectedIndex());
-                savedProject = 
-                  clntComm.getTimes().elementAt(clntComm.getSelectedIndex()).getProjectName();
+                savedProject =
+                clntComm.getTimes().elementAt(clntComm.getSelectedIndex()).getProjectName();
                 System.out.println("setIndex1: " + clntComm.getTimes().indexOfProject(this.getProject()));
                 clntComm.setSelectedIndex(clntComm.getTimes().indexOfProject(this.getProject()));
             }
@@ -137,9 +104,9 @@ public class TimeOut extends Object implements java.io.Serializable,
         }
         
         if(use && idleSeconds < seconds && (! running || isChangeProject()) && paused){
-            if(isPauseTimer()){
+            if(isPauseTimer()) {
                 clntComm.toggleTimer();
-            }else{
+            } else {
                 System.out.println("setIndex: " + clntComm.getTimes().indexOfProject(this.getProject()));
                 clntComm.setSelectedIndex(clntComm.getTimes().indexOfProject(this.savedProject));
             }
@@ -147,46 +114,31 @@ public class TimeOut extends Object implements java.io.Serializable,
         }
     }
     
-    /** Getter for property changeProject.
-     * @return Value of property changeProject.
+    /**
+     * Translate a file from a bytestream in the JAR file
+     * @param path The relative path to the file stored in a Java Archive
      */
-    public boolean isChangeProject() {
-        return this.changeProject;
+    private File getNativeLibrary(String path) {
+        File file = null;
+        byte[] tn = null;
+        InputStream in = this.getClass().getResourceAsStream(path);
+        String fileName = path.substring(path.lastIndexOf('/'));
+
+        if(in != null) {
+            try{
+                file = new File(PluginManager.libsdir, fileName);
+                file.createNewFile();
+                file.deleteOnExit();
+                FileOutputStream fout = new FileOutputStream(file);
+                int length = in.available();
+                tn = new byte[length];
+                in.read(tn);
+                fout.write(tn);
+            } catch(Exception e){
+                System.out.println("Error loading file "+path+": "+e);
+            }
+        }
+        
+        return file;
     }
-    
-    /** Setter for property changeProject.
-     * @param changeProject New value of property changeProject.
-     */
-    public void setChangeProject(boolean changeProject) {
-        this.changeProject = changeProject;
-    }
-    
-    /** Getter for property pauseTimer.
-     * @return Value of property pauseTimer.
-     */
-    public boolean isPauseTimer() {
-        return this.pauseTimer;
-    }
-    
-    /** Setter for property pauseTimer.
-     * @param pauseTimer New value of property pauseTimer.
-     */
-    public void setPauseTimer(boolean pauseTimer) {
-        this.pauseTimer = pauseTimer;
-    }
-    
-    /** Getter for property project.
-     * @return Value of property project.
-     */
-    public String getProject() {
-        return this.project;
-    }
-    
-    /** Setter for property project.
-     * @param project New value of property project.
-     */
-    public void setProject(String project) {
-        this.project = project;
-    }
-    
 }
