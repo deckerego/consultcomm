@@ -2,12 +2,12 @@
 <project basedir="." default="dist">
   <taskdef classname="com.izforge.izpack.ant.IzPackTask" name="izpack"/>
 
-  <property name="release" value="3.1rc3"/>
+  <property name="release" value="3.1"/>
   <property name="src" value="ConsultComm/"/>
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
   <property name="izpackdir" value="/usr/local/IzPack"/>
-  <property name="revision" value="1"/>
+  <property name="revision" value="4"/>
 
   <target name="build">
     <ant dir="${src}" inheritAll="false" target="all"/>
@@ -99,6 +99,7 @@
       <zipfileset dir="${src}" prefix="${releasename}">
         <include name="ConsultComm"/>
         <include name="ConsultComm.bat"/>
+        <include name="ConsultComm.lnk"/>
         <include name="plugins/*.jar"/>
         <include name="*.jar"/>
         <include name="README"/>
@@ -112,6 +113,8 @@
 
   <target depends="build" name="izpack">
     <izpack basedir="${src}" input="izpack_installer.xml" installerType="standard" izPackDir="${izpackdir}" output="${releasename}_Installer.jar"/>
+    <echo message="jar = ${releasename}_Installer.jar${line.separator}" file="launcher.ini" append="false"/>
+    <echo message="download = http://java.com/en/index.jsp${line.separator}" file="launcher.ini" append="true"/>
     <zip zipfile="${releasename}_WinInstall.zip">
       <zipfileset dir="." prefix="${releasename}">
         <include name="${releasename}_Installer.jar"/>
