@@ -25,10 +25,10 @@ public class ClntComm extends javax.swing.JPanel {
   protected static final int SHOW_TOTAL = 0;
   protected static final int SHOW_BILLABLE = 1;
   protected static final int SHOW_EXPORT = 2;
-
+  
   private static long totalSeconds, billableSeconds;
   private static JFrame frame = new JFrame("Consultant Manager");
-
+  
   private CsltComm csltComm;
   private TimerThread timer;
   private TimeRecordSet times;
@@ -39,6 +39,20 @@ public class ClntComm extends javax.swing.JPanel {
   private int attributes = SHOW_TOTAL | SHOW_BILLABLE | SHOW_EXPORT;
   private int showTotal;
   private int saveInterval = 60;
+  private int allowedIdle = 0;
+  private static boolean timeoutLibrary = false;
+  
+  private native long getIdleTime();
+  
+  static {
+    try {
+      System.loadLibrary("timeout");
+      timeoutLibrary = true;
+    } catch (UnsatisfiedLinkError e) {
+      System.err.println("Couldn't find timeout library in "+System.getProperty("java.library.path"));
+      timeoutLibrary = false;
+    }
+  }
   
   /** Creates new form TimeTrack */
   public ClntComm(CsltComm parent) {
@@ -47,10 +61,10 @@ public class ClntComm extends javax.swing.JPanel {
     readPrefs();
     initComponents();
     initColumns();
-
+    
     timer = new TimerThread(1000);
     timer.start();
-
+    
     menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
     try {
       timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
@@ -58,7 +72,7 @@ public class ClntComm extends javax.swing.JPanel {
       System.err.println("Row index invalid, not setting selection.");
     }
   }
-
+  
   /** This method is called from within the constructor to
    * initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is
@@ -249,7 +263,7 @@ public class ClntComm extends javax.swing.JPanel {
     add(menuPanel, java.awt.BorderLayout.NORTH);
     
   }//GEN-END:initComponents
-
+  
   private void initColumns() {
     TableColumn projectColumn = timeList.getColumnModel().getColumn(0);
     projectColumn.setPreferredWidth(projColumnWidth);
@@ -258,27 +272,26 @@ public class ClntComm extends javax.swing.JPanel {
   private void showPrefs(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPrefs
     new PrefsPanel(this).show();
   }//GEN-LAST:event_showPrefs
-
+  
   private void showHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHelp
     new HelpDisplay().show();
   }//GEN-LAST:event_showHelp
-
+  
   private void exportToTable(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportToTable
-    JDBCControlPanel panel = new JDBCControlPanel();
-    if(panel.exportTimeRecordSet(times)) zeroProject(evt);
+    JDBCConnect dbConnection = new JDBCConnect();
+    if(dbConnection.exportTimeRecordSet(times)) zeroProject(evt);
   }//GEN-LAST:event_exportToTable
   
   private void editJDBC(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editJDBC
     JDBCControlPanel panel = new JDBCControlPanel();
-    panel.initGUI();
     panel.show();
   }//GEN-LAST:event_editJDBC
-
+  
   private void sortColumn(java.awt.event.MouseEvent evt) {
     TableColumnModel columnModel = timeList.getColumnModel();
     int viewColumn = columnModel.getColumnIndexAtX(evt.getX());
     int column = timeList.convertColumnIndexToModel(viewColumn);
-
+    
     TimeRecord record = times.elementAt(selectedIndex); //find current selected record
     times.sort(column);
     selectedIndex = times.indexOf(record); //restore selected record
@@ -298,6 +311,10 @@ public class ClntComm extends javax.swing.JPanel {
   }//GEN-LAST:event_editWindow
   
   private void toggleTimer(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleTimer
+    toggleTimer();
+  }//GEN-LAST:event_toggleTimer
+  
+  void toggleTimer() {
     if(timer.clockRunning){
       timer.clockRunning = false;
       startButton.setToolTipText("Start Timer");
@@ -308,7 +325,7 @@ public class ClntComm extends javax.swing.JPanel {
       startButton.setToolTipText("Pause Timer");
       startButton.setText("Pause");
     }
-  }//GEN-LAST:event_toggleTimer
+  }
   
   private void zeroProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zeroProject
     Object[] options = {"OK", "Cancel"};
@@ -356,7 +373,7 @@ public class ClntComm extends javax.swing.JPanel {
     timeList.setModel(times.toTableModel(timeFormat));
     timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
   }//GEN-LAST:event_newProject
-
+  
 private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleTotals
   switch(showTotal) {
     case SHOW_TOTAL:
@@ -414,13 +431,13 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   public void reload() {
     savePrefs();
     removeAll();
-
+    
     csltComm.reload();
     
     readPrefs();
     initComponents();
     initColumns();
-
+    
     menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
     try {
       timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
@@ -447,7 +464,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     selectedIndex = timeList.getSelectedRow();
     TimeRecord record;
     boolean newRecord = false;
-
+    
     try {
       record = times.elementAt(index);
       newRecord = false;
@@ -455,7 +472,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       record = new TimeRecord();
       newRecord = true;
     }
-
+    
     ProjectEditDialog edit = new ProjectEditDialog((JFrame)this.getTopLevelAncestor(), record, attributes);
     edit.pack();
     edit.setLocationRelativeTo(this);
@@ -511,9 +528,9 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
           TimeRecord record = new TimeRecord(name, alias, seconds, billable, export);
           times.add(record);
         }
-
+        
         NamedNodeMap attribute = null;
-
+        
         //Get window dimensions
         NodeList dimensions = doc.getElementsByTagName("dimensions");
         Node dimension = dimensions.item(0);
@@ -521,13 +538,13 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         double width = Double.parseDouble(attribute.getNamedItem("width").getNodeValue());
         double height = Double.parseDouble(attribute.getNamedItem("height").getNodeValue());
         windowSize = new java.awt.Dimension((int)width, (int)height);
-
+        
         //Get project column dimensions
         NodeList projColumns = doc.getElementsByTagName("projcolumn");
         Node projColumn = projColumns.item(0);
         attribute = projColumn.getAttributes();
         projColumnWidth = Integer.parseInt(attribute.getNamedItem("width").getNodeValue());
-
+        
         //Decide whether to show total time/billable time
         NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
         if(showTotalTimes.getLength() > 0) {
@@ -537,15 +554,15 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
           try {
             showTotal = Integer.parseInt(showTotalString);
           } catch (NumberFormatException e) {
-            //Older versions used a string or a boolean to save the pref instead 
+            //Older versions used a string or a boolean to save the pref instead
             //of an int, so just give it a default value
             showTotal = SHOW_TOTAL;
           }
         } else {
-            showTotal = SHOW_TOTAL;
+          showTotal = SHOW_TOTAL;
         }
-
-
+        
+        
         //Get time format
         NodeList timeFormats = doc.getElementsByTagName("timeformat");
         if(timeFormats.getLength() > 0) {
@@ -557,7 +574,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         } else {
           timeFormat = MINUTES;
         }
-
+        
         //Get attribute flags
         NodeList attributeFlags = doc.getElementsByTagName("attributes");
         if(attributeFlags.getLength() > 0) {
@@ -568,7 +585,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         } else {
           attributes = SHOW_TOTAL | SHOW_BILLABLE | SHOW_EXPORT;
         }
-
+        
         //Get save interval
         NodeList saveInfos = doc.getElementsByTagName("saveinfo");
         if(saveInfos.getLength() > 0) {
@@ -578,6 +595,17 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
           saveInterval = Integer.parseInt(saveIntervalString);
         } else {
           saveInterval = 60;
+        }
+        
+        //Get allowed idle time
+        NodeList idleTimes = doc.getElementsByTagName("idle");
+        if(idleTimes.getLength() > 0) {
+          Node idleTime = idleTimes.item(0);
+          attribute = idleTime.getAttributes();
+          String allowedIdleString = attribute.getNamedItem("seconds").getNodeValue();
+          allowedIdle = Integer.parseInt(allowedIdleString);
+        } else {
+          allowedIdle = 0;
         }
       } catch (SAXParseException e) {
         System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
@@ -590,7 +618,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       }
     }
   }
-
+  
   private void savePrefs() {
     File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
     try {
@@ -645,7 +673,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       } else {
         rootNode.appendChild(newNode);
       }
-
+      
       //Save project column dimensions
       NodeList projColumns = doc.getElementsByTagName("projcolumn");
       TableColumn projectColumn = timeList.getColumnModel().getColumn(0);
@@ -668,7 +696,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       } else {
         rootNode.appendChild(newNode);
       }
-
+      
       //Write to file
       doc.getDocumentElement().normalize();
       TransformerFactory fac = TransformerFactory.newInstance();
@@ -714,7 +742,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
    * TimerThread updates system variables upon each tick of the clock.
    */
   private class TimerThread extends Thread{
-    public boolean runThread, clockRunning;
+    public boolean runThread, clockRunning, asleep;
     public int updateSeconds;
     public long startTime;
     
@@ -727,6 +755,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       updateSeconds = update;
       clockRunning = false;
       runThread = true;
+      asleep = false;
       startTime = 0;
     }
     
@@ -734,17 +763,29 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       long currTime;
       int index;
       long currSeconds;
+      int idleSeconds = -1;
       
       while(runThread){
         try {
           sleep(updateSeconds);
+          
+          if((allowedIdle > 0) && timeoutLibrary) //0 means don't worry about idle
+            idleSeconds = (int)(getIdleTime()/1000L);
+          
+          //Check and see if we're supposed to wake up the clock
+          //after the session has been idle
+          if((idleSeconds < allowedIdle) && asleep) {
+            toggleTimer();
+            asleep = false;
+          }
+          
           if(clockRunning){
             //Get the current seconds past midnight.
             currTime = System.currentTimeMillis()/1000;
             if((index = timeList.getSelectedRow()) >= 0){
               currSeconds = currTime - startTime;
               times.setSeconds(index, currSeconds);
-
+              
               //Only repaint if the minutes (or seconds, depending on the
               //time format) have changed.
               if ((timeFormat == SECONDS) || (currSeconds % 60 == 0)){
@@ -755,8 +796,16 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
                   timeList.setValueAt(times.getMinutesString(index), index, 1);
                 timeList.repaint();
               }
-
+              
+              //If the user requested a save now, do it
               if (currSeconds % saveInterval == 0) savePrefs();
+              
+              //Check and see if we're supposed to do something when the
+              //user session is idle
+              if((idleSeconds >= allowedIdle) && ! asleep) {
+                toggleTimer();
+                asleep = true;
+              }
             }
           }
         } catch (InterruptedException e) {
