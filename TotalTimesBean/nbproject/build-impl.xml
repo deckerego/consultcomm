@@ -305,7 +305,7 @@ is divided into following sections:
     =================
     -->
     <target name="-debug-start-debugger" if="netbeans.home" depends="init">
-        <j2seproject:nbjpdastart xmlns:j2seproject="http://www.netbeans.org/ns/j2se-project/1"/>
+        <j2seproject:nbjpdastart name="${debug.class}" xmlns:j2seproject="http://www.netbeans.org/ns/j2se-project/1"/>
     </target>
     <target name="-debug-start-debuggee" depends="init,compile">
         <j2seproject:debug xmlns:j2seproject="http://www.netbeans.org/ns/j2se-project/1"/>
@@ -445,7 +445,7 @@ is divided into following sections:
         <fail unless="applet.url">Must select one file in the IDE or set applet.url</fail>
         <j2seproject:java classname="sun.applet.AppletViewer" xmlns:j2seproject="http://www.netbeans.org/ns/j2se-project/1">
             <customize>
-                <arg line="${applet.url}"/>
+                <arg value="${applet.url}"/>
             </customize>
         </j2seproject:java>
     </target>
@@ -456,7 +456,7 @@ is divided into following sections:
     -->
     <target name="-debug-start-debuggee-applet" if="netbeans.home" depends="init,compile-single">
         <fail unless="applet.url">Must select one file in the IDE or set applet.url</fail>
-        <j2seproject:debug classname="sun.applet.AppletViewer" args="${applet.url}" xmlns:j2seproject="http://www.netbeans.org/ns/j2se-project/1"/>
+        <j2seproject:debug classname="sun.applet.AppletViewer" args="&quot;${applet.url}&quot;" xmlns:j2seproject="http://www.netbeans.org/ns/j2se-project/1"/>
     </target>
     <target name="debug-applet" if="netbeans.home" depends="init,compile-single,-debug-start-debugger,-debug-start-debuggee-applet"/>
     <!--
@@ -465,7 +465,7 @@ is divided into following sections:
     ===============
     -->
     <target name="deps-clean" depends="init" unless="no.deps">
-        <ant target="clean" inheritall="false" dir="${project.ConsultComm}"/>
+        <ant target="clean" inheritall="false" antfile="${project.ConsultComm}/build.xml"/>
     </target>
     <target name="-do-clean" depends="init">
         <delete dir="${build.dir}"/>
