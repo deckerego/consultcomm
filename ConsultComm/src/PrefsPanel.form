@@ -73,9 +73,6 @@
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="minuteButton">
                   <Properties>
-                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                      <ComponentRef name="timeFormatGroup"/>
-                    </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
                     </Property>
@@ -83,6 +80,9 @@
                       <Connection type="value" value="timeFormat == ClntComm.MINUTES" valueType="boolean"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Minutes"/>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="timeFormatGroup"/>
+                    </Property>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -92,9 +92,6 @@
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="secondButton">
                   <Properties>
-                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                      <ComponentRef name="timeFormatGroup"/>
-                    </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
                     </Property>
@@ -102,6 +99,9 @@
                       <Connection type="value" value="timeFormat == ClntComm.SECONDS" valueType="boolean"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Seconds"/>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="timeFormatGroup"/>
+                    </Property>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

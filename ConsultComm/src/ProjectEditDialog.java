@@ -119,7 +119,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
 
         pack();
     }//GEN-END:initComponents
-    
+  
   private void save(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_save
     record.setGroupName(groupField.getText());
     record.setProjectName(projField.getText());
