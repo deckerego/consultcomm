@@ -7,7 +7,7 @@
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
   <property name="izpackdir" value="/usr/local/IzPack"/>
-  <property name="revision" value="1"/>
+  <property name="revision" value="4"/>
 
   <target name="build">
     <ant dir="${src}" inheritAll="false" target="all"/>
@@ -129,6 +129,9 @@
     <ant dir="JDBCBean" inheritAll="false" target="realclean"/>
     <ant dir="TotalTimesBean" inheritAll="false" target="realclean"/>
     <ant dir="SysTrayBean" inheritAll="false" target="realclean"/>
+    <delete>
+      <fileset dir="." includes="*~" defaultexcludes="no"/>
+    </delete>
 </target>
 
 </project>
