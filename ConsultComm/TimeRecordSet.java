@@ -3,7 +3,7 @@ import javax.swing.table.*;
 
 class TimeRecordSet {
   private Vector timeRecords;
-  private String[] titles = {"Project", "Time"};
+  private static final String[] titles = {"Project", "Time"};
   private boolean reverseSort = false;
   private int currColumnSorted = -1;
   
