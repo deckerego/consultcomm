@@ -11,7 +11,7 @@ import javax.swing.*;
 import com.l2fprod.gui.plaf.skin.Skin;
 import com.l2fprod.gui.plaf.skin.CompoundSkin;
 import com.l2fprod.gui.plaf.skin.SkinLookAndFeel;
-
+import com.l2fprod.gui.nativeskin.NativeSkin;
 
 public class CsltComm extends javax.swing.JFrame {
     public static final String release = "ConsultComm CVS Release";
@@ -88,11 +88,16 @@ public class CsltComm extends javax.swing.JFrame {
       }
   }
   
+  /**
+   * Load the custom skin / Look and Feel implementation
+   * @todo Implement NativeSkin transparency and window placement once Linux is supported
+   */
   private void loadSkin() {
       Skin skin = null;
 
       try {
           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          SwingUtilities.updateComponentTreeUI(this); //OSX treenode icons won't work properly without this
           
           if(! kdeTheme.equals("") && ! gtkTheme.equals(""))
               skin = new CompoundSkin(SkinLookAndFeel.loadSkin(kdeTheme), SkinLookAndFeel.loadSkin(gtkTheme));
