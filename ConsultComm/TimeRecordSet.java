@@ -38,8 +38,13 @@ class TimeRecordSet {
     TimeRecord record = elementAt(index);
     return record.seconds;
   }
-  public String getTime(int index) {
-    return parseSeconds(getSeconds(index));
+  public String getSecondsString(int index) {
+    TimeRecord record = elementAt(index);
+    return record.toSecondString();
+  }
+  public String getMinutesString(int index) {
+    TimeRecord record = elementAt(index);
+    return record.toMinuteString();
   }
   public String getProjectName(int index) {
     TimeRecord record = elementAt(index);
@@ -64,7 +69,7 @@ class TimeRecordSet {
     return parseSeconds(total);
   }
   
-  public DefaultTableModel toTableModel(){
+  public DefaultTableModel toTableModel(int timeFormat){
     DefaultTableModel model = new javax.swing.table.DefaultTableModel(
     //Set to two empty columns
     new Object [][] {
@@ -79,10 +84,14 @@ class TimeRecordSet {
     Enumeration records = timeRecords.elements();
     while (records.hasMoreElements()) {
       TimeRecord record = (TimeRecord)records.nextElement();
+      String timeString = null;
+      if(timeFormat == ClntComm.SECONDS) timeString = record.toSecondString();
+      else timeString = record.toMinuteString();
+      
       if(record.alias == null)
-        model.addRow(new Object[] {record.projectName, record.toString()});
+        model.addRow(new Object[] {record.projectName, timeString});
       else
-        model.addRow(new Object[] {record.alias, record.toString()});
+        model.addRow(new Object[] {record.alias, timeString});
     }
     return model;
   }
