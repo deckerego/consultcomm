@@ -23,20 +23,20 @@ class JDBCConnect {
   
   String name = "";
   String url = "";
-  static String userName = "";
-  static String password="";
-  static String database="";
-  static String table="";
-  static String projectDatabase="";
-  static String projectTable="";
-  static String projectField="";
-  static boolean projectValidate;
+  String userName = "";
+  String password="";
+  String database="";
+  String table="";
+  String projectDatabase="";
+  String projectTable="";
+  String projectField="";
+  boolean projectValidate;
   int hourFormat;
   boolean projectCase;
   boolean useExport;
   Vector errorList;
   TableMap tableMap;
-  static boolean validated;
+  boolean validated;
   JFrame parentFrame;
   
   JDBCConnect() {
