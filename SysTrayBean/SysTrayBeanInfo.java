@@ -8,7 +8,7 @@ public class SysTrayBeanInfo extends SimpleBeanInfo {
     private static BeanDescriptor beanDescriptor = null;
     private static BeanDescriptor getBdescriptor(){
         //GEN-HEADEREND:BeanDescriptor
-        beanDescriptor = new BeanDescriptor(TimeOut.class, TimeOutCustomizer.class);
+        beanDescriptor = new BeanDescriptor(SysTray.class, SysTrayCustomizer.class);
         return beanDescriptor;     } //GEN-LAST:BeanDescriptor
     
     
@@ -77,7 +77,7 @@ public class SysTrayBeanInfo extends SimpleBeanInfo {
      *    return null if no suitable icon is available.
      */
     public java.awt.Image getIcon(int iconKind) {
-        iconNameC32 = "systray.gif";
+        iconNameC32 = "systray.png";
         
         switch ( iconKind ) {
             case ICON_COLOR_16x16:
