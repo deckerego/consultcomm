@@ -68,7 +68,7 @@
                   <Properties>
                     <Property name="columns" type="int" value="20"/>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="name" type="code"/>
+                      <Connection code="dbConnection.name" type="code"/>
                     </Property>
                   </Properties>
                   <Constraints>
@@ -90,7 +90,7 @@
                 <Component class="javax.swing.JTextField" name="urlField">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="url" type="code"/>
+                      <Connection code="dbConnection.url" type="code"/>
                     </Property>
                   </Properties>
                   <Constraints>
@@ -112,7 +112,7 @@
                 <Component class="javax.swing.JTextField" name="dbField">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="database" type="code"/>
+                      <Connection code="dbConnection.database" type="code"/>
                     </Property>
                   </Properties>
                   <Constraints>
@@ -134,7 +134,7 @@
                 <Component class="javax.swing.JTextField" name="tableField">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="table" type="code"/>
+                      <Connection code="dbConnection.table" type="code"/>
                     </Property>
                   </Properties>
                   <Constraints>
@@ -146,7 +146,7 @@
                 <Component class="javax.swing.JCheckBox" name="odbcCheckBox">
                   <Properties>
                     <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="name.equals(odbcDriverName)" type="code"/>
+                      <Connection code="dbConnection.name.equals(JDBCConnect.odbcDriverName)" type="code"/>
                     </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
@@ -230,7 +230,7 @@
                 <Component class="javax.swing.JTable" name="fieldMapping">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="tableMap.toTableModel()" type="code"/>
+                      <Connection code="dbConnection.tableMap.toTableModel()" type="code"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -318,7 +318,7 @@
                       </StringArray>
                     </Property>
                     <Property name="selectedIndex" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="hourFormat" type="code"/>
+                      <Connection code="dbConnection.hourFormat" type="code"/>
                     </Property>
                   </Properties>
                   <Constraints>
@@ -330,7 +330,7 @@
                 <Component class="javax.swing.JCheckBox" name="projectCaseCheckBox">
                   <Properties>
                     <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="projectCase" type="code"/>
+                      <Connection code="dbConnection.projectCase" type="code"/>
                     </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
@@ -346,7 +346,7 @@
                 <Component class="javax.swing.JCheckBox" name="projValidateCheckBox">
                   <Properties>
                     <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="projectValidate" type="code"/>
+                      <Connection code="dbConnection.projectValidate" type="code"/>
                     </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
@@ -376,7 +376,7 @@
                 <Component class="javax.swing.JTextField" name="projDBField">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="projectDatabase" type="code"/>
+                      <Connection code="dbConnection.projectDatabase" type="code"/>
                     </Property>
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
@@ -399,7 +399,7 @@
                 <Component class="javax.swing.JTextField" name="projTableField">
                   <Properties>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="projectTable" type="code"/>
+                      <Connection code="dbConnection.projectTable" type="code"/>
                     </Property>
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
@@ -422,7 +422,7 @@
                 <Component class="javax.swing.JComboBox" name="projFieldComboBox">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="new DefaultComboBoxModel(new String[] {projectField})" type="code"/>
+                      <Connection code="new DefaultComboBoxModel(new String[] {dbConnection.projectField})" type="code"/>
                     </Property>
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
