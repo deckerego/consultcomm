@@ -1,0 +1,23 @@
+#!/bin/sh
+
+CSLTCOMM_ARGS=""
+
+# See if user passed in the javahome switch
+if [ "$1" = "--javahome" ] ; then
+  JAVA_HOME=$2
+fi
+
+# Determine if the JAVA_HOME varible is set
+if [ -z $JAVA_HOME ] ; then
+  echo "The environment variable JAVA_HOME is not set."
+  echo "Either set JAVA_HOME or call ConsultComm with the --javahome <dir> flag."
+  exit -1
+fi
+
+# See if X library is installed
+if [ -x "X/libtimeout.so" ] ; then
+  CSLTCOMM_ARGS="$CSLTCOMM_ARGS -Djava.library.path=X"
+fi
+
+# Call ConsultComm
+$JAVA_HOME/bin/java $CSLTCOMM_ARGS -jar CsltComm.jar
