@@ -87,6 +87,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
     inputPanel.add(billable, gridBagConstraints1);
     
+    export.setSelected(record.export);
     export.setForeground(new java.awt.Color(102, 102, 153));
     export.setText("Export Project to Database");
     gridBagConstraints1 = new java.awt.GridBagConstraints();
