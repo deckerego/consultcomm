@@ -473,13 +473,15 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     index = i;
     selectedIndex = timeList.getSelectedRow();
     TimeRecord record;
+    boolean newRecord = false;
     try {
       record = times.elementAt(index);
+      newRecord = false;
     } catch (ArrayIndexOutOfBoundsException e) {
       record = new TimeRecord();
-      times.add(record);
+      newRecord = true;
     }
-    EditDialog edit = new EditDialog((JFrame)this.getTopLevelAncestor(), record);
+    EditDialog edit = new EditDialog((JFrame)this.getTopLevelAncestor(), record, newRecord);
     edit.pack();
     edit.setLocationRelativeTo(this);
     edit.setVisible(true);
@@ -561,7 +563,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   private class EditDialog extends JDialog {
     private JOptionPane optionPane;
     
-    EditDialog(JFrame frame, TimeRecord timerec) {
+    EditDialog(JFrame frame, TimeRecord timerec, boolean isNewRecord) {
       super(frame, true);
       setTitle("Edit Project");
       
@@ -573,6 +575,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       bottom.gridwidth = 2;
       
       final TimeRecord record = timerec;
+      final boolean newRecord = isNewRecord;
       final JTextField projField = new JTextField(record.projectName);
       projField.setColumns(10);
       final JTextField aliasField = new JTextField(record.alias);
@@ -616,6 +619,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
               else record.alias = null;
               if (index == selectedIndex) timer.startTime = newTime-record.seconds;
               record.billable = billable.isSelected();
+              if(newRecord) times.add(record);
               timeList.setModel(times.toTableModel());
               timeList.repaint();
               if(selectedIndex == -1) //Nothing selected
