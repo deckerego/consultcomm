@@ -53,7 +53,7 @@ public class ClntComm extends javax.swing.JPanel {
         readLayout();                                       //Restore the GUI layout after the components init
         menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);//Add our menu items to the GUI
         timer = new java.util.Timer();                      //Wind up the clock and start it
-        timer.schedule(timerTask, 0, 1000);                 
+        timer.schedule(timerTask, 0, 1000);
     }
     
     public void reload() {
@@ -65,7 +65,6 @@ public class ClntComm extends javax.swing.JPanel {
         setTotals();
         initComponents();
         loadPlugins();
-        readLayout();
         menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
         try {
             if(times.size() != 0) timeList.setSelectedRecord(selectedIndex);
@@ -73,6 +72,7 @@ public class ClntComm extends javax.swing.JPanel {
             System.err.println("Row index invalid, not setting selection.");
         }
         revalidate();
+        readLayout();
     }
     
     public void setTimes(TimeRecordSet times) { this.times = times; }
@@ -122,6 +122,7 @@ public class ClntComm extends javax.swing.JPanel {
         });
 
         projectMenu.add(addMenuItem);
+
         deleteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         deleteMenuItem.setText("Delete Project");
         deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -131,6 +132,7 @@ public class ClntComm extends javax.swing.JPanel {
         });
 
         projectMenu.add(deleteMenuItem);
+
         editMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
         editMenuItem.setText("Edit Project");
         editMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -140,6 +142,7 @@ public class ClntComm extends javax.swing.JPanel {
         });
 
         projectMenu.add(editMenuItem);
+
         zeroMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
         zeroMenuItem.setText("Reset Timers");
         zeroMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -149,7 +152,9 @@ public class ClntComm extends javax.swing.JPanel {
         });
 
         projectMenu.add(zeroMenuItem);
+
         menuBar.add(projectMenu);
+
         toolMenu.setText("Tools");
         pluginsMenuItem.setText("Manage Plugins");
         pluginsMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -159,6 +164,7 @@ public class ClntComm extends javax.swing.JPanel {
         });
 
         toolMenu.add(pluginsMenuItem);
+
         prefsMenuItem.setText("Preferences");
         prefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -167,6 +173,7 @@ public class ClntComm extends javax.swing.JPanel {
         });
 
         toolMenu.add(prefsMenuItem);
+
         helpMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         helpMenuItem.setText("Help");
         helpMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -176,7 +183,9 @@ public class ClntComm extends javax.swing.JPanel {
         });
 
         toolMenu.add(helpMenuItem);
+
         menuBar.add(toolMenu);
+
         editPopupItem.setText("Edit Project");
         editPopupItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -185,6 +194,7 @@ public class ClntComm extends javax.swing.JPanel {
         });
 
         editMenu.add(editPopupItem);
+
         deletePopupItem.setText("Delete Project");
         deletePopupItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -193,6 +203,7 @@ public class ClntComm extends javax.swing.JPanel {
         });
 
         editMenu.add(deletePopupItem);
+
         addPopupItem.setText("Add Project");
         addPopupItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -251,30 +262,30 @@ public class ClntComm extends javax.swing.JPanel {
             }
         });
     }
-
+    
   private void showPrefs(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPrefs
       new PrefsPanel(this).show();
   }//GEN-LAST:event_showPrefs
-
+  
   private void showHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHelp
       new HelpDisplay().show();
   }//GEN-LAST:event_showHelp
-
+  
   private void editPlugins(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPlugins
       new PluginManager(this).show();
   }//GEN-LAST:event_editPlugins
-
+  
   private void sortColumn(java.awt.event.MouseEvent evt) {
       TableColumnModel columnModel = timeList.getColumnModel();
       int viewColumn = columnModel.getColumnIndexAtX(evt.getX());
       int column = timeList.convertColumnIndexToModel(viewColumn);
-
+      
       TimeRecord record = times.elementAt(selectedIndex); //find current selected record
       times.sort(column);
       timeList.setModel(new TableTreeModel(times, timeFormat));
       setSelectedIndex(times.indexOf(record)); //restore selected record
   }
-
+  
   private void editWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editWindow
       int selectedRow = timeList.getSelectedRecord();
       this.selectedIndex = selectedRow;
@@ -312,7 +323,7 @@ public class ClntComm extends javax.swing.JPanel {
   }
   
   private void zeroProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zeroProject
-    zeroProject();
+      zeroProject();
   }//GEN-LAST:event_zeroProject
   
   public void zeroProject() {
@@ -366,230 +377,234 @@ public class ClntComm extends javax.swing.JPanel {
       editWindow(times.size());
   }//GEN-LAST:event_newProject
   
-public void exitForm() {
-    savePrefs();
-}
-
-private void selectionChanged(ListSelectionEvent e) {
-    setTimer();
-}
-
-private void setTimer() {
-    if(timeList.getSelectedRecord() >= 0){
-        long currTime = System.currentTimeMillis()/1000;
-        timerTask.startTime = currTime - times.getSeconds(timeList.getSelectedRecord());
-    }
-}
-
-/**
- * Create edit project window.
- * @parm Index into the project list
- */
-public void editWindow(int i){
-    index = i;
-    selectedIndex = timeList.getSelectedRecord();
-    TimeRecord record;
-    boolean newRecord;
-    
-    try {
-        record = times.elementAt(index);
-        newRecord = false;
-    } catch (ArrayIndexOutOfBoundsException e) {
-        record = new TimeRecord();
-        int currSelected = timeList.getSelectedRecord();
-        if(currSelected != -1) { //Suggest a group name based on the currently selected record
-            TimeRecord currRecord = times.elementAt(currSelected);
-            String groupName = currRecord.getGroupName();
-            record.setGroupName(groupName);
-        }
-        newRecord = true;
-    }
-    
-    TimeRecord oldRecord; //Copy the old record for the property listener
-    try { oldRecord = (TimeRecord)record.clone(); }
-    catch (CloneNotSupportedException e) { oldRecord = null; }
-    
-    ProjectEditDialog edit = new ProjectEditDialog((JFrame)this.getTopLevelAncestor(), record);
-    edit.pack();
-    edit.setLocationRelativeTo(this);
-    edit.setVisible(true);
-    
-    if (edit.getValue().equals("0")) {
-        long newTime = System.currentTimeMillis()/1000;
-        if (index == selectedIndex) timerTask.startTime = newTime-record.getSeconds();
-        
-        if(newRecord) { //Send appropriate property change and add record
-            TimeRecordSet oldTimes; //Copy the old timeset for the property listener
-            try { oldTimes = (TimeRecordSet)times.clone(); }
-            catch (CloneNotSupportedException e) { oldTimes = null; }
-            times.add(record);
-            changes.firePropertyChange("times", oldTimes, times);
-        } else {
-            changes.firePropertyChange("record", oldRecord, record);
-        }
-        
-        times.sort();
-        timeList.setModel(new TableTreeModel(times, timeFormat));
-        setTotals();
-        if(selectedIndex == -1) setSelectedIndex(index); //Nothing selected
-        else timeList.setSelectedRecord(selectedIndex);
-        totalPanel.repaint();
-    }
-}
-
-void loadPlugins() {
-    try{
-        changes = new PropertyChangeSupport(this);
-        plugins = PluginManager.getPlugins();
-        for(int i=0; i<plugins.size(); i++) {
-            Object plugin = plugins.elementAt(i);
-            changes.addPropertyChangeListener((PropertyChangeListener)plugin);
-            
-            try {
-                Expression getMenuItems = new Expression(plugin, "getMenuItems", null);
-                JMenuItem[] menuItems = (JMenuItem[])getMenuItems.getValue();
-                for(int j=0; j<menuItems.length; j++) toolMenu.add(menuItems[j]);
-            } catch (Exception e) {}
-        }
-        changes.firePropertyChange("times", null, times); //Sync everyone on an initial clock tick
-    } catch(Exception e) {
-        System.err.println("Couldn't load plugins: "+e);
-    }
-}
-
-private void readLayout() {
-    File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
-    if(! prefsdir.exists()) prefsdir.mkdir();
-    
-    try { //Remember expanded/collapsed rows
-        File prefsFile = new File(prefsdir, "layout.xml");
-        if(! prefsFile.exists()) prefsFile.createNewFile();
-        FileInputStream inStream = new FileInputStream(prefsFile);
-        XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
-        Vector expandedRows = (Vector)d.readObject();
-        d.close();
-        TableTreeModelAdapter adapter = (TableTreeModelAdapter)timeList.getModel();
-        adapter.setExpandedRows(expandedRows);
-    } catch (Exception e) {
-        System.err.println("Cannot read layout file: "+e);
-    }
-    
-    try { //Read in prefs file, close input stream
-        File prefsFile = new File(prefsdir, "CsltComm.xml");
-        if(! prefsFile.exists()) prefsFile.createNewFile();
-        FileInputStream inStream = new FileInputStream(prefsFile);
-        Preferences prefs = Preferences.userRoot().node("CsltComm");
-        prefs.importPreferences(inStream);
-        inStream.close();
-        
-        //Read dimensions
-        double width = prefs.getDouble("windowWidth", (double)256); //Get window dimensions
-        double height = prefs.getDouble("windowHeight", (double)256);
-        this.setPreferredSize(new java.awt.Dimension((int)width, (int)height));
-        int projColumnWidth = prefs.getInt("columnWidth", (int)width/2); //Get project column dimensions
-        TableColumn column = timeList.getColumnModel().getColumn(0);
-        column.setPreferredWidth(projColumnWidth);
-        totalPanel.toggleTotal(prefs.getInt("totalIndex", 0)); //Get time panel's current selection
-    } catch (Exception e) {
-        System.err.println("Cannot read prefs file: "+e);
-        times = new TimeRecordSet(); //Load default settings
-    }
-}
-
-/**
- * Read through preferances file
- */
-private void readPrefs() {
-    File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
-    if(! prefsdir.exists()) prefsdir.mkdir();
-    
-    try { //Get all projects
-        File prefsFile = new File(prefsdir, "projects.xml");
-        if(! prefsFile.exists()) prefsFile.createNewFile();
-        FileInputStream inStream = new FileInputStream(prefsFile);
-        XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
-        times = (TimeRecordSet)d.readObject();
-        d.close();
-    } catch (Exception e) {
-        System.err.println("Cannot read projects file: "+e);
-    }
-    
-    try { //Read in prefs file, close input stream
-        File prefsFile = new File(prefsdir, "CsltComm.xml");
-        if(! prefsFile.exists()) prefsFile.createNewFile();
-        FileInputStream inStream = new FileInputStream(prefsFile);
-        Preferences prefs = Preferences.userRoot().node("CsltComm");
-        prefs.importPreferences(inStream);
-        inStream.close();
-        
-        //Read prefs
-        timeFormat = prefs.getInt("timeFormat", MINUTES); //Get time format
-        saveInterval = prefs.getInt("saveInterval", 60); //Get save interval
-    } catch (Exception e) {
-        System.err.println("Cannot read prefs file: "+e);
-        times = new TimeRecordSet(); //Load default settings
-    }
-}
-
-private void savePrefs() {
-    try {
-        //Save projects
-        File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
-        File prefsFile = new File(prefsdir, "projects.xml");
-        FileOutputStream outStream = new FileOutputStream(prefsFile);
-        XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
-        e.writeObject(times);
-        e.close();
-        
-        //Save list layout (closed/expanded rows)
-        prefsFile = new File(prefsdir, "layout.xml");
-        outStream = new FileOutputStream(prefsFile);
-        e = new XMLEncoder(new BufferedOutputStream(outStream));
-        TableTreeModelAdapter adapter = (TableTreeModelAdapter)timeList.getModel();
-        e.writeObject(adapter.getExpandedRows());
-        e.close();
-        
-        //save prefs
-        Preferences prefs = Preferences.userRoot().node("CsltComm");
-        java.awt.Dimension size = getSize(); //Save window dimensions
-        prefs.putDouble("windowWidth", size.getWidth());
-        prefs.putDouble("windowHeight", size.getHeight());
-        TableColumn projectColumn = timeList.getColumnModel().getColumn(0); //Save project column dimensions
-        prefs.putInt("columnWidth", projectColumn.getPreferredWidth());
-        prefs.putInt("totalIndex", totalPanel.getIndex()); //Save total panel's current selection
-        
-        //Write to file, close output stream
-        prefs.flush();
-        prefsFile = new File(prefsdir, "CsltComm.xml");
-        outStream = new FileOutputStream(prefsFile);
-        prefs.exportNode(outStream);
-        outStream.flush();
-        outStream.close();
-    } catch (Exception e) {
-        System.err.println("Cannot write to prefs file(s): "+e);
-    }
-}
-
-private TableTree timeList;
+  public void exitForm() {
+      savePrefs();
+  }
+  
+  private void selectionChanged(ListSelectionEvent e) {
+      setTimer();
+  }
+  
+  private void setTimer() {
+      if(timeList.getSelectedRecord() >= 0){
+          long currTime = System.currentTimeMillis()/1000;
+          timerTask.startTime = currTime - times.getSeconds(timeList.getSelectedRecord());
+      }
+  }
+  
+  /**
+   * Create edit project window.
+   * @parm Index into the project list
+   */
+  public void editWindow(int i){
+      index = i;
+      selectedIndex = timeList.getSelectedRecord();
+      TimeRecord record;
+      boolean newRecord;
+      
+      try {
+          record = times.elementAt(index);
+          newRecord = false;
+      } catch (ArrayIndexOutOfBoundsException e) {
+          record = new TimeRecord();
+          int currSelected = timeList.getSelectedRecord();
+          if(currSelected != -1) { //Suggest a group name based on the currently selected record
+              TimeRecord currRecord = times.elementAt(currSelected);
+              String groupName = currRecord.getGroupName();
+              record.setGroupName(groupName);
+          }
+          newRecord = true;
+      }
+      
+      TimeRecord oldRecord; //Copy the old record for the property listener
+      try { oldRecord = (TimeRecord)record.clone(); }
+      catch (CloneNotSupportedException e) { oldRecord = null; }
+      
+      ProjectEditDialog edit = new ProjectEditDialog((JFrame)this.getTopLevelAncestor(), record);
+      edit.pack();
+      edit.setLocationRelativeTo(this);
+      edit.setVisible(true);
+      
+      if (edit.getValue().equals("0")) {
+          long newTime = System.currentTimeMillis()/1000;
+          if (index == selectedIndex) timerTask.startTime = newTime-record.getSeconds();
+          
+          if(newRecord) { //Send appropriate property change and add record
+              TimeRecordSet oldTimes; //Copy the old timeset for the property listener
+              try { oldTimes = (TimeRecordSet)times.clone(); }
+              catch (CloneNotSupportedException e) { oldTimes = null; }
+              times.add(record);
+              changes.firePropertyChange("times", oldTimes, times);
+          } else {
+              changes.firePropertyChange("record", oldRecord, record);
+          }
+          
+          times.sort();
+          timeList.setModel(new TableTreeModel(times, timeFormat));
+          setTotals();
+          if(selectedIndex == -1) setSelectedIndex(index); //Nothing selected
+          else timeList.setSelectedRecord(selectedIndex);
+          totalPanel.repaint();
+      }
+  }
+  
+  void loadPlugins() {
+      try{
+          changes = new PropertyChangeSupport(this);
+          plugins = PluginManager.getPlugins();
+          for(int i=0; i<plugins.size(); i++) {
+              Object plugin = plugins.elementAt(i);
+              changes.addPropertyChangeListener((PropertyChangeListener)plugin);
+              
+              try {
+                  Expression getMenuItems = new Expression(plugin, "getMenuItems", null);
+                  JMenuItem[] menuItems = (JMenuItem[])getMenuItems.getValue();
+                  for(int j=0; j<menuItems.length; j++) toolMenu.add(menuItems[j]);
+              } catch (Exception e) {}
+          }
+          changes.firePropertyChange("times", null, times); //Sync everyone on an initial clock tick
+      } catch(Exception e) {
+          System.err.println("Couldn't load plugins: "+e);
+      }
+  }
+  
+  private void readLayout() {
+      File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+      if(! prefsdir.exists()) prefsdir.mkdir();
+      
+      try { //Remember expanded/collapsed rows
+          File prefsFile = new File(prefsdir, "layout.xml");
+          if(! prefsFile.exists()) prefsFile.createNewFile();
+          FileInputStream inStream = new FileInputStream(prefsFile);
+          XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
+          Vector expandedRows = (Vector)d.readObject();
+          d.close();
+          TableTreeModelAdapter adapter = (TableTreeModelAdapter)timeList.getModel();
+          adapter.setExpandedRows(expandedRows);
+      } catch (Exception e) {
+          System.err.println("Cannot read layout file: "+e);
+      }
+      
+      try { //Read in prefs file, close input stream
+          File prefsFile = new File(prefsdir, "CsltComm.xml");
+          if(! prefsFile.exists()) prefsFile.createNewFile();
+          FileInputStream inStream = new FileInputStream(prefsFile);
+          Preferences prefs = Preferences.userRoot().node("CsltComm");
+          prefs.importPreferences(inStream);
+          inStream.close();
+          
+          //Read dimensions
+          totalPanel.toggleTotal(prefs.getInt("totalIndex", 0)); //Get time panel's current selection
+          double width = prefs.getDouble("windowWidth", (double)256); //Get window dimensions
+          double height = prefs.getDouble("windowHeight", (double)256);
+          int projColumnWidth = prefs.getInt("columnWidth", (int)width/2); //Get project column dimensions
+          TableColumn column = timeList.getColumnModel().getColumn(0);
+          column.setPreferredWidth(projColumnWidth);
+          this.setPreferredSize(new java.awt.Dimension((int)width, (int)height));
+          this.setMinimumSize(new java.awt.Dimension((int)width, (int)height));
+          this.setSize(new java.awt.Dimension((int)width, (int)height));
+          System.out.println("Set size to "+width+" "+height);
+      } catch (Exception e) {
+          System.err.println("Cannot read prefs file: "+e);
+          times = new TimeRecordSet(); //Load default settings
+          this.setPreferredSize(new java.awt.Dimension(256, 256));
+      }
+  }
+  
+  /**
+   * Read through preferances file
+   */
+  private void readPrefs() {
+      File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+      if(! prefsdir.exists()) prefsdir.mkdir();
+      
+      try { //Get all projects
+          File prefsFile = new File(prefsdir, "projects.xml");
+          if(! prefsFile.exists()) prefsFile.createNewFile();
+          FileInputStream inStream = new FileInputStream(prefsFile);
+          XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
+          times = (TimeRecordSet)d.readObject();
+          d.close();
+      } catch (Exception e) {
+          System.err.println("Cannot read projects file: "+e);
+      }
+      
+      try { //Read in prefs file, close input stream
+          File prefsFile = new File(prefsdir, "CsltComm.xml");
+          if(! prefsFile.exists()) prefsFile.createNewFile();
+          FileInputStream inStream = new FileInputStream(prefsFile);
+          Preferences prefs = Preferences.userRoot().node("CsltComm");
+          prefs.importPreferences(inStream);
+          inStream.close();
+          
+          //Read prefs
+          timeFormat = prefs.getInt("timeFormat", MINUTES); //Get time format
+          saveInterval = prefs.getInt("saveInterval", 60); //Get save interval
+      } catch (Exception e) {
+          System.err.println("Cannot read prefs file: "+e);
+          times = new TimeRecordSet(); //Load default settings
+      }
+  }
+  
+  private void savePrefs() {
+      try {
+          //Save projects
+          File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+          File prefsFile = new File(prefsdir, "projects.xml");
+          FileOutputStream outStream = new FileOutputStream(prefsFile);
+          XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
+          e.writeObject(times);
+          e.close();
+          
+          //Save list layout (closed/expanded rows)
+          prefsFile = new File(prefsdir, "layout.xml");
+          outStream = new FileOutputStream(prefsFile);
+          e = new XMLEncoder(new BufferedOutputStream(outStream));
+          TableTreeModelAdapter adapter = (TableTreeModelAdapter)timeList.getModel();
+          e.writeObject(adapter.getExpandedRows());
+          e.close();
+          
+          //save prefs
+          Preferences prefs = Preferences.userRoot().node("CsltComm");
+          java.awt.Dimension size = getSize(); //Save window dimensions
+          prefs.putDouble("windowWidth", size.getWidth());
+          prefs.putDouble("windowHeight", size.getHeight());
+          TableColumn projectColumn = timeList.getColumnModel().getColumn(0); //Save project column dimensions
+          prefs.putInt("columnWidth", projectColumn.getPreferredWidth());
+          prefs.putInt("totalIndex", totalPanel.getIndex()); //Save total panel's current selection
+          
+          //Write to file, close output stream
+          prefs.flush();
+          prefsFile = new File(prefsdir, "CsltComm.xml");
+          outStream = new FileOutputStream(prefsFile);
+          prefs.exportNode(outStream);
+          outStream.flush();
+          outStream.close();
+      } catch (Exception e) {
+          System.err.println("Cannot write to prefs file(s): "+e);
+      }
+  }
+  
+  private TableTree timeList;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem pluginsMenuItem;
-    private javax.swing.JScrollPane scrollPane;
-    private javax.swing.JMenuItem editMenuItem;
     private javax.swing.JMenuItem addMenuItem;
-    private javax.swing.JMenuItem prefsMenuItem;
-    private javax.swing.JMenuItem helpMenuItem;
-    private javax.swing.JPanel totalGUIPanel;
-    private javax.swing.JMenu projectMenu;
-    private javax.swing.JMenu toolMenu;
-    private javax.swing.JButton startButton;
-    private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem addPopupItem;
-    private javax.swing.JPanel menuPanel;
-    private javax.swing.JPopupMenu editMenu;
-    private javax.swing.JMenuItem deletePopupItem;
-    private javax.swing.JMenuItem zeroMenuItem;
-    private javax.swing.JMenuItem editPopupItem;
     private javax.swing.JMenuItem deleteMenuItem;
+    private javax.swing.JMenuItem deletePopupItem;
+    private javax.swing.JPopupMenu editMenu;
+    private javax.swing.JMenuItem editMenuItem;
+    private javax.swing.JMenuItem editPopupItem;
+    private javax.swing.JMenuItem helpMenuItem;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JPanel menuPanel;
+    private javax.swing.JMenuItem pluginsMenuItem;
+    private javax.swing.JMenuItem prefsMenuItem;
+    private javax.swing.JMenu projectMenu;
+    private javax.swing.JScrollPane scrollPane;
+    private javax.swing.JButton startButton;
+    private javax.swing.JMenu toolMenu;
+    private javax.swing.JPanel totalGUIPanel;
+    private javax.swing.JMenuItem zeroMenuItem;
     // End of variables declaration//GEN-END:variables
     
     /**
@@ -608,10 +623,10 @@ private TableTree timeList;
             long currTime, currSeconds;
             
             //Copy the old timeset for the property listener
-            TimeRecordSet oldTimes; 
+            TimeRecordSet oldTimes;
             try { oldTimes = (TimeRecordSet)times.clone(); }
             catch (CloneNotSupportedException e) { oldTimes = null; }
-                    
+            
             if(clockRunning){
                 selectedIndex = timeList.getSelectedRecord();
                 currTime = System.currentTimeMillis()/1000;

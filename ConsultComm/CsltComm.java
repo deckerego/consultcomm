@@ -88,7 +88,6 @@ public class CsltComm extends javax.swing.JFrame {
           getContentPane().add(iconPanel);
           iconPanel.start();
       }
-      pack();
   }
   
   private void loadSkin() {
