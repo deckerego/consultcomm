@@ -98,7 +98,7 @@ public class JarLoader {
         try{
             String fileName = path;
             File file = new File(destination, fileName);
-            if(file.exists()) return FILE_EXISTS; //Don't reload the file if it already exists
+            if(file.exists()) file.delete();
             file.deleteOnExit();
             InputStream in = new BufferedInputStream(resourceClass.getResourceAsStream(path));
             OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
