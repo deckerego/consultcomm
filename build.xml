@@ -6,7 +6,7 @@
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
   <property name="izpackdir" value="/usr/local/IzPack"/>
-  <property name="revision" value="2"/>
+  <property name="revision" value="3"/>
 
   <target name="build">
     <ant dir="ConsultComm" inheritAll="false" target="jar"/>
