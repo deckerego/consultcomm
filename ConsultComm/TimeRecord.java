@@ -55,7 +55,7 @@ public class TimeRecord implements java.io.Serializable {
     }
 
     public String toString() {
-        return this.projectName+"-"+this.groupName;
+        return this.groupName+"-"+this.projectName;
     }
     
     public String toSecondString() {
