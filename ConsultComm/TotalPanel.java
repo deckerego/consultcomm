@@ -18,7 +18,7 @@ public class TotalPanel extends javax.swing.JPanel {
     public void toggleTotal(int index) {
         Object[] keySet = entries.keySet().toArray();
         if(keySet.length > 0) {
-          if(index > keySet.length || index < 0) timesClicked = 0;
+          if(index >= keySet.length || index < 0) timesClicked = 0;
           else timesClicked = index;
           String title = (String)keySet[timesClicked];
         
