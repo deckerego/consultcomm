@@ -31,7 +31,6 @@ public class ClntComm extends javax.swing.JPanel {
     private java.util.Timer timer;
     private int index;
     private int selectedIndex;
-    private Vector plugins = new Vector();
     private TimeRecordSet times;
     private TotalPanel totalPanel;
     
@@ -84,7 +83,7 @@ public class ClntComm extends javax.swing.JPanel {
     public int getSelectedIndex() { return this.selectedIndex; }
     public boolean isRunning(){ return timerTask.clockRunning; }
     public TotalPanel getTotalPanel() { return this.totalPanel; }
-    Vector getPlugins() { return this.plugins; }
+    //Vector getPlugins() { return this.plugins; }
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -461,25 +460,24 @@ public class ClntComm extends javax.swing.JPanel {
   
   void loadPlugins() {
       try{
+          Vector plugins = new Vector(PluginManager.getPluginList());
+          
           //Deregister our old plugins, if they exist
           for(int i=0, max=plugins.size(); i<max; i++) {
               CsltCommPlugin plugin = (CsltCommPlugin)plugins.elementAt(i);
               plugin.unregister();
           }
-          plugins.removeAllElements();
           
           //Get our new plugins and activate them
           changes = new PropertyChangeSupport(this);
-          plugins = PluginManager.getPlugins();
+          PluginManager.getPlugins();
           for(int i=0, max=plugins.size(); i<max; i++) {
+              String className = plugins.elementAt(i).getClass().getName();
               CsltCommPlugin plugin = (CsltCommPlugin)plugins.elementAt(i);
-              changes.addPropertyChangeListener((PropertyChangeListener)plugin);
-              
-              try {
-                  Expression getMenuItems = new Expression(plugin, "getMenuItems", null);
-                  JMenuItem[] menuItems = (JMenuItem[])getMenuItems.getValue();
+
+                  changes.addPropertyChangeListener((PropertyChangeListener)plugin);
+                  JMenuItem[] menuItems = (JMenuItem[])plugin.getMenuItems();
                   for(int j=0; j<menuItems.length; j++) toolMenu.add(menuItems[j]);
-              } catch (Exception e) {}
           }
           changes.firePropertyChange("times", null, times); //Sync everyone on an initial clock tick
       } catch(Exception e) {

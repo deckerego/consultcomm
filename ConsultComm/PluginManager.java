@@ -5,17 +5,19 @@ import java.util.*;
 import java.awt.event.*;
 
 public class PluginManager extends javax.swing.JFrame implements ActionListener {
+    private static final String PLUGINMFST="CsltComm-Plugin";
+    private static final String LOADONLYONCE="LoadOnlyOnce";
+    
     public static File pluginsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"plugins");
     public static File libsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"syslibs");
+    private static Hashtable pluginList = new Hashtable();
     
-    private Vector pluginList;
     private Vector buttonList;
     private ClntComm clntcomm;
 
     public PluginManager(ClntComm parent) {
         parent.loadPlugins();
         this.clntcomm = parent;
-        this.pluginList = parent.getPlugins();
         this.buttonList = new Vector();
         initComponents();
     }
@@ -84,6 +86,7 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
   
   private void loadSettingsPanel(int index) {
       try{
+          Vector pluginList = new Vector(PluginManager.getPluginList());
           Object bean = pluginList.elementAt(index);
           BeanInfo pluginInfo = Introspector.getBeanInfo(bean.getClass());
           Class customizerClass = pluginInfo.getBeanDescriptor().getCustomizerClass();
@@ -100,8 +103,9 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
 
   private void loadIcons() {
       try{
-          for(int i=0, max=pluginList.size(); i<max; i++) {
-              BeanInfo pluginInfo = Introspector.getBeanInfo(pluginList.elementAt(i).getClass());
+          Iterator pluginIterator = getPluginList().iterator();
+          while(pluginIterator.hasNext()) {
+              BeanInfo pluginInfo = Introspector.getBeanInfo(pluginIterator.next().getClass());
               javax.swing.JButton button = new javax.swing.JButton();
               java.awt.Image icon = pluginInfo.getIcon(SimpleBeanInfo.ICON_COLOR_32x32);
               button.setIcon(new javax.swing.ImageIcon(icon));
@@ -115,8 +119,12 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
           System.err.println("No plugins found! "+e);
       }
   }
+  
+  public static Collection getPluginList() {
+      return pluginList.values();
+  }
 
-  public static Vector getPlugins() throws MalformedURLException, ClassNotFoundException, IOException {
+  public static void getPlugins() throws MalformedURLException, ClassNotFoundException, IOException {
       File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
       File syslibdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"syslibs");
 
@@ -140,37 +148,39 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
       ClassLoader loader = new URLClassLoader(pluginurls);
       Thread.currentThread().setContextClassLoader(loader);  //Sun BugID 4676532
 
-      //Load each plugin
-      Vector pluginList = new Vector(pluginfiles.length);
       for(int i=0; i<pluginfiles.length; i++) {
           String currBean = pluginfiles[i].getName();
           currBean = currBean.substring(0, currBean.lastIndexOf(".jar"));
 
           File serializedFile = new File(prefsdir, currBean+".xml");
           File jarFile = pluginfiles[i];
-          Object plugin;
-
-          try { //Attempt to retrieve plugin settings from serialization file
-              FileInputStream inStream = new FileInputStream(serializedFile);
-              XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
-              System.out.println("Deserializing plugin "+currBean+" from "+serializedFile.getName());
-              plugin = d.readObject();
-              d.close();
-          } catch (Exception e) { //No luck restoring bean, invoke a default bean
-              System.out.println("Instantiating plugin "+currBean+" from "+pluginfiles[i].getName());
-              plugin = Beans.instantiate(loader, currBean);
+          CsltCommPlugin plugin;
+          
+          String pluginProperties = JarLoader.getManifestAttribute(new java.util.jar.JarFile(jarFile), PLUGINMFST);
+          boolean loadOnlyOnce = pluginProperties != null && pluginProperties.indexOf(LOADONLYONCE) != -1;
+          
+          if(! loadOnlyOnce || ! pluginList.containsKey(currBean)) {
+              try { //Attempt to retrieve plugin settings from serialization file
+                  FileInputStream inStream = new FileInputStream(serializedFile);
+                  XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
+                  System.out.println("Deserializing plugin "+currBean+" from "+serializedFile.getName());
+                  plugin = (CsltCommPlugin)d.readObject();
+                  d.close();
+              } catch (Exception e) { //No luck restoring bean, invoke a default bean
+                  System.out.println("Instantiating plugin "+currBean+" from "+pluginfiles[i].getName());
+                  plugin = (CsltCommPlugin)Beans.instantiate(loader, currBean);
+              }
+              
+              pluginList.put(currBean, plugin);
           }
-          pluginList.addElement(plugin);
       }
-
-      return pluginList;
   }
-
+  
   public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
       Object o = actionEvent.getSource();
       loadSettingsPanel(buttonList.indexOf(o));
   }
-
+  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel iconListPanel;
     private javax.swing.JScrollPane iconScrollPane;
