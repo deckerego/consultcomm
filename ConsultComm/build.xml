@@ -18,8 +18,9 @@
     <jar destfile="CsltComm.jar">
       <fileset dir="${src}">
         <include name="*.class"/>
-        <include name="${src}/help/*"/>
-        <exclude name="${src}/help/CVS"/>
+        <include name="help/*"/>
+        <exclude name="help/CVS"/>
+        <exclude name="help/*~"/>
       </fileset>
       <manifest>
         <attribute name="Main-Class" value="CsltComm"/>
