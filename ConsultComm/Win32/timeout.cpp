@@ -83,5 +83,6 @@ int WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 
 JNIEXPORT jlong JNICALL Java_ClntComm_getIdleTime (JNIEnv *env, jobject obj)
 {
+	printf("Waited %d", GetTickCount() - lastEvent);
 	return (GetTickCount() - lastEvent);
 }
