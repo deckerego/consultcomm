@@ -21,16 +21,18 @@ import javax.swing.event.*;
 public class ClntComm extends javax.swing.JPanel {
   protected static final int SECONDS = 0;
   protected static final int MINUTES = 1;
-  protected static final int SHOW_TOTAL = 0;
-  protected static final int SHOW_BILLABLE = 1;
-  protected static final int SHOW_EXPORT = 2;
+  protected static final int SHOW_TOTAL = 2;
+  protected static final int SHOW_BILLABLE = 3;
+  protected static final int SHOW_EXPORT = 4;
+  protected static final int IDLE_PAUSE = 5;
+  protected static final int IDLE_PROJECT = 6;
   
   private static long totalSeconds, billableSeconds;
   private static JFrame frame = new JFrame("Consultant Manager");
   
   private CsltComm csltComm;
   private TimerThread timer;
-  private TimeRecordSet times;
+  TimeRecordSet times;
   private java.awt.Dimension windowSize;
   private int projColumnWidth;
   private int index, selectedIndex;
@@ -38,7 +40,8 @@ public class ClntComm extends javax.swing.JPanel {
   private int attributes = SHOW_TOTAL | SHOW_BILLABLE | SHOW_EXPORT;
   private int showTotal;
   private int saveInterval = 60;
-  private int allowedIdle = 0;
+  private int idleAction = IDLE_PAUSE, allowedIdle = 0;
+  private String idleProject = null;
   private static boolean timeoutLibrary = false;
   
   private native long getIdleTime();
@@ -596,15 +599,34 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
           saveInterval = 60;
         }
         
-        //Get allowed idle time
+        //Get idle time settings
         NodeList idleTimes = doc.getElementsByTagName("idle");
         if(idleTimes.getLength() > 0) {
           Node idleTime = idleTimes.item(0);
           attribute = idleTime.getAttributes();
           String allowedIdleString = attribute.getNamedItem("seconds").getNodeValue();
           allowedIdle = Integer.parseInt(allowedIdleString);
+          
+          Node idleActionItem = attribute.getNamedItem("action");
+          if(idleActionItem != null) {
+            String idleActionString = idleActionItem.getNodeValue();
+            if(idleActionString.equals("project"))
+              idleAction = ClntComm.IDLE_PROJECT;
+            else
+              idleAction = ClntComm.IDLE_PAUSE;
+          } else {
+            idleAction = ClntComm.IDLE_PAUSE;
+          }
+          
+          Node idleProjectItem = attribute.getNamedItem("project");
+          if(idleProjectItem != null)
+            idleProject = idleProjectItem.getNodeValue();
+          else
+            idleProject = "";
         } else {
           allowedIdle = 0;
+          idleAction = ClntComm.IDLE_PAUSE;
+          idleProject = "";
         }
       } catch (SAXParseException e) {
         System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
@@ -620,6 +642,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   
   private void savePrefs() {
     File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
+    File stylesheet = new File("stylesheet.xsl");
     try {
       DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -698,9 +721,10 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       
       //Write to file
       doc.getDocumentElement().normalize();
-      TransformerFactory fac = TransformerFactory.newInstance();
-      Transformer trans = fac.newTransformer();
-      trans.transform(new DOMSource(doc.getDocumentElement()), new StreamResult(prefs));
+      StreamSource stylesource = new StreamSource(stylesheet);
+      TransformerFactory tFactory = TransformerFactory.newInstance();
+      Transformer transformer = tFactory.newTransformer(stylesource);
+      transformer.transform(new DOMSource(doc.getDocumentElement()), new StreamResult(prefs));
     } catch (ParserConfigurationException e) {
       System.err.println("Error writing prefs file: "+e);
     } catch (Exception e) {
@@ -758,6 +782,23 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       startTime = 0;
     }
     
+    private void toggleIdle() {
+      if(idleAction == ClntComm.IDLE_PROJECT) {
+        int index = times.indexOfProject(idleProject);
+        if(index < 0) { //Not a valid project
+          toggleTimer();
+        } else { 
+          //Set the current project to be the 'idle' project, 
+          //set the idle project to be the current
+          int oldIndex = timeList.getSelectedRow();
+          idleProject = times.elementAt(oldIndex).projectName;
+          timeList.setRowSelectionInterval(index, index);
+        }
+      } else {
+        toggleTimer();
+      }
+    }
+    
     public void run(){
       long currTime;
       int index;
@@ -774,7 +815,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
           //Check and see if we're supposed to wake up the clock
           //after the session has been idle
           if((idleSeconds < allowedIdle) && asleep) {
-            toggleTimer();
+            toggleIdle();
             asleep = false;
           }
           
@@ -802,7 +843,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
               //Check and see if we're supposed to do something when the
               //user session is idle
               if((idleSeconds >= allowedIdle) && ! asleep) {
-                toggleTimer();
+                toggleIdle();
                 asleep = true;
               }
             }
