@@ -146,7 +146,7 @@ public class TableTree extends JTable {
         public void setRowHeight(int rowHeight) {
             if (rowHeight > 0) {
                 super.setRowHeight(rowHeight);
-                TableTree.this.setRowHeight(rowHeight);
+                if(TableTree.this != null) TableTree.this.setRowHeight(rowHeight);
             }
         }
 
