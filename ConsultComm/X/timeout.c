@@ -13,9 +13,12 @@ unsigned long get_x_idle_time ( )
   display = XOpenDisplay(NULL);
   if(display == NULL) 
     printf("Display is null\n");
+
   ss_info = XScreenSaverAllocInfo ();
   XScreenSaverQueryInfo ( display, DefaultRootWindow ( display ), ss_info );
   idle = ss_info->idle;
+
+  XCloseDisplay(display);
 
   return ( idle );
 }
