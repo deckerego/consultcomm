@@ -1,7 +1,8 @@
-<project default="dist">
-  <taskdef name="izpack" classname="com.izforge.izpack.ant.IzPackTask"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="dist">
+  <taskdef classname="com.izforge.izpack.ant.IzPackTask" name="izpack"/>
 
-  <property name="release" value="3.1beta2"/>
+  <property name="release" value="3.1rc1"/>
   <property name="src" value="ConsultComm/"/>
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
@@ -9,26 +10,26 @@
   <property name="revision" value="1"/>
 
   <target name="build">
-    <ant dir="${src}" target="all" inheritAll="false"/>
-    <ant dir="TimeOutBean" target="all" inheritAll="false"/>
-    <ant dir="JDBCBean" target="all" inheritAll="false"/>
-    <ant dir="TotalTimesBean" target="all" inheritAll="false"/>
-    <ant dir="SysTrayBean" target="all" inheritAll="false"/> 
+    <ant dir="${src}" inheritAll="false" target="all"/>
+    <ant dir="TimeOutBean" inheritAll="false" target="all"/>
+    <ant dir="JDBCBean" inheritAll="false" target="all"/>
+    <ant dir="TotalTimesBean" inheritAll="false" target="all"/>
+    <ant dir="SysTrayBean" inheritAll="false" target="all"/> 
  </target>
     
-  <target name="dist" depends="build">
+  <target depends="build" name="dist">
     <ant target="tarball"/>
     <ant target="zip"/>
     <ant target="rpm"/>
     <ant target="installer"/>
   </target>
 
-  <target name="installer" depends="build">
-    <izpack input="izpack_installer.xml" output="${releasename}_Installer.jar" installerType="standard" basedir="${src}" izPackDir="${izpackdir}"/>
+  <target depends="build" name="installer">
+    <izpack basedir="${src}" input="izpack_installer.xml" installerType="standard" izPackDir="${izpackdir}" output="${releasename}_Installer.jar"/>
   </target>
 
-  <target name="X" depends="build">
-    <ant dir="TimeOutBean" target="X" inheritAll="false"/>
+  <target depends="build" name="X">
+    <ant dir="TimeOutBean" inheritAll="false" target="X"/>
   </target>
 
   <target name="tarball">
@@ -82,14 +83,14 @@
     <gzip src="${releasename}.src.tar" zipfile="${releasename}.src.tar.gz"/>
   </target>
 
-  <target name="rpm" depends="tarball">
+  <target depends="tarball" name="rpm">
     <copy file="consultcomm.spec" todir="${rpmdir}/SPECS"/>
     <move file="${releasename}.src.tar" todir="${rpmdir}/SOURCES"/>
-    <rpm specFile="consultcomm.spec" topDir="${rpmdir}" cleanBuildDir="yes" removeSpec="yes" removeSource="yes"/>
+    <rpm cleanBuildDir="yes" removeSource="yes" removeSpec="yes" specFile="consultcomm.spec" topDir="${rpmdir}"/>
     <move file="${rpmdir}/RPMS/i586/${releasename}-${revision}.i586.rpm" todir="."/>
   </target>
 
-  <target name="zip" depends="build">
+  <target depends="build" name="zip">
     <zip zipfile="${releasename}.zip">
       <zipfileset dir="${src}" prefix="${releasename}">
         <include name="ConsultComm"/>
@@ -115,19 +116,19 @@
     <delete file="${releasename}.zip"/>
     <delete file="${releasename}.exe"/>
     <delete file="${releasename}-${revision}.i586.rpm"/>
-    <ant dir="${src}" target="clean" inheritAll="false"/>
-    <ant dir="TimeOutBean" target="clean" inheritAll="false"/>
-    <ant dir="JDBCBean" target="clean" inheritAll="false"/>
-    <ant dir="TotalTimesBean" target="clean" inheritAll="false"/>  
-    <ant dir="SysTrayBean" target="clean" inheritAll="false"/>
+    <ant dir="${src}" inheritAll="false" target="clean"/>
+    <ant dir="TimeOutBean" inheritAll="false" target="clean"/>
+    <ant dir="JDBCBean" inheritAll="false" target="clean"/>
+    <ant dir="TotalTimesBean" inheritAll="false" target="clean"/>  
+    <ant dir="SysTrayBean" inheritAll="false" target="clean"/>
 </target>
 
-  <target name="realclean" depends="clean">
-    <ant dir="${src}" target="realclean" inheritAll="false"/>
-    <ant dir="TimeOutBean" target="realclean" inheritAll="false"/>
-    <ant dir="JDBCBean" target="realclean" inheritAll="false"/>
-    <ant dir="TotalTimesBean" target="realclean" inheritAll="false"/>
-    <ant dir="SysTrayBean" target="realclean" inheritAll="false"/>
+  <target depends="clean" name="realclean">
+    <ant dir="${src}" inheritAll="false" target="realclean"/>
+    <ant dir="TimeOutBean" inheritAll="false" target="realclean"/>
+    <ant dir="JDBCBean" inheritAll="false" target="realclean"/>
+    <ant dir="TotalTimesBean" inheritAll="false" target="realclean"/>
+    <ant dir="SysTrayBean" inheritAll="false" target="realclean"/>
 </target>
 
 </project>
