@@ -226,12 +226,12 @@ public class CsltComm extends javax.swing.JFrame {
    * @param path The relative path to the file stored in a Java Archive
    */
   static File getFile(Object parent, String path) {
-    File file = new File(path);
+    File file = null;    
     byte[] tn = null;
     InputStream in = parent.getClass().getResourceAsStream(path);
-    //Delete when we exit if the file doesn't already exist
-    if(! file.exists()) file.deleteOnExit(); 
     try{
+      file = File.createTempFile("csltcomm", null);
+      file.deleteOnExit();
       FileOutputStream fout = new FileOutputStream(file);
       int length = in.available();
       tn = new byte[length];
