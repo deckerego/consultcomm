@@ -535,7 +535,9 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       
       JDBCConnect.saveDriverSettings(dbConnection);
       
-      ((PluginManager)getTopLevelAncestor()).exitForm();
+      Object grandpa = getTopLevelAncestor();
+      if(grandpa.getClass() == PluginManager.class) ((PluginManager)grandpa).exitForm();
+      else ((JFrame)grandpa).hide();
   }//GEN-LAST:event_saveDriverSettings
 
   public void setObject(Object obj) {
