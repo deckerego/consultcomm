@@ -560,25 +560,25 @@ public boolean isRunning(){
 
 private TableTree timeList;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel totalTime;
-    private javax.swing.JMenuItem pluginsMenuItem;
-    private javax.swing.JPanel totalPanel;
-    private javax.swing.JScrollPane scrollPane;
     private javax.swing.JMenuItem editMenuItem;
-    private javax.swing.JMenuItem addMenuItem;
-    private javax.swing.JMenuItem prefsMenuItem;
+    private javax.swing.JMenuItem editPopupItem;
+    private javax.swing.JButton startButton;
+    private javax.swing.JMenuItem deletePopupItem;
+    private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem helpMenuItem;
+    private javax.swing.JLabel totalTime;
+    private javax.swing.JPanel menuPanel;
+    private javax.swing.JMenuItem prefsMenuItem;
+    private javax.swing.JPanel totalPanel;
+    private javax.swing.JMenuItem deleteMenuItem;
+    private javax.swing.JMenuItem zeroMenuItem;
     private javax.swing.JMenu projectMenu;
     private javax.swing.JMenu toolMenu;
-    private javax.swing.JButton startButton;
-    private javax.swing.JMenuBar menuBar;
-    private javax.swing.JPanel menuPanel;
-    private javax.swing.JPopupMenu editMenu;
-    private javax.swing.JMenuItem deletePopupItem;
-    private javax.swing.JMenuItem zeroMenuItem;
+    private javax.swing.JScrollPane scrollPane;
+    private javax.swing.JMenuItem addMenuItem;
+    private javax.swing.JMenuItem pluginsMenuItem;
     private javax.swing.JLabel totalText;
-    private javax.swing.JMenuItem editPopupItem;
-    private javax.swing.JMenuItem deleteMenuItem;
+    private javax.swing.JPopupMenu editMenu;
     // End of variables declaration//GEN-END:variables
     
     /**
