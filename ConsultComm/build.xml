@@ -1,30 +1,33 @@
-<?xml version="1.0"?>
-
-<project name="ConsultComm" basedir="." default="all">
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="all" name="ConsultComm">
   <property name="src" value="./"/>
 
-  <target name="all" depends="compile"/>
+  <target depends="compile" name="all"/>
 
   <target name="init">
     <tstamp/>
   </target>
 
-  <target name="compile" depends="init">
-    <javac srcdir="${src}" optimize="on" deprecation="on">
+  <target depends="init" name="compile">
+    <javac deprecation="on" optimize="on" srcdir="${src}">
       <classpath>
         <pathelement location="${src}"/>
       </classpath>
     </javac>
   </target>
-  
-  <target name="dist" depends="all">
+
+  <target depends="all" name="dist">
     <jar jarfile="CsltComm.jar" manifest="CsltMfst">
       <fileset dir="${src}" includes="*.class"/>
       <fileset dir="${src}" includes="graphics/*.gif"/>
     </jar>
   </target>
 
-  <target name="dryrun" depends="init">
+  <target depends="dist" name="upgrade">
+    <copy file="CsltComm.jar" todir="${user.home}/ConsultComm"/>
+  </target>
+
+  <target depends="init" name="dryrun">
     <javac srcdir="${src}">
       <classpath>
         <pathelement location="${src}"/>
@@ -43,7 +46,7 @@
     </delete>
   </target>
 
-  <target name="realclean" depends="clean">
+  <target depends="clean" name="realclean">
     <delete file="CsltComm.jar"/>
   </target>
 </project>
