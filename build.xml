@@ -5,7 +5,7 @@
   <property name="src" value="ConsultComm/"/>
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
-  <property name="revision" value="2"/>
+  <property name="revision" value="5"/>
 
   <target name="build">
     <ant dir="${src}" target="all" inheritAll="false"/>
@@ -33,7 +33,8 @@
         <include name="${src}/ConsultComm"/>
         <include name="${src}/*.java"/>
         <include name="${src}/*.form"/>
-        <include name="${src}/docs/*.html"/>
+        <include name="${src}/help/*"/>
+        <exclude name="${src}/help/CVS"/>
         <include name="${src}/graphics/*"/>
         <include name="${src}/build.xml"/>
         <include name="${src}/skinlf.jar"/>
