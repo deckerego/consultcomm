@@ -1,11 +1,11 @@
 <project default="dist">
   <taskdef name="osxize" classname="com.neo.util.mac.OSXizeAntTask"/>
 
-  <property name="release" value="3beta6"/>
+  <property name="release" value="3rc4"/>
   <property name="src" value="ConsultComm/"/>
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
-  <property name="revision" value="4"/>
+  <property name="revision" value="1"/>
 
   <target name="build">
     <ant dir="${src}" target="all" inheritAll="false"/>
