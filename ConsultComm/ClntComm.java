@@ -75,8 +75,8 @@ public class ClntComm extends javax.swing.JPanel {
     }
     public int getSelectedIndex() { return this.selectedIndex; }
     public boolean isRunning(){ return timerTask.clockRunning; }
+    public TotalPanel getTotalPanel() { return this.totalPanel; }
     Vector getPlugins() { return this.plugins; }
-    TotalPanel getTotalPanel() { return this.totalPanel; }
     
     /** This method is called from within the constructor to
      * initialize the form.
