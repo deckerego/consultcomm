@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="all" name="TimeOut">
+  <property name="src" value="./"/>
+  <property name="Xlibdir" value="X"/>
+  <property name="Win32libdir" value="Win32"/>
+
+  <target depends="compile" name="all"/>
+
+  <target name="init">
+    <tstamp/>
+  </target>
+
+  <target depends="init" name="compile">
+    <javac deprecation="on" optimize="on" srcdir="${src}"/>
+  </target>
+
+  <target depends="compile" name = "X">
+    <javah destdir="${Xlibdir}" class="TimeOut">
+      <classpath>
+        <pathelement location="${src}"/>
+      </classpath>
+    </javah>
+    <exec dir="${Xlibdir}" executable="make"/>
+  </target>
+
+  <target depends="compile" name = "Win32">
+    <javah destdir="${Win32libdir}" class="TimeOut">
+      <classpath>
+        <pathelement location="${src}"/>
+      </classpath>
+    </javah>
+    <echo>
+      Win32 header files built, compile the DLL using the
+      included makefile (being sure to include the directory
+      for the J2SDK header files).
+    </echo>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir="${src}" includes="*.class"/>
+    </delete>
+    <exec dir="${Xlibdir}" executable="make">
+      <arg line="clean"/>
+    </exec>
+  </target>
+
+  <target depends="clean" name="realclean">
+    <delete>
+      <fileset dir="${src}" includes="*~"/>
+    </delete>
+    <delete file="CsltComm.jar"/>
+    <delete file="${Win32libdir}/ClntComm.h"/>
+    <exec dir="${Xlibdir}" executable="make">
+      <arg line="realclean"/>
+    </exec>
+  </target>
+</project>

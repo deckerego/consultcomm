@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="all" name="JDBCConnect">
+  <property name="src" value="./"/>
+
+  <target depends="compile" name="all"/>
+
+  <target name="init">
+    <tstamp/>
+  </target>
+
+  <target depends="init" name="compile">
+    <javac deprecation="on" optimize="on" srcdir="${src}"/>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir="${src}" includes="*.class"/>
+    </delete>
+  </target>
+
+  <target depends="clean" name="realclean">
+    <delete>
+      <fileset dir="${src}" includes="*~"/>
+    </delete>
+  </target>
+</project>
