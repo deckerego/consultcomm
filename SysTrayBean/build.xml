@@ -26,9 +26,6 @@
     <delete>
       <fileset dir="${src}" includes="*.class"/>
     </delete>
-    <exec dir="${Xlibdir}" executable="make">
-      <arg line="clean"/>
-    </exec>
   </target>
 
   <target depends="clean" name="realclean">

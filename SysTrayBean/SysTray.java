@@ -5,10 +5,11 @@ import java.awt.*;
 import java.awt.event.*;
 
 
-public class SysTray extends Object implements java.io.Serializable, java.lang.Cloneable, java.beans.PropertyChangeListener, ActionListener, ItemListener {
+public class SysTray extends CsltCommPlugin implements ActionListener, ItemListener {
     private static boolean systrayLibrary = false;
     private static TrayIcon sysTrayIcon;
     private static SystemTray tray;
+    private ClntComm clntComm;
     
     static {
         if(JarLoader.loadNativeLibrary("libtray.so", SysTray.class) && JarLoader.loadNativeLibrary("tray.dll", SysTray.class)) {
@@ -21,21 +22,23 @@ public class SysTray extends Object implements java.io.Serializable, java.lang.C
         }
         
         tray = SystemTray.getDefaultSystemTray();
-        ImageIcon icon = new ImageIcon(JarLoader.loadImage("systray.gif", SysTray.class));
+        ImageIcon icon = JarLoader.loadImageIcon("systray.png", SysTray.class);
         sysTrayIcon = new TrayIcon(icon, "Consultant Communicator 3", new JPopupMenu());
         sysTrayIcon.setIconAutoSize(true);
         tray.addTrayIcon(sysTrayIcon);
-        
-        sysTrayIcon.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("An action got performed. w00t.");
-            }
-        });
     }
     
     public SysTray() {
         JPopupMenu menu;
         JMenuItem menuItem;
+        
+        
+        sysTrayIcon.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Component csltCommComponent = clntComm.getTopLevelAncestor();
+                csltCommComponent.setVisible(! csltCommComponent.isVisible());
+            }
+        });
         
         menu = new JPopupMenu("A Menu");
         menuItem = new JMenuItem("Quit", KeyEvent.VK_Q);
@@ -60,5 +63,14 @@ public class SysTray extends Object implements java.io.Serializable, java.lang.C
     }
     
     public void propertyChange(java.beans.PropertyChangeEvent propertyChangeEvent) {
+        clntComm = (ClntComm)propertyChangeEvent.getSource();
+        int selectedIndex = clntComm.getSelectedIndex();
+        TimeRecordSet recordSet = clntComm.getTimes();
+        String[] projectNames = recordSet.getAllProjects();
+        sysTrayIcon.setCaption(projectNames[selectedIndex]);
     }
+    
+    public void unregister() {
+    }
+    
 }
