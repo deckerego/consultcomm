@@ -32,8 +32,17 @@ public class TableTree extends JTable {
      */
     public void setModel(TableTreeModel tableTreeModel) {
         tree = new TableTreeCellRenderer(tableTreeModel); //For JTree behavior
-        super.setModel(new TableTreeModelAdapter(tableTreeModel, tree)); //For JTable behavior
         setDefaultRenderer(TableTreeModel.class, tree); //Print the cell in the tree correctly
+
+        Vector expanded = new Vector();
+        TableTreeModelAdapter adapter;
+        if(! super.getModel().getClass().equals(DefaultTableModel.class)) { //We're refreshing the model
+            adapter = (TableTreeModelAdapter)super.getModel();
+            expanded = adapter.getExpandedRows(); //Save the expanded rows for the model
+        }
+        adapter = new TableTreeModelAdapter(tableTreeModel, tree);
+        adapter.setExpandedRows(expanded); //Restore expanded rows
+        super.setModel(adapter); //For JTable behavior
         
         // Force the JTable and JTree to share their row selection models.
         ListToTreeSelectionModelWrapper selectionWrapper = new ListToTreeSelectionModelWrapper();
@@ -67,7 +76,7 @@ public class TableTree extends JTable {
         TreeModel model = tree.getModel();
         TimeRecordSet times = (TimeRecordSet)model.getRoot();
         TimeRecord selected = times.elementAt(index);
-        TreePath path = new TreePath(selected);
+        TreePath path = tree.getNextMatch(selected.toString(), 0, javax.swing.text.Position.Bias.Forward);
         tree.setSelectionPath(path);
     }
     

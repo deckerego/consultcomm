@@ -231,8 +231,8 @@ public class ClntComm extends javax.swing.JPanel {
     private void initSelectionModel() {
         ListSelectionModel rowSM = timeList.getSelectionModel();
         rowSM.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent e) {
-                selectionChanged(e);
+            public void valueChanged(ListSelectionEvent evt) {
+                selectionChanged(evt);
             }
         });
         JTableHeader timeListHeader = timeList.getTableHeader();
