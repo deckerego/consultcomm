@@ -1,4 +1,4 @@
-Consultant Communicator (ConsultComm)
+ConsultComm Project Timekeeper
 
 Copyright (C) 2000, 2001 Free Software Foundation, Inc.
 
@@ -14,8 +14,8 @@ the compiled .jar files, just type the following at the command line:
     java -Djava.library.path=syslibs -jar CsltComm.jar
 
 Binary packages are available for most platforms at the ConsultComm
-site: http://consultcomm.sourceforge.net. You can browse documentation 
-online at http://sourceforge.net/projects/consultcomm.
+site http://consultcomm.sourceforge.net. HTML documentaton used by the help
+system is viewable in the help/ directory.
 
 This application uses SkinLF's skinlf.jar developed by L2F Productions
 (http://www.L2FProd.com), Copyright (c) 2000-2001 L2FProd.com. 
@@ -27,5 +27,8 @@ Help system implemented using JavaHelp's jhbasic.jar
 Inc. All rights reserved. Use is subject to license terms. When building 
 from source place jhbasic.jar in the same directory as CsltComm.jar.
 
-Building from source using the default Ant build script requires OSXize
-(http://www.neo.com/projects/osxize/osxize.html) from Neo Ventures, Ltd.
+System tray integration is implemented using the JDesktop Integration
+Components (https://jdic.dev.java.net/) released under the Lesser General 
+Public License. When building from source place tray.jar in the same directory 
+as CsltComm.jar. The native libraries (such as libtray.so and tray.dll) should
+be placed in the SysTray directory with the other SysTray class files.
