@@ -17,17 +17,19 @@ public class TotalPanel extends javax.swing.JPanel {
 
     public void toggleTotal(int index) {
         Object[] keySet = entries.keySet().toArray();
-        if(index > keySet.length || index < 0) timesClicked = 0;
-        else timesClicked = index;
-        String title = (String)keySet[timesClicked];
+        if(keySet.length > 0) {
+          if(index > keySet.length || index < 0) timesClicked = 0;
+          else timesClicked = index;
+          String title = (String)keySet[timesClicked];
         
-        Object valueObj = entries.get(title);
-        String value;
-        if(valueObj.getClass() == Long.class) value = parseSeconds(((Long)valueObj).longValue());
-        else value = valueObj.toString();
+          Object valueObj = entries.get(title);
+          String value;
+          if(valueObj.getClass() == Long.class) value = parseSeconds(((Long)valueObj).longValue());
+          else value = valueObj.toString();
         
-        titleLabel.setText(title);
-        valueLabel.setText(value);
+          titleLabel.setText(title);
+          valueLabel.setText(value);
+        }
     }
     
     public String parseSeconds(long seconds) {
