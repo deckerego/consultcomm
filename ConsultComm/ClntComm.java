@@ -445,9 +445,11 @@ void loadPlugins() {
 
 private void readLayout() {
     File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+    if(! prefsdir.exists()) prefsdir.mkdir();
     
     try { //Remember expanded/collapsed rows
         File prefsFile = new File(prefsdir, "layout.xml");
+        if(! prefsFile.exists()) prefsFile.createNewFile();
         FileInputStream inStream = new FileInputStream(prefsFile);
         XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
         Vector expandedRows = (Vector)d.readObject();
@@ -460,6 +462,7 @@ private void readLayout() {
     
     try { //Read in prefs file, close input stream
         File prefsFile = new File(prefsdir, "CsltComm.xml");
+        if(! prefsFile.exists()) prefsFile.createNewFile();
         FileInputStream inStream = new FileInputStream(prefsFile);
         Preferences prefs = Preferences.userRoot().node("CsltComm");
         prefs.importPreferences(inStream);
@@ -484,9 +487,11 @@ private void readLayout() {
  */
 private void readPrefs() {
     File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+    if(! prefsdir.exists()) prefsdir.mkdir();
     
     try { //Get all projects
         File prefsFile = new File(prefsdir, "projects.xml");
+        if(! prefsFile.exists()) prefsFile.createNewFile();
         FileInputStream inStream = new FileInputStream(prefsFile);
         XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
         times = (TimeRecordSet)d.readObject();
@@ -497,6 +502,7 @@ private void readPrefs() {
     
     try { //Read in prefs file, close input stream
         File prefsFile = new File(prefsdir, "CsltComm.xml");
+        if(! prefsFile.exists()) prefsFile.createNewFile();
         FileInputStream inStream = new FileInputStream(prefsFile);
         Preferences prefs = Preferences.userRoot().node("CsltComm");
         prefs.importPreferences(inStream);
