@@ -195,6 +195,7 @@ public class ClntComm extends javax.swing.JPanel {
     timeList = new javax.swing.JTable();
     menuPanel = new javax.swing.JPanel();
     startButton = new javax.swing.JButton();
+    menuBar.setBorder(null);
     
     projectMenu.setText("Project");
       
@@ -311,7 +312,8 @@ public class ClntComm extends javax.swing.JPanel {
     
     menuPanel.setLayout(new java.awt.FlowLayout(0, 5, 5));
     
-    startButton.setMnemonic(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK).getKeyCode());
+    startButton.setBorder(null);
+      startButton.setMnemonic(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK).getKeyCode());
       startButton.setText("Start");
       startButton.setBorderPainted(false);
       startButton.addActionListener(new java.awt.event.ActionListener() {
