@@ -10,6 +10,12 @@
 
   <target depends="init" name="compile">
     <javac deprecation="on" optimize="on" srcdir="${src}"/>
+    <jar destfile="${src}/../plugins/JDBCConnect.jar">
+      <fileset dir="${src}" includes="*.class"/>
+      <manifest>
+        <attribute name="Java-Bean" value="true"/>
+      </manifest>
+    </jar>
   </target>
 
   <target name="clean">
