@@ -13,6 +13,8 @@ import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
+//Clipboard Components
+import java.awt.datatransfer.*;
 
 public class JDBCConnect extends CsltCommPlugin {
     final static String ODBCDRIVERNAME = "sun.jdbc.odbc.JdbcOdbcDriver";
@@ -44,13 +46,13 @@ public class JDBCConnect extends CsltCommPlugin {
     public JDBCConnect() {
         tableMap = new TableMap();
         tableMap.setConnection(this);
-        parentFrame = new JFrame();
+        parentFrame = new JFrame(); //Temporarily until window opens
     }
     
     public JDBCConnect(String name, String url, String database, String table) {
         tableMap = new TableMap();
         tableMap.setConnection(this);
-        parentFrame = new JFrame();
+        parentFrame = new JFrame(); //Temporarily until window opens
         this.name = name;
         this.url = url;
         this.database = database;
@@ -104,6 +106,25 @@ public class JDBCConnect extends CsltCommPlugin {
                 boolean worked = exportTimeRecordSet(clntComm.getTimes());
                 if(worked) clntComm.zeroProject();
             }
+        });
+        
+        return menuitems;
+    }
+    
+    public javax.swing.JMenuItem[] getPopupMenuItems() {
+        javax.swing.JMenuItem menuitems[] = new javax.swing.JMenuItem[1];
+        
+        menuitems[0] = new javax.swing.JMenuItem();
+        menuitems[0].setText("Copy Alias to Clipboard");
+        menuitems[0].addActionListener(new java.awt.event.ActionListener() {
+          public void actionPerformed(java.awt.event.ActionEvent evt) {
+            TimeRecord selected = clntComm.getSelectedRecord();
+            Hashtable projectMaps = tableMap.getProjectMaps();
+            ProjectMap projectMap = (ProjectMap)projectMaps.get(selected.toString());
+            Clipboard clipboard = clntComm.getToolkit().getSystemClipboard();
+            StringSelection contents = new StringSelection(projectMap.getAlias());
+            clipboard.setContents(contents, clntComm);
+          }
         });
         
         return menuitems;
@@ -231,6 +252,9 @@ public class JDBCConnect extends CsltCommPlugin {
                 java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.valueOf(record);
                 if(hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) continue;
                 
+                //We also get to set the parent frame so relative positioning of popups works
+                hourTest.setParentFrame(this.parentFrame);
+                
                 //Find out if this project is exportable or not
                 ProjectMap project = (ProjectMap)this.tableMap.getProjectMaps().get(record.toString());
                 if(project == null || ! project.isExport()) continue;
@@ -315,8 +339,14 @@ public class JDBCConnect extends CsltCommPlugin {
         if(clntComm == null) clntComm = (ClntComm)propertyChangeEvent.getSource();
         TotalPanel totalPanel = clntComm.getTotalPanel();
         totalPanel.setEntry("To Export:", getTotalTime());
+        String eventName = propertyChangeEvent.getPropertyName();
         
-        if(propertyChangeEvent.getPropertyName().equals("record")) { //Edited a project
+        if("opened".equals(eventName)) {
+            //We should now have a frame to position things relatively
+            this.parentFrame = (JFrame)clntComm.getTopLevelAncestor();
+        }
+        
+        if("record".equals(eventName)) { //Edited a project
             TimeRecord newRecord = (TimeRecord)propertyChangeEvent.getNewValue();
             TimeRecord oldRecord = (TimeRecord)propertyChangeEvent.getOldValue();
             
@@ -339,14 +369,15 @@ public class JDBCConnect extends CsltCommPlugin {
             TimeRecordSet oldTimes = (TimeRecordSet)propertyChangeEvent.getOldValue();
             
             if(newTimes != null && oldTimes != null && newTimes.size() > oldTimes.size()) { //Added a project, prompt
-                javax.swing.JFrame frame = new javax.swing.JFrame();
                 Object[] options = {"OK", "Cancel"};
-                int dialog = javax.swing.JOptionPane.showOptionDialog(frame,
+                int dialog = javax.swing.JOptionPane.showOptionDialog(parentFrame,
                 "Add Project to Database Export List?",
                 "Add to Export", javax.swing.JOptionPane.YES_NO_OPTION,
                 javax.swing.JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
                 
                 if(dialog == 0){
+                    JFrame frame = new JFrame();
+                    frame.setLocationRelativeTo(parentFrame);
                     frame.getContentPane().setLayout(new java.awt.BorderLayout());
                     Customizer customizer = new JDBCConnectCustomizer();
                     customizer.setObject(this);
