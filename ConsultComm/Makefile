@@ -7,9 +7,9 @@ all:
 	$(CC) $(CCFLAGS) *.java
 
 package:
-	$(JAR) cfm CsltComm.jar $(MFST) *.class graphics/*.gif graphics/*.bmp
+	$(JAR) cfm CsltComm.jar $(MFST) *.class graphics/*.gif
 	zip -r CsltComm.zip CsltComm.jar README AUTHORS COPYING CHANGES XML
-	tar -czf CsltComm.src.tar.gz *.java *.form graphics/*.gif graphics/*.bmp README AUTHORS COPYING CHANGES CsltMfst
+	tar -czf CsltComm.src.tar.gz *.java *.form graphics/*.gif README AUTHORS COPYING CHANGES CsltMfst
 
 clean:
 	@rm -f *.class
