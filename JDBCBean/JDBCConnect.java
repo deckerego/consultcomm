@@ -177,10 +177,18 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
         if(tableMap.getFieldMaps().size() == 0) throw new SQLException("Table map is empty.");
         
         try {
-            StringBuffer queryString = new StringBuffer("INSERT INTO "+qualifiedTable+" VALUES (");
-            queryString.append("?");
-            for(int i=1; i<tableMap.getFieldMaps().size(); i++) queryString.append(" ,?");
+            StringBuffer queryString = new StringBuffer("INSERT INTO "+qualifiedTable+" (");
+            Vector fieldMaps = tableMap.getFieldMaps();
+            
+            //Field names to insert
+            for(int i=0, max=fieldMaps.size()-1; i<max; i++) queryString.append(((FieldMap)fieldMaps.elementAt(i)).getDbFieldName()+", ");
+            queryString.append(((FieldMap)fieldMaps.lastElement()).getDbFieldName()+")");
+            
+            //Values to insert
+            queryString.append(" VALUES (?");
+            for(int i=1, max=fieldMaps.size(); i<max; i++) queryString.append(" ,?");
             queryString.append(")");
+            
             insert = conn.prepareStatement(queryString.toString());
             
             for(int j=0; j < statements.size(); j++) {
