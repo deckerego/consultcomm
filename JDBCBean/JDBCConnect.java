@@ -22,6 +22,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     transient String password="";
     transient boolean validated;
     private String qualifiedTable;
+    private int totalIndex;
     
     private TableMap tableMap;
     private String name = "";
@@ -279,7 +280,27 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     }
     
     public void propertyChange(java.beans.PropertyChangeEvent propertyChangeEvent) {
-        if(clntComm == null) clntComm = (ClntComm)propertyChangeEvent.getSource();
+        if(clntComm == null) {
+            clntComm = (ClntComm)propertyChangeEvent.getSource();
+            TotalPanel totalPanel = clntComm.getTotalPanel();
+            totalIndex = totalPanel.addElement("To Export:", getTotalTime());
+        } else {
+            TotalPanel totalPanel = clntComm.getTotalPanel();
+            totalPanel.setValueAt(getTotalTime(), totalIndex);
+        }
+    }
+
+    private long getTotalTime() {
+        long totalTime = 0;
+        TimeRecordSet times = clntComm.getTimes();
+        for(int j=0; j < times.size(); j++) {
+            TimeRecord record = times.elementAt(j);
+            //Find out if this project is exportable or not
+            ProjectMap project = (ProjectMap)this.tableMap.getProjectMaps().get(record.toString());
+            if(project == null || ! project.isExport()) continue;
+            totalTime += record.getSeconds();
+        }
+        return totalTime;
     }
     
     public Object clone() throws CloneNotSupportedException {
