@@ -38,7 +38,7 @@ public class ClntComm extends javax.swing.JPanel {
   private int index, selectedIndex;
   private int timeFormat = MINUTES;
   private int attributes = SHOW_TOTAL | SHOW_BILLABLE | SHOW_EXPORT;
-  private int showTotal;
+  private int showTotal = SHOW_TOTAL;
   private int saveInterval = 60;
   private int idleAction = IDLE_PAUSE, allowedIdle = 0;
   private String idleProject = null;
