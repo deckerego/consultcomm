@@ -10,10 +10,14 @@ public class ProjectAddDialog extends javax.swing.JDialog {
   private String project, projectField;
   
   public ProjectAddDialog(JFrame frame, String project, String projectField) {
+    this(frame, project, projectField, new JDBCConnect());
+  }
+
+  public ProjectAddDialog(JFrame frame, String project, String projectField, JDBCConnect connection) {
     super(frame, true);
     this.project = project;
     this.projectField = projectField;
-    dbConnection = new JDBCConnect();
+    dbConnection = connection;
     dbConnection.setParentFrame(frame);
     dbConnection.database = dbConnection.projectDatabase;
     dbConnection.table = dbConnection.projectTable;
