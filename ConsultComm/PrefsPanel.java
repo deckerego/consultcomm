@@ -14,7 +14,8 @@ public class PrefsPanel extends javax.swing.JFrame {
   protected boolean animateIcons = true;
   protected int saveInterval = 60;
   protected int allowedIdle = 0;
-  private ClntComm clntComm;  
+  private ClntComm clntComm;
+  private String themePack, kdeTheme, gtkTheme;
   private static boolean timeoutLibrary = false;
   
   static {
@@ -31,6 +32,9 @@ public class PrefsPanel extends javax.swing.JFrame {
     clntComm = parent;
     readPrefs();
     initComponents();
+    if(!themePack.equals("")) toggleThemePack();
+    if(!kdeTheme.equals("")) toggleKDE();
+    if(!gtkTheme.equals("")) toggleGTK();
   }
   
   /** This method is called from within the constructor to
@@ -65,6 +69,21 @@ public class PrefsPanel extends javax.swing.JFrame {
     flagsButtonPanel = new javax.swing.JPanel();
     flagsOKButton = new javax.swing.JButton();
     flagsCancelButton = new javax.swing.JButton();
+    skinsPanel = new javax.swing.JPanel();
+    skinsInputPanel = new javax.swing.JPanel();
+    skinsLabel = new javax.swing.JLabel();
+    themeCheckBox = new javax.swing.JCheckBox();
+    themeField = new javax.swing.JTextField();
+    themeBrowse = new javax.swing.JButton();
+    gtkCheckBox = new javax.swing.JCheckBox();
+    gtkField = new javax.swing.JTextField();
+    gtkBrowse = new javax.swing.JButton();
+    kdeCheckBox = new javax.swing.JCheckBox();
+    kdeField = new javax.swing.JTextField();
+    kdeBrowse = new javax.swing.JButton();
+    skinsButtonPanel = new javax.swing.JPanel();
+    skinsOKButton = new javax.swing.JButton();
+    skinsCancelButton = new javax.swing.JButton();
     
     
     getContentPane().setLayout(new java.awt.GridLayout(1, 0));
@@ -243,11 +262,232 @@ public class PrefsPanel extends javax.swing.JFrame {
     
     tabbedPane.addTab("Flags", flagsPanel);
     
+    skinsPanel.setLayout(new java.awt.BorderLayout());
+    
+    skinsInputPanel.setLayout(new java.awt.GridBagLayout());
+    java.awt.GridBagConstraints gridBagConstraints3;
+    
+    skinsLabel.setText("Load Themes/Skins");
+    skinsLabel.setForeground(java.awt.Color.black);
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    gridBagConstraints3.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    skinsInputPanel.add(skinsLabel, gridBagConstraints3);
+    
+    themeCheckBox.setSelected(!themePack.equals(""));
+    themeCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    themeCheckBox.setText("Use Theme Pack: ");
+    themeCheckBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        toggleThemePack(evt);
+      }
+    });
+    
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    gridBagConstraints3.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
+    skinsInputPanel.add(themeCheckBox, gridBagConstraints3);
+    
+    themeField.setColumns(15);
+    themeField.setText(themePack);
+    themeField.setEnabled(false);
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    gridBagConstraints3.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    skinsInputPanel.add(themeField, gridBagConstraints3);
+    
+    themeBrowse.setForeground(new java.awt.Color(102, 102, 153));
+    themeBrowse.setText("Browse...");
+    themeBrowse.setEnabled(false);
+    themeBrowse.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        findTheme(evt);
+      }
+    });
+    
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    gridBagConstraints3.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
+    skinsInputPanel.add(themeBrowse, gridBagConstraints3);
+    
+    gtkCheckBox.setSelected(!gtkTheme.equals(""));
+    gtkCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    gtkCheckBox.setText("Use GTK Theme: ");
+    gtkCheckBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        toggleGTK(evt);
+      }
+    });
+    
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    gridBagConstraints3.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
+    skinsInputPanel.add(gtkCheckBox, gridBagConstraints3);
+    
+    gtkField.setColumns(15);
+    gtkField.setText(kdeTheme);
+    gtkField.setEnabled(false);
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    gridBagConstraints3.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    skinsInputPanel.add(gtkField, gridBagConstraints3);
+    
+    gtkBrowse.setForeground(new java.awt.Color(102, 102, 153));
+    gtkBrowse.setText("Browse...");
+    gtkBrowse.setEnabled(false);
+    gtkBrowse.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        findGTK(evt);
+      }
+    });
+    
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    gridBagConstraints3.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
+    skinsInputPanel.add(gtkBrowse, gridBagConstraints3);
+    
+    kdeCheckBox.setSelected(!kdeTheme.equals(""));
+    kdeCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    kdeCheckBox.setText("Use KDE Theme: ");
+    kdeCheckBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        toggleKDE(evt);
+      }
+    });
+    
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    gridBagConstraints3.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
+    skinsInputPanel.add(kdeCheckBox, gridBagConstraints3);
+    
+    kdeField.setColumns(15);
+    kdeField.setText(gtkTheme);
+    kdeField.setEnabled(false);
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    gridBagConstraints3.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    skinsInputPanel.add(kdeField, gridBagConstraints3);
+    
+    kdeBrowse.setForeground(new java.awt.Color(102, 102, 153));
+    kdeBrowse.setText("Browse...");
+    kdeBrowse.setEnabled(false);
+    kdeBrowse.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        findKDE(evt);
+      }
+    });
+    
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    gridBagConstraints3.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
+    skinsInputPanel.add(kdeBrowse, gridBagConstraints3);
+    
+    skinsPanel.add(skinsInputPanel, java.awt.BorderLayout.CENTER);
+    
+    skinsOKButton.setText("OK");
+    skinsOKButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        savePrefs(evt);
+      }
+    });
+    
+    skinsButtonPanel.add(skinsOKButton);
+    
+    skinsCancelButton.setText("Cancel");
+    skinsCancelButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        cancel(evt);
+      }
+    });
+    
+    skinsButtonPanel.add(skinsCancelButton);
+    
+    skinsPanel.add(skinsButtonPanel, java.awt.BorderLayout.SOUTH);
+    
+    tabbedPane.addTab("Skins", skinsPanel);
+    
     getContentPane().add(tabbedPane);
     
     pack();
   }//GEN-END:initComponents
 
+  private void findKDE(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findKDE
+    final javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
+    int returnVal = fc.showOpenDialog(this);
+    if(returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
+      File theme = fc.getSelectedFile();
+      kdeTheme = theme.toString();
+      kdeField.setText(themePack);
+    }
+  }//GEN-LAST:event_findKDE
+
+  private void findGTK(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findGTK
+    final javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
+    int returnVal = fc.showOpenDialog(this);
+    if(returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
+      File theme = fc.getSelectedFile();
+      gtkTheme = theme.toString();
+      gtkField.setText(themePack);
+    }
+  }//GEN-LAST:event_findGTK
+
+  private void findTheme(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findTheme
+    final javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
+    int returnVal = fc.showOpenDialog(this);
+    if(returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
+      File theme = fc.getSelectedFile();
+      themePack = theme.toString();
+      themeField.setText(themePack);
+    }
+  }//GEN-LAST:event_findTheme
+
+  private void toggleKDE(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleKDE
+    toggleKDE();
+  }//GEN-LAST:event_toggleKDE
+
+  private void toggleKDE() {
+    boolean kdetoggle = kdeCheckBox.isSelected();
+    boolean themetoggle = kdetoggle || gtkCheckBox.isSelected();
+    
+    kdeField.setEnabled(kdetoggle);
+    kdeBrowse.setEnabled(kdetoggle);
+
+    themeCheckBox.setEnabled(! themetoggle);
+    if(themetoggle) themeField.setEnabled(false);
+    if(themetoggle) themeBrowse.setEnabled(false);
+  }
+  
+  private void toggleGTK(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleGTK
+    toggleGTK();
+  }//GEN-LAST:event_toggleGTK
+
+  private void toggleGTK() {
+    boolean gtktoggle = gtkCheckBox.isSelected();
+    boolean themetoggle = gtktoggle || kdeCheckBox.isSelected();
+    
+    gtkField.setEnabled(gtktoggle);
+    gtkBrowse.setEnabled(gtktoggle);
+
+    themeCheckBox.setEnabled(! themetoggle);
+    if(themetoggle) themeField.setEnabled(false);
+    if(themetoggle) themeBrowse.setEnabled(false);
+  }
+  
+  private void toggleThemePack(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleThemePack
+    toggleThemePack();
+  }//GEN-LAST:event_toggleThemePack
+
+  private void toggleThemePack() {
+    boolean toggle = themeCheckBox.isSelected();
+    
+    themeField.setEnabled(toggle);
+    themeBrowse.setEnabled(toggle);
+
+    kdeCheckBox.setEnabled(! toggle);
+    if(toggle) kdeField.setEnabled(false);
+    if(toggle) kdeBrowse.setEnabled(false);
+
+    gtkCheckBox.setEnabled(! toggle);
+    if(toggle) gtkField.setEnabled(false);
+    if(toggle) gtkBrowse.setEnabled(false);
+  }
+  
   private void showFlags(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showFlags
     getRootPane().setDefaultButton(flagsOKButton);
   }//GEN-LAST:event_showFlags
@@ -336,6 +576,26 @@ public class PrefsPanel extends javax.swing.JFrame {
             allowedIdle = Integer.parseInt(allowedIdleString);
           } else {
             allowedIdle = 0;
+          }
+
+          //Get skins
+          NodeList skinElements = doc.getElementsByTagName("skin");
+          if(skinElements.getLength() > 0) {
+            Node skinElement = skinElements.item(0);
+            attributes = skinElement.getAttributes();
+            Node themePackItem = attributes.getNamedItem("theme");
+            if(themePackItem != null) themePack = themePackItem.getNodeValue();
+            else themePack = "";
+            Node kdeThemeItem = attributes.getNamedItem("kde");
+            if(kdeThemeItem != null) kdeTheme = kdeThemeItem.getNodeValue();
+            else kdeTheme = "";
+            Node gtkThemeItem = attributes.getNamedItem("gtk");
+            if(gtkThemeItem != null) gtkTheme = gtkThemeItem.getNodeValue();
+            else gtkTheme = "";
+          } else {
+            themePack = "";
+            kdeTheme = "";
+            gtkTheme = "";
           }
         } catch (SAXParseException e) {
           System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
@@ -429,6 +689,19 @@ public class PrefsPanel extends javax.swing.JFrame {
           rootNode.appendChild(newNode);
         }
 
+        //Save skin settings
+        NodeList skinElements = doc.getElementsByTagName("skin");
+        newNode = doc.createElement("skin");
+        if(themeCheckBox.isSelected()) newNode.setAttribute("theme", themeField.getText());
+        if(kdeCheckBox.isSelected()) newNode.setAttribute("kde", kdeField.getText());
+        if(gtkCheckBox.isSelected()) newNode.setAttribute("gtk", gtkField.getText());
+        if(skinElements.getLength() > 0) {
+          Node skinElement = skinElements.item(0);
+          rootNode.replaceChild(newNode, skinElement);
+        } else {
+          rootNode.appendChild(newNode);
+        }
+
         //Write to file
         doc.getDocumentElement().normalize();
         TransformerFactory fac = TransformerFactory.newInstance();
@@ -469,6 +742,21 @@ public class PrefsPanel extends javax.swing.JFrame {
     private javax.swing.JPanel flagsButtonPanel;
     private javax.swing.JButton flagsOKButton;
     private javax.swing.JButton flagsCancelButton;
+    private javax.swing.JPanel skinsPanel;
+    private javax.swing.JPanel skinsInputPanel;
+    private javax.swing.JLabel skinsLabel;
+    private javax.swing.JCheckBox themeCheckBox;
+    private javax.swing.JTextField themeField;
+    private javax.swing.JButton themeBrowse;
+    private javax.swing.JCheckBox gtkCheckBox;
+    private javax.swing.JTextField gtkField;
+    private javax.swing.JButton gtkBrowse;
+    private javax.swing.JCheckBox kdeCheckBox;
+    private javax.swing.JTextField kdeField;
+    private javax.swing.JButton kdeBrowse;
+    private javax.swing.JPanel skinsButtonPanel;
+    private javax.swing.JButton skinsOKButton;
+    private javax.swing.JButton skinsCancelButton;
     // End of variables declaration//GEN-END:variables
     
 }
