@@ -242,6 +242,7 @@ public class ClntComm extends javax.swing.JPanel {
     projectMenu.add(zeroMenuItem);
     menuBar.add(projectMenu);
     toolMenu.setText("Tools");
+    dbexportMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
     dbexportMenuItem.setText("Export to Table");
     dbexportMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
