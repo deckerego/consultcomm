@@ -19,6 +19,7 @@
    <tocitem text="Other Plugins" target="using.plugins">
          <tocitem text="Detecting Idle Time" target="timeout"/>
          <tocitem text="Project Totals" target="totals"/>
+         <tocitem text="System Tray Icon" target="systray"/>
    </tocitem>
 
 </tocitem>

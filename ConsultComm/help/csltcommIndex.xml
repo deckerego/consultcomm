@@ -24,6 +24,7 @@
 <!-- H --> 
 
 <!-- I --> 
+   <indexitem text="Icon, System tray" target="systray" />
    <indexitem text="Idle, Detecting User" target="timeout" />
 
 <!-- J --> 
@@ -44,6 +45,13 @@
    <indexitem text="Overview" target="top" />
 
 <!-- P --> 
+   <indexitem text="Plugins:">
+     <indexitem text="About" target="using.plugins" />
+     <indexitem text="System Tray Icon" target="systray" />
+     <indexitem text="Setting Idle Timeout" target="timeout" />
+     <indexitem text="Totals for projects" target="totals" />
+     <indexitem text="JDBC Exporting" target="db" />
+   </indexitem>
    <indexitem text="Projects" target="using.projects" />
 
 <!-- Q --> 
@@ -51,6 +59,7 @@
 <!-- R --> 
 
 <!-- S --> 
+   <indexitem text="System tray icon" target="systray" />
 
 <!-- T --> 
    <indexitem text="Timeout, Setting Idle" target="timeout" />

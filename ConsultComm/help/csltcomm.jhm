@@ -20,4 +20,6 @@
 	<mapID target="timeout" url="timeout.html"/>
 	
 	<mapID target="totals" url="totals.html"/>
+	
+        <mapID target="systray" url="systray.html"/>
 </map>

@@ -69,6 +69,14 @@ database connectivity working:<BR>
     <DD>Today's date
     <DT><CODE>$BILLABLE</CODE>
     <DD>The "Billable Project" flag
+    <DT><CODE>$PROMPT</CODE>
+    <DD>Prompt for the value of the field. ConsultComm will try to convert
+    the value based on the SQL type of the field. You will be prompted for
+    each record being exported.
+    <DT><CODE>$GLOBALPROMPT</CODE>
+    <DD>Prompt for the value of the field once, then use this value on all
+    subsequent records being exported. ConsultComm will try to convert
+    the value based on the SQL type of the field.
   </DL>
   All other values you type in will be interpreted literally. For example, I 
   might have the following settings in a table EMPHRS:
