@@ -81,13 +81,17 @@ public class TimeRecord implements java.lang.Cloneable, java.io.Serializable {
     }
     
     public boolean equals(Object to) {
-        TimeRecord toRecord = (TimeRecord)to;
-        boolean isEqual = true;
-        isEqual = isEqual && seconds == toRecord.seconds;
-        isEqual = isEqual && groupName == toRecord.groupName;
-        isEqual = isEqual && projectName == toRecord.projectName;
-        isEqual = isEqual && billable == toRecord.billable;
-        return isEqual;
+        try {
+            TimeRecord toRecord = (TimeRecord)to;
+            boolean isEqual = true;
+            isEqual = isEqual && seconds == toRecord.seconds;
+            isEqual = isEqual && groupName == toRecord.groupName;
+            isEqual = isEqual && projectName == toRecord.projectName;
+            isEqual = isEqual && billable == toRecord.billable;
+            return isEqual;
+        } catch (ClassCastException e) { //This shouldn't happen, but somehow does
+            return false;
+        }
     }
 
     public Object clone() throws CloneNotSupportedException {
