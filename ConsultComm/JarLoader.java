@@ -1,22 +1,36 @@
 import java.io.*;
+import javax.swing.ImageIcon;
+import java.net.URL;
 import java.awt.*;
 
 public class JarLoader {
+    
     public static Image loadImage(String file) {
         return loadImage(file, JarLoader.class);
     }
     
     public static Image loadImage(String file, Class resourceClass) {
         Image image = null;
-        byte[] tn = null;
-        InputStream in = resourceClass.getResourceAsStream(file);
         try{
-            int length = in.available();
-            tn = new byte[length];
-            in.read(tn);
-            image = Toolkit.getDefaultToolkit().createImage(tn);
+            URL url = resourceClass.getResource(file);
+            image = Toolkit.getDefaultToolkit().getImage(url);
         } catch(Exception e){
-            System.out.println("Error loading image "+file+": "+e);
+            System.err.println("Error loading image "+file+": "+e);
+        }
+        return image;
+    }
+
+    public static ImageIcon loadImageIcon(String file) {
+        return loadImageIcon(file, JarLoader.class);
+    }
+    
+    public static ImageIcon loadImageIcon(String file, Class resourceClass) {
+        ImageIcon image = null;
+        try{
+            URL url = resourceClass.getResource(file);
+            image = new ImageIcon(url);
+        } catch(Exception e){
+            System.err.println("Error loading image "+file+": "+e);
         }
         return image;
     }
@@ -46,7 +60,7 @@ public class JarLoader {
             in.close();
             return true;
         } catch(Exception e){
-            System.out.println("Error loading file "+path+": "+e);
+            System.err.println("Error loading file "+path+": "+e);
             return false;
         }
     }
