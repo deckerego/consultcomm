@@ -85,7 +85,19 @@ private ClntComm projectList;
   private void initComponents() {//GEN-BEGIN:initComponents
     getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), 1));
     setName("frame");
-    setTitle("ConsultComm 0.3.0");
+    Image frameIcon = null;
+    byte[] tn = null;
+    InputStream in = getClass().getResourceAsStream("graphics/icon.gif");
+    try{
+      int length = in.available();
+      tn = new byte[length];
+      in.read(tn);
+      frameIcon = Toolkit.getDefaultToolkit().createImage(tn);
+    } catch(Exception e){
+      System.out.println("Error loading graphic " + e);
+    }
+    setIconImage(frameIcon);
+    setTitle("ConsultComm 1.1");
     addWindowListener(new java.awt.event.WindowAdapter() {
       public void windowClosing(java.awt.event.WindowEvent evt) {
         exitForm(evt);
