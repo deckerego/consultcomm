@@ -11,45 +11,59 @@ import java.util.*;
  */
 public class TableTree extends JTable {
     protected TableTreeCellRenderer tree;
-    
+
     /**
      * Create a new TableTree based on the given model
      * @param tableTreeModel A TableTreeModel for the given TableTree
      */
     public TableTree(TableTreeModel tableTreeModel) {
         super();
-        setModel(tableTreeModel);
+        //Set Model
+        tree = new TableTreeCellRenderer(tableTreeModel); //For JTree behavior
+        setDefaultRenderer(TableTreeModel.class, tree); //Print the cell in the tree correctly
+        TableTreeModelAdapter adapter = new TableTreeModelAdapter(tableTreeModel, tree);
+        super.setModel(adapter);
+        // Force the JTable and JTree to share their row selection models.
+        ListToTreeSelectionModelWrapper selectionWrapper = new ListToTreeSelectionModelWrapper();
+        tree.setSelectionModel(selectionWrapper); //Set to override DefaultTreeSelectionModel actions
+        setSelectionModel(selectionWrapper.getListSelectionModel()); //Set to catch cell options and update JTree accordingly
+
         setDefaultEditor(TableTreeModel.class, new TableTreeCellEditor()); //Catch mouse events and pass them on
         setShowGrid(false);
         setIntercellSpacing(new Dimension(0, 0));
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
-    
+
     /**
      * Set the current model to something new (i.e. when the timelist changes).
      * Resets the cell renderer, model and selection listeners.
      * @param tableTreeModel A TableTreeModel for the TableTree to pattern itself after
      */
     public void setModel(TableTreeModel tableTreeModel) {
+        //Get expanded rows
+        TableTreeModelAdapter adapter = (TableTreeModelAdapter)super.getModel();
+        Vector expanded = adapter.getExpandedPaths(); //Save the expanded rows for the model
+        //Save the model's event listeners and formatting
+        TableColumn projectColumn = getColumnModel().getColumn(0);
+        int projColumnWidth = projectColumn.getPreferredWidth();
+        ListToTreeSelectionModelWrapper selectionWrapper = (ListToTreeSelectionModelWrapper)tree.getSelectionModel();
+        EventListener[] listeners = selectionWrapper.getListSelectionModelListeners(ListSelectionListener.class);
+
         tree = new TableTreeCellRenderer(tableTreeModel); //For JTree behavior
         setDefaultRenderer(TableTreeModel.class, tree); //Print the cell in the tree correctly
-
-        Vector expanded = new Vector();
-        TableTreeModelAdapter adapter;
-        if(! super.getModel().getClass().equals(DefaultTableModel.class)) { //We're refreshing the model
-            adapter = (TableTreeModelAdapter)super.getModel();
-            expanded = adapter.getExpandedPaths(); //Save the expanded rows for the model
-        }
         adapter = new TableTreeModelAdapter(tableTreeModel, tree);
         adapter.setExpandedPaths(expanded); //Restore expanded rows
         super.setModel(adapter); //For JTable behavior
         
-        // Force the JTable and JTree to share their row selection models.
-        ListToTreeSelectionModelWrapper selectionWrapper = new ListToTreeSelectionModelWrapper();
+        TableColumn column = getColumnModel().getColumn(0);
+        column.setPreferredWidth(projColumnWidth);
+        
+        selectionWrapper = new ListToTreeSelectionModelWrapper();
+        selectionWrapper.setListSelectionModelListeners(listeners);
         tree.setSelectionModel(selectionWrapper); //Set to override DefaultTreeSelectionModel actions
         setSelectionModel(selectionWrapper.getListSelectionModel()); //Set to catch cell options and update JTree accordingly
     }
-    
+
     //For ClntComm to set selections based on index into the TimeRecordSet instead of the TableTree itself
     /**
      * Get the selected index relative to the TimeRecordSet used
@@ -98,7 +112,8 @@ public class TableTree extends JTable {
      * Renders the individual cells as nodes of a JTree
      */
     public class TableTreeCellRenderer extends JTree implements TableCellRenderer {
-        protected int visibleRow;
+        private int visibleRow;
+        private ListToTreeSelectionModelWrapper selectionModelWrapper;
        
         /**
          * Creates a new renderer
@@ -215,8 +230,11 @@ public class TableTree extends JTable {
          * (since we're natively a JTree selection model)
          * @return The ListSelectionModel version of this selection model
          */
-        ListSelectionModel getListSelectionModel() {
-            return listSelectionModel;
+        ListSelectionModel getListSelectionModel() { return listSelectionModel; }
+        EventListener[] getListSelectionModelListeners(Class classType) { return listSelectionModel.getListeners(classType); }
+        void setListSelectionModelListeners(EventListener[] listeners) { 
+            for(int i=0; i<listeners.length; i++)
+                listSelectionModel.addListSelectionListener((ListSelectionListener)listeners[i]);
         }
     }
 }

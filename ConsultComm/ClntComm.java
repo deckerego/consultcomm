@@ -238,36 +238,30 @@ public class ClntComm extends javax.swing.JPanel {
             }
         });
     }
-    
+
   private void showPrefs(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPrefs
       new PrefsPanel(this).show();
   }//GEN-LAST:event_showPrefs
-  
+
   private void showHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHelp
       new HelpDisplay().show();
   }//GEN-LAST:event_showHelp
-  
+
   private void editPlugins(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPlugins
       new PluginManager(this).show();
   }//GEN-LAST:event_editPlugins
-  
+
   private void sortColumn(java.awt.event.MouseEvent evt) {
       TableColumnModel columnModel = timeList.getColumnModel();
       int viewColumn = columnModel.getColumnIndexAtX(evt.getX());
       int column = timeList.convertColumnIndexToModel(viewColumn);
-      
+
       TimeRecord record = times.elementAt(selectedIndex); //find current selected record
       times.sort(column);
       timeList.setModel(new TableTreeModel(times, timeFormat));
-      ListSelectionModel rowSM = timeList.getSelectionModel();
-      rowSM.addListSelectionListener(new ListSelectionListener() {
-          public void valueChanged(ListSelectionEvent evt) {
-              selectionChanged(evt);
-          }
-      });
       setSelectedIndex(times.indexOf(record)); //restore selected record
   }
-  
+
   private void editWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editWindow
       int selectedRow = timeList.getSelectedRecord();
       if(selectedRow != -1) {
@@ -316,7 +310,7 @@ public class ClntComm extends javax.swing.JPanel {
           refreshTotalTime();
       }
   }
-  
+
   private void editProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProject
       editWindow(timeList.getSelectedRecord());
   }//GEN-LAST:event_editProject
@@ -452,13 +446,6 @@ public void editWindow(int i){
         if(newRecord) times.add(record);
         
         timeList.setModel(new TableTreeModel(times, timeFormat));
-        ListSelectionModel rowSM = timeList.getSelectionModel();
-        rowSM.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent evt) {
-                selectionChanged(evt);
-            }
-        });
-        
         changes.firePropertyChange("times", oldTimes, times);
         if(selectedIndex == -1) timeList.setSelectedRecord(index); //Nothing selected
         else timeList.setSelectedRecord(selectedIndex);
@@ -507,7 +494,7 @@ private void readLayout() {
         Preferences prefs = Preferences.userRoot().node("CsltComm");
         prefs.importPreferences(inStream);
         inStream.close();
-        
+
         //Read dimensions
         double width = prefs.getDouble("windowWidth", (double)256); //Get window dimensions
         double height = prefs.getDouble("windowHeight", (double)256);
