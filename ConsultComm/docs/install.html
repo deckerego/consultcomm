@@ -27,9 +27,8 @@ HREF="http://java.sun.com/j2se/1.3/jre/">http://java.sun.com/j2se/1.3/jre/</A>
 <LI><U>If you are <B>not</B> using Java 2 1.4 or higher you must download the 
 Java API for XML processing.</U> Visit <A 
 HREF="http://java.sun.com/xml/download.html">http://java.sun.com/xml/download.html</A> 
-to download the package, then place the included JAR files (jaxp.jar, 
-xalan.jar and crimson.jar) into your Java Extensions directory 
-(see <A HREF="$APPPATHS">Important Directories You Might Need to Know</A> 
+to download the package, then place the included JAR files into your Java Extensions
+directory (see <A HREF="$APPPATHS">Important Directories You Might Need to Know</A>
 for the location of your extensions directory).
 <P>
 
@@ -51,14 +50,13 @@ HREF="http://java.sun.com/j2se/1.3/jre/">http://java.sun.com/j2se/1.3/jre/</A>
 <LI><U>If you are <B>not</B> using Java 2 1.4 or higher you must download the 
 Java API for XML processing.</U> Visit <A 
 HREF="http://java.sun.com/xml/download.html">http://java.sun.com/xml/download.html</A> 
-to download the package, then place the included JAR files (jaxp.jar, 
-xalan.jar and crimson.jar) into your Java Extensions directory 
-(see <A HREF="$APPPATHS">Important Directories You Might Need to Know</A> 
+to download the package, then place the included JAR files into your Java Extensions
+directory (see <A HREF="$APPPATHS">Important Directories You Might Need to Know</A>
 for the location of your extensions directory).
 <P>
 
-<LI>Unzip the contents of CsltComm.zip into a new folder (if you don't have a 
-utility to unzip files, check out <A 
+<LI>Unzip the contents of CsltComm.zip into a new folder (if you don't have a
+utility to unzip files, check out <A
 HREF="http://www.winzip.com">http://www.winzip.com</A>)
 <P>
 
@@ -66,20 +64,20 @@ HREF="http://www.winzip.com">http://www.winzip.com</A>)
 </OL>
 <P>
 
-<A NAME="source"><LI><B>If you want to build a version from the source pacakge 
+<A NAME="source"><LI><B>If you want to build a version from the source pacakge
 (CsltComm.src.tar.gz)</B></A>
 <OL>
-<LI>Make sure you have Sun's Java SDK 1.3 or higher installed (go to <A 
-HREF="http://java.sun.com/j2se/1.3/">http://java.sun.com/j2se/1.3/</A> if you 
-need a copy)
+<LI>Make sure you have Sun's Java SDK 1.3 or higher installed (go to <A
+HREF="http://java.sun.com/j2se/1.3/">http://java.sun.com/j2se/1.3/</A> if you
+need a copy). You will also need Jakarta's ant installed
+(<A HREF="http://jakarta.apache.org">http://jakarta.apache.org</A>).
 <P>
 
-<LI>If you are NOT using Java 2 1.4 or higher you must download the Java API 
-for XML processing. Visit <A 
-HREF="http://java.sun.com/xml/download.html">http://java.sun.com/xml/download.html</A> 
-to download the package, then place the included JAR files (jaxp.jar, 
-xalan.jar and crimson.jar) into your Java Extensions directory 
-(see <A HREF="$APPPATHS">Important Directories You Might Need to Know</A> for 
+<LI>If you are NOT using Java 2 1.4 or higher you must download the Java API
+for XML processing. Visit <A
+HREF="http://java.sun.com/xml/download.html">http://java.sun.com/xml/download.html</A>
+to download the package, then place the included JAR files into your Java Extensions
+directory (see <A HREF="$APPPATHS">Important Directories You Might Need to Know</A> for
 the location of your extensions directory).<P>
 
 <LI>Unzip the contents of CsltComm.src.tar.gz into a new folder
@@ -88,7 +86,7 @@ the location of your extensions directory).<P>
 <LI>Change into the folder you extracted the files to
 <P>
 
-<LI>Run the command 'make' followed by 'make package'
+<LI>Run the command 'ant' followed by 'ant dist'
 <P>
 
 <LI>Double-click on the file CsltComm.jar that should have been built by step 4
@@ -102,7 +100,7 @@ file that contains your JDBC database driver. I can't provide that... but Sun
 offers a list at <A 
 HREF="http://industry.java.sun.com/products/jdbc/drivers">http://industry.java.sun.com/products/jdbc/drivers</A>  
 . You can also use the JDBC-ODBC Bridge Driver that Sun releases with the 
-Java SDK - details concerning the Sun bridge driver are available at <A 
+Java SDK - details concerning the Sun bridge driver are available at <A
 HREF="http://java.sun.com/j2se/1.3/docs/guide/jdbc/getstart/bridge.doc.html">http://java.sun.com/j2se/1.3/docs/guide/jdbc/getstart/bridge.doc.html</A>.<BR>
 <DD>Once you have the correct JAR or ZIP files, place them in the Java 
 Runtime Environment's extensions directory (see <A HREF="$APPPATHS">Important 
@@ -110,7 +108,7 @@ Directories You Might Need to Know</A> for the location of your
 extensions directory). If the driver files are in the correct ext/
 directory, ConsultComm should be able to notice them automatically.<BR>
 <DD>For more information, read over the <A 
-HREF="http://sourceforge.net/docman/display_doc.php?docid=7030&group_id=34622">
+HREF="dbconnect.html">
 Connecting ConsultComm to a Database</A> document.
 </BODY>
 </HTML>
