@@ -1,12 +1,14 @@
-Consultant Communicator 1.0.2
-Release 9/10/01
+Consultant Communicator 1.0.3
+Release 9/11/01
 First Released 11/99
 
 REVISION HISTORY -
+        o 1.0.3
+                - Remembers window size (again)
+                - Updated for Forte CE 3.0
         o 1.0.2
                 - Fixed bug where crash would occur if there was no
                   prefs file
-                - Remembers last selected project
         o 1.0.1
                 - Added icon for frame
                 - Fixed problem where adding a new project then cancelling
