@@ -1,7 +1,7 @@
 Summary: Consultant Communicator (ConsultComm) is a program that allows anyone managing multiple projects, clients or tasks to effectively keep track of exactly how long they've spent on each project.
 Name: ConsultComm
-Version: 3.1
-Release: 4
+Version: 3.1.1
+Release: 2
 Copyright: GPL
 Group: Applications/Productivity
 Source: ConsultComm-%{version}.src.tar
@@ -30,6 +30,7 @@ ant X
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/usr/share/ConsultComm
+mkdir -p $RPM_BUILD_ROOT/usr/share/ConsultComm/lib
 mkdir -p $RPM_BUILD_ROOT/usr/share/ConsultComm/plugins
 mkdir -p $RPM_BUILD_ROOT/usr/share/ConsultComm/icons
 mkdir -p $RPM_BUILD_ROOT/usr/share/ConsultComm/syslibs
@@ -39,6 +40,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/bin
 install ConsultComm/ConsultComm $RPM_BUILD_ROOT/usr/bin
 install ConsultComm/graphics/*.xpm $RPM_BUILD_ROOT/usr/share/ConsultComm/icons
 install ConsultComm/plugins/*.jar $RPM_BUILD_ROOT/usr/share/ConsultComm/plugins
+install ConsultComm/lib/*.jar $RPM_BUILD_ROOT/usr/share/ConsultComm/lib
 install ConsultComm/*.jar $RPM_BUILD_ROOT/usr/share/ConsultComm
 install ConsultComm/help/faq.html $RPM_BUILD_ROOT/usr/share/ConsultComm/FAQ.html
 install ConsultComm/ConsultComm.desktop $RPM_BUILD_ROOT/usr/share/applications
@@ -59,7 +61,14 @@ fi
 /usr/share/applications
 
 %changelog
-* Mon Sep 20 2004 John Ellis <john.ellis@ise-indy.com>
+* Wed Sep 27 2004 John Ellis <jtellis@users.sourceforge.net>
+- Fixed bug where adding a new project while the timer was running would reset the selected project's elapsed time
+- Added project name to $PROMPT dialog in JDBC plugin
+- User can now select the Java installed look-and-feel in the preferences panel
+- If a native library already exists when a plugin is trying to extract it, the existing plugin is deleted
+- Build structure updated for use with NetBeans 4.0
+- Binaries compiled using Java 1.5, JRE 1.4 is still the target platform (1.4 and 1.5 installations can run ConsultComm without problems)
+* Mon Sep 20 2004 John Ellis <jtellis@users.sourceforge.net>
 - Created plugin to display icon in system tray
 - Records & prefs are saved whenever a project in the list is changed
 - Added GUI installers for Win32 and other platforms with IzPack
@@ -76,19 +85,19 @@ fi
 - Fixed ConsultComm crash when times total index was out of bounds
 - Fixed JDBC plugin crash when no records were loaded
 - Fixed rendering bugs where the time cell of the table tree didn't respond to mouse events
-* Fri Jan 02 2004 John Ellis <john.ellis@ise-indy.com>
+* Fri Jan 02 2004 John Ellis <jtellis@users.sourceforge.net>
 - Sometimes fields would be stored out-of-order, made INSERT explicity define field names
 - Cleaned up changelog
-* Tue Nov 04 2003 John Ellis <john.ellis@ise-indy.com>
+* Tue Nov 04 2003 John Ellis <jtellis@users.sourceforge.net>
 - Fixed crash when closing standalone JDBC Customizer windows
 - When a valid record isn't selected crashes don't occur
 - Preemptively fixed a weird GUI resizing bug
-* Thu Oct 23 2003 John Ellis <john.ellis@ise-indy.com>
+* Thu Oct 23 2003 John Ellis <jtellis@users.sourceforge.net>
 - Fixed conversion process with BILLABLE and DATE flags
-* Fri Oct 10 2003 John Ellis <john.ellis@ise-indy.com>
+* Fri Oct 10 2003 John Ellis <jtellis@users.sourceforge.net>
 - Catch ClassCastException
 - Recompiled Win32 .dll
-* Tue Jul 01 2003 John Ellis <john.ellis@ise-indy.com>
+* Tue Jul 01 2003 John Ellis <jtellis@users.sourceforge.net>
 - Java 1.4 required
 - Added JavaBeans based plugin architecture for new features and third-party extensions
 - New GUI layout: TableTrees allow projects to be listed by group in a tree format that can be collapsed or expanded

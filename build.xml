@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="dist">
-  <taskdef classname="com.izforge.izpack.ant.IzPackTask" name="izpack"/>
-
-  <property name="release" value="3.1"/>
-  <property name="src" value="ConsultComm/"/>
+  <taskdef classname="com.izforge.izpack.ant.IzPackTask" name="izpack" classpath="/usr/local/IzPack/lib/compiler.jar"/>
+            
+  <property name="release" value="3.1.1"/>
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
   <property name="izpackdir" value="/usr/local/IzPack"/>
-  <property name="revision" value="4"/>
+  <property name="revision" value="2"/>
 
   <target name="build">
-    <ant dir="${src}" inheritAll="false" target="all"/>
-    <ant dir="TimeOutBean" inheritAll="false" target="all"/>
-    <ant dir="JDBCBean" inheritAll="false" target="all"/>
-    <ant dir="TotalTimesBean" inheritAll="false" target="all"/>
-    <ant dir="SysTrayBean" inheritAll="false" target="all"/> 
+    <ant dir="ConsultComm" inheritAll="false" target="jar"/>
+    <ant dir="TimeOutBean" inheritAll="false" target="jar"/>
+    <ant dir="JDBCBean" inheritAll="false" target="jar"/>
+    <ant dir="TotalTimesBean" inheritAll="false" target="jar"/>
+    <ant dir="SysTrayBean" inheritAll="false" target="jar"/> 
  </target>
     
   <target depends="build" name="dist">
@@ -31,57 +30,67 @@
   <target name="tarball">
     <tar tarfile="${releasename}.src.tar">
       <tarfileset dir="." prefix="${releasename}">
+        <exclude name="**/CVS"/>
+        <exclude name="**/private"/>
+        <exclude name="**/*~"/>
         <include name="build.xml"/>
 	<include name="consultcomm.spec"/>
-        <include name="${src}/ConsultComm"/>
-        <include name="${src}/ConsultComm.bat"/>
-        <include name="${src}/ConsultComm.desktop"/>
-        <include name="${src}/*.java"/>
-        <include name="${src}/*.form"/>
-        <include name="${src}/help/*"/>
-        <exclude name="${src}/help/CVS"/>
-        <exclude name="${src}/help/*~"/>
-        <include name="${src}/graphics/*"/>
-        <include name="${src}/build.xml"/>
-        <include name="${src}/skinlf.jar"/>
-        <include name="${src}/jhbasic.jar"/>
-        <include name="${src}/tray.jar"/>
-        <include name="${src}/nativeskin.jar"/>
-        <include name="${src}/syslibs/nativeskinwin32.dll"/>
-        <include name="${src}/syslibs/nativeskinwin32JAWT.dll"/>
-        <include name="${src}/README"/>
-        <include name="${src}/AUTHORS"/>
-        <include name="${src}/COPYING"/>
-        <include name="${src}/CHANGES"/>
-        <include name="JDBCBean/*.java"/>
-        <include name="JDBCBean/*.form"/>
+        
+        <include name="ConsultComm/ConsultComm"/>
+        <include name="ConsultComm/ConsultComm.bat"/>
+        <include name="ConsultComm/ConsultComm.desktop"/>
+        <include name="ConsultComm/nbproject/*"/>
+        <include name="ConsultComm/build.xml"/>
+        <include name="ConsultComm/manifest.mf"/>
+        <include name="ConsultComm/lib/*"/>
+        <include name="ConsultComm/src/*"/>
+        <include name="ConsultComm/help/*"/>
+        <include name="ConsultComm/graphics/*"/>
+        <include name="ConsultComm/syslibs/nativeskinwin32.dll"/>
+        <include name="ConsultComm/syslibs/nativeskinwin32JAWT.dll"/>
+        <include name="ConsultComm/README"/>
+        <include name="ConsultComm/AUTHORS"/>
+        <include name="ConsultComm/COPYING"/>
+        <include name="ConsultComm/CHANGES"/>
+        
+        <include name="JDBCBean/src/*"/>
         <include name="JDBCBean/*.gif"/>
+        <include name="JDBCBean/nbproject/*"/>
         <include name="JDBCBean/build.xml"/>
-        <include name="TotalTimesBean/*.java"/>
-        <include name="TotalTimesBean/*.form"/>
+        <include name="JDBCBean/manifest.mf"/>
+        
+        <include name="TotalTimesBean/src/*"/>
         <include name="TotalTimesBean/*.gif"/>
+        <include name="TotalTimesBean/nbproject/*"/>
         <include name="TotalTimesBean/build.xml"/>
-        <include name="TimeOutBean/*.java"/>
-        <include name="TimeOutBean/*.form"/>
+        <include name="TotalTimesBean/manifest.mf"/>
+        
+        <include name="TimeOutBean/src/*"/>
         <include name="TimeOutBean/*.gif"/>
+        <include name="TimeOutBean/nbproject/*"/>
         <include name="TimeOutBean/build.xml"/>
+        <include name="TimeOutBean/manifest.mf"/>
         <include name="TimeOutBean/X/*.c"/>
         <include name="TimeOutBean/X/Makefile"/>
         <include name="TimeOutBean/Win32/*.cpp"/>
         <include name="TimeOutBean/Win32/Win32Idle.mak"/>
-        <include name="SysTrayBean/*.java"/>
-        <include name="SysTrayBean/*.form"/>
+        
+        <include name="SysTrayBean/src/*"/>
         <include name="SysTrayBean/*.png"/>
+        <include name="SysTrayBean/nbproject/*"/>
         <include name="SysTrayBean/build.xml"/>
+        <include name="SysTrayBean/manifest.mf"/>
         <include name="SysTrayBean/*.dll"/>
         <include name="SysTrayBean/*.so"/>
-        <include name="EmptyBean/*.java"/>
-        <include name="EmptyBean/*.form"/>
+        
+        <include name="EmptyBean/src/*"/>
         <include name="EmptyBean/*.gif"/>
+        <include name="EmptyBean/nbproject/*"/>
         <include name="EmptyBean/build.xml"/>
+        <include name="EmptyBean/manifest.mf"/>
         <include name="EmptyBean/README"/>
       </tarfileset>
-      <tarfileset dir="${src}/help" includes="faq.html" fullpath="${releasename}/FAQ.html"/>
+      <tarfileset dir="ConsultComm/help" includes="faq.html" fullpath="${releasename}/FAQ.html"/>
     </tar>
 
     <gzip src="${releasename}.src.tar" zipfile="${releasename}.src.tar.gz"/>
@@ -96,23 +105,24 @@
 
   <target depends="build" name="zip">
     <zip zipfile="${releasename}.zip">
-      <zipfileset dir="${src}" prefix="${releasename}">
+      <zipfileset dir="ConsultComm" prefix="${releasename}">
         <include name="ConsultComm"/>
         <include name="ConsultComm.bat"/>
         <include name="ConsultComm.lnk"/>
         <include name="plugins/*.jar"/>
+        <include name="lib/*.jar"/>
         <include name="*.jar"/>
         <include name="README"/>
         <include name="AUTHORS"/>
         <include name="COPYING"/>
         <include name="CHANGES"/>
       </zipfileset>
-      <zipfileset dir="${src}/help" includes="faq.html" fullpath="${releasename}/FAQ.html"/>
+      <zipfileset dir="ConsultComm/help" includes="faq.html" fullpath="${releasename}/FAQ.html"/>
     </zip>
   </target>
 
   <target depends="build" name="izpack">
-    <izpack basedir="${src}" input="izpack_installer.xml" installerType="standard" izPackDir="${izpackdir}" output="${releasename}_Installer.jar"/>
+    <izpack basedir="${basedir}/ConsultComm" input="${basedir}/izpack_installer.xml" installerType="standard" izPackDir="${izpackdir}" output="${releasename}_Installer.jar"/>
     <echo message="jar = ${releasename}_Installer.jar${line.separator}" file="launcher.ini" append="false"/>
     <echo message="download = http://java.com/en/index.jsp${line.separator}" file="launcher.ini" append="true"/>
     <zip zipfile="${releasename}_WinInstall.zip">
@@ -122,13 +132,13 @@
         <include name="Setup.exe.manifest"/>
         <include name="launcher.ini"/>
       </zipfileset>
-      <zipfileset dir="${src}" prefix="${releasename}">
+      <zipfileset dir="ConsultComm" prefix="${releasename}">
         <include name="README"/>
         <include name="AUTHORS"/>
         <include name="COPYING"/>
         <include name="CHANGES"/>
       </zipfileset>
-      <zipfileset dir="${src}/help" includes="faq.html" fullpath="${releasename}/FAQ.html"/>
+      <zipfileset dir="ConsultComm/help" includes="faq.html" fullpath="${releasename}/FAQ.html"/>
     </zip>
   </target>
 
@@ -139,7 +149,7 @@
     <delete file="${releasename}.exe"/>
     <delete file="${releasename}-${revision}.i586.rpm"/>
     <delete file="${releasename}_WinInstall.zip"/>
-    <ant dir="${src}" inheritAll="false" target="clean"/>
+    <ant dir="ConsultComm" inheritAll="false" target="clean"/>
     <ant dir="TimeOutBean" inheritAll="false" target="clean"/>
     <ant dir="JDBCBean" inheritAll="false" target="clean"/>
     <ant dir="TotalTimesBean" inheritAll="false" target="clean"/>  
@@ -147,11 +157,6 @@
 </target>
 
   <target depends="clean" name="realclean">
-    <ant dir="${src}" inheritAll="false" target="realclean"/>
-    <ant dir="TimeOutBean" inheritAll="false" target="realclean"/>
-    <ant dir="JDBCBean" inheritAll="false" target="realclean"/>
-    <ant dir="TotalTimesBean" inheritAll="false" target="realclean"/>
-    <ant dir="SysTrayBean" inheritAll="false" target="realclean"/>
     <delete>
       <fileset dir="." includes="*~" defaultexcludes="no"/>
     </delete>

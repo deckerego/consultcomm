@@ -50,7 +50,8 @@
         <pack name="Base" required="yes">
             <description>Base Installation</description>
             <fileset dir="." targetdir="$INSTALL_PATH">
-                <include name="plugins/*.jar"/>
+                <include name="lib/*.jar"/>
+                <exclude name="lib/tray.jar"/>
                 <include name="graphics/icon.ico"/>
                 <include name="*.jar"/>
                 <include name="README"/>
@@ -82,6 +83,7 @@
         <pack name="System Tray" required="no">
             <description>Displays a system tray icon in Windows, KDE 3.2 or Gnome</description>
             <fileset dir="." targetdir="$INSTALL_PATH">
+                <include name="lib/tray.jar"/>
                 <include name="plugins/SysTray.jar"/>
             </fileset>
         </pack>
