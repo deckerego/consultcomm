@@ -147,7 +147,9 @@ public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable 
     }
     
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        TimeRecordSet clone = (TimeRecordSet)super.clone();
+        clone.timeRecords = (Vector)this.timeRecords.clone();
+        return clone;
     }
     
     public class TimeComparator implements Comparator {
