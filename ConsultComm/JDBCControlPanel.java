@@ -656,23 +656,6 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       errorList = new Vector();
       
       try{
-/* This code won't work... though I wish it would. It was supposed to
- * dynamically load a JAR file with a JDBC driver from an arbitrary path.
- * Unfortunately this can't be done because of how the methods
- * getCallerClassLoader() and getCallerClass(ClassLoader, String) in
- * the DriverManager class are written. They expect to be able to do a
- * straight Class.forName(String, true, ClassLoader) which only works if the
- * JAR was present in the classpath when the JVM started. I leave the code
- * here in case this starts working in 1.4. Until then the solution is to
- * use the extension mechanism in JRE 1.2+ and place the necessary JAR files
- * in the JRE's ext/ directory.
-        char[] fileSeperator = System.getProperty("file.separator").toCharArray();
-        String jarPath = jar.replace(fileSeperator[0], '/');
-        URL[] jarURL = {new URL("file://"+jarPath)};
-        URLClassLoader jarLoader = new URLClassLoader(jarURL, this.getClass().getClassLoader());
-        Driver driver = (Driver)jarLoader.loadClass(name).newInstance();
-        DriverManager.registerDriver(driver);
- */
         Class.forName(name);
         if(! validated) { //Send login dialog box
           LoginDialog prompt = new LoginDialog(this, userName);
