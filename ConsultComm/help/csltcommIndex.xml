@@ -10,15 +10,18 @@
 <!-- A --> 
 
 <!-- B --> 
+  <indexitem text="Backing Up Data" target="faq.backup" />
 
 <!-- C --> 
-   <indexitem text="COPYING" target="license" />
+  <indexitem text="COPYING" target="license" />
+  <indexitem text="Crashes When Starting" target="faq.starting" />
 
 <!-- D --> 
 
 <!-- E --> 
 
 <!-- F --> 
+   <indexitem text="Frequently Asked Questions" target="faq" />
 
 <!-- G --> 
    <indexitem text="GPL" target="license" />
@@ -26,53 +29,60 @@
 <!-- H --> 
 
 <!-- I --> 
-   <indexitem text="Icon, System tray" target="systray" />
-   <indexitem text="Idle, Detecting User" target="timeout" />
+  <indexitem text="Icon, System Tray">
+    <indexitem text="Using" target="systray" />
+    <indexitem text="Problems Starting" target="faq.idle" />
+  </indexitem>
+  <indexitem text="Idle, Detecting User" target="timeout" />
+  <indexitem text="Installation Problems, Windows" target="faq.wininstall" />
 
 <!-- J --> 
-   <indexitem text="JDBC:">
-      <indexitem text="installing" target="db.installing" />
-      <indexitem text="using" target="db.using" />
-   </indexitem>
+  <indexitem text="Java Version" target="faq.java" />
+  <indexitem text="JDBC">
+    <indexitem text="Installing" target="db.installing" />
+    <indexitem text="Using" target="db.using" />
+  </indexitem>
 
 <!-- K --> 
 
 <!-- L --> 
-   <indexitem text="License" target="license" />
+  <indexitem text="License" target="license" />
 
 <!-- M --> 
 
 <!-- N --> 
+  <indexitem text="Name, Why Is It Stupid?" target="faq.name" />
 
 <!-- O --> 
-   <indexitem text="Overview" target="top" />
+  <indexitem text="Overview" target="top" />
 
 <!-- P --> 
-   <indexitem text="Plugins:">
-     <indexitem text="About" target="using.plugins" />
-     <indexitem text="System Tray Icon" target="systray" />
-     <indexitem text="Setting Idle Timeout" target="timeout" />
-     <indexitem text="Totals for projects" target="totals" />
-     <indexitem text="JDBC Exporting" target="db" />
-   </indexitem>
-   <indexitem text="Projects" target="using.projects" />
+  <indexitem text="Plugins">
+    <indexitem text="About" target="using.plugins" />
+    <indexitem text="System Tray Icon" target="systray" />
+    <indexitem text="Setting Idle Timeout" target="timeout" />
+    <indexitem text="Totals for projects" target="totals" />
+    <indexitem text="JDBC Exporting" target="db" />
+  </indexitem>
+  <indexitem text="Projects" target="using.projects" />
 
 <!-- Q --> 
 
 <!-- R --> 
 
 <!-- S --> 
-   <indexitem text="System tray icon" target="systray" />
+  <indexitem text="System Tray Icon" target="systray" />
 
 <!-- T --> 
-   <indexitem text="Timeout, Setting Idle" target="timeout" />
-   <indexitem text="Totals for projects" target="totals" />
+  <indexitem text="Timeout, Setting Idle" target="timeout" />
+  <indexitem text="Totals for projects" target="totals" />
 
 <!-- U --> 
 
 <!-- V --> 
 
 <!-- W --> 
+  <indexitem text="Windows Installation Problems" target="faq.wininstall" />
 
 <!-- X --> 
 

@@ -5,8 +5,15 @@
 
 <map version="1.0">
 	<mapID target="top" url="index.html" />
-       	<mapID target="faq" url="faq.html" />
         <mapID target="license" url="gpl.html"/>
+        
+       	<mapID target="faq" url="faq.html" />
+       	<mapID target="faq.java" url="faq.html#JavaVersion" />
+       	<mapID target="faq.wininstall" url="faq.html#WindowsInstaller" />
+       	<mapID target="faq.backup" url="faq.html#Backup" />        
+       	<mapID target="faq.starting" url="faq.html#ProblemsStarting" />
+       	<mapID target="faq.idle" url="faq.html#IdleProblems" />
+       	<mapID target="faq.name" url="faq.html#WhyName" />
         
 	<mapID target="db" url="dbconnect.html" />
 	<mapID target="db.installing" url="dbconnect.html#installing" />

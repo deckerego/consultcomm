@@ -8,6 +8,7 @@
 
    <tocitem text="About" target="top"/>
    <tocitem text="Using" target="using"/>
+   <tocitem text="FAQ" target="faq"/>
    
    <tocitem text="JDBC" target="db">
          <tocitem text="Installing" target="db.installing"/>
