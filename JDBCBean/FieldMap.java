@@ -134,7 +134,8 @@ public class FieldMap implements java.io.Serializable {
                             realValue = new java.math.BigDecimal(cymd);
                             break;
                         default:
-                            throw new ClassCastException("Unknown conversion for date");
+                            System.err.println("Unknown conversion, assuming DATE");
+                            realValue = new java.sql.Date(System.currentTimeMillis());
                     }
                     
                 }else if(value.equals("HOURS")) {
@@ -163,8 +164,12 @@ public class FieldMap implements java.io.Serializable {
                         case java.sql.Types.INTEGER:
                             realValue = record.isBillable() ? new Integer(-1) : new Integer(0);
                             break;
+                        case java.sql.Types.TINYINT:
+                            realValue = record.isBillable() ? new Short((short)-1) : new Short((short)0);
+                            break;
                         default:
-                            throw new ClassCastException("Unknown conversion for billable flag");
+                            System.err.println("Unknown conversion: assuming INTEGER");
+                            realValue = record.isBillable() ? new Integer(-1) : new Integer(0);
                     }
                 } else {
                     System.err.println("Unknown expression variable: "+value);
