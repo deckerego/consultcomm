@@ -471,18 +471,20 @@ private void loadPlugins() {
             Object plugin = plugins.elementAt(i);
             System.out.println("Reading plugin "+plugin.getClass().getName());
             changes.addPropertyChangeListener((PropertyChangeListener)plugin);
-            System.out.println("Trying to load menu items...");
-            Expression getMenuItems = new Expression(plugin, "getMenuItems", null);
-            if(getMenuItems == null) continue; //No getMenuItem() method available
-            System.out.println("Loading menu items...");
-            JMenuItem[] menuItems = (JMenuItem[])getMenuItems.getValue();
-            for(int j=0; j<menuItems.length; j++) toolMenu.add(menuItems[j]);
-            System.out.println("Menu items loaded");
+
+            try {
+                Expression getMenuItems = new Expression(plugin, "getMenuItems", null);
+                System.out.println("Loading menu items...");
+                JMenuItem[] menuItems = (JMenuItem[])getMenuItems.getValue();
+                for(int j=0; j<menuItems.length; j++) toolMenu.add(menuItems[j]);
+                System.out.println("Menu items loaded");
+            } catch (Exception e) {
+                System.out.println("No menu items for "+plugin.getClass().getName());
+            }
         }
         changes.firePropertyChange("times", null, times); //Sync everyone on an initial clock tick
     } catch(Exception e) {
         System.err.println("Couldn't load plugins: "+e);
-        e.printStackTrace(System.out);
     }
 }
 
