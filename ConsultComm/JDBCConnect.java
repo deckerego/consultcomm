@@ -21,9 +21,6 @@ class JDBCConnect {
   final static int HOUR_TENTH = 2;
   final static String odbcDriverName = "sun.jdbc.odbc.JdbcOdbcDriver";
   
-  private static File stylesheet;
-  private static File prefs;
-  
   String name = "";
   String url = "";
   String userName = "";
@@ -43,16 +40,12 @@ class JDBCConnect {
   JFrame parentFrame;
   
   JDBCConnect() {
-    prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
-    stylesheet = CsltComm.getFile(this, "stylesheet.xsl");
     tableMap = new TableMap();
     parentFrame = new JFrame();
     readPrefs();
   }
   
   JDBCConnect(String name, String url, String database, String table) {
-    prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
-    stylesheet = CsltComm.getFile(this, "stylesheet.xsl");
     tableMap = new TableMap();
     parentFrame = new JFrame();
     this.name = name;
@@ -310,46 +303,28 @@ class JDBCConnect {
   
   void savePrefs() {
     try {
-      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-      Document doc = docBuilder.newDocument();
-      Element rootNode = doc.createElement("jdbccontrolpanel");
-      rootNode.setAttribute("version", "1.0");
-      doc.appendChild(rootNode);
-      
-      Element newNode = doc.createElement("driver");
-      newNode.setAttribute("name", name);
-      newNode.setAttribute("url", url);
-      newNode.setAttribute("username", userName);
-      newNode.setAttribute("database", database);
-      newNode.setAttribute("table", table);
-      rootNode.appendChild(newNode);
-      
-      newNode = doc.createElement("options");
-      newNode.setAttribute("hourFormat", ""+hourFormat);
-      newNode.setAttribute("projectCase", ""+projectCase);
-      newNode.setAttribute("projectValidate", ""+projectValidate);
-      newNode.setAttribute("projectDatabase", projectDatabase);
-      newNode.setAttribute("projectTable", projectTable);
-      newNode.setAttribute("projectField", projectField);
-      rootNode.appendChild(newNode);
+      PrefsFile prefs = new PrefsFile("JDBCConnection.def");
+
+      String[] driverAttributeList = {"name", "url", "username", "database", "table"};
+      String[] driverValueList = {name, url, userName, database, table};
+      prefs.saveFirst("driver", driverAttributeList, driverValueList);
+
+      String[] optAttributeList = {"hourFormat", "projectCase", "projectValidate", "projectDatabase", "projectTable", "projectField"};
+      String[] optValueList = {Integer.toString(hourFormat), Boolean.toString(projectCase), Boolean.toString(projectValidate), projectDatabase, projectTable, projectField};
+      prefs.saveFirst("options", optAttributeList, optValueList);
       
       //Save field mappings
       for(int i=0; i<tableMap.size(); i++){
         FieldMap record = tableMap.elementAt(i);
-        newNode = doc.createElement("fieldmap");
+        Element newNode = prefs.createElement("fieldmap");
         newNode.setAttribute("name", record.dbFieldName);
         newNode.setAttribute("type", ""+record.sqlType);
         newNode.setAttribute("index", ""+record.dbFieldIndex);
         newNode.setAttribute("value", record.valueExpression);
-        rootNode.appendChild(newNode);
+        prefs.appendChild(newNode);
       }
       
-      doc.getDocumentElement().normalize();
-      StreamSource stylesource = new StreamSource(stylesheet);
-      TransformerFactory tFactory = TransformerFactory.newInstance();
-      Transformer transformer = tFactory.newTransformer(stylesource);
-      transformer.transform(new DOMSource(doc.getDocumentElement()), new StreamResult(prefs));
+      prefs.write();
     } catch (ParserConfigurationException e) {
       System.err.println("Error writing prefs file: "+e);
       e.printStackTrace(System.out);
@@ -361,57 +336,26 @@ class JDBCConnect {
   
   void readPrefs() {
     try {
-      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-      docBuilder = docBuilderFactory.newDocumentBuilder();
-      Document doc;
+      PrefsFile prefs = new PrefsFile("JDBCConnection.def");
       
-      if(prefs.exists()) {
-        doc = docBuilder.parse(prefs);
-        doc.getDocumentElement().normalize();
-      } else {
-        doc = docBuilder.newDocument();
-        Element rootNode = doc.createElement("clntcomm");
-        rootNode.setAttribute("version", "2.2");
-        doc.appendChild(rootNode);
-      }
+      name = prefs.readFirstString("driver", "name");
+      url = prefs.readFirstString("driver", "url");
+      userName = prefs.readFirstString("driver", "username");
+      database = prefs.readFirstString("driver", "database");
+      table = prefs.readFirstString("driver", "table");
+
+      hourFormat = prefs.readFirstInt("options", "hourFormat");
+      projectCase = prefs.readFirstBoolean("options", "projectCase").booleanValue();
+      projectValidate = prefs.readFirstBoolean("options", "projectValidate").booleanValue();
+      projectDatabase = prefs.readFirstString("options", "projectDatabase");
+      projectTable = prefs.readFirstString("options", "projectTable");
+      projectField = prefs.readFirstString("options", "projectField");
       
-      NamedNodeMap attributes = null;
-      
-      NodeList drivers = doc.getElementsByTagName("driver");
-      Node driver = drivers.item(0);
-      attributes = driver.getAttributes();
-      name = attributes.getNamedItem("name").getNodeValue();
-      url = attributes.getNamedItem("url").getNodeValue();
-      if(attributes.getNamedItem("username") != null)
-        userName = attributes.getNamedItem("username").getNodeValue();
-      if(attributes.getNamedItem("database") != null)
-        database = attributes.getNamedItem("database").getNodeValue();
-      if(attributes.getNamedItem("table") != null)
-        table = attributes.getNamedItem("table").getNodeValue();
-      
-      NodeList options = doc.getElementsByTagName("options");
-      Node option = options.item(0);
-      attributes = option.getAttributes();
-      hourFormat = Integer.parseInt(attributes.getNamedItem("hourFormat").getNodeValue());
-      if(attributes.getNamedItem("projectCase") != null)
-        projectCase = Boolean.valueOf(attributes.getNamedItem("projectCase").getNodeValue()).booleanValue();
-      if(attributes.getNamedItem("projectValidate") != null)
-        projectValidate = Boolean.valueOf(attributes.getNamedItem("projectValidate").getNodeValue()).booleanValue();
-      if(attributes.getNamedItem("projectDatabase") != null)
-        projectDatabase = attributes.getNamedItem("projectDatabase").getNodeValue();
-      if(attributes.getNamedItem("projectTable") != null)
-        projectTable = attributes.getNamedItem("projectTable").getNodeValue();
-      if(attributes.getNamedItem("projectField") != null)
-        projectField = attributes.getNamedItem("projectField").getNodeValue();
-      else
-        projectField = "No Fields Found";
-      
-      NodeList fieldMaps = doc.getElementsByTagName("fieldmap");
+      NodeList fieldMaps = prefs.getElementsByTagName("fieldmap");
       tableMap.fieldMaps.clear();
       for(int i=0; i<fieldMaps.getLength(); i++){
         Node fieldMap = fieldMaps.item(i);
-        attributes = fieldMap.getAttributes();
+        NamedNodeMap attributes = fieldMap.getAttributes();
         Node nameNode = attributes.getNamedItem("name");
         String fieldName = nameNode.getNodeValue();
         Node typeNode = attributes.getNamedItem("type");
@@ -434,35 +378,11 @@ class JDBCConnect {
     }
     
     try {
-      File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
-      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-      docBuilder = docBuilderFactory.newDocumentBuilder();
-      Document doc;
-      
-      if(prefs.exists()) {
-        doc = docBuilder.parse(prefs);
-        doc.getDocumentElement().normalize();
-      } else {
-        doc = docBuilder.newDocument();
-        Element rootNode = doc.createElement("clntcomm");
-        rootNode.setAttribute("version", "2.2");
-        doc.appendChild(rootNode);
-      }
-      
-      NamedNodeMap attribute = null;
-      
+      PrefsFile prefs = new PrefsFile("ClntComm.def");
+
       //Get attribute flags
-      NodeList attributeFlags = doc.getElementsByTagName("attributes");
-      if(attributeFlags.getLength() > 0) {
-        Node attributeFlag = attributeFlags.item(0);
-        attribute = attributeFlag.getAttributes();
-        String attributesString = attribute.getNamedItem("value").getNodeValue();
-        int attributes = Integer.parseInt(attributesString);
-        useExport = (ClntComm.SHOW_EXPORT ^ attributes) != (ClntComm.SHOW_EXPORT | attributes);
-      } else {
-        useExport = true;
-      }
+      int attributes = prefs.readFirstInt("attributes", "value");
+      useExport = (ClntComm.SHOW_EXPORT ^ attributes) != (ClntComm.SHOW_EXPORT | attributes);
     } catch (SAXParseException e) {
       System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
     } catch (SAXException e) {

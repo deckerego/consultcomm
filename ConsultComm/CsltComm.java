@@ -21,7 +21,6 @@ import com.l2fprod.gui.plaf.skin.SkinLookAndFeel;
 
 public class CsltComm extends javax.swing.JFrame {
   public static final String release = "ConsultComm CVS Release";
-  final static File prefsDir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
   static MediaTracker iconTracker;
   static AnimatePanel iconPanel;
   static Timer iconTimer;
@@ -49,7 +48,6 @@ public class CsltComm extends javax.swing.JFrame {
       System.exit(0);
     }
     
-    prefsDir.mkdir();
     readPrefs();
     
     try {
@@ -155,56 +153,16 @@ public class CsltComm extends javax.swing.JFrame {
    */
   private void readPrefs() {
     try {
-      File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
-      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-      docBuilder = docBuilderFactory.newDocumentBuilder();
-      Document doc;
-      
-      if(prefs.exists()) {
-        doc = docBuilder.parse(prefs);
-        doc.getDocumentElement().normalize();
-      } else {
-        doc = docBuilder.newDocument();
-        Element rootNode = doc.createElement("clntcomm");
-        rootNode.setAttribute("version", "2.2");
-        doc.appendChild(rootNode);
-      }
-      
-      NamedNodeMap attributes = null;
-      
+      PrefsFile prefs = new PrefsFile("ClntComm.def");
+
       //Get animation flag
-      NodeList iconAnimations = doc.getElementsByTagName("animations");
-      Node iconAnimation = iconAnimations.item(0);
-      if(iconAnimation != null) {
-        attributes = iconAnimation.getAttributes();
-        if(attributes.getNamedItem("display").getNodeValue().equals("true"))
-          animateIcons = true;
-        else
-          animateIcons = false;
-      } else {
-        animateIcons = true;
-      }
+      Boolean animateIconsBool = prefs.readFirstBoolean("animations", "display");
+      animateIcons = (animateIconsBool != null && animateIconsBool.booleanValue());
       
       //Get skins
-      NodeList skinElements = doc.getElementsByTagName("skin");
-      Node skinElement = skinElements.item(0);
-      if(skinElement != null) {
-        attributes = skinElement.getAttributes();
-        Node themePackItem = attributes.getNamedItem("theme");
-        if(themePackItem != null) themePack = themePackItem.getNodeValue();
-        else themePack =  null;
-        Node kdeThemeItem = attributes.getNamedItem("kde");
-        if(kdeThemeItem != null) kdeTheme = kdeThemeItem.getNodeValue();
-        else kdeTheme = null;
-        Node gtkThemeItem = attributes.getNamedItem("gtk");
-        if(gtkThemeItem != null) gtkTheme = gtkThemeItem.getNodeValue();
-        else gtkTheme = null;
-      } else {
-        themePack = null;
-        kdeTheme = null;
-        gtkTheme = null;
-      }
+      themePack = prefs.readFirstString("skin", "theme");
+      kdeTheme = prefs.readFirstString("skin", "kde");
+      gtkTheme = prefs.readFirstString("skin", "gtk");
     } catch (SAXParseException e) {
       System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
     } catch (SAXException e) {
