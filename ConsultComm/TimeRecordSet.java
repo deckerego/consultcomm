@@ -83,13 +83,20 @@ class TimeRecordSet {
   public String[] getAllProjects() {
     String[] names = new String[timeRecords.size()];
     Enumeration records = timeRecords.elements();
-    int i = 0;
-    
-    while (records.hasMoreElements()) {
+    for(int i=0; records.hasMoreElements(); i++) {
       TimeRecord record = (TimeRecord)records.nextElement();
-      names[i++] = record.projectName;
+      names[i] = record.projectName;
     }
     return names;
+  }
+  public int indexOfProject(String projectName) {
+    Enumeration records = timeRecords.elements();    
+    for(int i=0; records.hasMoreElements(); i++) {
+      TimeRecord record = (TimeRecord)records.nextElement();
+      if(projectName.equals(record.projectName))
+        return i;
+    }
+    return -1;
   }
   
   public DefaultTableModel toTableModel(int timeFormat){
