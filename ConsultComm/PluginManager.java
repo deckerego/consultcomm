@@ -99,6 +99,7 @@ public class PluginManager extends javax.swing.JFrame {
   
   public static Vector getPlugins() throws MalformedURLException, ClassNotFoundException, IOException {
       File pluginsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"plugins");
+      File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
 
       System.out.println("Looking for plugins in "+pluginsdir);
       File[] pluginfiles = pluginsdir.listFiles(new FilenameFilter() {
@@ -117,7 +118,7 @@ public class PluginManager extends javax.swing.JFrame {
           String currBean = pluginfiles[i].getName();
           currBean = currBean.substring(0, currBean.lastIndexOf(".jar"));
           
-          File serializedFile = new File(pluginsdir, currBean+".ser");
+          File serializedFile = new File(prefsdir, currBean+".xml");
           File jarFile = pluginfiles[i];
           Object plugin;
 

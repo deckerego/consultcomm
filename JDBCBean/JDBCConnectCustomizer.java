@@ -456,7 +456,8 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       dbConnection.setTableMap(tableMap);
       
       try {
-          File prefsFile = new File("plugins"+System.getProperty("file.separator")+"JDBCConnect.ser");
+          File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+          File prefsFile = new File(prefsdir, "JDBCConnect.xml");
           FileOutputStream outStream = new FileOutputStream(prefsFile);
           XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
           e.writeObject(dbConnection);
