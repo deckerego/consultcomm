@@ -53,8 +53,14 @@ public class TimeOut extends CsltCommPlugin {
             
             if(idleSeconds > seconds && running && ! paused) {
                 if(this.idleAction == IDLE_PROJECT) {
-                    savedProject = clntComm.getTimes().elementAt(clntComm.getSelectedIndex());
-                    clntComm.setSelectedIndex(clntComm.getTimes().indexOfProject(this.project));
+                    int selectedIndex = clntComm.getSelectedIndex();
+                    
+                    if(selectedIndex >= 0) {
+                      savedProject = clntComm.getTimes().elementAt(selectedIndex);
+                      clntComm.setSelectedIndex(clntComm.getTimes().indexOfProject(this.project));
+                    } else {
+                      savedProject = null;
+                    }
                 } else {
                     clntComm.toggleTimer();
                 }
@@ -62,7 +68,7 @@ public class TimeOut extends CsltCommPlugin {
             }
             
             if(idleSeconds < seconds && (! running || this.idleAction == IDLE_PROJECT) && paused){
-                if(this.idleAction == IDLE_PROJECT) {
+                if(savedProject != null && this.idleAction == IDLE_PROJECT) {
                     clntComm.setSelectedIndex(clntComm.getTimes().indexOfProject(this.savedProject));
                 } else {
                     clntComm.toggleTimer();
