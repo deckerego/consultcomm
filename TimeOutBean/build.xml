@@ -14,15 +14,16 @@
     <javac deprecation="on" optimize="on" srcdir="${src}"/>
     <jar destfile="${src}/../plugins/TimeOut.jar">
       <fileset dir="${src}" includes="*.class"/>
-      <fileset dir="${Xlibdir}" includes="*.so"/>
-      <fileset dir="${Win32libdir}" includes="*.dll"/>
+      <fileset dir="${src}" includes="*.gif"/>
+      <fileset dir="${src}" includes="${Xlibdir}/*.so"/>
+      <fileset dir="${src}" includes="${Win32libdir}/*.dll"/>
       <manifest>
         <attribute name="Java-Bean" value="true"/>
       </manifest>
     </jar>
   </target>
 
-  <target depends="compile" name="X">
+  <target name="X">
     <javah destdir="${Xlibdir}" class="TimeOut">
       <classpath>
         <pathelement location="${src}"/>
