@@ -7,7 +7,7 @@ import java.io.*;
 import ClntComm;
 
 public class CsltComm extends javax.swing.JFrame {
-  public static final String release = "ConsultComm 2.0 Beta";
+  public static final String release = "ConsultComm 2.0";
   final static File prefsDir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
   static MediaTracker iconTracker;
   static MTPanel iconPanel;
