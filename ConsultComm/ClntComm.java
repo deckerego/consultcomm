@@ -20,12 +20,16 @@ import javax.swing.event.*;
  * Created on May 19, 2000, 7:37 PM
  */
 public class ClntComm extends javax.swing.JPanel {
+  protected static final int SECONDS = 0;
+  protected static final int MINUTES = 1;
+  
   private static long totalSeconds, billableSeconds;
   private static JFrame frame = new JFrame("Consultant Manager");
   private TimerThread timer;
   private TimeRecordSet times;
   private java.awt.Dimension windowSize;
   private int index, selectedIndex;
+  private int timeFormat = MINUTES;
   
   //Flags for initializing components
   private boolean showTotal = true;
@@ -44,136 +48,6 @@ public class ClntComm extends javax.swing.JPanel {
     }
   }
   
-  /**
-   * Update the total time elapsed
-   */
-  public void refreshTotalTime(){
-    if(showTotal)
-      totalTime.setText(""+times.getTotalTimeString());
-    else
-      totalTime.setText(""+times.getBillableTimeString());
-    totalTime.repaint();
-  }
-  
-  /**
-   * Read through preferances file
-   */
-  public void readPrefs() {
-    File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
-    times = new TimeRecordSet();
-    if (prefs.exists()) {
-      try {
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document doc = docBuilder.parse(prefs);
-        doc.getDocumentElement().normalize();
-        NodeList projects = doc.getElementsByTagName("project");
-        
-        //Get all projects
-        for(int i=0; i<projects.getLength(); i++){
-          Node project = projects.item(i);
-          NamedNodeMap attributes = project.getAttributes();
-          Node nameNode = attributes.getNamedItem("name");
-          String name = nameNode.getNodeValue();
-          Node aliasNode = attributes.getNamedItem("alias");
-          String alias = null;
-          if(aliasNode != null) alias = aliasNode.getNodeValue();
-          Node secondsNode = attributes.getNamedItem("seconds");
-          long seconds = Long.parseLong(secondsNode.getNodeValue());
-          Node billableNode = attributes.getNamedItem("billable");
-          boolean billable = true;
-          if(billableNode.getNodeValue().equals("false")) billable = false;
-          
-          Node selectedNode = attributes.getNamedItem("selected");
-          if(selectedNode != null && selectedNode.getNodeValue().equals("true"))
-            selectedIndex = i;
-          TimeRecord record = new TimeRecord(name, alias, seconds, billable);
-          times.add(record);
-        }
-        
-        NamedNodeMap attributes = null;
-        
-        //Get window dimensions
-        NodeList dimensions = doc.getElementsByTagName("dimensions");
-        Node dimension = dimensions.item(0);
-        attributes = dimension.getAttributes();
-        double width = Double.parseDouble(attributes.getNamedItem("width").getNodeValue());
-        double height = Double.parseDouble(attributes.getNamedItem("height").getNodeValue());
-        windowSize = new java.awt.Dimension((int)width, (int)height);
-        
-        //Decide whether to show total time/billable time
-        NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
-        Node showTotalTime = showTotalTimes.item(0);
-        attributes = showTotalTime.getAttributes();
-        if(attributes.getNamedItem("display").getNodeValue().equals("billable"))
-          showTotal = false;
-      } catch (SAXParseException e) {
-        System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
-      } catch (SAXException e) {
-        System.err.println("Error reading prefs file: "+e);
-        e.printStackTrace(System.out);
-      } catch (Exception e) {
-        System.err.println("Cannot read prefs file: "+e);
-        e.printStackTrace(System.out);
-      }
-    }
-  }
-  
-  public void savePrefs() {
-    File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
-    try {
-      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-      Document doc = docBuilder.newDocument();
-      Element rootNode = doc.createElement("clntcomm");
-      rootNode.setAttribute("version", "2.0");
-      doc.appendChild(rootNode);
-      
-      //Save projects
-      selectedIndex = timeList.getSelectedRow();
-      for(int i=0; i<times.size(); i++){
-        TimeRecord record = times.elementAt(i);
-        Element newNode = doc.createElement("project");
-        newNode.setAttribute("name", record.projectName);
-        if(record.alias != null)
-          newNode.setAttribute("alias", record.alias);
-        newNode.setAttribute("seconds", ""+record.seconds);
-        newNode.setAttribute("billable", ""+record.billable);
-        if(i == selectedIndex)
-          newNode.setAttribute("selected", "true");
-        rootNode.appendChild(newNode);
-      }
-      
-      Element newNode = null;
-      
-      //Save window dimensions
-      java.awt.Dimension size = getSize();
-      newNode = doc.createElement("dimensions");
-      newNode.setAttribute("width", ""+size.getWidth());
-      newNode.setAttribute("height", ""+size.getHeight());
-      rootNode.appendChild(newNode);
-      
-      //Save show billable/total time flag
-      newNode = doc.createElement("showtotaltime");
-      newNode.setAttribute("display", showTotal ? "total" : "billable");
-      rootNode.appendChild(newNode);
-      
-      //Write to file
-      doc.getDocumentElement().normalize();
-      TransformerFactory fac = TransformerFactory.newInstance();
-      Transformer trans = fac.newTransformer();
-      trans.transform(new DOMSource(doc.getDocumentElement()), new StreamResult(prefs));
-    } catch (ParserConfigurationException e) {
-      System.err.println("Error writing prefs file: "+e);
-    } catch (Exception e) {
-      System.err.println("Cannot write to prefs file: "+e);
-    }
-  }
-  
-  public boolean isRunning(){
-    return timer.clockRunning;
-  }
-  
   /** This method is called from within the constructor to
    * initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is
@@ -190,6 +64,7 @@ public class ClntComm extends javax.swing.JPanel {
     dbexportMenuItem = new javax.swing.JMenuItem();
     jdbcMenuItem = new javax.swing.JMenuItem();
     helpMenuItem = new javax.swing.JMenuItem();
+    prefsMenuItem = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JPopupMenu();
     editPopupItem = new javax.swing.JMenuItem();
     deletePopupItem = new javax.swing.JMenuItem();
@@ -267,6 +142,14 @@ public class ClntComm extends javax.swing.JPanel {
     });
     
     toolMenu.add(helpMenuItem);
+    prefsMenuItem.setText("Preferences");
+    prefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        showPrefs(evt);
+      }
+    });
+    
+    toolMenu.add(prefsMenuItem);
     menuBar.add(toolMenu);
     editPopupItem.setText("Edit Project");
     editPopupItem.addActionListener(new java.awt.event.ActionListener() {
@@ -314,7 +197,7 @@ public class ClntComm extends javax.swing.JPanel {
     
     add(totalPanel, java.awt.BorderLayout.SOUTH);
     
-    timeList.setModel(times.toTableModel());
+    timeList.setModel(times.toTableModel(timeFormat));
     timeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     ListSelectionModel rowSM = timeList.getSelectionModel();
     rowSM.addListSelectionListener(new ListSelectionListener() {
@@ -356,6 +239,10 @@ public class ClntComm extends javax.swing.JPanel {
     
   }//GEN-END:initComponents
 
+  private void showPrefs(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPrefs
+    new PrefsPanel().show();
+  }//GEN-LAST:event_showPrefs
+
   private void showHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHelp
     new HelpDisplay().show();
   }//GEN-LAST:event_showHelp
@@ -376,7 +263,7 @@ public class ClntComm extends javax.swing.JPanel {
     int viewColumn = columnModel.getColumnIndexAtX(evt.getX());
     int column = timeList.convertColumnIndexToModel(viewColumn);
     times.sort(column);
-    timeList.setModel(times.toTableModel());
+    timeList.setModel(times.toTableModel(timeFormat));
   }
   
   private void editWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editWindow
@@ -413,7 +300,7 @@ public class ClntComm extends javax.swing.JPanel {
       int index = timeList.getSelectedRow();
       times.resetTime();
       timer.startTime = System.currentTimeMillis()/1000;
-      timeList.setModel(times.toTableModel());
+      timeList.setModel(times.toTableModel(timeFormat));
       timeList.repaint();
       refreshTotalTime();
     }
@@ -436,7 +323,7 @@ public class ClntComm extends javax.swing.JPanel {
       JOptionPane.WARNING_MESSAGE, null, options, options[1]);
       if(dialog == 0){
         times.delete(selectedIndex);
-        timeList.setModel(times.toTableModel());
+        timeList.setModel(times.toTableModel(timeFormat));
       }
     }
   }//GEN-LAST:event_deleteProject
@@ -453,6 +340,10 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     totalText.setText("Billable:");
   refreshTotalTime();
   }//GEN-LAST:event_toggleTotals
+  
+  public void exitForm() {
+    savePrefs();
+  }
   
   private void selectionChanged(ListSelectionEvent e) {
     setTimer();
@@ -487,6 +378,175 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     edit.setVisible(true);
   }
   
+  /**
+   * Update the total time elapsed
+   */
+  public void refreshTotalTime(){
+    if(showTotal)
+      totalTime.setText(""+times.getTotalTimeString());
+    else
+      totalTime.setText(""+times.getBillableTimeString());
+    totalTime.repaint();
+  }
+  
+  /**
+   * Read through preferances file
+   */
+  private void readPrefs() {
+    File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
+    times = new TimeRecordSet();
+    if (prefs.exists()) {
+      try {
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document doc = docBuilder.parse(prefs);
+        doc.getDocumentElement().normalize();
+        NodeList projects = doc.getElementsByTagName("project");
+        
+        //Get all projects
+        for(int i=0; i<projects.getLength(); i++){
+          Node project = projects.item(i);
+          NamedNodeMap attributes = project.getAttributes();
+          Node nameNode = attributes.getNamedItem("name");
+          String name = nameNode.getNodeValue();
+          Node aliasNode = attributes.getNamedItem("alias");
+          String alias = null;
+          if(aliasNode != null) alias = aliasNode.getNodeValue();
+          Node secondsNode = attributes.getNamedItem("seconds");
+          long seconds = Long.parseLong(secondsNode.getNodeValue());
+          Node billableNode = attributes.getNamedItem("billable");
+          boolean billable = true;
+          if(billableNode.getNodeValue().equals("false")) billable = false;
+          
+          Node selectedNode = attributes.getNamedItem("selected");
+          if(selectedNode != null && selectedNode.getNodeValue().equals("true"))
+            selectedIndex = i;
+          TimeRecord record = new TimeRecord(name, alias, seconds, billable);
+          times.add(record);
+        }
+        
+        NamedNodeMap attributes = null;
+        
+        //Get window dimensions
+        NodeList dimensions = doc.getElementsByTagName("dimensions");
+        Node dimension = dimensions.item(0);
+        attributes = dimension.getAttributes();
+        double width = Double.parseDouble(attributes.getNamedItem("width").getNodeValue());
+        double height = Double.parseDouble(attributes.getNamedItem("height").getNodeValue());
+        windowSize = new java.awt.Dimension((int)width, (int)height);
+        
+        //Decide whether to show total time/billable time
+        NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
+        Node showTotalTime = showTotalTimes.item(0);
+        attributes = showTotalTime.getAttributes();
+        if(attributes.getNamedItem("display").getNodeValue().equals("billable"))
+          showTotal = false;
+
+        //Get time format
+        NodeList timeFormats = doc.getElementsByTagName("timeformat");
+        if(timeFormats.getLength() > 0) {
+          Node timeFormatting = timeFormats.item(0);
+          attributes = timeFormatting.getAttributes();
+          String timeFormatString = attributes.getNamedItem("type").getNodeValue();
+          if(timeFormatString.equals("seconds")) timeFormat = SECONDS;
+          if(timeFormatString.equals("minutes")) timeFormat = MINUTES;
+        } else {
+          timeFormat = MINUTES;
+        }
+      } catch (SAXParseException e) {
+        System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
+      } catch (SAXException e) {
+        System.err.println("Error reading prefs file: "+e);
+        e.printStackTrace(System.out);
+      } catch (Exception e) {
+        System.err.println("Cannot read prefs file: "+e);
+        e.printStackTrace(System.out);
+      }
+    }
+  }
+  
+  private void savePrefs() {
+    File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
+    try {
+      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+      Document doc;
+      Element rootNode;
+      
+      if (prefs.exists()) {
+        doc = docBuilder.parse(prefs);
+        rootNode = doc.getDocumentElement();
+      } else {
+        doc = docBuilder.newDocument();
+        rootNode = doc.createElement("clntcomm");
+        rootNode.setAttribute("version", "2.0");
+        doc.appendChild(rootNode);
+      }
+      rootNode.normalize();
+      
+      //Delete projects
+      NodeList projects = rootNode.getElementsByTagName("project");
+      for(int i=projects.getLength()-1; i>=0; i--)
+        rootNode.removeChild(projects.item(i));
+      
+      //Save projects
+      selectedIndex = timeList.getSelectedRow();
+      for(int i=0; i<times.size(); i++){
+        TimeRecord record = times.elementAt(i);
+        Element newNode = doc.createElement("project");
+        newNode.setAttribute("name", record.projectName);
+        if(record.alias != null)
+          newNode.setAttribute("alias", record.alias);
+        newNode.setAttribute("seconds", ""+record.seconds);
+        newNode.setAttribute("billable", ""+record.billable);
+        if(i == selectedIndex)
+          newNode.setAttribute("selected", "true");
+        rootNode.appendChild(newNode);
+      }
+      
+      Element newNode = null;
+      
+      //Save window dimensions
+      NodeList dimensions = doc.getElementsByTagName("dimensions");
+      java.awt.Dimension size = getSize();
+      newNode = doc.createElement("dimensions");
+      newNode.setAttribute("width", ""+size.getWidth());
+      newNode.setAttribute("height", ""+size.getHeight());
+      if(dimensions.getLength() > 0) {
+        Node dimension = dimensions.item(0);
+        rootNode.replaceChild(newNode, dimension);
+      } else {
+        rootNode.appendChild(newNode);
+      }
+      
+      //Save show billable/total time flag
+      NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
+      newNode = doc.createElement("showtotaltime");
+      newNode.setAttribute("display", showTotal ? "total" : "billable");
+      if(showTotalTimes.getLength() > 0) {
+        Node showTotalTime = showTotalTimes.item(0);
+        rootNode.replaceChild(newNode, showTotalTime);
+      } else {
+        rootNode.appendChild(newNode);
+      }
+      
+      //Write to file
+      doc.getDocumentElement().normalize();
+      TransformerFactory fac = TransformerFactory.newInstance();
+      Transformer trans = fac.newTransformer();
+      trans.transform(new DOMSource(doc.getDocumentElement()), new StreamResult(prefs));
+    } catch (ParserConfigurationException e) {
+      System.err.println("Error writing prefs file: "+e);
+    } catch (Exception e) {
+      System.err.println("Cannot write to prefs file: "+e);
+      e.printStackTrace(System.out);
+    }
+  }
+  
+  public boolean isRunning(){
+    return timer.clockRunning;
+  }
+  
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuBar menuBar;
   private javax.swing.JMenu projectMenu;
@@ -498,6 +558,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   private javax.swing.JMenuItem dbexportMenuItem;
   private javax.swing.JMenuItem jdbcMenuItem;
   private javax.swing.JMenuItem helpMenuItem;
+  private javax.swing.JMenuItem prefsMenuItem;
   private javax.swing.JPopupMenu editMenu;
   private javax.swing.JMenuItem editPopupItem;
   private javax.swing.JMenuItem deletePopupItem;
@@ -547,7 +608,10 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
               //Only repaint if the minutes have changed.
               if (currSeconds % 60 == 0){
                 refreshTotalTime();
-                timeList.setValueAt(times.getTime(index), index, 1);
+                if(timeFormat == SECONDS) 
+                  timeList.setValueAt(times.getSecondsString(index), index, 1);
+                else
+                  timeList.setValueAt(times.getMinutesString(index), index, 1);
                 timeList.repaint();
                 savePrefs();
               }
@@ -580,7 +644,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       projField.setColumns(10);
       final JTextField aliasField = new JTextField(record.alias);
       aliasField.setColumns(10);
-      final JTextField timeField = new JTextField(record.toString());
+      final JTextField timeField = new JTextField(record.toMinuteString());
       timeField.setColumns(10);
       final JCheckBox billable = new JCheckBox("Billable Project", record.billable);
       JPanel editPanel = new JPanel();
@@ -620,7 +684,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
               if (index == selectedIndex) timer.startTime = newTime-record.seconds;
               record.billable = billable.isSelected();
               if(newRecord) times.add(record);
-              timeList.setModel(times.toTableModel());
+              timeList.setModel(times.toTableModel(timeFormat));
               timeList.repaint();
               if(selectedIndex == -1) //Nothing selected
                 timeList.setRowSelectionInterval(index, index);
