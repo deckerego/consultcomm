@@ -4,7 +4,7 @@ import java.io.*;
 public class TimeOut extends Object implements java.io.Serializable, java.lang.Cloneable, java.beans.PropertyChangeListener{
     public static final int IDLE_PAUSE = 5;
     public static final int IDLE_PROJECT = 6;
-
+    
     private static boolean timeoutLibrary;
     private boolean paused = false; //means paused the ClntComm is paused by Timeout
     private TimeRecord savedProject;
@@ -18,14 +18,14 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
     private native long getIdleTime();
     
     static {
-        getNativeLibrary("X/libtimeout.so");
-        getNativeLibrary("Win32/timeout.dll");
-        try {
-            System.loadLibrary("timeout");
-            timeoutLibrary = true;
-        } catch (UnsatisfiedLinkError e) {
-            System.err.println("Couldn't find timeout library in "+System.getProperty("java.library.path"));
-            timeoutLibrary = false;
+        if(getNativeLibrary("X/libtimeout.so") || getNativeLibrary("Win32/timeout.dll")) {
+            try {
+                System.loadLibrary("timeout");
+                timeoutLibrary = true;
+            } catch (UnsatisfiedLinkError e) {
+                System.err.println("Couldn't find timeout library in "+System.getProperty("java.library.path"));
+                timeoutLibrary = false;
+            }
         }
     }
     
@@ -75,12 +75,14 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
     /**
      * Translate a file from a bytestream in the JAR file
      * @param path The relative path to the file stored in a Java Archive
+     * @return True if the library was loaded, false if it was already present
+     * or an exception occured
      */
-    private static void getNativeLibrary(String path) {
+    private static boolean getNativeLibrary(String path) {
         try{
             String fileName = path.substring(path.lastIndexOf('/'));
             File file = new File(PluginManager.libsdir, fileName);
-            if(file.exists()) return; //Don't reload the file if it already exists
+            if(file.exists()) return false; //Don't reload the file if it already exists
             file.deleteOnExit();
             InputStream in = new BufferedInputStream(TimeOut.class.getResourceAsStream(path));
             OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
@@ -93,8 +95,10 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
             out.flush();
             out.close();
             in.close();
+            return true;
         } catch(Exception e){
             System.out.println("Error loading file "+path+": "+e);
+            return false;
         }
     }
 }
