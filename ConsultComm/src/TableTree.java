@@ -13,6 +13,7 @@ import java.util.*;
  */
 public class TableTree extends JTable {
     protected TableTreeCellRenderer tree;
+    private boolean antialias = true;
 
     /**
      * Create a new TableTree based on the given model
@@ -73,6 +74,10 @@ public class TableTree extends JTable {
         setDefaultEditor(TableTreeModel.class, new TableTreeCellEditor()); //Collapse and expand trees
         SwingUtilities.updateComponentTreeUI(this);
     }
+    
+    public void setAntiAlias(boolean alias) { this.antialias = alias; }
+    public boolean getAntiAlias() { return this.antialias; }
+    public boolean isAntiAlias() { return this.antialias; }
 
     /**
      * Get the selected index relative to the TimeRecordSet used
@@ -172,7 +177,19 @@ public class TableTree extends JTable {
             return super.getCellRenderer(row, column);
         }
     }
-
+    
+    /**
+     * Paint the cell in the JTable
+     */
+    public void paint(Graphics g) {
+      if(antialias) {
+        java.awt.Graphics2D g2 = (java.awt.Graphics2D)g;
+        g2.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+      }
+      
+      super.paint(g);
+    }
+    
     /**
      * This is the default renderer, but the foreground is gray
      * @see TableTree#getCellRenderer(int, int)
@@ -224,11 +241,17 @@ public class TableTree extends JTable {
         }
         
         /**
-         * Paint the cell to be where the visible row's origin is
+         * Paint the node in the JTree to be where the visible JTable row's origin is
          */
         public void paint(Graphics g) {
-            g.translate(0, -visibleRow * getRowHeight());
-            super.paint(g);
+          if(antialias) {
+            java.awt.Graphics2D g2 = (java.awt.Graphics2D)g;
+            g2.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+          }
+            
+          g.translate(0, -visibleRow * getRowHeight());
+          
+          super.paint(g);
         }
         
         /**

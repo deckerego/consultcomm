@@ -479,7 +479,18 @@ public class ClntComm extends javax.swing.JPanel implements ClipboardOwner {
   private void newProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProject
       editWindow(times.size());
   }//GEN-LAST:event_newProject
-  
+
+  /**
+   * Antialias fonts (or not) by overriding paint
+   * @antialias True if antialiasing should be applied to this graphics component
+   */
+  public void paintChildren(java.awt.Graphics g) {
+      Object ANTIALIAS = true ? java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON : java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_OFF;
+      java.awt.Graphics2D g2 = (java.awt.Graphics2D)g;
+      g2.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, ANTIALIAS);
+      super.paintChildren(g);
+  }
+
   public void exitForm() {
       savePrefs();
       changes.firePropertyChange("unload", null, times);
@@ -624,6 +635,10 @@ public class ClntComm extends javax.swing.JPanel implements ClipboardOwner {
           this.setPreferredSize(new java.awt.Dimension((int)width, (int)height));
           this.setMinimumSize(new java.awt.Dimension((int)width, (int)height));
           this.setSize(new java.awt.Dimension((int)width, (int)height));
+          
+          //Read AntiAliasing settings
+          boolean antialias = prefs.getBoolean("antiAlias", true);
+          this.timeList.setAntiAlias(antialias);
       } catch (Exception e) {
           System.err.println("Cannot read prefs file: "+e);
           times = new TimeRecordSet(); //Load default settings
@@ -692,7 +707,8 @@ public class ClntComm extends javax.swing.JPanel implements ClipboardOwner {
           TableColumn projectColumn = timeList.getColumnModel().getColumn(0); //Save project column dimensions
           prefs.putInt("columnWidth", projectColumn.getPreferredWidth());
           prefs.putInt("totalIndex", totalPanel.getIndex()); //Save total panel's current selection
-          
+          prefs.putBoolean("antiAlias", timeList.getAntiAlias()); //Save antialiasing settings
+                  
           //Write to file, close output stream
           prefs.flush();
           prefsFile = new File(prefsdir, "CsltComm.xml");
