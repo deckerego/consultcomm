@@ -34,31 +34,46 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
         java.awt.GridBagConstraints gridBagConstraints;
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
+        tabbedPane = new javax.swing.JTabbedPane();
+        optionPanel = new javax.swing.JPanel();
+        optionInputPanel = new javax.swing.JPanel();
+        useCheckBox = new javax.swing.JCheckBox();
         pauseLabel = new javax.swing.JLabel();
-        secField = new JNumberField(10);
+        secField = new javax.swing.JTextField();
         secLabel = new javax.swing.JLabel();
-        jPanel5 = new javax.swing.JPanel();
         pauseButton = new javax.swing.JRadioButton();
-        jPanel6 = new javax.swing.JPanel();
         switchButton = new javax.swing.JRadioButton();
         projectCombo = new javax.swing.JComboBox();
-        useCheckBox = new javax.swing.JCheckBox();
-        jPanel1 = new javax.swing.JPanel();
+        optionButtonPanel = new javax.swing.JPanel();
         saveButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
 
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new java.awt.GridBagLayout());
 
-        setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel2.setLayout(new java.awt.BorderLayout());
+        setMinimumSize(new java.awt.Dimension(238, 221));
+        setPreferredSize(new java.awt.Dimension(387, 254));
+        tabbedPane.setMinimumSize(new java.awt.Dimension(238, 221));
+        tabbedPane.setPreferredSize(new java.awt.Dimension(387, 254));
+        optionPanel.setLayout(new java.awt.BorderLayout());
 
-        jPanel3.setLayout(new java.awt.BorderLayout());
+        optionInputPanel.setLayout(new java.awt.GridBagLayout());
 
-        pauseLabel.setText("Perform action when idle for");
-        jPanel4.add(pauseLabel);
+        useCheckBox.setText(" Use plugin?");
+        useCheckBox.setToolTipText("<html>\n<body>\n<h3>\nCheck if you want to use the Time Out plugin\n</h3>\n</body>\n</html>");
+        useCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                useCheckBoxActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        optionInputPanel.add(useCheckBox, gridBagConstraints);
+
+        pauseLabel.setText("Perform action when idle for ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        optionInputPanel.add(pauseLabel, gridBagConstraints);
 
         secField.setColumns(10);
         secField.addActionListener(new java.awt.event.ActionListener() {
@@ -67,16 +82,16 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
             }
         });
 
-        jPanel4.add(secField);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        optionInputPanel.add(secField, gridBagConstraints);
 
-        secLabel.setText("seconds");
-        jPanel4.add(secLabel);
+        secLabel.setText(" seconds");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        optionInputPanel.add(secLabel, gridBagConstraints);
 
-        jPanel3.add(jPanel4, java.awt.BorderLayout.NORTH);
-
-        jPanel5.setLayout(new java.awt.GridBagLayout());
-
-        jPanel5.setBorder(new javax.swing.border.TitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)), "Action"));
         pauseButton.setSelected(true);
         pauseButton.setText("Pause after idle");
         pauseButton.setToolTipText("<html>\n<body>\n<h3>Pauses timer if the system has been idle for the entered number of seconds.</h3>\n</body>\n<html>");
@@ -88,13 +103,9 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
         });
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 3;
-        gridBagConstraints.insets = new java.awt.Insets(0, 1, 0, 1);
-        jPanel5.add(pauseButton, gridBagConstraints);
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        optionInputPanel.add(pauseButton, gridBagConstraints);
 
         switchButton.setText("Switch to project     ");
         switchButton.setToolTipText("<html>\n<body>\n<h3>\nSwitches to selected project if the system has been idle for the given number of seconds\n</h3>\n</body>\n</html>\n");
@@ -105,35 +116,18 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
             }
         });
 
-        jPanel6.add(switchButton);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        optionInputPanel.add(switchButton, gridBagConstraints);
 
         projectCombo.setMaximumRowCount(50);
         projectCombo.setToolTipText("<html>\n<body>\n<h3>Select project to switch to</h3>\n</body>\n</html>");
-        jPanel6.add(projectCombo);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 1, 0);
-        jPanel5.add(jPanel6, gridBagConstraints);
+        optionInputPanel.add(projectCombo, gridBagConstraints);
 
-        jPanel3.add(jPanel5, java.awt.BorderLayout.CENTER);
-
-        jPanel2.add(jPanel3, java.awt.BorderLayout.CENTER);
-
-        useCheckBox.setText(" Use plugin?");
-        useCheckBox.setToolTipText("<html>\n<body>\n<h3>\nCheck if you want to use the Time Out plugin\n</h3>\n</body>\n</html>");
-        useCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                useCheckBoxActionPerformed(evt);
-            }
-        });
-
-        jPanel2.add(useCheckBox, java.awt.BorderLayout.NORTH);
-
-        add(jPanel2, java.awt.BorderLayout.CENTER);
+        optionPanel.add(optionInputPanel, java.awt.BorderLayout.CENTER);
 
         saveButton.setText("Save");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
@@ -142,18 +136,17 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
             }
         });
 
-        jPanel1.add(saveButton);
+        optionButtonPanel.add(saveButton);
 
-        add(jPanel1, java.awt.BorderLayout.SOUTH);
+        optionPanel.add(optionButtonPanel, java.awt.BorderLayout.SOUTH);
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 14));
-        jLabel1.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.foreground"));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Time Out Plugin");
-        jLabel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
-        jLabel1.setOpaque(true);
-        add(jLabel1, java.awt.BorderLayout.NORTH);
+        tabbedPane.addTab("Options", optionPanel);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        add(tabbedPane, gridBagConstraints);
 
     }//GEN-END:initComponents
 
@@ -238,6 +231,7 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
         try {
             File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
             File prefsFile = new File(prefsdir, "TimeOut.xml");
+            Thread.currentThread().setContextClassLoader(timeOut.getClass().getClassLoader()); //Sun BugID 4676532
             FileOutputStream outStream = new FileOutputStream(prefsFile);
             XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
             e.writeObject(timeOut);
@@ -250,22 +244,19 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
     }    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField secField;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JLabel pauseLabel;
+    private javax.swing.JPanel optionButtonPanel;
     private javax.swing.JComboBox projectCombo;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel optionInputPanel;
+    private javax.swing.JTextField secField;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JLabel secLabel;
+    private javax.swing.JLabel pauseLabel;
+    private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JButton saveButton;
+    private javax.swing.JPanel optionPanel;
+    private javax.swing.JCheckBox useCheckBox;
     private javax.swing.JRadioButton pauseButton;
     private javax.swing.JRadioButton switchButton;
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton saveButton;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JLabel secLabel;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JCheckBox useCheckBox;
     // End of variables declaration//GEN-END:variables
     
 }
