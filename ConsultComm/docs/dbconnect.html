@@ -3,9 +3,9 @@
 <BR>
 <FONT Size="+1">Connecting ConsultComm to a Database</FONT>
 <P>
-<DD>Starting with Consultant Communicator 2.0 you can upload all of your 
-projects and times to any JDBC compliant database! Here's a few quick steps 
-on how to get database connectivity working:<BR>
+<DD>Consultant Communicator can upload all of your projects and times to any
+JDBC or most ODBC compliant databases! Here's a few quick steps on how to get 
+database connectivity working:<BR>
 
 <OL>
 <LI>Get a JDBC driver. Check with the company that sells your database 
@@ -19,8 +19,9 @@ step 4.
 <P>
 
 <LI>Once you have the correct JAR or ZIP files, place them in the Java 
-Runtime Environment's extensions directory (/usr/java/jre/lib/ext in Linux, 
-C:\java\jre\lib\ext in Windows).
+Runtime Environment's extensions directory (see <A HREF="$APPPATHS">Important 
+Directories You Might Need to Know</A> for the location of your extensions 
+directory).
 <P>
 
 <LI>Find out what the driver name is for the JAR or ZIP files you just placed 
@@ -33,10 +34,8 @@ if you are unsure... it usually follows the form "jdbc:as400://192.168.0.0"
 where "as400" would be replaced by a specific driver label and 
 "//192.168.0.0" would be the IP address of a remote database (probably 
 "local" if you are using a local database).
-If you are using the JDBC-ODBC bridge enter in the name of the data source 
-you wish to use in the form of "jdbc:odbc:<Data Source>". For example, if 
-your data source was named "MyDataBase" your URL would be:<BR>
-<CODE>jdbc:odbc:MyDataBase</CODE>
+If you are using the JDBC-ODBC bridge just enter in the name of the data 
+source you wish to use.
 <P>
 
 <LI>Start up ConsultComm and go to Tools->JDBC Settings
@@ -62,16 +61,22 @@ table will pop up listing all the fields for the table you specified in step
 <LI>Fill in all the necessary values for the fields in your table. If you 
 want to export a value from ConsultComm you can type in one of the following 
 variables and ConsultComm will automatically convert it:<BR>
-<PRE>
-  $PROJECT - The Project Name
-  $HOURS - The number of hours worked on a project
-  $DATE - Today's date
-</PRE>
+  <DL>
+    <DT><CODE>$USERNAME</CODE>
+    <DD>The username you enter in when authenticating 
+    to the database
+    <DT><CODE>$PROJECT</CODE>
+    <DD>The Project Name
+    <DT><CODE>$HOURS</CODE>
+    <DD>The number of hours worked on a project
+    <DT><CODE>$DATE</CODE>
+    <DD>Today's date
+  </DL>
 All other values you type in will be interpreted literally. For example, I 
 might have the following settings in a table EMPHRS:
 <TABLE Border="1">
 <TR><TH>Field Name</TH><TH>Type</TH><TH>Value</TH></TR>
-<TR><TD>EMPNAME</TD><TD>CHAR</TD><TD>BUBBA</TD></TR>
+<TR><TD>EMPNAME</TD><TD>CHAR</TD><TD>$USERNAME</TD></TR>
 <TR><TD>EMHOURS</TD><TD>DECIMAL</TD><TD>$HOURS</TD></TR>
 <TR><TD>EMPROJ</TD><TD>CHAR</TD><TD>$PROJECT</TD></TR>
 <TR><TD>EMDATE</TD><TD>TIMESTAMP</TD><TD>$DATE</TD></TR>
@@ -87,7 +92,7 @@ that you entered in on step 9. You can select from the following choices:
     <UL>
       <LI>Quarter of an hour (i.e. 1:37 becomes 1.5)
       <LI>Tenth of an hour (i.e. 1:37 becomes 1.6)
-      <LI>Full Precision (i.e. 1:37 becomes 1.617)
+      <LI>Full Precision (i.e. 1:37 becomes 1.62)
     </UL>
     <LI>Date Type:
     <UL>
