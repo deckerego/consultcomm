@@ -171,7 +171,7 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
         catch(NumberFormatException e){ timeOut.setSeconds(defaultTime); }
         timeOut.setUse(selected);
         timeOut.setIdleAction(switchRadioButton.isSelected() ? TimeOut.IDLE_PROJECT : TimeOut.IDLE_PAUSE);
-        timeOut.setProject((String)projectCombo.getSelectedItem());
+        timeOut.setProject(projectCombo.getSelectedIndex());
         
         try {
             File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");

@@ -90,7 +90,7 @@ public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable 
         Enumeration records = timeRecords.elements();
         for(int i=0; records.hasMoreElements(); i++) {
             TimeRecord record = (TimeRecord)records.nextElement();
-            names[i] = record.getProjectName();
+            names[i] = record.getGroupName()+"-"+record.getProjectName();
         }
         return names;
     }
@@ -128,11 +128,12 @@ public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable 
     public int indexOf(TimeRecord rec) {
         return timeRecords.indexOf(rec);
     }
-    public int indexOfProject(String projectName) {
+    public int indexOfProject(TimeRecord project) {
         Enumeration records = timeRecords.elements();
         for(int i=0; records.hasMoreElements(); i++) {
             TimeRecord record = (TimeRecord)records.nextElement();
-            if(projectName.equals(record.getProjectName()))
+            if(project.getProjectName().equals(record.getProjectName()) && 
+            project.getGroupName().equals(record.getGroupName()))
                 return i;
         }
         return -1;

@@ -1,20 +1,19 @@
-import java.beans.*;
 import javax.swing.*;
 import java.io.*;
 
-public class TimeOut extends Object implements java.io.Serializable, java.lang.Cloneable, PropertyChangeListener{
+public class TimeOut extends Object implements java.io.Serializable, java.lang.Cloneable, java.beans.PropertyChangeListener{
     public static final int IDLE_PAUSE = 5;
     public static final int IDLE_PROJECT = 6;
 
     private static boolean timeoutLibrary;
     private boolean paused = false; //means paused the ClntComm is paused by Timeout
-    private String savedProject;
+    private TimeRecord savedProject;
     private ClntComm clntComm;
     
     private int idleAction = IDLE_PAUSE;
     private boolean use = true;
     private int seconds = 0;
-    private String project;
+    private TimeRecord project;
     
     private native long getIdleTime();
     
@@ -41,8 +40,9 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
     public void setIdleAction(int action) { this.idleAction = action; }
     public int getSeconds() { return this.seconds; }
     public void setSeconds(int seconds) { this.seconds = seconds; }
-    public String getProject() { return this.project; }
-    public void setProject(String project) { this.project = project; }
+    public TimeRecord getProject() { return this.project; }
+    public void setProject(TimeRecord project) { this.project = project; }
+    public void setProject(int project) { this.project = clntComm.getTimes().elementAt(project); }
     
     public void propertyChange(java.beans.PropertyChangeEvent propertyChangeEvent) {
         clntComm = (ClntComm)propertyChangeEvent.getSource();
@@ -53,9 +53,7 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
             
             if(idleSeconds > seconds && running && ! paused) {
                 if(this.idleAction == IDLE_PROJECT) {
-                    System.out.println("getIndex: " + clntComm.getSelectedIndex());
-                    savedProject = clntComm.getTimes().elementAt(clntComm.getSelectedIndex()).getProjectName();
-                    System.out.println("setIndex1: " + clntComm.getTimes().indexOfProject(this.project));
+                    savedProject = clntComm.getTimes().elementAt(clntComm.getSelectedIndex());
                     clntComm.setSelectedIndex(clntComm.getTimes().indexOfProject(this.project));
                 } else {
                     clntComm.toggleTimer();
@@ -65,7 +63,6 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
             
             if(idleSeconds < seconds && (! running || this.idleAction == IDLE_PROJECT) && paused){
                 if(this.idleAction == IDLE_PROJECT) {
-                    System.out.println("setIndex: " + clntComm.getTimes().indexOfProject(this.getProject()));
                     clntComm.setSelectedIndex(clntComm.getTimes().indexOfProject(this.savedProject));
                 } else {
                     clntComm.toggleTimer();
