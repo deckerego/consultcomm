@@ -2,11 +2,22 @@
 
 <installation version="1.0">
 
+    <native type="izpack" name="ShellLink.dll"/>
+
+    <guiprefs resizable="yes" width="600" height="400">
+        <laf name="liquid">
+          <os family="windows"/>
+          <os family="unix"/>
+          <param name="decorate.frame" value="yes"/>
+          <param name="decorate.dialogs" value="yes"/>
+        </laf>
+    </guiprefs>
+
     <info>
         <appname>ConsultComm</appname>
-        <appversion>3.1 Beta 2</appversion>
+        <appversion>3.1 Beta 4</appversion>
         <authors>
-            <author name="John Ellis" email="jtellis@sourceforge.net"/>
+            <author name="John Ellis" email="jtellis@users.sourceforge.net"/>
         </authors>
         <url>http://consultcomm.sourceforge.net/</url>
     </info>
@@ -20,7 +31,9 @@
     <resources>
         <res id="LicencePanel.licence" src="COPYING"/>
         <res id="InfoPanel.info" src="README"/>
-    </resources>
+        <res src="../izpack_shortcuts.xml" id="shortcutSpec.xml"/>
+        <res id="Installer.image" src="graphics/installer.png"/>
+     </resources>
     
     <panels>
         <panel classname="HelloPanel"/>
@@ -29,6 +42,7 @@
         <panel classname="TargetPanel"/> 
         <panel classname="PacksPanel"/>
         <panel classname="InstallPanel"/>
+        <panel classname="ShortcutPanel"/>
         <panel classname="FinishPanel"/>
     </panels>
     
@@ -39,8 +53,8 @@
                 <include name="plugins/*.jar"/>
                 <include name="syslibs/nativeskinwin32.dll"/>
                 <include name="syslibs/nativeskinwin32JAWT.dll"/>
+                <include name="graphics/icon.ico"/>
                 <include name="*.jar"/>
-                <include name="ConsultComm"/>
                 <include name="README"/>
                 <include name="AUTHORS"/>
                 <include name="COPYING"/>

@@ -1,0 +1,32 @@
+<shortcuts>
+  <programGroup defaultName="ConsultComm" location="applications"/>
+  <shortcut 
+    name="ConsultComm 3"
+    target="javaw"
+    commandLine="-Djava.library.path=syslibs -jar CsltComm.jar"
+    workingDirectory="$INSTALL_PATH"
+    description="ConsultComm 3.1"
+    iconFile="$INSTALL_PATH/graphics/icon.ico" 
+    iconIndex="0"
+    initialState="normal"
+    programGroup="yes"
+    desktop="no" 
+    applications="no" 
+    startMenu="no" 
+    startup="no">
+  </shortcut>
+  
+  <shortcut 
+    name="Uninstall ConsultComm"
+    target="javaw"
+    commandLine="-jar uninstaller.jar"
+    workingDirectory="$INSTALL_PATH/Uninstaller"
+    description="Uninstall ConsultComm 3.1"
+    initialState="normal"
+    programGroup="yes"
+    desktop="no" 
+    applications="no" 
+    startMenu="no" 
+    startup="no">
+  </shortcut>
+</shortcuts>
