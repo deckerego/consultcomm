@@ -68,6 +68,12 @@ public class PrefsFile {
     else return Long.parseLong(longString);
   }
   
+  public double readFirstDouble(String element, String attribute) {
+    String doubleString = readFirstItem(element, attribute);
+    if(doubleString == null) return 0;
+    else return Double.parseDouble(doubleString);
+  }
+  
   public Boolean readFirstBoolean(String element, String attribute) {
     String booleanString = readFirstItem(element, attribute);
     if(booleanString == null) return null;
@@ -95,12 +101,23 @@ public class PrefsFile {
     else rootNode.appendChild(newNode);
   }
   
+  public void saveFirst(String element, String[] attribute, double[] value) {
+    String[] valueList = new String[value.length];
+    for(int i=0; i<value.length; i++)
+      valueList[i] = Double.toString(value[i]);
+    saveFirst(element, attribute, valueList);
+  }
+  
   public void saveFirst(String element, String attribute, int value) {
     saveFirst(element, attribute, Integer.toString(value));
   }
   
   public void saveFirst(String element, String attribute, long value) {
     saveFirst(element, attribute, Long.toString(value));
+  }
+  
+  public void saveFirst(String element, String attribute, double value) {
+    saveFirst(element, attribute, Double.toString(value));
   }
   
   public void saveFirst(String element, String attribute, float value) {
@@ -111,10 +128,28 @@ public class PrefsFile {
     saveFirst(element, attribute, value ? "true" : "false");
   }
   
+  public Element createElement(String element) {
+    return doc.createElement(element);
+  }
+  
+  public void appendChild(Element element) {
+    rootNode.appendChild(element);
+  }
+  
+  public NodeList getElementsByTagName(String element) {
+    return doc.getElementsByTagName(element);
+  }
+  
   public void removeFirstElement(String element) {
     NodeList elements = doc.getElementsByTagName(element);
     Node node = elements.item(0);
     rootNode.removeChild(node);
+  }
+  
+  public void removeAllChildren(String element) {
+    NodeList elements = rootNode.getElementsByTagName(element);
+    for(int i=elements.getLength()-1; i>=0; i--)
+      rootNode.removeChild(elements.item(i));
   }
   
   public void write() throws TransformerConfigurationException, TransformerException {
