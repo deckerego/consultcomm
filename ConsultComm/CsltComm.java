@@ -27,7 +27,7 @@ public class CsltComm extends javax.swing.JFrame {
   public static int frameDelay = 10;
   private ClntComm projectList;
   protected Image appIcon;
-  protected boolean animateIcons;
+  protected boolean animateIcons = true;
   
   /** Creates new form CsltComm */
   public CsltComm() {
@@ -131,15 +131,15 @@ public class CsltComm extends javax.swing.JFrame {
         
         //Get animation flag
         NodeList iconAnimations = doc.getElementsByTagName("animations");
-        if(iconAnimations == null) {
-          animateIcons = true;
-        } else {
+        if(iconAnimations.getLength() > 0) {
           Node iconAnimation = iconAnimations.item(0);
           attributes = iconAnimation.getAttributes();
           if(attributes.getNamedItem("display").getNodeValue().equals("true"))
             animateIcons = true;
           else
             animateIcons = false;
+        } else {
+          animateIcons = true;
         }
       } catch (SAXParseException e) {
         System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
