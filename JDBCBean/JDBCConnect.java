@@ -324,6 +324,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
             TimeRecordSet oldTimes = (TimeRecordSet)propertyChangeEvent.getOldValue();
             
             if(newTimes != null && oldTimes != null && newTimes.size() > oldTimes.size()) { //Added a project, prompt
+                System.out.println("Received edited time list");
                 javax.swing.JFrame frame = new javax.swing.JFrame();
                 Object[] options = {"OK", "Cancel"};
                 int dialog = javax.swing.JOptionPane.showOptionDialog(frame,
@@ -338,6 +339,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
                     frame.getContentPane().add((javax.swing.JPanel)customizer, java.awt.BorderLayout.CENTER);
                     frame.pack();
                     frame.show();
+                    ((JDBCConnectCustomizer)customizer).tabbedPane.setSelectedIndex(2);
                 }
             }
         }
