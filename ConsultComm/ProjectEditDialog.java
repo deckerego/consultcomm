@@ -136,7 +136,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
   }//GEN-LAST:event_save
   
   private void cancel(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancel
-    value = "0";
+    value = "1";
     closeDialog();
   }//GEN-LAST:event_cancel
   

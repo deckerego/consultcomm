@@ -12,7 +12,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
-public class JDBCConnect {
+class JDBCConnect {
   final static int DATE_SQLDATE = 0;
   final static int DATE_SQLTIMESTAMP = 1;
   final static int DATE_CCYYMMDD = 2;
@@ -20,7 +20,7 @@ public class JDBCConnect {
   final static int HOUR_QUARTER = 1;
   final static int HOUR_TENTH = 2;
   final static String odbcDriverName = "sun.jdbc.odbc.JdbcOdbcDriver";
-
+  
   String name = "";
   String url = "";
   static String userName = "";
@@ -39,13 +39,13 @@ public class JDBCConnect {
   static boolean validated;
   JFrame parentFrame;
   
-  public JDBCConnect() {
+  JDBCConnect() {
     tableMap = new TableMap();
     parentFrame = new JFrame();
     readPrefs();
   }
   
-  public JDBCConnect(String name, String url, String database, String table) {
+  JDBCConnect(String name, String url, String database, String table) {
     tableMap = new TableMap();
     parentFrame = new JFrame();
     this.name = name;
@@ -54,11 +54,11 @@ public class JDBCConnect {
     this.table = table;
   }
   
-  public void setParentFrame(JFrame frame) {
+  void setParentFrame(JFrame frame) {
     parentFrame = frame;
   }
   
-  public Connection openConnection() {
+  Connection openConnection() {
     Connection conn = null;
     errorList = new Vector();
     
@@ -101,17 +101,41 @@ public class JDBCConnect {
     return conn;
   }
   
-  public boolean exportTimeRecordSet(TimeRecordSet times) {
+  void insertVector(Vector statements) throws SQLException {
     Connection conn = openConnection();
     PreparedStatement insert = null;
-    boolean worked = false;
+    SQLException exception = null;
+    
+    if(tableMap.size() == 0) throw new SQLException("Table map is empty.");
     
     try {
-      if(tableMap.size() == 0) return false;
       String queryString = "?";
       for(int i=1; i<tableMap.size(); i++) queryString += " ,?";
       insert = conn.prepareStatement("INSERT INTO "+database+"."+table+" VALUES ("+queryString+")");
       
+      for(int j=0; j < statements.size(); j++) {
+        Object[] statement = (Object[])statements.elementAt(j);
+        for(int i=0; i < statement.length; i++) {
+          insert.setObject(i+1, statement[i]);
+        }
+        insert.execute();
+      }
+      
+      if(! conn.getAutoCommit()) conn.commit();
+    } catch (SQLException e) {
+      exception = e;
+    } finally {
+      try {if(insert != null) insert.close();} catch (SQLException e) {}
+      try {if(conn != null) conn.close();} catch (SQLException e) {}
+    }
+    
+    if(exception != null) throw exception;
+  }
+  
+  boolean exportTimeRecordSet(TimeRecordSet times) {    
+    boolean worked = false;
+    
+    try {
       // Okay... we've got a problem. We want to test for errors
       // before committing changes to the database but we also
       // can't depend on the rollback() method working (not all
@@ -132,16 +156,7 @@ public class JDBCConnect {
         statements.addElement(statement);
       }
       
-      for(int j=0; j < statements.size(); j++) {
-        Object[] statement = (Object[])statements.elementAt(j);
-        for(int i=0; i < statement.length; i++) {
-          insert.setObject(i+1, statement[i]);
-        }
-        insert.execute();
-      }
-      
-      conn.commit();
-      worked = true;
+      insertVector(statements);
     } catch (ProjectInvalidException e) {
       JOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
       worked = false;
@@ -149,11 +164,6 @@ public class JDBCConnect {
       JOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
       System.err.println("Could not export timelist to database: "+e);
       worked = false;
-    } finally {
-      try {
-        if(insert != null) insert.close();
-        if(conn != null) conn.close();
-      } catch (Exception ex) {}
     }
     return worked;
   }
@@ -201,8 +211,9 @@ public class JDBCConnect {
       conn.close();
       
       if(! isValid) {
-        ProjectAddDialog addDialog = new ProjectAddDialog(parentFrame);
+        ProjectAddDialog addDialog = new ProjectAddDialog(parentFrame, project, projectField);
         addDialog.show();
+        isValid = addDialog.getValue().equals("0");
       }
     } catch (SQLException e) {
       System.err.println("Couldn't attempt project validation: "+e);
@@ -267,7 +278,7 @@ public class JDBCConnect {
     }
   }
   
-  void testDriverSettings() {    
+  void testDriverSettings() {
     try {
       if(name.equals(odbcDriverName)) url = "jdbc:odbc:"+url;
       Connection conn = openConnection();
@@ -286,7 +297,7 @@ public class JDBCConnect {
     }
   }
   
-  protected void savePrefs() {
+  void savePrefs() {
     File prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
     try {
       DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -337,7 +348,7 @@ public class JDBCConnect {
     }
   }
   
-  protected void readPrefs() {
+  void readPrefs() {
     File prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
     if (prefs.exists()) {
       try {
@@ -566,16 +577,26 @@ public class JDBCConnect {
         if(value.equals("$")) {
           value = toker.nextToken();
           if(value.equals("PROJECT")) {
-            if(sqlType != java.sql.Types.CHAR) throw new ClassCastException("Must be CHAR SQL type for project name");
-            else {
-              if(projectCase) realValue = record.projectName.toUpperCase();
-              else realValue = record.projectName;
-              if(projectValidate && ! validateProject((String)realValue))
-                throw new ProjectInvalidException("Project "+realValue+" not in table "+projectDatabase+"."+projectTable);
+            switch(sqlType) {
+              case java.sql.Types.CHAR:
+              case java.sql.Types.VARCHAR:
+                if(projectCase) realValue = record.projectName.toUpperCase();
+                else realValue = record.projectName;
+                if(projectValidate && ! validateProject((String)realValue))
+                  throw new ProjectInvalidException("Project "+realValue+" not in table "+projectDatabase+"."+projectTable);
+                break;
+              default:
+                throw new ClassCastException("Must be CHAR SQL type for project name");
             }
           } else if(value.equals("USERNAME")) {
-            if(sqlType != java.sql.Types.CHAR) throw new ClassCastException("Must be CHAR SQL type for username");
-            else realValue = userName;
+            switch(sqlType) {
+              case java.sql.Types.CHAR:
+              case java.sql.Types.VARCHAR:
+                realValue = userName;
+                break;
+              default:
+                throw new ClassCastException("Must be CHAR SQL type for username");
+            }
           } else if(value.equals("DATE")) {
             switch(sqlType) {
               case java.sql.Types.DATE:
