@@ -33,9 +33,13 @@
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="driverPanel">
+
+          <Events>
+            <EventHandler event="componentShown" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="showDriverPanel"/>
+          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Driver Settings" toolTip=""/>
+              <JTabbedPaneConstraints tabName="Driver Settings" toolTip="Change JDBC Driver Settings"/>
             </Constraint>
           </Constraints>
 
@@ -211,7 +215,7 @@
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Field Mappings" toolTip=""/>
+              <JTabbedPaneConstraints tabName="Field Mappings" toolTip="Define values for table fields"/>
             </Constraint>
           </Constraints>
 
@@ -276,9 +280,13 @@
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="optionPanel">
+
+          <Events>
+            <EventHandler event="componentShown" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="showOptionPanel"/>
+          </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Options" toolTip=""/>
+              <JTabbedPaneConstraints tabName="Options" toolTip="Set variable options"/>
             </Constraint>
           </Constraints>
 

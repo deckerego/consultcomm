@@ -24,8 +24,8 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private final static int HOUR_QUARTER = 1;
   private final static int HOUR_TENTH = 2;
   private final static String odbcDriverName = "sun.jdbc.odbc.JdbcOdbcDriver";
-  private String name;
-  private String url;
+  private String name = "";
+  private String url = "";
   private static String userName = "";
   private static String password;
   private static String database;
@@ -98,6 +98,12 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     
     tabbedPane.setPreferredSize(new java.awt.Dimension(387, 244));
     driverPanel.setLayout(new java.awt.BorderLayout());
+    
+    driverPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+      public void componentShown(java.awt.event.ComponentEvent evt) {
+        showDriverPanel(evt);
+      }
+    });
     
     driverInputPanel.setLayout(new java.awt.GridBagLayout());
     java.awt.GridBagConstraints gridBagConstraints1;
@@ -239,6 +245,12 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     
     optionPanel.setLayout(new java.awt.BorderLayout());
     
+    optionPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+      public void componentShown(java.awt.event.ComponentEvent evt) {
+        showOptionPanel(evt);
+      }
+    });
+    
     optionInputPanel.setLayout(new java.awt.GridBagLayout());
     java.awt.GridBagConstraints gridBagConstraints2;
     
@@ -304,6 +316,14 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     pack();
   }//GEN-END:initComponents
 
+  private void showDriverPanel(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showDriverPanel
+    getRootPane().setDefaultButton(driverOK);
+  }//GEN-LAST:event_showDriverPanel
+
+  private void showOptionPanel(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showOptionPanel
+    getRootPane().setDefaultButton(optionOK);
+  }//GEN-LAST:event_showOptionPanel
+
   private void toggleODBC(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleODBC
     toggleODBC();
   }//GEN-LAST:event_toggleODBC
@@ -334,6 +354,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   }//GEN-LAST:event_refreshFieldMap
   
   private void showFieldMap(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showFieldMap
+    getRootPane().setDefaultButton(fieldOK);
     if(tableMap.size() == 0) {
       try {
         tableMap.init();
@@ -537,7 +558,11 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         }
         if(conn != null) validated = true;
       } catch (ClassNotFoundException e) {
-        errorList.addElement("Could not find driver "+name);
+        String extdir = System.getProperty("java.ext.dirs");
+        String msgString = "Could not find JDBC driver "+name+".\n"+
+        "Make sure you have the correct driver files and that they\n"+
+        "are installed in "+extdir;
+        errorList.addElement(msgString);
       } catch (SQLException e) {
         errorList.addElement("Could not build JDBC connection: "+e);
       } catch (NullPointerException e) {
@@ -559,7 +584,9 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         PreparedStatement insert = conn.prepareStatement("INSERT INTO "+database+"."+table+" VALUES ("+queryString+")");
         for(int j=0; j < times.size(); j++) {
           TimeRecord record = times.elementAt(j);
-          if(record.seconds <= 0 || ! record.billable) continue;
+          FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$PROJECT"); //Find out how many hours exist
+          java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.getValue(record);
+          if((hours.compareTo(new java.math.BigDecimal(0.0)) > 0) || ! record.billable) continue;
           for(int i=0; i < tableMap.size(); i++) {
             FieldMap fieldMap = tableMap.elementAt(i);
             Object fieldValue = fieldMap.getValue(record);
@@ -578,7 +605,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       }
     }
     
-    public static String typeString(short sqlType) {
+    public static String typeString(int sqlType) {
       switch(sqlType) {
         case java.sql.Types.ARRAY:
           return "ARRAY";
@@ -763,7 +790,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     }
     
     private class FieldMap {
-      short sqlType;
+      int sqlType;
       int dbFieldIndex;
       String dbFieldName;
       String valueExpression = "";
@@ -774,7 +801,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         dbFieldIndex = rs.getInt(17);
       }
       
-      FieldMap(String name, short type, int index, String value) {
+      FieldMap(String name, int type, int index, String value) {
         dbFieldName = name;
         sqlType = type;
         dbFieldIndex = index;
@@ -794,8 +821,12 @@ public class JDBCControlPanel extends javax.swing.JFrame {
             value = toker.nextToken();
             if(value.equals("PROJECT")) {
               if(sqlType != java.sql.Types.CHAR) throw new ClassCastException("Must be CHAR SQL type for project name");
-              if(projectCase) realValue = record.projectName.toUpperCase();
-              else realValue = record.projectName;
+              else
+                if(projectCase) realValue = record.projectName.toUpperCase();
+                else realValue = record.projectName;
+            } else if(value.equals("USERNAME")) {
+              if(sqlType != java.sql.Types.CHAR) throw new ClassCastException("Must be CHAR SQL type for username");
+              else realValue = userName;
             } else if(value.equals("DATE")) {
               switch(dateFormat) {
                 case DATE_SQLDATE:
