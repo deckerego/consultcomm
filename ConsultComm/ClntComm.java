@@ -191,6 +191,7 @@ public class ClntComm extends javax.swing.JPanel {
     toolMenu = new javax.swing.JMenu();
     dbexportMenuItem = new javax.swing.JMenuItem();
     jdbcMenuItem = new javax.swing.JMenuItem();
+    helpMenuItem = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JPopupMenu();
     editPopupItem = new javax.swing.JMenuItem();
     deletePopupItem = new javax.swing.JMenuItem();
@@ -259,6 +260,15 @@ public class ClntComm extends javax.swing.JPanel {
     });
     
     toolMenu.add(jdbcMenuItem);
+    helpMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
+    helpMenuItem.setText("Help");
+    helpMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        showHelp(evt);
+      }
+    });
+    
+    toolMenu.add(helpMenuItem);
     menuBar.add(toolMenu);
     editPopupItem.setText("Edit Project");
     editPopupItem.addActionListener(new java.awt.event.ActionListener() {
@@ -347,6 +357,10 @@ public class ClntComm extends javax.swing.JPanel {
     add(menuPanel, java.awt.BorderLayout.NORTH);
     
   }//GEN-END:initComponents
+
+  private void showHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHelp
+    new HelpDisplay().show();
+  }//GEN-LAST:event_showHelp
 
   private void exportToTable(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportToTable
     JDBCControlPanel panel = new JDBCControlPanel();
@@ -483,6 +497,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   private javax.swing.JMenu toolMenu;
   private javax.swing.JMenuItem dbexportMenuItem;
   private javax.swing.JMenuItem jdbcMenuItem;
+  private javax.swing.JMenuItem helpMenuItem;
   private javax.swing.JPopupMenu editMenu;
   private javax.swing.JMenuItem editPopupItem;
   private javax.swing.JMenuItem deletePopupItem;
