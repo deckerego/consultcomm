@@ -21,4 +21,4 @@ clean:
 	@rm -f *.so
 
 realclean: clean
-	@rm -f ClntComm.h
+	@rm -f TimeOut.h
