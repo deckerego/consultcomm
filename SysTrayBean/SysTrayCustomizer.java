@@ -57,18 +57,9 @@ public class SysTrayCustomizer extends javax.swing.JPanel implements java.beans.
 
     }//GEN-END:initComponents
 
-    private void enableAll(boolean enable){
-        if(! enable){
-        } else {
-        }
-    }
-    
     public void setObject(Object obj) {
     }    
-    
-    private void saveSysTraySettings() {
-    }    
-    
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel optionButtonPanel;
     private javax.swing.JPanel optionInputPanel;

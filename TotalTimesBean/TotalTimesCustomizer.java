@@ -132,18 +132,11 @@ public class TotalTimesCustomizer extends javax.swing.JPanel implements java.bea
         catch (java.text.ParseException e) { totalTimes.setCashAmount(0.0); }
         
         try {
-            File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
-            File prefsFile = new File(prefsdir, "TotalTimes.xml");
-            Thread.currentThread().setContextClassLoader(totalTimes.getClass().getClassLoader()); //Sun BugID 4676532
-            FileOutputStream outStream = new FileOutputStream(prefsFile);
-            XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
-            e.writeObject(totalTimes);
-            e.close();
-        } catch (Exception e) {
-            System.err.println("Couldn't save TotalTimes Prefs");
-            e.printStackTrace(System.out);
+          PluginManager.serializeObject(totalTimes);
+        } catch (java.io.FileNotFoundException e) {
+          System.err.println("Error saving prefs for TotalTimes plugin");
         }
-    }    
+    }
     
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JCheckBox cashCheckBox;

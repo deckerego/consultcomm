@@ -533,7 +533,11 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       
       dbConnection.setTableMap(tableMap);
       
-      JDBCConnect.saveDriverSettings(dbConnection);
+      try {
+        PluginManager.serializeObject(dbConnection);
+      } catch (java.io.FileNotFoundException e) {
+        System.err.println("Error saving prefs for JDBC plugin");
+      }
       
       Object grandpa = getTopLevelAncestor();
       if(grandpa.getClass() == PluginManager.class) ((PluginManager)grandpa).exitForm();

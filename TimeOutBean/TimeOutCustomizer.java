@@ -191,21 +191,13 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
         timeOut.setUse(selected);
         timeOut.setIdleAction(switchRadioButton.isSelected() ? TimeOut.IDLE_PROJECT : TimeOut.IDLE_PAUSE);
         if(timeOut.getIdleAction() == TimeOut.IDLE_PROJECT) timeOut.setProject(projectCombo.getSelectedIndex());
-
-        try {
-            File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
-            File prefsFile = new File(prefsdir, "TimeOut.xml");
-            Thread.currentThread().setContextClassLoader(timeOut.getClass().getClassLoader()); //Sun BugID 4676532
-            FileOutputStream outStream = new FileOutputStream(prefsFile);
-            XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
-            e.writeObject(timeOut);
-            e.close();
-        } catch (Exception e) {
-            System.err.println("Couldn't save TimeOut Prefs");
-            e.printStackTrace(System.out);
-        }
         
-    }    
+        try {
+          PluginManager.serializeObject(timeOut);
+        } catch (java.io.FileNotFoundException e) {
+          System.err.println("Error saving prefs for TimeOut plugin");
+        }
+    }
     
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JPanel optionButtonPanel;
