@@ -29,6 +29,13 @@ class TimeRecord implements Comparable {
       // Else we have the wrong format
     } else seconds = 0L;
   }
+
+  public double getHours(int minutes) {
+    long quarterHours = seconds / minutes;
+    long remainder = seconds % minutes;
+    if(remainder >= minutes/2) quarterHours++;
+    return quarterHours * 0.25;
+  }
   
   public String toString() {
     long minutes = seconds / 60;
