@@ -132,7 +132,7 @@ public class JDBCConnect implements java.io.Serializable {
       errorList.addElement(e.toString());
     }
     if(errorList.size() > 0)
-      CustomOptionPane.showMessageDialog(parentFrame, errorList.elementAt(0), "Database Connection Error", CustomOptionPane.ERROR_MESSAGE);
+      JDBCOptionPane.showMessageDialog(parentFrame, errorList.elementAt(0), "Database Connection Error", JDBCOptionPane.ERROR_MESSAGE);
     return conn;
   }
   
@@ -193,14 +193,14 @@ public class JDBCConnect implements java.io.Serializable {
       insertVector(statements);
       worked = true;
     } catch (ProjectInvalidException e) {
-      CustomOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", CustomOptionPane.ERROR_MESSAGE);
+      JDBCOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", JDBCOptionPane.ERROR_MESSAGE);
       worked = false;
     } catch (DataTruncation e) {
       String errorString = "Data truncation error: make sure the fields in the \"Field Mappings\" tab of your JDBC settings is correct. "+
       "It appears that one of the values is set incorrectly.";
-      CustomOptionPane.showMessageDialog(parentFrame, errorString, "Export Error", CustomOptionPane.ERROR_MESSAGE);
+      JDBCOptionPane.showMessageDialog(parentFrame, errorString, "Export Error", JDBCOptionPane.ERROR_MESSAGE);
     } catch (SQLException e) {
-      CustomOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", CustomOptionPane.ERROR_MESSAGE);
+      JDBCOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", JDBCOptionPane.ERROR_MESSAGE);
       System.err.println("Could not export timelist to database: "+e);
       worked = false;
     }
@@ -223,7 +223,7 @@ public class JDBCConnect implements java.io.Serializable {
       for(int i=0; i<names.length; i++)
         names[i] = (String)records.elementAt(i);
     } catch (SQLException e) {
-      CustomOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Project Error", CustomOptionPane.ERROR_MESSAGE);
+      JDBCOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Project Error", JDBCOptionPane.ERROR_MESSAGE);
       System.err.println("Could not get project list from database: "+e);
     } finally {
       try {
@@ -320,7 +320,7 @@ public class JDBCConnect implements java.io.Serializable {
     }
   }
   
-  void testDriverSettings() {
+  public void testDriverSettings() {
     try {
       if(name.equals(odbcDriverName)) url = "jdbc:odbc:"+url;
       Connection conn = openConnection();
@@ -328,9 +328,9 @@ public class JDBCConnect implements java.io.Serializable {
         DatabaseMetaData dbmeta = conn.getMetaData();
         ResultSet cols = dbmeta.getColumns(null, database, table, null);
         if((cols == null) || ! cols.next())
-          CustomOptionPane.showMessageDialog(parentFrame, "Table "+database+"."+table+" cannot be found.", "Table Not Found", CustomOptionPane.ERROR_MESSAGE);
+          JDBCOptionPane.showMessageDialog(parentFrame, "Table "+database+"."+table+" cannot be found.", "Table Not Found", JDBCOptionPane.ERROR_MESSAGE);
         else
-          CustomOptionPane.showMessageDialog(parentFrame, "Driver connection verified.", "Driver verified", CustomOptionPane.INFORMATION_MESSAGE);
+          JDBCOptionPane.showMessageDialog(parentFrame, "Driver connection verified.", "Driver verified", JDBCOptionPane.INFORMATION_MESSAGE);
         if(cols != null) cols.close();
         conn.close();
       }
@@ -448,7 +448,7 @@ public class JDBCConnect implements java.io.Serializable {
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
       addWindowListener(new java.awt.event.WindowAdapter() {
         public void windowClosing(java.awt.event.WindowEvent we) {
-          optionPane.setValue(new Integer(CustomOptionPane.CLOSED_OPTION));
+          optionPane.setValue(new Integer(JDBCOptionPane.CLOSED_OPTION));
         }
       });
       
@@ -456,10 +456,10 @@ public class JDBCConnect implements java.io.Serializable {
         public void propertyChange(java.beans.PropertyChangeEvent e) {
           String prop = e.getPropertyName();
           
-          if (isVisible() && (e.getSource() == optionPane) && (prop.equals(CustomOptionPane.VALUE_PROPERTY) || prop.equals(CustomOptionPane.INPUT_VALUE_PROPERTY))) {
+          if (isVisible() && (e.getSource() == optionPane) && (prop.equals(JDBCOptionPane.VALUE_PROPERTY) || prop.equals(JDBCOptionPane.INPUT_VALUE_PROPERTY))) {
             String value = optionPane.getValue().toString();
-            if (value == CustomOptionPane.UNINITIALIZED_VALUE) return;
-            optionPane.setValue(CustomOptionPane.UNINITIALIZED_VALUE);
+            if (value == JDBCOptionPane.UNINITIALIZED_VALUE) return;
+            optionPane.setValue(JDBCOptionPane.UNINITIALIZED_VALUE);
             
             if (value.equals("0")) {
               password = new String(passField.getPassword());
