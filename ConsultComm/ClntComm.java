@@ -36,9 +36,9 @@ public class ClntComm extends javax.swing.JPanel {
   private java.awt.Dimension windowSize;
   private int projColumnWidth;
   private int index, selectedIndex;
-  private int timeFormat = MINUTES;
-  private int attributes = SHOW_TOTAL | SHOW_BILLABLE | SHOW_EXPORT;
-  private int showTotal = SHOW_TOTAL;
+  private int timeFormat;
+  private int attributes;
+  private int showTotal;
   private int saveInterval = 60;
   private int idleAction = IDLE_PAUSE, allowedIdle = 0;
   private String idleProject = null;
@@ -200,7 +200,6 @@ public class ClntComm extends javax.swing.JPanel {
     setPreferredSize(windowSize);
     totalPanel.setLayout(new java.awt.GridLayout(1, 2));
     
-    totalText.setForeground(java.awt.Color.black);
     totalText.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
     totalText.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -210,7 +209,6 @@ public class ClntComm extends javax.swing.JPanel {
     
     totalPanel.add(totalText);
     
-    totalTime.setForeground(java.awt.Color.black);
     totalTime.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
     refreshTotalTime();
     totalTime.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -369,6 +367,7 @@ public class ClntComm extends javax.swing.JPanel {
   
   private void newProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProject
     editWindow(times.size());
+    if(selectedIndex < 0) selectedIndex = 0;
     TimeRecord record = times.elementAt(selectedIndex); //find current selected record
     times.sort();
     selectedIndex = times.indexOf(record); //restore selected record
@@ -483,7 +482,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     if (edit.getValue().equals("0")) {
       long newTime = System.currentTimeMillis()/1000;
       if (index == selectedIndex) timer.startTime = newTime-record.seconds;
-      if(newRecord) times.add(record);
+      if(newRecord) times.add(record); 
       timeList.setModel(times.toTableModel(timeFormat));
       timeList.repaint();
       if(selectedIndex == -1) //Nothing selected
@@ -498,145 +497,157 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
    * Read through preferances file
    */
   private void readPrefs() {
-    File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
-    times = new TimeRecordSet();
-    if (prefs.exists()) {
-      try {
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document doc = docBuilder.parse(prefs);
+    try {
+      File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
+      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+      docBuilder = docBuilderFactory.newDocumentBuilder();
+      Document doc;
+      
+      if(prefs.exists()) {
+        doc = docBuilder.parse(prefs);
         doc.getDocumentElement().normalize();
-        NodeList projects = doc.getElementsByTagName("project");
+      } else {
+        doc = docBuilder.newDocument();
+        Element rootNode = doc.createElement("clntcomm");
+        rootNode.setAttribute("version", "2.2");
+        doc.appendChild(rootNode);
+      }
+      
+      //Get all projects
+      NodeList projects = doc.getElementsByTagName("project");
+      times = new TimeRecordSet();
+      for(int i=0; i<projects.getLength(); i++){
+        Node project = projects.item(i);
+        NamedNodeMap attributes = project.getAttributes();
+        Node nameNode = attributes.getNamedItem("name");
+        String name = nameNode.getNodeValue();
+        Node aliasNode = attributes.getNamedItem("alias");
+        String alias = null;
+        if(aliasNode != null) alias = aliasNode.getNodeValue();
+        Node secondsNode = attributes.getNamedItem("seconds");
+        long seconds = Long.parseLong(secondsNode.getNodeValue());
+        Node billableNode = attributes.getNamedItem("billable");
+        boolean billable = ! billableNode.getNodeValue().equals("false");
+        Node exportNode = attributes.getNamedItem("export");
+        boolean export = exportNode != null ? ! exportNode.getNodeValue().equals("false") : billable;
         
-        //Get all projects
-        for(int i=0; i<projects.getLength(); i++){
-          Node project = projects.item(i);
-          NamedNodeMap attributes = project.getAttributes();
-          Node nameNode = attributes.getNamedItem("name");
-          String name = nameNode.getNodeValue();
-          Node aliasNode = attributes.getNamedItem("alias");
-          String alias = null;
-          if(aliasNode != null) alias = aliasNode.getNodeValue();
-          Node secondsNode = attributes.getNamedItem("seconds");
-          long seconds = Long.parseLong(secondsNode.getNodeValue());
-          Node billableNode = attributes.getNamedItem("billable");
-          boolean billable = ! billableNode.getNodeValue().equals("false");
-          Node exportNode = attributes.getNamedItem("export");
-          boolean export = exportNode != null ? ! exportNode.getNodeValue().equals("false") : billable;
-          
-          Node selectedNode = attributes.getNamedItem("selected");
-          if(selectedNode != null && selectedNode.getNodeValue().equals("true"))
-            selectedIndex = i;
-          TimeRecord record = new TimeRecord(name, alias, seconds, billable, export);
-          times.add(record);
-        }
-        
-        NamedNodeMap attribute = null;
-        
-        //Get window dimensions
-        NodeList dimensions = doc.getElementsByTagName("dimensions");
-        Node dimension = dimensions.item(0);
+        Node selectedNode = attributes.getNamedItem("selected");
+        if(selectedNode != null && selectedNode.getNodeValue().equals("true"))
+          selectedIndex = i;
+        TimeRecord record = new TimeRecord(name, alias, seconds, billable, export);
+        times.add(record);
+      }
+      
+      NamedNodeMap attribute = null;
+      
+      //Get window dimensions
+      NodeList dimensions = doc.getElementsByTagName("dimensions");
+      Node dimension = dimensions.item(0);
+      if(dimension != null) {
         attribute = dimension.getAttributes();
         double width = Double.parseDouble(attribute.getNamedItem("width").getNodeValue());
         double height = Double.parseDouble(attribute.getNamedItem("height").getNodeValue());
         windowSize = new java.awt.Dimension((int)width, (int)height);
-        
-        //Get project column dimensions
-        NodeList projColumns = doc.getElementsByTagName("projcolumn");
-        Node projColumn = projColumns.item(0);
+      }
+      
+      //Get project column dimensions
+      NodeList projColumns = doc.getElementsByTagName("projcolumn");
+      Node projColumn = projColumns.item(0);
+      if(projColumn != null) {
         attribute = projColumn.getAttributes();
         projColumnWidth = Integer.parseInt(attribute.getNamedItem("width").getNodeValue());
-        
-        //Decide whether to show total time/billable time
-        NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
-        if(showTotalTimes.getLength() > 0) {
-          Node showTotalTime = showTotalTimes.item(0);
-          attribute = showTotalTime.getAttributes();
-          String showTotalString = attribute.getNamedItem("display").getNodeValue();
-          try {
-            showTotal = Integer.parseInt(showTotalString);
-          } catch (NumberFormatException e) {
-            //Older versions used a string or a boolean to save the pref instead
-            //of an int, so just give it a default value
-            showTotal = SHOW_TOTAL;
-          }
-        } else {
+      }
+      
+      //Decide whether to show total time/billable time
+      NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
+      Node showTotalTime = showTotalTimes.item(0);
+      if(showTotalTime != null) {
+        attribute = showTotalTime.getAttributes();
+        String showTotalString = attribute.getNamedItem("display").getNodeValue();
+        try {
+          showTotal = Integer.parseInt(showTotalString);
+        } catch (NumberFormatException e) {
+          //Older versions used a string or a boolean to save the pref instead
+          //of an int, so just give it a default value
           showTotal = SHOW_TOTAL;
         }
-        
-        
-        //Get time format
-        NodeList timeFormats = doc.getElementsByTagName("timeformat");
-        if(timeFormats.getLength() > 0) {
-          Node timeFormatting = timeFormats.item(0);
-          attribute = timeFormatting.getAttributes();
-          String timeFormatString = attribute.getNamedItem("type").getNodeValue();
-          if(timeFormatString.equals("seconds")) timeFormat = SECONDS;
-          if(timeFormatString.equals("minutes")) timeFormat = MINUTES;
-        } else {
-          timeFormat = MINUTES;
-        }
-        
-        //Get attribute flags
-        NodeList attributeFlags = doc.getElementsByTagName("attributes");
-        if(attributeFlags.getLength() > 0) {
-          Node attributeFlag = attributeFlags.item(0);
-          attribute = attributeFlag.getAttributes();
-          String attributesString = attribute.getNamedItem("value").getNodeValue();
-          attributes = Integer.parseInt(attributesString);
-        } else {
-          attributes = SHOW_TOTAL | SHOW_BILLABLE | SHOW_EXPORT;
-        }
-        
-        //Get save interval
-        NodeList saveInfos = doc.getElementsByTagName("saveinfo");
-        if(saveInfos.getLength() > 0) {
-          Node saveInfo = saveInfos.item(0);
-          attribute = saveInfo.getAttributes();
-          String saveIntervalString = attribute.getNamedItem("seconds").getNodeValue();
-          saveInterval = Integer.parseInt(saveIntervalString);
-        } else {
-          saveInterval = 60;
-        }
-        
-        //Get idle time settings
-        NodeList idleTimes = doc.getElementsByTagName("idle");
-        if(idleTimes.getLength() > 0) {
-          Node idleTime = idleTimes.item(0);
-          attribute = idleTime.getAttributes();
-          String allowedIdleString = attribute.getNamedItem("seconds").getNodeValue();
-          allowedIdle = Integer.parseInt(allowedIdleString);
-          
-          Node idleActionItem = attribute.getNamedItem("action");
-          if(idleActionItem != null) {
-            String idleActionString = idleActionItem.getNodeValue();
-            if(idleActionString.equals("project"))
-              idleAction = ClntComm.IDLE_PROJECT;
-            else
-              idleAction = ClntComm.IDLE_PAUSE;
-          } else {
-            idleAction = ClntComm.IDLE_PAUSE;
-          }
-          
-          Node idleProjectItem = attribute.getNamedItem("project");
-          if(idleProjectItem != null)
-            idleProject = idleProjectItem.getNodeValue();
-          else
-            idleProject = "";
-        } else {
-          allowedIdle = 0;
-          idleAction = ClntComm.IDLE_PAUSE;
-          idleProject = "";
-        }
-      } catch (SAXParseException e) {
-        System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
-      } catch (SAXException e) {
-        System.err.println("Error reading prefs file: "+e);
-        e.printStackTrace(System.out);
-      } catch (Exception e) {
-        System.err.println("Cannot read prefs file: "+e);
-        e.printStackTrace(System.out);
+      } else {
+        showTotal = SHOW_TOTAL;
       }
+      
+      
+      //Get time format
+      NodeList timeFormats = doc.getElementsByTagName("timeformat");
+      Node timeFormatting = timeFormats.item(0);
+      if(timeFormatting != null) {
+        attribute = timeFormatting.getAttributes();
+        String timeFormatString = attribute.getNamedItem("type").getNodeValue();
+        if(timeFormatString.equals("seconds")) timeFormat = SECONDS;
+        if(timeFormatString.equals("minutes")) timeFormat = MINUTES;
+      } else {
+        timeFormat = MINUTES;
+      }
+      
+      //Get attribute flags
+      NodeList attributeFlags = doc.getElementsByTagName("attributes");
+      Node attributeFlag = attributeFlags.item(0);
+      if(attributeFlag != null) {
+        attribute = attributeFlag.getAttributes();
+        String attributesString = attribute.getNamedItem("value").getNodeValue();
+        attributes = Integer.parseInt(attributesString);
+      } else {
+        attributes = SHOW_TOTAL | SHOW_BILLABLE | SHOW_EXPORT;
+      }
+      
+      //Get save interval
+      NodeList saveInfos = doc.getElementsByTagName("saveinfo");
+      Node saveInfo = saveInfos.item(0);
+      if(saveInfo != null) {
+        attribute = saveInfo.getAttributes();
+        String saveIntervalString = attribute.getNamedItem("seconds").getNodeValue();
+        saveInterval = Integer.parseInt(saveIntervalString);
+      } else {
+        saveInterval = 60;
+      }
+      
+      //Get idle time settings
+      NodeList idleTimes = doc.getElementsByTagName("idle");
+      Node idleTime = idleTimes.item(0);
+      if(idleTime != null) {
+        attribute = idleTime.getAttributes();
+        String allowedIdleString = attribute.getNamedItem("seconds").getNodeValue();
+        allowedIdle = Integer.parseInt(allowedIdleString);
+        
+        Node idleActionItem = attribute.getNamedItem("action");
+        if(idleActionItem != null) {
+          String idleActionString = idleActionItem.getNodeValue();
+          if(idleActionString.equals("project"))
+            idleAction = ClntComm.IDLE_PROJECT;
+          else
+            idleAction = ClntComm.IDLE_PAUSE;
+        } else {
+          idleAction = ClntComm.IDLE_PAUSE;
+        }
+        
+        Node idleProjectItem = attribute.getNamedItem("project");
+        if(idleProjectItem != null)
+          idleProject = idleProjectItem.getNodeValue();
+        else
+          idleProject = "";
+      } else {
+        allowedIdle = 0;
+        idleAction = ClntComm.IDLE_PAUSE;
+        idleProject = "";
+      }
+    } catch (SAXParseException e) {
+      System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
+    } catch (SAXException e) {
+      System.err.println("Error reading prefs file: "+e);
+      e.printStackTrace(System.out);
+    } catch (Exception e) {
+      System.err.println("Cannot read prefs file: "+e);
+      e.printStackTrace(System.out);
     }
   }
   
@@ -689,35 +700,26 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       newNode = doc.createElement("dimensions");
       newNode.setAttribute("width", Double.toString(size.getWidth()));
       newNode.setAttribute("height", Double.toString(size.getHeight()));
-      if(dimensions.getLength() > 0) {
-        Node dimension = dimensions.item(0);
-        rootNode.replaceChild(newNode, dimension);
-      } else {
-        rootNode.appendChild(newNode);
-      }
+      Node dimension = dimensions.item(0);
+      if(dimension != null) rootNode.replaceChild(newNode, dimension);
+      else rootNode.appendChild(newNode);
       
       //Save project column dimensions
       NodeList projColumns = doc.getElementsByTagName("projcolumn");
       TableColumn projectColumn = timeList.getColumnModel().getColumn(0);
       newNode = doc.createElement("projcolumn");
       newNode.setAttribute("width", Integer.toString(projectColumn.getPreferredWidth()));
-      if(projColumns.getLength() > 0) {
-        Node projColumn = projColumns.item(0);
-        rootNode.replaceChild(newNode, projColumn);
-      } else {
-        rootNode.appendChild(newNode);
-      }
+      Node projColumn = projColumns.item(0);
+      if(projColumn != null) rootNode.replaceChild(newNode, projColumn);
+      else rootNode.appendChild(newNode);
       
       //Save show billable/total time flag
       NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
       newNode = doc.createElement("showtotaltime");
       newNode.setAttribute("display", Integer.toString(showTotal));
-      if(showTotalTimes.getLength() > 0) {
-        Node showTotalTime = showTotalTimes.item(0);
-        rootNode.replaceChild(newNode, showTotalTime);
-      } else {
-        rootNode.appendChild(newNode);
-      }
+      Node showTotalTime = showTotalTimes.item(0);
+      if(showTotalTime != null) rootNode.replaceChild(newNode, showTotalTime);
+      else rootNode.appendChild(newNode);
       
       //Write to file
       doc.getDocumentElement().normalize();
