@@ -9,36 +9,65 @@
 of the JRE are supported with the ConsultComm 2 series.
 <P>
 
+<DT><B>The Windows installer just bombs out and says "Configuration file is broken"</B>
+<DD>You're probably trying to execute Setup.exe from within a .zip file, which is
+confusing the installation program. The contents of the Windows installer .zip file 
+need to be extracted before you can run the installation program. Probably the 
+easiest way to do this is to just open up the .zip file as you normally would, then drag-n-drop the ConsultComm folder inside to your desktop. Run Setup.exe from 
+the folder you just copied over and things should work fine.
+<P>
+
 <DT><B>How do I backup/restore my personal settings?</B>
-<DD>Just archive the CsltComm directory from your user directory. When you need 
-them again, just place it back in your user directory.
+<DD>Just archive the CsltComm directory from your user directory (in Windows, this 
+is a subfolder underneath <I>C:\Documents and Settings</I>). When you need them again, 
+just place the contents of the folder back in your user directory.
 <P>
 
 <DT><B>Nothing happens when I double-click on CsltComm.jar</B>
-<DD>Either a) the Java Runtime Environment isn't installed correctly or b) 
-your file associations are incorrect. Try uninstalling and reinstalling the 
-Java Runtime Environment and see if that helps. If not, trying invoking 
-ConsultComm from the command line by using <CODE>java -jar 
-CsltComm.jar</CODE>.
+<DD>There are a few ways to launch ConsultComm, depending on your operating
+system. The Windows installer (named something akin to ConsultComm_Installer.jar 
+or ConsultComm_WinInstaller.zip) will create icons in your start menu for you.
+The Linux RPM installer should setup icons for most distributions of KDE or Gnome.
+If you're running this from the plain ol' ConsultComm.zip file or have built
+ConsultComm from source, Windows users can run the ConsultComm.bat file in the 
+ConsultComm directory or Unix variants can execute the ./ConsultComm script.
+<BR><BR>
+If all else fails, either a) the Java Runtime Environment isn't installed 
+correctly or b) your file associations are incorrect. Try uninstalling and 
+reinstalling the Java Runtime Environment and see if that helps. If not, trying 
+invoking ConsultComm from the command line by changing into your installation 
+directory and using <CODE>java -Djava.library.path=syslibs -jar CsltComm.jar</CODE>.
 <P>
 
 <DT><B>Why can't I set ConsultComm to pause after being idle for <I>x</I>
 seconds?
+<DT><B>Why doesn't the system tray icon appear?
 <DD>Currently only Microsoft&#174; Windows&#174;, Solaris, Linux or other 
 Unix variants running X Windows can detect how long a user session is idle 
-under ConsultComm. I can support other platforms as well, but I would need 
-someone to supply the source code to do so. If you're interested, visit 
-http://sourceforge.net/projects/consultcomm/
-<P>
-<DD>If you are running ConsultComm on a supported platform but can't get 
+or display the system tray icon under ConsultComm. I can support other 
+platforms as well, but I would need someone to supply the source code to do 
+so. If you're interested, visit http://sourceforge.net/projects/consultcomm/
+<BR><BR>
+If you are running ConsultComm on a supported platform but can't get 
 idle time working, make sure you've download the correct installer package 
 for your platform or that you've compiled the appropriate libraries when 
-building from source.
+building from source. If everything is up to date, try going into your
+ConsultComm installation directory (i.e. <I>C:\Program Files\ConsultComm</I> 
+or <I>/usr/share/ConsultComm</I>) and deleting the following files from the 
+<I>syslibs</I> folder:
+<BR>
+<LI>timeout.dll
+<LI>tray.dll
+<LI>libtimeout.so
+<LI>libtray.so
+<BR>
+Restart ConsultComm and see if that helps.
 <P>
 
 <DT><B>Why the heck is this called "Consultant Communicator?"</B>
 <DD>That's an interesting story. Actually not so much interesting as it is 
-long.<BR>
+long.
+<BR><BR>
 This application started out as a peer-to-peer instant messaging client. I 
 thought it would be nice to have a lightweight IM app that wouldn't rely on a 
 central server so I could coordinate with co-workers at our satellite office. 
@@ -49,7 +78,8 @@ much more interested in the time tracking portion of it than the IM portion of
 it. I had more requests for the project tracker and no interest whatsoever for 
 the IM client. To quote the CVS entry from when I removed the instant 
 messaging client code: <CODE>Just 'cause you can write a chat client doesn't 
-mean you should</CODE>.<BR>
+mean you should</CODE>.
+<BR><BR>
 So now I've got an application that is called "Consultant Communicator" that 
 doesn't do a heckuva lotta communication. But I kept the name since it was 
 original, everyone already referred to it as "ConsultComm," and I don't want 
