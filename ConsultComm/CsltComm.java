@@ -35,7 +35,7 @@ public class CsltComm extends javax.swing.JFrame {
             System.exit(0);
         }
         
-        appIcon = JarLoader.loadImage("graphics/icon.gif");
+        appIcon = JarLoader.loadImage("graphics/ConsultComm_16.png");
 
         readPrefs();
         loadSkin();

@@ -31,7 +31,7 @@ public class ClntComm extends javax.swing.JPanel {
     private java.util.Timer timer;
     private int index;
     private int selectedIndex;
-    private Vector plugins;
+    private Vector plugins = new Vector();
     private TimeRecordSet times;
     private TotalPanel totalPanel;
     
@@ -461,15 +461,18 @@ public class ClntComm extends javax.swing.JPanel {
   
   void loadPlugins() {
       try{
-          changes = null;
-          plugins = null;
-          System.gc();
-          System.runFinalization();
+          //Deregister our old plugins, if they exist
+          for(int i=0, max=plugins.size(); i<max; i++) {
+              CsltCommPlugin plugin = (CsltCommPlugin)plugins.elementAt(i);
+              plugin.unregister();
+          }
+          plugins.removeAllElements();
           
+          //Get our new plugins and activate them
           changes = new PropertyChangeSupport(this);
           plugins = PluginManager.getPlugins();
-          for(int i=0; i<plugins.size(); i++) {
-              Object plugin = plugins.elementAt(i);
+          for(int i=0, max=plugins.size(); i<max; i++) {
+              CsltCommPlugin plugin = (CsltCommPlugin)plugins.elementAt(i);
               changes.addPropertyChangeListener((PropertyChangeListener)plugin);
               
               try {
