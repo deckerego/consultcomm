@@ -15,8 +15,6 @@ dryrun:
 
 package:
 	$(JAR) cfm CsltComm.jar $(MFST) *.class graphics/*.gif
-	zip -r $(BINPKG) CsltComm.jar README AUTHORS COPYING CHANGES INSTALL XML graphics/*.gif
-	tar -cvzf $(SOURCEPKG) *.java *.form graphics/*.gif README AUTHORS COPYING CHANGES INSTALL CsltMfst
 
 clean:
 	rm -f *.class
