@@ -362,6 +362,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
     private void showProjectNames(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showProjectNames
         getRootPane().setDefaultButton(mapOK);
         projectMapping.setModel(dbConnection.getTableMap().toProjectNamesTableModel());
+        projectMapping.getColumnModel().getColumn(0).setPreferredWidth(1);
         projectMapping.repaint();
     }//GEN-LAST:event_showProjectNames
     
