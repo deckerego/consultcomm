@@ -70,6 +70,7 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
 
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
     optionInputPanel.add(useCheckBox, gridBagConstraints);
 
@@ -83,6 +84,7 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
     secField.setMaximumSize(null);
     secField.setMinimumSize(new java.awt.Dimension(59, 19));
     gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
     optionInputPanel.add(secField, gridBagConstraints);
 
@@ -98,6 +100,7 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
     selectButtonGroup.add(pauseRadioButton);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
     optionInputPanel.add(pauseRadioButton, gridBagConstraints);
 
@@ -113,6 +116,7 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
     projectCombo.setMaximumSize(null);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
     optionInputPanel.add(projectCombo, gridBagConstraints);
 
