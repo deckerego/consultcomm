@@ -13,7 +13,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
-public class JDBCConnect implements java.io.Serializable, CsltCommListener {
+public class JDBCConnect implements java.io.Serializable, java.beans.PropertyChangeListener {
     final static String ODBCDRIVERNAME = "sun.jdbc.odbc.JdbcOdbcDriver";
     
     private Vector errorList;
@@ -277,9 +277,8 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
         }
     }
     
-    public void clockTick(CsltCommEvent actionEvent) {
-        //Set the referring object
-        clntComm = (ClntComm)actionEvent.getSource();
+    public void propertyChange(java.beans.PropertyChangeEvent propertyChangeEvent) {
+        if(clntComm == null) clntComm = (ClntComm)propertyChangeEvent.getSource();
     }
     
     private class LoginDialog extends JDialog {

@@ -44,12 +44,13 @@ public class ClntComm extends javax.swing.JPanel {
     private float perHour;
     private int saveInterval = 60;
     private Vector plugins;
-    
+    private PropertyChangeSupport changes;
     private TimeRecordSet times;
     
     /** Creates new form TimeTrack */
     public ClntComm(CsltComm parent) {
         csltComm = parent;
+        changes = new PropertyChangeSupport(this);
         
         readPrefs();
         timerTask = new TimerThread();
@@ -406,10 +407,6 @@ public void refreshTotalTime(){
     totalTime.repaint();
 }
 
-private CsltCommEvent getCsltCommEvent() {
-    return new CsltCommEvent(this);
-}
-
 public boolean attributeSet(int flag) {
     return flag==0 ? true : (flag ^ attributes) != (flag | attributes);
 }
@@ -489,7 +486,7 @@ private void loadPlugins() {
         for(int i=0; i<plugins.size(); i++) {
             Object plugin = plugins.elementAt(i);
             System.out.println("Reading plugin "+plugin.getClass().getName());
-            timerTask.addCsltCommListener((CsltCommListener)plugin);
+            changes.addPropertyChangeListener((PropertyChangeListener)plugin);
             System.out.println("Trying to load menu items...");
             Expression getMenuItems = new Expression(plugin, "getMenuItems", null);
             if(getMenuItems == null) continue; //No getMenuItem() method available
@@ -498,7 +495,7 @@ private void loadPlugins() {
             for(int j=0; j<menuItems.length; j++) toolMenu.add(menuItems[j]);
             System.out.println("Menu items loaded");
         }
-        timerTask.fireAction(); //Sync everyone on an initial clock tick
+        changes.firePropertyChange("times", null, times); //Sync everyone on an initial clock tick
     } catch(Exception e) {
         System.err.println("Couldn't load plugins: "+e);
         e.printStackTrace(System.out);
@@ -662,29 +659,10 @@ public boolean isRunning(){
     private class TimerThread extends TimerTask {
         public boolean clockRunning;
         public long startTime;
-        private Vector listeners;
         
         public TimerThread() {
             clockRunning = false;
             startTime = 0;
-            listeners = new Vector();
-        }
-        
-        public synchronized void addCsltCommListener(CsltCommListener l) {
-            listeners.addElement(l);
-        }
-        public synchronized void removeCsltCommListener(CsltCommListener l) {
-            listeners.removeElement(l);
-        }
-        public void fireAction() {
-            Vector targets;
-            synchronized (this) { targets = (Vector) listeners.clone(); }
-            CsltCommEvent actionEvt = getCsltCommEvent();
-            for(int i=0; i<targets.size(); i++) {
-                CsltCommListener target = (CsltCommListener)targets.elementAt(i);
-                System.out.println("Sending action event to "+target.getClass().getName());
-                target.clockTick(actionEvt);
-            }
         }
         
         public void run(){
@@ -712,7 +690,8 @@ public boolean isRunning(){
                     //If the user requested a save now, do it
                     if (currSeconds % saveInterval == 0) savePrefs();
                     
-                    fireAction();
+                    //Send out events to our plugins
+                    changes.firePropertyChange("times", null, times);
                 }
             }
         }

@@ -8,21 +8,11 @@ public class TimeRecordSet {
     private int currColumnSorted = 0;
     
     public TimeRecordSet() {
-        timeRecords = new Vector();
+            timeRecords = new Vector();
     }
     
     public void add(TimeRecord rec) {
         timeRecords.add(rec);
-    }
-    public void setSeconds(int index, long time) {
-        TimeRecord record = elementAt(index);
-        record.setSeconds(time);
-    }
-    public TimeRecord elementAt(int index) throws java.lang.ArrayIndexOutOfBoundsException {
-        return (TimeRecord)timeRecords.elementAt(index);
-    }
-    public int indexOf(TimeRecord rec) {
-        return timeRecords.indexOf(rec);
     }
     public void delete(int index) {
         timeRecords.remove(index);
@@ -33,9 +23,10 @@ public class TimeRecordSet {
     public void resetTime() {
         for(int i=0; i<size(); i++) resetTime(i);
     }
-    
-    public int size() {
-        return timeRecords.size();
+
+    public void setSeconds(int index, long time) {
+        TimeRecord record = elementAt(index);
+        record.setSeconds(time);
     }
     public long getSeconds(int index) {
         TimeRecord record = elementAt(index);
@@ -59,15 +50,6 @@ public class TimeRecordSet {
         while (records.hasMoreElements()) {
             TimeRecord record = (TimeRecord)records.nextElement();
             if(record.isBillable()) total += record.getSeconds();
-        }
-        return parseSeconds(total);
-    }
-    public String getExportTimeString() {
-        long total = 0;
-        Enumeration records = timeRecords.elements();
-        while (records.hasMoreElements()) {
-            TimeRecord record = (TimeRecord)records.nextElement();
-            total += record.getSeconds();
         }
         return parseSeconds(total);
     }
@@ -115,6 +97,16 @@ public class TimeRecordSet {
         }
         return names;
     }
+    
+    public TimeRecord elementAt(int index) throws java.lang.ArrayIndexOutOfBoundsException {
+        return (TimeRecord)timeRecords.elementAt(index);
+    }
+    public int size() {
+        return timeRecords.size();
+    }
+    public int indexOf(TimeRecord rec) {
+        return timeRecords.indexOf(rec);
+    }
     public int indexOfProject(String projectName) {
         Enumeration records = timeRecords.elements();
         for(int i=0; records.hasMoreElements(); i++) {
@@ -156,7 +148,6 @@ public class TimeRecordSet {
             System.err.println("Cannot sort by column "+currColumnSorted);
         }
     }
-    
     public void sort(int column) {
         try {
             if((currColumnSorted != column) || reverseSort) {
