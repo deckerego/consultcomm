@@ -29,6 +29,7 @@ public class PrefsPanel extends javax.swing.JFrame {
       tabbedPane = new javax.swing.JTabbedPane();
       prefsPanel = new javax.swing.JPanel();
       prefsInputPanel = new javax.swing.JPanel();
+      generalLabel = new javax.swing.JLabel();
       timeFormatLabel = new javax.swing.JLabel();
       minuteButton = new javax.swing.JRadioButton();
       secondButton = new javax.swing.JRadioButton();
@@ -51,7 +52,16 @@ public class PrefsPanel extends javax.swing.JFrame {
       prefsInputPanel.setLayout(new java.awt.GridBagLayout());
       java.awt.GridBagConstraints gridBagConstraints1;
       
-      timeFormatLabel.setText("Show time in:");
+      generalLabel.setText("General Properties (requires restart)");
+      generalLabel.setForeground(java.awt.Color.black);
+      generalLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+      gridBagConstraints1 = new java.awt.GridBagConstraints();
+      gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+      gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+      gridBagConstraints1.insets = new java.awt.Insets(10, 0, 5, 0);
+      prefsInputPanel.add(generalLabel, gridBagConstraints1);
+      
+      timeFormatLabel.setText("Show time in:  ");
       gridBagConstraints1 = new java.awt.GridBagConstraints();
       prefsInputPanel.add(timeFormatLabel, gridBagConstraints1);
       
@@ -239,6 +249,7 @@ public class PrefsPanel extends javax.swing.JFrame {
   private javax.swing.JTabbedPane tabbedPane;
   private javax.swing.JPanel prefsPanel;
   private javax.swing.JPanel prefsInputPanel;
+  private javax.swing.JLabel generalLabel;
   private javax.swing.JLabel timeFormatLabel;
   private javax.swing.JRadioButton minuteButton;
   private javax.swing.JRadioButton secondButton;
