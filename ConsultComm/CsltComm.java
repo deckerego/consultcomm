@@ -39,9 +39,9 @@ public class CsltComm extends javax.swing.JFrame {
       Class.forName("org.xml.sax.Parser"); // xalan.jar
     } catch (ClassNotFoundException e) {
       String extdir = System.getProperty("java.ext.dirs");
-      String errMsg = "Java API for XML Parsing was not found.\n"+
-      "Make sure you have downloaded the Java API at\n"+
-      "http://java.sun.com/xml/download.html and have installed\n"+
+      String errMsg = "Java API for XML Parsing was not found. "+
+      "Make sure you have downloaded the Java API at "+
+      "http://java.sun.com/xml/download.html and have installed "+
       "all .jar files in "+extdir;
       CustomOptionPane.showMessageDialog(this, errMsg, "JAXP Not Found", CustomOptionPane.ERROR_MESSAGE);
       System.exit(0);
