@@ -512,9 +512,10 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   private void readPrefs() {
     try {
       PrefsFile prefs = new PrefsFile("ClntComm.def");
+      PrefsFile projs = new PrefsFile("projects.xml");
       
       //Get all projects
-      NodeList projects = prefs.getElementsByTagName("project");
+      NodeList projects = projs.getElementsByTagName("project");
       times = new TimeRecordSet();
       for(int i=0; i<projects.getLength(); i++){
         Node project = projects.item(i);
@@ -590,25 +591,27 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   
   private void savePrefs() {
     try {
+      //Open all pref files first, that way we can automatically
+      //convert any deprecated prefs files
       PrefsFile prefs = new PrefsFile("ClntComm.def");
+      PrefsFile projs = new PrefsFile("projects.xml");
       
       //Delete projects
-      prefs.removeAllChildren("project");
+      projs.removeAllChildren("project");
       
       //Save projects
       selectedIndex = timeList.getSelectedRow();
       for(int i=0; i<times.size(); i++){
         TimeRecord record = times.elementAt(i);
-        Element newNode = prefs.createElement("project");
+        Element newNode = projs.createElement("project");
         newNode.setAttribute("name", record.projectName);
-        if(record.alias != null)
-          newNode.setAttribute("alias", record.alias);
+        if(record.alias != null) newNode.setAttribute("alias", record.alias);
         newNode.setAttribute("seconds", Long.toString(record.seconds));
         newNode.setAttribute("billable", record.billable ? "true" : "false");
         newNode.setAttribute("export", record.export ? "true" : "false");
         if(i == selectedIndex)
           newNode.setAttribute("selected", "true");
-        prefs.appendChild(newNode);
+        projs.appendChild(newNode);
       }
       
       //Save window dimensions
@@ -625,11 +628,12 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       prefs.saveFirst("showtotaltime", "display", showTotal);
       
       //Write to file
+      projs.write();
       prefs.write();
     } catch (ParserConfigurationException e) {
-      System.err.println("Error writing prefs file: "+e);
+      System.err.println("Error writing prefs file(s): "+e);
     } catch (Exception e) {
-      System.err.println("Cannot write to prefs file: "+e);
+      System.err.println("Cannot write to prefs file(s): "+e);
       e.printStackTrace(System.out);
     }
   }
@@ -639,27 +643,27 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   }
   
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JMenuItem editMenuItem;
-  private javax.swing.JMenuItem editPopupItem;
-  private javax.swing.JButton startButton;
-  private javax.swing.JMenuItem deletePopupItem;
-  private javax.swing.JMenuBar menuBar;
-  private javax.swing.JMenuItem helpMenuItem;
   private javax.swing.JLabel totalTime;
-  private javax.swing.JMenuItem jdbcMenuItem;
-  private javax.swing.JPanel menuPanel;
-  private javax.swing.JMenuItem dbexportMenuItem;
-  private javax.swing.JMenuItem prefsMenuItem;
   private javax.swing.JPanel totalPanel;
-  private javax.swing.JMenuItem deleteMenuItem;
-  private javax.swing.JMenuItem zeroMenuItem;
+  private javax.swing.JMenuItem jdbcMenuItem;
+  private javax.swing.JScrollPane scrollPane;
+  private javax.swing.JMenuItem dbexportMenuItem;
+  private javax.swing.JMenuItem editMenuItem;
+  private javax.swing.JMenuItem addMenuItem;
+  private javax.swing.JMenuItem prefsMenuItem;
+  private javax.swing.JMenuItem helpMenuItem;
   private javax.swing.JMenu projectMenu;
   private javax.swing.JMenu toolMenu;
-  private javax.swing.JScrollPane scrollPane;
-  private javax.swing.JMenuItem addMenuItem;
-  private javax.swing.JLabel totalText;
+  private javax.swing.JButton startButton;
+  private javax.swing.JMenuBar menuBar;
+  private javax.swing.JPanel menuPanel;
   private javax.swing.JTable timeList;
   private javax.swing.JPopupMenu editMenu;
+  private javax.swing.JMenuItem deletePopupItem;
+  private javax.swing.JMenuItem zeroMenuItem;
+  private javax.swing.JLabel totalText;
+  private javax.swing.JMenuItem editPopupItem;
+  private javax.swing.JMenuItem deleteMenuItem;
   // End of variables declaration//GEN-END:variables
   
   /**
