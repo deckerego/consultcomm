@@ -450,6 +450,11 @@ public class ClntComm extends javax.swing.JPanel {
   
   void loadPlugins() {
       try{
+          changes = null;
+          plugins = null;
+          System.gc();
+          System.runFinalization();
+          
           changes = new PropertyChangeSupport(this);
           plugins = PluginManager.getPlugins();
           for(int i=0; i<plugins.size(); i++) {
