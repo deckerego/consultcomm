@@ -17,15 +17,13 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
     
     private native long getIdleTime();
     
-    /** Creates new TimeOut */
-    public TimeOut() {
+    static {
         if(! timeoutLibrary) { //Load twice, cause big JVM CRASH!
             getNativeLibrary("X/libtimeout.so");
             getNativeLibrary("Win32/timeout.dll");
             try {
                 System.loadLibrary("timeout");
                 timeoutLibrary = true;
-                System.out.println("Loaded Timeout");
             } catch (UnsatisfiedLinkError e) {
                 System.err.println("Couldn't find timeout library in "+System.getProperty("java.library.path"));
                 timeoutLibrary = false;
@@ -33,8 +31,12 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
         }
     }
     
+    public TimeOut() {
+    }
+    
     public String[] getProjectNames(){ return clntComm.getTimes().getAllProjects(); }
     public boolean isUse() { return this.use; }
+    public boolean getUse() { return this.use; }
     public void setUse(boolean use) { this.use = use; }
     public int getIdleAction() { return this.idleAction; }
     public void setIdleAction(int action) { this.idleAction = action; }
@@ -76,15 +78,16 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
      * Translate a file from a bytestream in the JAR file
      * @param path The relative path to the file stored in a Java Archive
      */
-    private void getNativeLibrary(String path) {
+    private static void getNativeLibrary(String path) {
         try{
             String fileName = path.substring(path.lastIndexOf('/'));
             File file = new File(PluginManager.libsdir, fileName);
+            if(file.exists()) return; //Don't reload the file if it already exists
             file.deleteOnExit();
-            InputStream in = new BufferedInputStream(this.getClass().getResourceAsStream(path));
+            InputStream in = new BufferedInputStream(TimeOut.class.getResourceAsStream(path));
             OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
             byte[] buffer = new byte[4096];
-            while(true) {
+            while(true) { //Read in the file byte by byte
                 int nBytes = in.read(buffer);
                 if (nBytes <= 0) break;
                 out.write(buffer, 0, nBytes);
