@@ -313,6 +313,9 @@ class JDBCConnect {
       String[] optValueList = {Integer.toString(hourFormat), Boolean.toString(projectCase), Boolean.toString(projectValidate), projectDatabase, projectTable, projectField};
       prefs.saveFirst("options", optAttributeList, optValueList);
       
+      //Delete old field mappings
+      prefs.removeAllChildren("fieldmap");
+      
       //Save field mappings
       for(int i=0; i<tableMap.size(); i++){
         FieldMap record = tableMap.elementAt(i);
