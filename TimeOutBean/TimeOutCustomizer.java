@@ -47,7 +47,6 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
     pauseRadioButton = new javax.swing.JRadioButton();
     switchRadioButton = new javax.swing.JRadioButton();
     projectCombo = new javax.swing.JComboBox();
-    warningLabel = new javax.swing.JLabel();
     optionButtonPanel = new javax.swing.JPanel();
     saveButton = new javax.swing.JButton();
 
@@ -63,6 +62,12 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
 
     useCheckBox.setText(" Use plugin?");
     useCheckBox.setToolTipText("<html>\n<body>\n<h3>\nCheck if you want to use the Time Out plugin\n</h3>\n</body>\n</html>");
+    useCheckBox.addChangeListener(new javax.swing.event.ChangeListener() {
+      public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        usePluginChanged(evt);
+      }
+    });
+
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -111,15 +116,6 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
     optionInputPanel.add(projectCombo, gridBagConstraints);
 
-    warningLabel.setFont(new java.awt.Font("Dialog", 0, 12));
-    warningLabel.setForeground(new java.awt.Color(153, 0, 0));
-    warningLabel.setText("Please restart ConsultComm for changes to take effect");
-    gridBagConstraints = new java.awt.GridBagConstraints();
-    gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    gridBagConstraints.insets = new java.awt.Insets(15, 0, 0, 0);
-    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-    optionInputPanel.add(warningLabel, gridBagConstraints);
-
     optionPanel.add(optionInputPanel, java.awt.BorderLayout.CENTER);
 
     saveButton.setText("Save");
@@ -138,6 +134,11 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
     add(tabbedPane, java.awt.BorderLayout.CENTER);
 
   }//GEN-END:initComponents
+
+  private void usePluginChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_usePluginChanged
+    if(useCheckBox.isSelected()) enableAll(true);
+    else enableAll(false);
+  }//GEN-LAST:event_usePluginChanged
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         saveTimeOutSettings();
@@ -216,7 +217,6 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
   private javax.swing.JRadioButton switchRadioButton;
   private javax.swing.JTabbedPane tabbedPane;
   private javax.swing.JCheckBox useCheckBox;
-  private javax.swing.JLabel warningLabel;
   // End of variables declaration//GEN-END:variables
     
 }
