@@ -11,6 +11,7 @@ class TimeRecord implements Comparable {
     projectName = "";
     seconds = 0L;
     billable = true;
+    export = true;
   }
   TimeRecord(String name, String aka, long time, boolean isBillable, boolean isExportable) {
     projectName = name;
