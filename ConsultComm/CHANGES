@@ -1,8 +1,12 @@
-Consultant Communicator 2.0
-Release 10/23/01
+Consultant Communicator 2.0.2
+Release 11/16/01
 First Released 11/99
 
 REVISION HISTORY -
+	o 2.0.2
+		- Fixed project validation field drop-down box
+	o 2.0.1
+		- Fixed "Important Directories" page for Windows
 	o 2.0
 		- Can sort columns by clicking on their header
 		- JDBC connectivity added; can upload time to any 
