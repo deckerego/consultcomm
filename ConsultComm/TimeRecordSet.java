@@ -5,7 +5,7 @@ class TimeRecordSet {
   private Vector timeRecords;
   private static final String[] titles = {"Project", "Time"};
   private boolean reverseSort = false;
-  private int currColumnSorted = -1;
+  private int currColumnSorted = 0;
   
   public TimeRecordSet() {
     timeRecords = new Vector();
