@@ -379,41 +379,18 @@ public class ClntComm extends javax.swing.JPanel {
   }//GEN-LAST:event_newProject
   
 private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleTotals
-  switch(showTotal) {
-    case SHOW_TOTAL:
-      if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
-      else if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
-      else if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
-      else if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
-      break;
-    case SHOW_BILLABLE:
-      if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
-      else if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
-      else if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
-      else if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
-      break;
-    case SHOW_EXPORT:
-      if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
-      else if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
-      else if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
-      else if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
-      break;
-    case SHOW_COUNTPAY:
-      if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
-      else if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
-      else if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
-      else if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
-      break;
-    case SHOW_COUNTDOWN:
-      if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
-      else if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
-      else if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
-      else if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
-      break;
-    default:
-      showTotal = SHOW_TOTAL;
+  if(evt.getModifiers() == java.awt.event.MouseEvent.BUTTON3_MASK) {
+    do {
+      if(showTotal == 0) showTotal = SHOW_COUNTPAY; //Reset to last item
+      else showTotal >>>= 1;
+    } while ((showTotal & attributes) == 0 && showTotal != 0);
+  } else {
+    do {
+      if(showTotal > SHOW_COUNTPAY) showTotal = 0; //Reset to first item
+      else if(showTotal == 0) showTotal = 1; //Add a bit (since left shift won't do anything)
+      else showTotal <<= 1;
+    } while ((showTotal & attributes) == 0 && showTotal != 0);
   }
-  
   refreshTotalTime();
   }//GEN-LAST:event_toggleTotals
   
@@ -518,7 +495,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     if (edit.getValue().equals("0")) {
       long newTime = System.currentTimeMillis()/1000;
       if (index == selectedIndex) timer.startTime = newTime-record.seconds;
-      if(newRecord) times.add(record); 
+      if(newRecord) times.add(record);
       timeList.setModel(times.toTableModel(timeFormat));
       timeList.repaint();
       if(selectedIndex == -1) //Nothing selected
@@ -589,7 +566,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       //Get attribute flags
       attributes = prefs.readFirstInt("attributes", "value");
       if(attributes == 0) attributes = SHOW_TOTAL; //No attributes found
-
+      
       //Get countdown minutes
       countdownMinutes = prefs.readFirstLong("countdown", "minutes");
       
@@ -619,7 +596,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   private void savePrefs() {
     try {
       PrefsFile prefs = new PrefsFile("ClntComm.def");
-
+      
       //Delete projects
       prefs.removeAllChildren("project");
       
@@ -716,8 +693,8 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         int index = times.indexOfProject(idleProject);
         if(index < 0) { //Not a valid project
           toggleTimer();
-        } else { 
-          //Set the current project to be the 'idle' project, 
+        } else {
+          //Set the current project to be the 'idle' project,
           //set the idle project to be the current
           int oldIndex = timeList.getSelectedRow();
           idleProject = times.elementAt(oldIndex).projectName;
