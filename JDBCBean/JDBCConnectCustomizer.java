@@ -473,7 +473,6 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
           e.close();
       } catch (Exception e) {
           System.err.println("Couldn't save JDBC Prefs");
-          e.printStackTrace(System.out);
       }
       
       exitForm();
