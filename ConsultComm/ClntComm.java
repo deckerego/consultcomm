@@ -59,7 +59,7 @@ public class ClntComm extends javax.swing.JPanel {
    * Read through preferances file
    */
   public void readPrefs() {
-    File prefs = new File("ClntComm.def");
+    File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
     times = new TimeRecordSet();
     if (prefs.exists()) {
       try {
@@ -120,7 +120,7 @@ public class ClntComm extends javax.swing.JPanel {
   }
   
   public void savePrefs() {
-    File prefs = new File("ClntComm.def");
+    File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
     try {
       DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -165,10 +165,8 @@ public class ClntComm extends javax.swing.JPanel {
       trans.transform(new DOMSource(doc.getDocumentElement()), new StreamResult(prefs));
     } catch (ParserConfigurationException e) {
       System.err.println("Error writing prefs file: "+e);
-      e.printStackTrace(System.out);
     } catch (Exception e) {
-      System.err.println("Cannot write prefs file: "+e);
-      e.printStackTrace(System.out);
+      System.err.println("Cannot write to prefs file: "+e);
     }
   }
   
@@ -260,7 +258,7 @@ public class ClntComm extends javax.swing.JPanel {
     });
     
     toolMenu.add(jdbcMenuItem);
-    helpMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
+    helpMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
     helpMenuItem.setText("Help");
     helpMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
