@@ -10,14 +10,15 @@
   </target>
 
   <target depends="init" name="compile">
-    <javac deprecation="on" optimize="on" srcdir="${src}" classpath="${src}:${appsrc}"/>
-    <jar destfile="${appsrc}/plugins/TimeOut.jar">
+    <javac deprecation="on" optimize="on" srcdir="${src}" classpath="${src}:${appsrc}:${appsrc}/tray.jar"/>
+    <jar destfile="${appsrc}/plugins/SysTray.jar">
       <fileset dir="${src}" includes="*.class"/>
-      <fileset dir="${src}" includes="*.gif"/>
+      <fileset dir="${src}" includes="*.png"/>
       <fileset dir="${src}" includes="*.so"/>
       <fileset dir="${src}" includes="*.dll"/>
       <manifest>
         <attribute name="Java-Bean" value="true"/>
+        <attribute name="CsltComm-Plugin" value="LoadOnlyOnce"/>
       </manifest>
     </jar>
   </target>
