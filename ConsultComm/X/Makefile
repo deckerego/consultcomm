@@ -10,3 +10,6 @@ libtimeout.so: timeout.o
 clean:
 	@rm -f *.o
 	@rm -f *.so
+
+realclean: clean
+	@rm -f ClntComm.h
