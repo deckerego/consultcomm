@@ -344,6 +344,7 @@ public class ClntComm extends javax.swing.JPanel {
           catch (CloneNotSupportedException e) { oldTimes = null; }
           times.resetTime();
           changes.firePropertyChange("times", oldTimes, times);
+          savePrefs();
           setTotals();
           timerTask.startTime = System.currentTimeMillis()/1000;
           timeList.repaint();
@@ -373,6 +374,7 @@ public class ClntComm extends javax.swing.JPanel {
               times.delete(selectedIndex);
               timeList.setModel(new TableTreeModel(times, timeFormat));
               changes.firePropertyChange("times", oldTimes, times);
+              savePrefs();
               setTotals();
           }
       }
@@ -444,6 +446,7 @@ public class ClntComm extends javax.swing.JPanel {
               changes.firePropertyChange("record", oldRecord, record);
           }
           
+          savePrefs();
           times.sort();
           timeList.setModel(new TableTreeModel(times, timeFormat));
           setTotals();
