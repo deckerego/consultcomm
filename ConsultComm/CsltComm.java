@@ -51,7 +51,7 @@ public class CsltComm extends javax.swing.JFrame {
     prefsDir.mkdir();
     readPrefs();
     
-    projectList = new ClntComm();
+    projectList = new ClntComm(this);
     getContentPane().add(projectList);
     
     if(animateIcons) {
@@ -111,6 +111,45 @@ public class CsltComm extends javax.swing.JFrame {
     projectList.exitForm();
     System.exit(0);
   }//GEN-LAST:event_exitForm
+  
+  public void reload() {
+    frameNumber = 0;
+    Image clockIcon = getImage("graphics/BlueBar.gif");
+    appIcon = getImage("graphics/icon.gif");
+    
+    if(iconPanel != null) remove(iconPanel);
+    
+    readPrefs();
+
+    if(animateIcons) {
+      iconTracker = new MediaTracker(this);
+      iconTracker.addImage(clockIcon, 0);
+      
+      Timer iconTimer = new Timer(frameDelay,
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if(projectList.isRunning()){
+            try{
+              iconTracker.waitForAll();
+            }catch(InterruptedException except){
+              System.out.println("Error printing frames");
+            }
+            frameNumber++;
+            iconPanel.repaint();
+          }
+        }
+      });
+      
+      iconTimer.setInitialDelay(0);
+      iconPanel = new MTPanel(clockIcon);
+      iconPanel.setPreferredSize(new Dimension(imageWidth, imageHeight));
+      iconPanel.setMinimumSize(new Dimension(imageWidth, imageHeight));
+      iconPanel.setMaximumSize(new Dimension(1024, imageHeight));
+
+      getContentPane().add(iconPanel);
+      iconTimer.start();
+    }
+  }
   
   /**
    * Read through preferances file
