@@ -26,7 +26,10 @@ public class TotalPanel extends javax.swing.JPanel {
         values.addElement(value);
         return index;
     }
-
+    public void removeValueAt(int index) {
+        values.removeElementAt(index);
+        titles.removeElementAt(index);
+    }
     public void setValueAt(long seconds, int index) { values.setElementAt(parseSeconds(seconds), index); }
     public void setValueAt(String value, int index) { values.setElementAt(value, index); }
     public int getIndex() { return timesClicked; }
@@ -77,7 +80,11 @@ public class TotalPanel extends javax.swing.JPanel {
     }//GEN-END:initComponents
 
     private void toggleTotal(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleTotal
-        timesClicked = (timesClicked+1)%titles.size();
+        if(evt.getModifiers() == java.awt.event.MouseEvent.BUTTON3_MASK) {
+            if(--timesClicked < 0) timesClicked = titles.size()-1;
+        } else {
+            timesClicked = (timesClicked+1)%titles.size();
+        }
         toggleTotal(timesClicked);
     }//GEN-LAST:event_toggleTotal
 

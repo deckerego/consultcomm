@@ -41,11 +41,11 @@ public class ClntComm extends javax.swing.JPanel {
         changes = new PropertyChangeSupport(this);          //Create new change listener
         totalPanel = new TotalPanel();                      //Create a new total/elapsed counter
         timerTask = new TimerThread();                      //Create a new "clock" for the project timer
-        loadPlugins();                                      //Load all the plugins
         readPrefs();                                        //Read in user preferences
         setTotals();                                        //Add our predefined counters
+        loadPlugins();                                      //Load all the plugins
         initComponents();                                   //Init all our GUI components specified in the form
-        readLayout();                                       //Restore the TableTree layout after the GUI inits
+        readLayout();                                       //Restore the GUI layout after the components init
         menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);//Add our menu items to the GUI
         timer = new java.util.Timer();                      //Wind up the clock and start it
         timer.schedule(timerTask, 0, 1000);                 
@@ -76,6 +76,7 @@ public class ClntComm extends javax.swing.JPanel {
     public int getSelectedIndex() { return this.selectedIndex; }
     public boolean isRunning(){ return timerTask.clockRunning; }
     Vector getPlugins() { return this.plugins; }
+    TotalPanel getTotalPanel() { return this.totalPanel; }
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -449,6 +450,7 @@ private void readLayout() {
         int projColumnWidth = prefs.getInt("columnWidth", (int)width/2); //Get project column dimensions
         TableColumn column = timeList.getColumnModel().getColumn(0);
         column.setPreferredWidth(projColumnWidth);
+        totalPanel.toggleTotal(prefs.getInt("totalIndex", 0)); //Get time panel's current selection
     } catch (Exception e) {
         System.err.println("Cannot read prefs file: "+e);
         times = new TimeRecordSet(); //Load default settings
@@ -481,7 +483,6 @@ private void readPrefs() {
         //Read prefs
         timeFormat = prefs.getInt("timeFormat", MINUTES); //Get time format
         saveInterval = prefs.getInt("saveInterval", 60); //Get save interval
-        totalPanel.toggleTotal(prefs.getInt("totalIndex", 0)); //Get time panel's current selection
     } catch (Exception e) {
         System.err.println("Cannot read prefs file: "+e);
         times = new TimeRecordSet(); //Load default settings
