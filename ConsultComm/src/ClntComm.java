@@ -431,9 +431,6 @@ public class ClntComm extends javax.swing.JPanel {
       edit.setVisible(true);
       
       if (edit.getValue().equals("0")) {
-          long newTime = System.currentTimeMillis()/1000;
-          timerTask.startTime = newTime-record.getSeconds();
-          
           if(newRecord) { //Send appropriate property change and add record
               TimeRecordSet oldTimes; //Copy the old timeset for the property listener
               try { oldTimes = (TimeRecordSet)times.clone(); }
@@ -447,8 +444,8 @@ public class ClntComm extends javax.swing.JPanel {
           savePrefs();
           times.sort();
           timeList.setModel(new TableTreeModel(times, timeFormat));
-          setTotals();
           timeList.setRowSelectionInterval(this.selectedIndex, this.selectedIndex);
+          setTotals();
           totalPanel.repaint();
       }
   }
