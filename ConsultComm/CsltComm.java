@@ -13,6 +13,11 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
+//SkinLF support from L2FProd.com
+import com.l2fprod.gui.plaf.skin.Skin;
+import com.l2fprod.gui.plaf.skin.CompoundSkin;
+import com.l2fprod.gui.plaf.skin.SkinLookAndFeel;
+
 
 public class CsltComm extends javax.swing.JFrame {
   public static final String release = "ConsultComm CVS Release";
@@ -24,6 +29,7 @@ public class CsltComm extends javax.swing.JFrame {
   public static int imageHeight = 4;
   public static int frameDelay = 10;
   private ClntComm projectList;
+  private String themePack, gtkTheme, kdeTheme;
   protected Image appIcon;
   protected boolean animateIcons = true;
   
@@ -32,6 +38,7 @@ public class CsltComm extends javax.swing.JFrame {
     frameNumber = 0;
     Image clockIcon = getImage("graphics/BlueBar.gif");
     appIcon = getImage("graphics/icon.gif");
+    Skin skin = null;
     
     // Will this work for Java 1.4 ?
     try {
@@ -47,9 +54,31 @@ public class CsltComm extends javax.swing.JFrame {
       JOptionPane.showMessageDialog(this, errMsg, "JAXP Not Found", JOptionPane.ERROR_MESSAGE);
       System.exit(0);
     }
-    initComponents();
+    
     prefsDir.mkdir();
     readPrefs();
+    
+    try {
+      if((kdeTheme != null) && (gtkTheme != null))
+        skin = new CompoundSkin(SkinLookAndFeel.loadSkin(kdeTheme), SkinLookAndFeel.loadSkin(gtkTheme));
+      else if(kdeTheme != null)
+        skin = SkinLookAndFeel.loadSkin(kdeTheme);
+      else if(gtkTheme != null)
+        skin = SkinLookAndFeel.loadSkin(gtkTheme);
+      else if(themePack != null)
+        skin = SkinLookAndFeel.loadThemePack(themePack);
+      
+      if(skin != null) {
+        SkinLookAndFeel.setSkin(skin);
+        UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
+      }
+    } catch (ClassNotFoundException e) {
+      System.err.println("Couldn't load theme engine!");
+    } catch (Exception e) {
+      System.err.println("Couldn't load theme! "+e);
+    }
+    
+    initComponents();
     
     projectList = new ClntComm(this);
     getContentPane().add(projectList);
@@ -78,14 +107,14 @@ public class CsltComm extends javax.swing.JFrame {
       iconPanel.setPreferredSize(new Dimension(imageWidth, imageHeight));
       iconPanel.setMinimumSize(new Dimension(imageWidth, imageHeight));
       iconPanel.setMaximumSize(new Dimension(1024, imageHeight));
-
+      
       getContentPane().add(iconPanel);
       iconTimer.start();
     }
     
     pack();
   }
-
+  
   /** This method is called from within the constructor to
    * initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is
@@ -113,6 +142,7 @@ public class CsltComm extends javax.swing.JFrame {
   }//GEN-LAST:event_exitForm
   
   public void reload() {
+    Skin skin = null;
     frameNumber = 0;
     Image clockIcon = getImage("graphics/BlueBar.gif");
     appIcon = getImage("graphics/icon.gif");
@@ -120,7 +150,29 @@ public class CsltComm extends javax.swing.JFrame {
     if(iconPanel != null) remove(iconPanel);
     
     readPrefs();
-
+    
+    try {
+      if((kdeTheme != null) && (gtkTheme != null))
+        skin = new CompoundSkin(SkinLookAndFeel.loadSkin(kdeTheme), SkinLookAndFeel.loadSkin(gtkTheme));
+      else if(kdeTheme != null)
+        skin = SkinLookAndFeel.loadSkin(kdeTheme);
+      else if(gtkTheme != null)
+        skin = SkinLookAndFeel.loadSkin(gtkTheme);
+      else if(themePack != null)
+        skin = SkinLookAndFeel.loadThemePack(themePack);
+      
+      if(skin != null) {
+        SkinLookAndFeel.setSkin(skin);
+        UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
+      } else {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      }
+    } catch (ClassNotFoundException e) {
+      System.err.println("Couldn't load theme engine!");
+    } catch (Exception e) {
+      System.err.println("Couldn't load theme! "+e);
+    }
+    
     if(animateIcons) {
       iconTracker = new MediaTracker(this);
       iconTracker.addImage(clockIcon, 0);
@@ -145,7 +197,7 @@ public class CsltComm extends javax.swing.JFrame {
       iconPanel.setPreferredSize(new Dimension(imageWidth, imageHeight));
       iconPanel.setMinimumSize(new Dimension(imageWidth, imageHeight));
       iconPanel.setMaximumSize(new Dimension(1024, imageHeight));
-
+      
       getContentPane().add(iconPanel);
       iconTimer.start();
     }
@@ -177,6 +229,26 @@ public class CsltComm extends javax.swing.JFrame {
             animateIcons = false;
         } else {
           animateIcons = true;
+        }
+        
+        //Get skins
+        NodeList skinElements = doc.getElementsByTagName("skin");
+        if(skinElements.getLength() > 0) {
+          Node skinElement = skinElements.item(0);
+          attributes = skinElement.getAttributes();
+          Node themePackItem = attributes.getNamedItem("theme");
+          if(themePackItem != null) themePack = themePackItem.getNodeValue();
+          else themePack =  null;
+          Node kdeThemeItem = attributes.getNamedItem("kde");
+          if(kdeThemeItem != null) kdeTheme = kdeThemeItem.getNodeValue();
+          else kdeTheme = null;
+          Node gtkThemeItem = attributes.getNamedItem("gtk");
+          if(gtkThemeItem != null) gtkTheme = gtkThemeItem.getNodeValue();
+          else gtkTheme = null;
+        } else {
+          themePack = null;
+          kdeTheme = null;
+          gtkTheme = null;
         }
       } catch (SAXParseException e) {
         System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
