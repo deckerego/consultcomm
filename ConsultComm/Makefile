@@ -1,7 +1,7 @@
 CC=$(JDK_HOME)/bin/javac
 JAVA=$(JDK_HOME)/bin/java
 JAR=$(JDK_HOME)/bin/jar
-CLASSES=$(CLASSPATH)
+CLASSES=$(CLASSPATH):./
 MFST=CsltMfst
 CCFLAGS=-O -deprecation
 SOURCEPKG=CsltComm.src.tar.gz
@@ -23,4 +23,6 @@ realclean: clean
 	rm -f *.def
 	rm -f CsltComm*.zip
 	rm -f CsltComm*.src.tar.gz
+	rm -f CsltComm*.exe
+	rm -f CsltComm*.bin
 	rm -f CsltComm.jar
