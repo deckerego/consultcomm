@@ -4,11 +4,14 @@
 <P>
 
 <DL>
+<DT><B>What version of the Java Runtime Environment is needed?</B>
+<DD>ConsultComm needs Java 1.4.1 or higher to run. Earlier versions
+of the JRE are supported with the ConsultComm 2 series.
+<P>
+
 <DT><B>How do I backup/restore my personal settings?</B>
 <DD>Just archive the CsltComm directory from your user directory. When you need 
 them again, just place it back in your user directory.
-See <A HREF="$APPPATHS">Important Directories You Might Need to Know</A> 
-to find out what your user directory is.
 <P>
 
 <DT><B>Nothing happens when I double-click on CsltComm.jar</B>
@@ -21,9 +24,9 @@ CsltComm.jar</CODE>.
 
 <DT><B>Why can't I set ConsultComm to pause after being idle for <I>x</I>
 seconds?
-<DD>Currently only Microsoft&#174; Windows&#174; and Linux or other Unix 
-variants running X Windows can detect how long a user session is idle under 
-ConsultComm. I can support other platforms as well, but I would need 
+<DD>Currently only Microsoft&#174; Windows&#174;, Solaris, Linux or other 
+Unix variants running X Windows can detect how long a user session is idle 
+under ConsultComm. I can support other platforms as well, but I would need 
 someone to supply the source code to do so. If you're interested, visit 
 http://sourceforge.net/projects/consultcomm/
 <P>
@@ -31,18 +34,6 @@ http://sourceforge.net/projects/consultcomm/
 idle time working, make sure you've download the correct installer package 
 for your platform or that you've compiled the appropriate libraries when 
 building from source.
-<P>
-
-<DT><B>I try to start up ConsultComm, but it keeps saying "Java API for XML 
-Processing was not found."</B>
-<DD>You might get this if you are using the Java Runtime Environment earlier 
-than 1.4 or if you haven't installed the Java XML libraries correctly. 
-Download the Java XML API at 
-<A HREF="http://java.sun.com/xml/download.html">http://java.sun.com/xml/download.html</A>
- and install all of the .jar files that come with it into the Java Extensions 
-directory on your computer (see <A HREF="$APPPATHS">Important Directories You 
-Might Need to Know</A> for the location of your extensions directory). If the 
-JAR files aren't in the correct extensions directory, ConsultComm can't load.
 <P>
 
 <DT><B>Why the heck is this called "Consultant Communicator?"</B>

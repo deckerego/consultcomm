@@ -24,11 +24,12 @@
 <!-- H --> 
 
 <!-- I --> 
+   <indexitem text="Idle, Detecting User" target="timeout" />
 
 <!-- J --> 
    <indexitem text="JDBC:">
-      <indexitem text="Using" target="db.using" />
-      <indexitem text="Mapping" target="db.mapping" />
+      <indexitem text="installing" target="db.installing" />
+      <indexitem text="using" target="db.using" />
    </indexitem>
 
 <!-- K --> 
@@ -40,9 +41,10 @@
 <!-- N --> 
 
 <!-- O --> 
-   <indexitem text="overview" target="top" />
+   <indexitem text="Overview" target="top" />
 
 <!-- P --> 
+   <indexitem text="Projects" target="using.projects" />
 
 <!-- Q --> 
 
@@ -51,6 +53,8 @@
 <!-- S --> 
 
 <!-- T --> 
+   <indexitem text="Timeout, Setting Idle" target="timeout" />
+   <indexitem text="Totals for projects" target="totals" />
 
 <!-- U --> 
 

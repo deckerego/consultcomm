@@ -4,15 +4,21 @@
          "http://java.sun.com/products/javahelp/toc_1_0.dtd">
 
 <toc version="1.0">
-<tocitem text="ConsultComm Help" image="openbook">
+<tocitem text="ConsultComm Help">
 
    <tocitem text="Preface" target="top"/>
 
    <tocitem text="Using" target="using"/>
 
-   <tocitem text="JDBC" target="over.overview">
+   <tocitem text="JDBC" target="db">
+         <tocitem text="Installing" target="db.installing"/>
          <tocitem text="Using" target="db.using"/>
          <tocitem text="Mapping" target="db.mapping"/>
+   </tocitem>
+   
+   <tocitem text="Other Plugins" target="using.plugins">
+         <tocitem text="Detecting Idle Time" target="timeout"/>
+         <tocitem text="Project Totals" target="totals"/>
    </tocitem>
 
 </tocitem>

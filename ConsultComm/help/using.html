@@ -1,140 +1,71 @@
 <HTML>
 <BODY>
-<LI><B>About Consultant Communicator</B><BR>
-Consultant Communicator (ConsultComm) is a program that allows anyone 
-managing multiple projects, clients or tasks to effectively keep track of 
-exactly how long they've spent on each project. 
-<P>
-<LI><B>Install</B><BR>
-Read the file <A HREF="install.html">install.html</A> for step-by-step 
-directions to install ConsultComm.
-<P>
-<LI><B>Starting Consultant Communicator</B><BR>
-If have installed ConsultComm using InstallAnywhere, just click on the icon
-that was created for you. If you have another distribution, simply 
-double-click on the "CsltComm.jar" icon. Or, at the DOS prompt 
-type:<BR>
-<CODE>> javaw -jar CsltComm.jar</CODE> (or java -jar CsltComm.jar on
-non-Windows platforms)
+<FONT Size="+1">Using ConsultComm to Track Projects</FONT>
 <P>
 
-<LI><B>Running Consultant Communicator</B><BR>
-  Simply use the toolbar to use the following functions:
-  <UL>
-    <LI>Start - Start the clock running.
-    <LI>Pause - Stop the clock from running.
-    <LI>Project - Maintain your projects by selecting:
-    <UL>
-      <LI>Add Project - Place a new project at the end of the list
-      <LI>Delete Project - Deletes currently seleted project
-      <LI>Edit Project - Edit the currently selected project
-      <LI>Reset Timers - Reset ALL projects to have no elapsed time
-    </UL>
-    <LI>Tools - Configuration and connectivity
-    <UL>
-      <LI>Export to Table - Insert all of your projects and times into a
-          JDBC database
-      <LI>JDBC Settings - Edit settings to connect to JDBC compliant
-          databases and insert projects and times into tables. See
-          <A HREF="dbconnect.html">Connecting to a database with ConsultComm</A>
-          for more details
-      <LI>Preferences - Change how ConsultComm looks and runs to suit your
-          personal preferences
-      <UL>
-        <LI>General - General options that allow you to specify how time is
-            displayed, how animated icons are shown and how often to save your
-            information to a file
-        <UL>
-          <LI>Show time in minutes or seconds - Allow the time to be displayed
-              in minutes or in minutes and seconds
-          <LI>Show animated icons - Get rid of the running blue line at the bottom
-              of ConsultComm if it annoys the heck out of ya
-          <LI>Save info - Set how often ConsultComm saves your times and settings
-          <LI>When idle - set what happens when your session is idle for <I>x</I>
-              number of seconds. You can either have ConsultComm pause itself or
-              have it switch to an alternate project. The application restores
-              itself (either by resuming the timer or by switching back to the
-              original project) when desktop activity resumes. <B>Note:</B>
-              currently this function is only supported on Microsoft&#174; 
-              Windows&#174; and X Windows.
-        </UL>
-        <LI>Flags - What attributes a project can have.
-        <UL>
-          <LI>Show Billable Flag - Allow the "Billable Project" checkbox to
-              show up when editing or adding a project
-          <LI>Use Export to Database Flag - Allow the "Export Project to
-              Database" flag. This allows you to mark individual projects to
-              be sent or not to be sent to a database
-          <LI>Count down from <I>x</I> - Shows a countdown from <I>x</I>
-              minutes instead of a total
-          <LI>Count pay, using $<I>x</I> per hour - Counts how much dinero
-              you've earned by taking the dollar amount <I>x</I> times the
-              total/exportable/billable hours
-        </UL>
-        <LI>Skins - Change the look & feel of ConsultComm. Note that GTK
-            and KDE themes work in Windows, too.
-        <UL>
-          <LI>Use Theme Pack - The location of a SkinLF theme pack. Themes
-              are available at
-              http://javootoo.l2fprod.com/plaf/skinlf/index.php
-          <LI>Use GTK Theme - Use a GTK designed theme
-          <LI>Use KDE Theme - Use a theme generated for KDE
-        </UL>
-      </UL>
-      <LI>Help - View the help documentation
-    </UL>
-  </UL>
-
-Use the main window for the following actions:
-<UL>
-  <LI>Switching Projects<BR>
-When you are ready to switch to another project, simply click on its name
-on the list. ConsultComm automatically saves the old project's elapsed time
-and watches elapsed time on the new project.
-
-  <LI>Sorting Projects<BR>
-Just click on the title of a column to sort it in ascending order. Click it
-again to sort in decending order. New projects are automatically sorted into
-the list.
-
-  <LI>Time Summaries<BR>
-To view the different breakdowns of your project times, simply click on
-the "Total:" box at the very bottom of ConsultComm. Depending on what
-project flags you have enabled, you can scroll through the total time
-elapsed, total time spent on billable projects,total amount of time
-that will be exported to a database, the amount of time remaining and how
-much money you've earned so far. Left click to scroll forward through
-the summaries, right click to scroll backwards.
-
-  <LI>Saving Preferances<BR>
-Projects, time and preferances are automatically saved at specified
-increments specified in the preferences window and when you exit 
-Consultant Communicator.
-</UL>
+<HR Width="80%" Noshade>
+<A NAME="projects">
+So you've started up ConsultComm and you're facing an empty window.
+Start fillin' it up with projects. Click on Project->Add Project.
+A dialog box will pop up with four fields: Group, Project, Time and
+Billable.
 <P>
 
-<LI><B>License</B><BR>
-Copyright (C) 2000, 2001 Free Software Foundation, Inc.
-License verified on 9/24/2001 by Janet Casey <jcasey@gnu.org>
+The group is a category or client you want to group a list of projects
+by. For example, "Programming" or "Goober, Goober & Dumpling." The
+project field is for the project name itself, such as "Testing" or
+"Meeting." Time is for the time elapsed on the project - which defaults
+to zero. The billable checkbox determines if the project is billable or
+not... i.e. "Lunch" would be non-billable, but "Write Code" would
+be billable.
 <P>
-Permission is granted to copy, distribute, and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.1 or
-any later version published by the Free Software Foundation; with no
-Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
-Texts. A copy of this license is included in the file COPYING.
+
+To edit a project, just double-click it. To delete it, either right-
+click on the project and select "Delete," highlight and hit the
+Delete key or highlight and select Project->Delete Project. To start
+the timer for a project, highlight the project to watch and hit the
+"Start" button. Hit "Stop" to, well, stop.
 <P>
-If you did not receive the file COPYING, please e-mail me at
-john.ellis@ise-indy.com for a... er... copy or take a look at
-<A HREF="http://www.gnu.org/copyleft/gpl.html">
-http://www.gnu.org/copyleft/gpl.html</A>.
+
+<HR Width="80%" Noshade>
+<A NAME="prefs">
+There are two things that govern the behavior of ConsultComm: the 
+plugins and the preferences. Let's take a look at the preferences.
 <P>
-<LI><B>Report Bugs</B><BR>
-<A HREF="http://sourceforge.net/projects/consultcomm">
-http://sourceforge.net/projects/consultcomm
-</A>
+
+To edit preferences, go to Tools->Preferences. The first tab
+to open is General Properties. Here you can have time elapsed
+shown in minutes or seconds. You can also specify how often
+prefs and times are saved to your user directory. Animated icons
+used in ConsultComm (such as the rotating bar at the bottom of
+the window) can be turned on and off in the animated icons checkbox.
 <P>
-<LI><B>Official Site</B><BR>
-<A HREF="http://consultcomm.sourceforge.net">
-http://consultcomm.sourceforge.net</A>
+
+The next tab allows you to specify skins to change the look and
+feel of ConsultComm. Skinpacks can be downloaded for SkinLF
+at http://javootoo.l2fprod.com/plaf/skinlf/index.php - just specify
+the skinpack at the "Use Theme Pack" field.
+<P>
+
+<HR Width="80%" Noshade>
+<A NAME="plugins">
+ConsultComm supports third-party plugins used for extending
+it's functionality beyond what's listed above. ConsultComm ships
+with several standard plugins, such as:
+<P>
+
+<LI><A HREF="dbconnect.html">JDBC Connectivity</A>: Export your times
+to any JDBC compliant database!
+<LI><A HREF="timeout.html">Idle Monitor</A>: Allow ConsultComm to
+pause or switch projects after a certain amount of user idle time
+<LI><A HREF="totals.html">Totals Plugin</A>: Keep track of how long
+you have left to work and how much you're earning by sticking
+around
+<BR>
+<BR>
+
+Plugins are installed simply by copying .jar files written for ConsultComm
+into the plugins/ directory. Visit http://consultcomm.sourceforge.net
+for more plugins and info on how to develop plugins.
 </BODY>
 </HTML>
