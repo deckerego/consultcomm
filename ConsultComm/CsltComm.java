@@ -14,7 +14,7 @@ import com.l2fprod.gui.plaf.skin.SkinLookAndFeel;
 
 
 public class CsltComm extends javax.swing.JFrame {
-    public static final String release = "ConsultComm 3.0.4";
+    public static final String release = "ConsultComm CVS Release";
     static MediaTracker iconTracker;
     static AnimatePanel iconPanel;
     static javax.swing.Timer iconTimer;
