@@ -16,10 +16,14 @@
       </classpath>
     </javac>
     <jar destfile="CsltComm.jar">
-      <fileset dir="${src}" includes="*.class"/>
+      <fileset dir="${src}">
+        <include name="*.class"/>
+        <include name="help/*"/>
+        <exclude name="help/CVS"/>
+      </fileset>
       <manifest>
         <attribute name="Main-Class" value="CsltComm"/>
-        <attribute name="Class-Path" value="skinlf.jar"/>
+        <attribute name="Class-Path" value="skinlf.jar jhbasic.jar"/>
       </manifest>
     </jar>
     <mkdir dir="${src}/plugins"/>
