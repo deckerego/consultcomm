@@ -10,14 +10,11 @@ import javax.swing.event.*;
 public class ProjectEditDialog extends javax.swing.JDialog {
   final TimeRecord record;
   private String value;
-  private int attributes;
   
-  public ProjectEditDialog(JFrame frame, TimeRecord timerec, int attrib) {
+  public ProjectEditDialog(JFrame frame, TimeRecord timerec) {
     super(frame, true);
     record = timerec;
-    attributes = attrib;
     initComponents();
-    billable.setVisible(attributeSet(ClntComm.SHOW_BILLABLE));
   }
   
   /** This method is called from within the constructor to
@@ -149,11 +146,6 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     public String getValue() {
       return value;
     }
-    
-    public boolean attributeSet(int flag) {
-      return flag==0 ? true : (flag ^ attributes) != (flag | attributes);
-    }
-    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField groupField;

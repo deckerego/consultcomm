@@ -1,14 +1,8 @@
 //Standard Components
 import java.util.*;
+import java.util.prefs.*;
 import java.io.*;
 import java.beans.*;
-//XML Components
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import javax.xml.parsers.*;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
 //Swing Components
 import javax.swing.*;
 import javax.swing.table.*;
@@ -22,8 +16,6 @@ import javax.swing.event.*;
 public class ClntComm extends javax.swing.JPanel {
     public static final int SHOW_TOTAL = 0;
     public static final int SHOW_BILLABLE = 1;
-    public static final int SHOW_COUNTDOWN = 4;
-    public static final int SHOW_COUNTPAY = 8;
     public static final int SECONDS = 0;
     public static final int MINUTES = 1;
     public static final int IDLE_PAUSE = 5;
@@ -39,14 +31,13 @@ public class ClntComm extends javax.swing.JPanel {
     private int projColumnWidth;
     private int index;
     private int selectedIndex;
-    private int timeFormat;
-    private int attributes;
-    private int showTotal;
-    private float perHour;
-    private int saveInterval = 60;
     private Vector plugins;
     private PropertyChangeSupport changes;
     private TimeRecordSet times;
+    
+    int timeFormat;
+    int showTotal;
+    int saveInterval = 60;
     
     /** Creates new form TimeTrack */
     public ClntComm(CsltComm parent) {
@@ -62,7 +53,6 @@ public class ClntComm extends javax.swing.JPanel {
         menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
         timer = new java.util.Timer();
         timer.schedule(timerTask, 0, 1000);
-        timeList.setSelectedRecord(selectedIndex);
     }
     
     public void setTimes(TimeRecordSet times) { this.times = times; }
@@ -364,16 +354,12 @@ public class ClntComm extends javax.swing.JPanel {
   
 private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleTotals
     if(evt.getModifiers() == java.awt.event.MouseEvent.BUTTON3_MASK) {
-        do {
-            if(showTotal == 0) showTotal = SHOW_COUNTPAY; //Reset to last item
-            else showTotal >>>= 1;
-        } while ((showTotal & attributes) == 0 && showTotal != 0);
+        if(showTotal == 0) showTotal = SHOW_BILLABLE; //Reset to last item
+        else showTotal >>>= 1;
     } else {
-        do {
-            if(showTotal > SHOW_COUNTPAY) showTotal = 0; //Reset to first item
-            else if(showTotal == 0) showTotal = 1; //Add a bit (since left shift won't do anything)
-            else showTotal <<= 1;
-        } while ((showTotal & attributes) == 0 && showTotal != 0);
+        if(showTotal > SHOW_BILLABLE) showTotal = 0; //Reset to first item
+        else if(showTotal == 0) showTotal = 1; //Add a bit (since left shift won't do anything)
+        else showTotal <<= 1;
     }
     refreshTotalTime();
   }//GEN-LAST:event_toggleTotals
@@ -395,25 +381,11 @@ public void refreshTotalTime(){
             totalText.setText("Billable:");
             totalTime.setText(times.getBillableTimeString());
             break;
-        case SHOW_COUNTDOWN:
-            totalText.setText("Remaining:");
-            if(attributeSet(SHOW_BILLABLE)) totalTime.setText(times.getCountdownTimeString(countdownMinutes, SHOW_BILLABLE));
-            else totalTime.setText(times.getCountdownTimeString(countdownMinutes, SHOW_TOTAL));
-            break;
-        case SHOW_COUNTPAY:
-            totalText.setText("Earned:");
-            if(attributeSet(SHOW_BILLABLE)) totalTime.setText(times.getPayAmount(perHour, SHOW_BILLABLE));
-            else totalTime.setText(times.getPayAmount(perHour, SHOW_TOTAL));
-            break;
         default: //showTotal is undefined, choose default
             showTotal = SHOW_TOTAL;
             refreshTotalTime();
     }
     totalTime.repaint();
-}
-
-public boolean attributeSet(int flag) {
-    return flag==0 ? true : (flag ^ attributes) != (flag | attributes);
 }
 
 private void selectionChanged(ListSelectionEvent e) {
@@ -465,7 +437,7 @@ public void editWindow(int i){
         newRecord = true;
     }
     
-    ProjectEditDialog edit = new ProjectEditDialog((JFrame)this.getTopLevelAncestor(), record, attributes);
+    ProjectEditDialog edit = new ProjectEditDialog((JFrame)this.getTopLevelAncestor(), record);
     edit.pack();
     edit.setLocationRelativeTo(this);
     edit.setVisible(true);
@@ -519,122 +491,51 @@ private void loadPlugins() {
  */
 private void readPrefs() {
     try {
-        PrefsFile prefs = new PrefsFile("ClntComm.def");
-        PrefsFile projs = new PrefsFile("projects.xml");
-        
         //Get all projects
-        NodeList projects = projs.getElementsByTagName("project");
-        times = new TimeRecordSet();
-        for(int i=0; i<projects.getLength(); i++){
-            Node project = projects.item(i);
-            NamedNodeMap attributes = project.getAttributes();
-            Node nameNode = attributes.getNamedItem("name");
-            String name = nameNode.getNodeValue();
-            Node aliasNode = attributes.getNamedItem("alias");
-            String alias = null;
-            if(aliasNode != null) alias = aliasNode.getNodeValue();
-            Node secondsNode = attributes.getNamedItem("seconds");
-            long seconds = Long.parseLong(secondsNode.getNodeValue());
-            Node billableNode = attributes.getNamedItem("billable");
-            boolean billable = ! billableNode.getNodeValue().equals("false");
-            Node exportNode = attributes.getNamedItem("export");
-            boolean export = exportNode != null ? ! exportNode.getNodeValue().equals("false") : billable;
-            
-            Node selectedNode = attributes.getNamedItem("selected");
-            if(selectedNode != null && selectedNode.getNodeValue().equals("true"))
-                selectedIndex = i;
-            TimeRecord record = new TimeRecord("TEST", name, seconds, billable);
-            times.add(record);
-        }
+        File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+        File prefsFile = new File(prefsdir, "projects.xml");
+        FileInputStream inStream = new FileInputStream(prefsFile);
+        XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
+        times = (TimeRecordSet)d.readObject();
+        d.close();
         
-        //Get window dimensions
-        double width = prefs.readFirstDouble("dimensions", "width");
-        double height = prefs.readFirstDouble("dimensions", "height");
-        if(width == 0) width = 256;
-        if(height == 0) height=256;
+        Preferences prefs = Preferences.userRoot().node("CsltComm");
+        double width = prefs.getDouble("windowWidth", (double)256); //Get window dimensions
+        double height = prefs.getDouble("windowHeight", (double)256);
         windowSize = new java.awt.Dimension((int)width, (int)height);
-        
-        //Get project column dimensions
-        projColumnWidth = prefs.readFirstInt("projcolumn", "width");
-        
-        //Decide whether to show total time/billable time
-        try {
-            showTotal = prefs.readFirstInt("showtotaltime", "display");
-        } catch (NumberFormatException e) {
-            //Older versions used a string or a boolean to save the pref instead
-            //of an int, so just give it a default value
-            showTotal = SHOW_TOTAL;
-        }
-        
-        //Get time format
-        String timeFormatString = prefs.readFirstString("timeformat", "type");
-        if(timeFormatString.equals("seconds")) timeFormat = SECONDS;
-        else if(timeFormatString.equals("minutes")) timeFormat = MINUTES;
-        else timeFormat = MINUTES;
-        
-        //Get attribute flags
-        attributes = prefs.readFirstInt("attributes", "value");
-        if(attributes == 0) attributes = SHOW_TOTAL; //No attributes found
-        
-        //Get countdown minutes
-        countdownMinutes = prefs.readFirstLong("countdown", "minutes");
-        
-        //Get dollar amount per hour
-        perHour = prefs.readFirstFloat("countpay", "amount");
-        
-        //Get save interval
-        saveInterval = prefs.readFirstInt("saveinfo", "seconds");
-        if(saveInterval == 0) saveInterval = 60; //No interval found
+        projColumnWidth = prefs.getInt("columnWidth", (int)width/2); //Get project column dimensions
+        showTotal = prefs.getInt("showTotal", SHOW_TOTAL); //Decide whether to show total time/billable time
+        timeFormat = prefs.getInt("timeFormat", MINUTES); //Get time format
+        saveInterval = prefs.getInt("saveInterval", 60); //Get save interval
     } catch (Exception e) {
         System.err.println("Cannot read prefs file: "+e);
-        e.printStackTrace(System.out);
+        //Load default settings
+        times = new TimeRecordSet();
     }
 }
 
 private void savePrefs() {
     try {
-        //Open all pref files first, that way we can automatically
-        //convert any deprecated prefs files
-        PrefsFile prefs = new PrefsFile("ClntComm.def");
-        PrefsFile projs = new PrefsFile("projects.xml");
-        
-        //Delete projects
-        projs.removeAllChildren("project");
-        
         //Save projects
-        selectedIndex = timeList.getSelectedRecord();
-        for(int i=0; i<times.size(); i++){
-            TimeRecord record = times.elementAt(i);
-            Element newNode = projs.createElement("project");
-            newNode.setAttribute("name", record.getProjectName());
-            newNode.setAttribute("seconds", Long.toString(record.getSeconds()));
-            newNode.setAttribute("billable", record.isBillable() ? "true" : "false");
-            if(i == selectedIndex)
-                newNode.setAttribute("selected", "true");
-            projs.appendChild(newNode);
-        }
+        File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+        File prefsFile = new File(prefsdir, "projects.xml");
+        FileOutputStream outStream = new FileOutputStream(prefsFile);
+        XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
+        e.writeObject(times);
+        e.close();
         
-        //Save window dimensions
-        java.awt.Dimension size = getSize();
-        String[] attributeList = {"width", "height"};
-        double[] valueList = {size.getWidth(), size.getHeight()};
-        prefs.saveFirst("dimensions", attributeList, valueList);
-        
-        //Save project column dimensions
-        TableColumn projectColumn = timeList.getColumnModel().getColumn(0);
-        prefs.saveFirst("projcolumn", "width", projectColumn.getPreferredWidth());
-        
-        //Save show billable/total time flag
-        prefs.saveFirst("showtotaltime", "display", showTotal);
+        Preferences prefs = Preferences.userRoot().node("CsltComm");
+        java.awt.Dimension size = getSize(); //Save window dimensions
+        prefs.putDouble("windowWidth", size.getWidth());
+        prefs.putDouble("windowHeight", size.getHeight());
+        TableColumn projectColumn = timeList.getColumnModel().getColumn(0); //Save project column dimensions
+        prefs.putInt("columnWidth", projectColumn.getPreferredWidth());
+        prefs.putInt("showTotal", showTotal); //Save show billable/total time flag
         
         //Write to file
-        projs.write();
-        prefs.write();
-    } catch (ParserConfigurationException e) {
-        System.err.println("Error writing prefs file(s): "+e);
+        prefs.flush();
     } catch (Exception e) {
         System.err.println("Cannot write to prefs file(s): "+e);
-        e.printStackTrace(System.out);
     }
 }
 
@@ -642,7 +543,7 @@ public boolean isRunning(){
     return timerTask.clockRunning;
 }
 
-    private TableTree timeList;
+private TableTree timeList;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel totalTime;
     private javax.swing.JMenuItem pluginsMenuItem;
