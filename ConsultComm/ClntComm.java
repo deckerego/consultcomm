@@ -25,10 +25,10 @@ public class ClntComm extends javax.swing.JPanel {
   protected static final int SHOW_TOTAL = 0;
   protected static final int SHOW_BILLABLE = 1;
   protected static final int SHOW_EXPORT = 2;
-  
+
   private static long totalSeconds, billableSeconds;
   private static JFrame frame = new JFrame("Consultant Manager");
-  
+
   private CsltComm csltComm;
   private TimerThread timer;
   private TimeRecordSet times;
@@ -38,6 +38,7 @@ public class ClntComm extends javax.swing.JPanel {
   private int timeFormat = MINUTES;
   private int attributes = SHOW_TOTAL | SHOW_BILLABLE | SHOW_EXPORT;
   private int showTotal;
+  private int saveInterval = 60;
   
   /** Creates new form TimeTrack */
   public ClntComm(CsltComm parent) {
@@ -272,13 +273,17 @@ public class ClntComm extends javax.swing.JPanel {
     panel.initGUI();
     panel.show();
   }//GEN-LAST:event_editJDBC
-  
+
   private void sortColumn(java.awt.event.MouseEvent evt) {
     TableColumnModel columnModel = timeList.getColumnModel();
     int viewColumn = columnModel.getColumnIndexAtX(evt.getX());
     int column = timeList.convertColumnIndexToModel(viewColumn);
+
+    TimeRecord record = times.elementAt(selectedIndex); //find current selected record
     times.sort(column);
+    selectedIndex = times.indexOf(record); //restore selected record
     timeList.setModel(times.toTableModel(timeFormat));
+    timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
   }
   
   private void editWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editWindow
@@ -345,8 +350,13 @@ public class ClntComm extends javax.swing.JPanel {
   
   private void newProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProject
     editWindow(times.size());
+    TimeRecord record = times.elementAt(selectedIndex); //find current selected record
+    times.sort();
+    selectedIndex = times.indexOf(record); //restore selected record
+    timeList.setModel(times.toTableModel(timeFormat));
+    timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
   }//GEN-LAST:event_newProject
-  
+
 private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleTotals
   switch(showTotal) {
     case SHOW_TOTAL:
@@ -501,9 +511,9 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
           TimeRecord record = new TimeRecord(name, alias, seconds, billable, export);
           times.add(record);
         }
-        
+
         NamedNodeMap attribute = null;
-        
+
         //Get window dimensions
         NodeList dimensions = doc.getElementsByTagName("dimensions");
         Node dimension = dimensions.item(0);
@@ -511,25 +521,31 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         double width = Double.parseDouble(attribute.getNamedItem("width").getNodeValue());
         double height = Double.parseDouble(attribute.getNamedItem("height").getNodeValue());
         windowSize = new java.awt.Dimension((int)width, (int)height);
-        
+
         //Get project column dimensions
         NodeList projColumns = doc.getElementsByTagName("projcolumn");
         Node projColumn = projColumns.item(0);
         attribute = projColumn.getAttributes();
         projColumnWidth = Integer.parseInt(attribute.getNamedItem("width").getNodeValue());
-        
+
         //Decide whether to show total time/billable time
         NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
-        Node showTotalTime = showTotalTimes.item(0);
-        attribute = showTotalTime.getAttributes();
-        if(attribute.getNamedItem("display").getNodeValue().equals("billable"))
-          showTotal = SHOW_BILLABLE;
-        else if(attribute.getNamedItem("display").getNodeValue().equals("export"))
-          showTotal = SHOW_EXPORT;
-        else
-          showTotal = SHOW_TOTAL;
-        
-        
+        if(showTotalTimes.getLength() > 0) {
+          Node showTotalTime = showTotalTimes.item(0);
+          attribute = showTotalTime.getAttributes();
+          String showTotalString = attribute.getNamedItem("display").getNodeValue();
+          try {
+            showTotal = Integer.parseInt(showTotalString);
+          } catch (NumberFormatException e) {
+            //Older versions used a string or a boolean to save the pref instead 
+            //of an int, so just give it a default value
+            showTotal = SHOW_TOTAL;
+          }
+        } else {
+            showTotal = SHOW_TOTAL;
+        }
+
+
         //Get time format
         NodeList timeFormats = doc.getElementsByTagName("timeformat");
         if(timeFormats.getLength() > 0) {
@@ -552,6 +568,17 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         } else {
           attributes = SHOW_TOTAL | SHOW_BILLABLE | SHOW_EXPORT;
         }
+
+        //Get save interval
+        NodeList saveInfos = doc.getElementsByTagName("saveinfo");
+        if(saveInfos.getLength() > 0) {
+          Node saveInfo = saveInfos.item(0);
+          attribute = saveInfo.getAttributes();
+          String saveIntervalString = attribute.getNamedItem("seconds").getNodeValue();
+          saveInterval = Integer.parseInt(saveIntervalString);
+        } else {
+          saveInterval = 60;
+        }
       } catch (SAXParseException e) {
         System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
       } catch (SAXException e) {
@@ -563,7 +590,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       }
     }
   }
-  
+
   private void savePrefs() {
     File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
     try {
@@ -618,7 +645,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       } else {
         rootNode.appendChild(newNode);
       }
-      
+
       //Save project column dimensions
       NodeList projColumns = doc.getElementsByTagName("projcolumn");
       TableColumn projectColumn = timeList.getColumnModel().getColumn(0);
@@ -634,24 +661,14 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       //Save show billable/total time flag
       NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
       newNode = doc.createElement("showtotaltime");
-      switch(showTotal) {
-        case SHOW_TOTAL:
-          newNode.setAttribute("display", "total");
-          break;
-        case SHOW_BILLABLE:
-          newNode.setAttribute("display", "billable");
-          break;
-        case SHOW_EXPORT:
-          newNode.setAttribute("display", "export");
-          break;
-      }
+      newNode.setAttribute("display", Integer.toString(showTotal));
       if(showTotalTimes.getLength() > 0) {
         Node showTotalTime = showTotalTimes.item(0);
         rootNode.replaceChild(newNode, showTotalTime);
       } else {
         rootNode.appendChild(newNode);
       }
-      
+
       //Write to file
       doc.getDocumentElement().normalize();
       TransformerFactory fac = TransformerFactory.newInstance();
@@ -727,17 +744,19 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
             if((index = timeList.getSelectedRow()) >= 0){
               currSeconds = currTime - startTime;
               times.setSeconds(index, currSeconds);
-              //Only repaint if the minutes (or seconds, depending on the 
+
+              //Only repaint if the minutes (or seconds, depending on the
               //time format) have changed.
               if ((timeFormat == SECONDS) || (currSeconds % 60 == 0)){
                 refreshTotalTime();
-                if(timeFormat == SECONDS) 
+                if(timeFormat == SECONDS)
                   timeList.setValueAt(times.getSecondsString(index), index, 1);
                 else
                   timeList.setValueAt(times.getMinutesString(index), index, 1);
                 timeList.repaint();
-                savePrefs();
               }
+
+              if (currSeconds % saveInterval == 0) savePrefs();
             }
           }
         } catch (InterruptedException e) {
