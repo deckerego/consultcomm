@@ -1,0 +1,11 @@
+[Desktop Entry]
+Comment=Consultant Communicator
+Exec=/usr/local/bin/ConsultComm
+Icon=/usr/local/ConsultComm/graphics/ConsultComm.xpm
+Name=ConsultComm
+Path=
+Terminal=0
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=
