@@ -8,17 +8,15 @@ any later version published by the Free Software Foundation; with no
 Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
 Texts. A copy of this license is included in the file COPYING.
 
-All documentation has been rewritten in HTML format and is now saved in the 
-docs/ directory. Check there for info on how to setup up and use ConsultComm. 
-Or you can browse documentation at http://sourceforge.net/projects/consultcomm.
+If you are building ConsultComm from source, make sure you have Jakarta
+Ant installed and build the package using the command 'ant'. To run
+the compiled .jar files, just type the following at the command line:
+    java -Djava.library.path=syslibs -jar CsltComm.jar
+
+Binary packages are available for most platforms at the ConsultComm
+site: http://consultcomm.sourceforge.net. You can browse documentation 
+online at http://sourceforge.net/projects/consultcomm.
 
 This application uses SkinLF developed by L2F Productions 
 (http://www.L2FProd.com), Copyright (c) 2000-2001 L2FProd.com. 
 All rights reserved.
-
-INSTALLING
-  See docs/install.html
-USING
-  See docs/using.html
-CONNECTING WITH JDBC
-  See docs/dbconnect.html
