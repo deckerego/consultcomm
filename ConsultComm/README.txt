@@ -7,7 +7,6 @@ managing multiple projects, clients or tasks to effectively keep track
 of exactly how long they've spent on each project. 
 
 INSTALL -
-Windows 95, 98, NT
 To install, simply ensure that the Java Runtime Environment version 1.2 (or 
 greater) is installed on your machine. To see if the JRE has been
 installed or not, simply type:
