@@ -93,6 +93,7 @@ public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable 
     }
     
     public TimeRecord elementAt(int index) throws java.lang.ArrayIndexOutOfBoundsException {
+        if(index == -1) return null;
         return (TimeRecord)timeRecords.elementAt(index);
     }
     public int size() {
