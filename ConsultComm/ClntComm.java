@@ -680,13 +680,14 @@ public boolean isRunning(){
             long currTime, currSeconds;
             int index;
             
+            TimeRecordSet oldTimes; //Copy the old timeset for the property listener
+            try { oldTimes = (TimeRecordSet)times.clone(); }
+            catch (CloneNotSupportedException e) { oldTimes = null; }
+                    
             if(clockRunning){
                 //Get the current seconds past midnight.
                 currTime = System.currentTimeMillis()/1000;
                 if((index = timeList.getSelectedRow()) >= 0){
-                    TimeRecordSet oldTimes; //Copy the old timeset for the property listener
-                    try { oldTimes = (TimeRecordSet)times.clone(); }
-                    catch (CloneNotSupportedException e) { oldTimes = null; }
                     
                     currSeconds = currTime - startTime;
                     times.setSeconds(index, currSeconds);
