@@ -1,31 +1,33 @@
 Consultant Communicator 2.0.3
-Release 12/28/01
+Release 1/3/02
 First Released 11/99
 
 REVISION HISTORY -
-	o 2.0.3 [12/28/01]
+	o 2.0.3    [01/03/02]
 		- Added preferences menu to change icon animations
 		  and modify time formatting
-	o 2.0.2 [11/16/01]
+                - Updated help documentation
+                - DELETE key now used as project deletion accelerator (hotkey)
+	o 2.0.2    [11/16/01]
 		- Fixed project validation field drop-down box
-	o 2.0.1
+	o 2.0.1    [11/13/01]
 		- Fixed "Important Directories" page for Windows
-	o 2.0
+	o 2.0      [10/03/01]
 		- Can sort columns by clicking on their header
 		- JDBC connectivity added; can upload time to any 
 		  JDBC compliant database
 		- Help system added
-        o 1.0.3
+        o 1.0.3    [09/11/01]
                 - Remembers window size (again)
                 - Updated for Forte CE 3.0
-        o 1.0.2
+        o 1.0.2    [09/10/01]
                 - Fixed bug where crash would occur if there was no
                   prefs file
-        o 1.0.1
+        o 1.0.1    [08/28/01]
                 - Added icon for frame
                 - Fixed problem where adding a new project then cancelling
                   would result in an empty project appended to the list
-	o 1.0
+	o 1.0      [07/03/01]
 		- Last selection saved to prefs file
 		- Released as first stable version
         o 0.4.2
