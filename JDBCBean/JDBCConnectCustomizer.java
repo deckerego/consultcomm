@@ -575,8 +575,8 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
     private javax.swing.JLabel projTableLabel;
     private javax.swing.JPanel driverPanel;
     private javax.swing.JTextField urlField;
+    javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JButton optionOK;
-    private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JLabel projFieldLabel;
     private javax.swing.JLabel projDBLabel;
     private javax.swing.JButton findJarButton;
