@@ -141,20 +141,31 @@ public class TimeRecordSet {
     }
     
     public void sort() {
-        try {
-            if(reverseSort) QuickSort.revSort(timeRecords, titles[currColumnSorted]);
-            else QuickSort.sort(timeRecords, titles[currColumnSorted]);
-        } catch (Exception e) {
-            System.err.println("Cannot sort by column "+currColumnSorted);
-        }
+        if(reverseSort)
+            if(titles[currColumnSorted].equals("Project"))
+                Collections.sort(timeRecords, new ProjectComparator());
+            else
+                Collections.sort(timeRecords, new TimeComparator());
+        else
+            if(titles[currColumnSorted].equals("Project"))
+                Collections.sort(timeRecords, new ProjectReverseComparator());
+            else
+                Collections.sort(timeRecords, new TimeReverseComparator());
     }
+    
     public void sort(int column) {
         try {
             if((currColumnSorted != column) || reverseSort) {
-                QuickSort.sort(timeRecords, titles[column]);
+                if(titles[currColumnSorted].equals("Project"))
+                    Collections.sort(timeRecords, new ProjectComparator());
+                else
+                    Collections.sort(timeRecords, new TimeComparator());
                 reverseSort = false;
             } else {
-                QuickSort.revSort(timeRecords, titles[column]);
+                if(titles[currColumnSorted].equals("Project"))
+                    Collections.sort(timeRecords, new ProjectReverseComparator());
+                else
+                    Collections.sort(timeRecords, new TimeReverseComparator());
                 reverseSort = true;
             }
             currColumnSorted = column;
@@ -169,5 +180,37 @@ public class TimeRecordSet {
         minutes -= hours * 60;
         if (minutes < 10) return ""+hours+":0"+minutes;
         else return ""+hours+":"+minutes;
+    }
+    
+    public class TimeComparator implements Comparator {
+        public int compare(Object obj, Object obj1) {
+            TimeRecord comp = (TimeRecord)obj;
+            TimeRecord compTo = (TimeRecord)obj1;
+            return (int)(comp.getSeconds()-compTo.getSeconds());
+        }
+    }
+    
+    public class ProjectComparator implements Comparator {
+        public int compare(Object obj, Object obj1) {
+            TimeRecord comp = (TimeRecord)obj;
+            TimeRecord compTo = (TimeRecord)obj1;
+            return comp.getProjectName().compareToIgnoreCase(compTo.getProjectName());
+        }
+    }
+
+    public class TimeReverseComparator implements Comparator {
+        public int compare(Object obj, Object obj1) {
+            TimeRecord comp = (TimeRecord)obj;
+            TimeRecord compTo = (TimeRecord)obj1;
+            return (int)(compTo.getSeconds()-comp.getSeconds());
+        }
+    }
+    
+    public class ProjectReverseComparator implements Comparator {
+        public int compare(Object obj, Object obj1) {
+            TimeRecord comp = (TimeRecord)obj;
+            TimeRecord compTo = (TimeRecord)obj1;
+            return compTo.getProjectName().compareToIgnoreCase(comp.getProjectName());
+        }
     }
 }

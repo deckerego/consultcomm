@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class TimeRecord implements Comparable {
+public class TimeRecord {
     private long seconds;
     private String projectName;
     private boolean billable;
@@ -79,14 +79,5 @@ public class TimeRecord implements Comparable {
         isEqual = isEqual && ((projectName == toRecord.projectName) || (projectName.equals(toRecord.projectName)));
         isEqual = isEqual && (billable == toRecord.billable);
         return isEqual;
-    }
-    
-    public int compareTo(Comparable comp, String type) throws Exception {
-        TimeRecord compTo = (TimeRecord)comp;
-        if(type.equals("Time")) {
-            return (int)(seconds-compTo.seconds);
-        } else {
-            return projectName.compareToIgnoreCase(compTo.projectName);
-        }
     }
 }
