@@ -82,13 +82,21 @@ xalan.jar and crimson.jar) into your Java Extensions directory
 (see <A HREF="$APPPATHS">Important Directories You Might Need to Know</A> for 
 the location of your extensions directory).<P>
 
+<LI>You also need Jakarta Ant to run the build scripts. You can download it
+from <A HREF="http://jakarta.apache.org/builds/jakarta-ant/release/v1.5/bin/">
+http://jakarta.apache.org/builds/jakarta-ant/release/v1.5/bin/</A><P>
+
 <LI>Unzip the contents of CsltComm.src.tar.gz into a new folder
 <P>
 
 <LI>Change into the folder you extracted the files to
 <P>
 
-<LI>Run the command 'make' followed by 'make package'
+<LI>Run the command <CODE>ant</CODE>. If you want to enable X Windows extensions,
+use <CODE>ant X</CODE>. For Win32 extensions, use <CODE>ant Win32</CODE>
+<P>
+
+<LI>Run the command <CODE>ant dist</CODE>.
 <P>
 
 <LI>Double-click on the file CsltComm.jar that should have been built by step 4
