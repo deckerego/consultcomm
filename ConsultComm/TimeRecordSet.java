@@ -37,52 +37,25 @@ public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable 
         TimeRecord record = elementAt(index);
         return record.getSeconds();
     }
-    public String getBillableTimeString() {
+
+    public long getBillableTime() {
         long total = 0;
         Enumeration records = timeRecords.elements();
         while (records.hasMoreElements()) {
             TimeRecord record = (TimeRecord)records.nextElement();
             if(record.isBillable()) total += record.getSeconds();
         }
-        return parseSeconds(total);
+        return total;
     }
     
-    public String getTotalTimeString() {
+    public long getTotalTime() {
         long total = 0;
         Enumeration records = timeRecords.elements();
         while (records.hasMoreElements()) {
             TimeRecord record = (TimeRecord)records.nextElement();
             total += record.getSeconds();
         }
-        return parseSeconds(total);
-    }
-    
-    public String getCountdownTimeString(long minutes, int criteria) {
-        long total = minutes*60;
-        Enumeration records = timeRecords.elements();
-        while (records.hasMoreElements()) {
-            TimeRecord record = (TimeRecord)records.nextElement();
-            if(record.isBillable() && criteria == ClntComm.SHOW_BILLABLE) total -= record.getSeconds();
-            else if(criteria == ClntComm.SHOW_TOTAL) total -= record.getSeconds();
-        }
-        if(total < 0) total = 0;
-        return parseSeconds(total);
-    }
-    
-    public String getPayAmount(float perHour, int criteria) {
-        float total = 0;
-        java.text.NumberFormat dollarFormat = java.text.NumberFormat.getInstance();
-        dollarFormat.setMinimumFractionDigits(2);
-        dollarFormat.setMaximumFractionDigits(2);
-        Enumeration records = timeRecords.elements();
-        while (records.hasMoreElements()) {
-            TimeRecord record = (TimeRecord)records.nextElement();
-            if(record.isBillable() && criteria == ClntComm.SHOW_BILLABLE) total += record.getSeconds();
-            else if(criteria == ClntComm.SHOW_TOTAL) total += record.getSeconds();
-        }
-        
-        float hours = total / (float)(60*60);
-        return "$"+dollarFormat.format(hours*perHour);
+        return total;
     }
     
     public String[] getAllProjects() {
@@ -171,14 +144,6 @@ public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable 
         } catch (Exception e) {
             System.err.println("Cannot sort by column "+column);
         }
-    }
-    
-    public String parseSeconds(long seconds) {
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
-        minutes -= hours * 60;
-        if (minutes < 10) return ""+hours+":0"+minutes;
-        else return ""+hours+":"+minutes;
     }
     
     public Object clone() throws CloneNotSupportedException {

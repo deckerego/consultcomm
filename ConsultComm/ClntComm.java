@@ -14,12 +14,9 @@ import javax.swing.event.*;
  * Created on May 19, 2000, 7:37 PM
  */
 public class ClntComm extends javax.swing.JPanel {
-    public static final int SHOW_TOTAL = 0;
-    public static final int SHOW_BILLABLE = 1;
     public static final int SECONDS = 0;
     public static final int MINUTES = 1;
     
-    private static long totalSeconds, billableSeconds, countdownMinutes;
     private static JFrame frame = new JFrame("Consultant Manager");
     
     private CsltComm csltComm;
@@ -30,23 +27,44 @@ public class ClntComm extends javax.swing.JPanel {
     private Vector plugins;
     private PropertyChangeSupport changes;
     private TimeRecordSet times;
+    private TotalPanel totalPanel;
     
     int timeFormat;
     int showTotal;
     int saveInterval = 60;
     
-    /** Creates new form TimeTrack */
+    /**
+     * Initialize a new ConsultComm project timer application
+     */
     public ClntComm(CsltComm parent) {
-        csltComm = parent;
-        changes = new PropertyChangeSupport(this);
+        csltComm = parent;                                  //Set parent object for reloading CsltComm
+        changes = new PropertyChangeSupport(this);          //Create new change listener
+        totalPanel = new TotalPanel();                      //Create a new total/elapsed counter
+        timerTask = new TimerThread();                      //Create a new "clock" for the project timer
+        loadPlugins();                                      //Load all the plugins
+        readPrefs();                                        //Read in user preferences
+        setTotals();                                        //Add our predefined counters
+        initComponents();                                   //Init all our GUI components specified in the form
+        readLayout();                                       //Restore the TableTree layout after the GUI inits
+        menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);//Add our menu items to the GUI
+        timer = new java.util.Timer();                      //Wind up the clock and start it
+        timer.schedule(timerTask, 0, 1000);                 
+    }
+    
+    public void reload() {
+        savePrefs();
+        removeAll();
+        csltComm.reload();
         readPrefs();
-        timerTask = new TimerThread();
         initComponents();
         readLayout();
-        loadPlugins();
         menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
-        timer = new java.util.Timer();
-        timer.schedule(timerTask, 0, 1000);
+        try {
+            timeList.setSelectedRecord(selectedIndex);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Row index invalid, not setting selection.");
+        }
+        revalidate();
     }
     
     public void setTimes(TimeRecordSet times) { this.times = times; }
@@ -78,12 +96,10 @@ public class ClntComm extends javax.swing.JPanel {
         editMenu = new javax.swing.JPopupMenu();
         editPopupItem = new javax.swing.JMenuItem();
         deletePopupItem = new javax.swing.JMenuItem();
-        totalPanel = new javax.swing.JPanel();
-        totalText = new javax.swing.JLabel();
-        totalTime = new javax.swing.JLabel();
         scrollPane = new javax.swing.JScrollPane();
         menuPanel = new javax.swing.JPanel();
         startButton = new javax.swing.JButton();
+        totalGUIPanel = totalPanel;
 
         menuBar.setBorder(null);
         projectMenu.setText("Project");
@@ -171,29 +187,6 @@ public class ClntComm extends javax.swing.JPanel {
         setLayout(new java.awt.BorderLayout());
 
         setPreferredSize(new java.awt.Dimension(94, 50));
-        totalPanel.setLayout(new java.awt.GridLayout(1, 2));
-
-        totalText.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        totalText.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                toggleTotals(evt);
-            }
-        });
-
-        totalPanel.add(totalText);
-
-        totalTime.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        refreshTotalTime();
-        totalTime.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                toggleTotals(evt);
-            }
-        });
-
-        totalPanel.add(totalTime);
-
-        add(totalPanel, java.awt.BorderLayout.SOUTH);
-
         timeList = new TableTree(new TableTreeModel(times, timeFormat));
         scrollPane.setViewportView(timeList);
         add(scrollPane, java.awt.BorderLayout.CENTER);
@@ -216,6 +209,8 @@ public class ClntComm extends javax.swing.JPanel {
         menuPanel.add(startButton);
 
         add(menuPanel, java.awt.BorderLayout.NORTH);
+
+        add(totalGUIPanel, java.awt.BorderLayout.SOUTH);
 
     }//GEN-END:initComponents
     
@@ -292,6 +287,12 @@ public class ClntComm extends javax.swing.JPanel {
       }
   }
   
+  private void setTotals() {
+      //Assume that total and billable times are the first and second totals added
+      totalPanel.setValueAt(times.getTotalTime(), 0);
+      totalPanel.setValueAt(times.getBillableTime(), 1);
+  }
+  
   private void zeroProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zeroProject
     zeroProject();
   }//GEN-LAST:event_zeroProject
@@ -307,7 +308,6 @@ public class ClntComm extends javax.swing.JPanel {
           times.resetTime();
           timerTask.startTime = System.currentTimeMillis()/1000;
           timeList.setModel(new TableTreeModel(times, timeFormat));
-          refreshTotalTime();
       }
   }
 
@@ -346,64 +346,12 @@ public class ClntComm extends javax.swing.JPanel {
       setSelectedIndex(times.indexOf(record)); //restore selected record
   }//GEN-LAST:event_newProject
   
-private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleTotals
-    if(evt.getModifiers() == java.awt.event.MouseEvent.BUTTON3_MASK) {
-        if(showTotal == 0) showTotal = SHOW_BILLABLE; //Reset to last item
-        else showTotal >>>= 1;
-    } else {
-        if(showTotal > SHOW_BILLABLE) showTotal = 0; //Reset to first item
-        else if(showTotal == 0) showTotal = 1; //Add a bit (since left shift won't do anything)
-        else showTotal <<= 1;
-    }
-    refreshTotalTime();
-  }//GEN-LAST:event_toggleTotals
-
 public void exitForm() {
     savePrefs();
 }
 
-/**
- * Update the total time elapsed
- */
-public void refreshTotalTime(){
-    switch(showTotal) {
-        case SHOW_TOTAL:
-            totalText.setText("Total:");
-            totalTime.setText(times.getTotalTimeString());
-            break;
-        case SHOW_BILLABLE:
-            totalText.setText("Billable:");
-            totalTime.setText(times.getBillableTimeString());
-            break;
-        default: //showTotal is undefined, choose default
-            showTotal = SHOW_TOTAL;
-            refreshTotalTime();
-    }
-    //totalTime.repaint();
-}
-
 private void selectionChanged(ListSelectionEvent e) {
     setTimer();
-}
-
-public void reload() {
-    savePrefs();
-    removeAll();
-    
-    csltComm.reload();
-    
-    readPrefs();
-    initComponents();
-    readLayout();
-    
-    menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
-    try {
-        timeList.setSelectedRecord(selectedIndex);
-    } catch (IllegalArgumentException e) {
-        System.err.println("Row index invalid, not setting selection.");
-    }
-    
-    revalidate();
 }
 
 private void setTimer() {
@@ -449,7 +397,6 @@ public void editWindow(int i){
         changes.firePropertyChange("times", oldTimes, times);
         if(selectedIndex == -1) timeList.setSelectedRecord(index); //Nothing selected
         else timeList.setSelectedRecord(selectedIndex);
-        refreshTotalTime();
     }
 }
 
@@ -532,9 +479,9 @@ private void readPrefs() {
         inStream.close();
         
         //Read prefs
-        showTotal = prefs.getInt("showTotal", SHOW_TOTAL); //Decide whether to show total time/billable time
         timeFormat = prefs.getInt("timeFormat", MINUTES); //Get time format
         saveInterval = prefs.getInt("saveInterval", 60); //Get save interval
+        totalPanel.toggleTotal(prefs.getInt("totalIndex", 0)); //Get time panel's current selection
     } catch (Exception e) {
         System.err.println("Cannot read prefs file: "+e);
         times = new TimeRecordSet(); //Load default settings
@@ -566,7 +513,7 @@ private void savePrefs() {
         prefs.putDouble("windowHeight", size.getHeight());
         TableColumn projectColumn = timeList.getColumnModel().getColumn(0); //Save project column dimensions
         prefs.putInt("columnWidth", projectColumn.getPreferredWidth());
-        prefs.putInt("showTotal", showTotal); //Save show billable/total time flag
+        prefs.putInt("totalIndex", totalPanel.getIndex()); //Save total panel's current selection
 
         //Write to file, close output stream
         prefs.flush();
@@ -582,14 +529,13 @@ private void savePrefs() {
 
 private TableTree timeList;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel totalTime;
     private javax.swing.JMenuItem pluginsMenuItem;
-    private javax.swing.JPanel totalPanel;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JMenuItem editMenuItem;
     private javax.swing.JMenuItem addMenuItem;
     private javax.swing.JMenuItem prefsMenuItem;
     private javax.swing.JMenuItem helpMenuItem;
+    private javax.swing.JPanel totalGUIPanel;
     private javax.swing.JMenu projectMenu;
     private javax.swing.JMenu toolMenu;
     private javax.swing.JButton startButton;
@@ -598,7 +544,6 @@ private TableTree timeList;
     private javax.swing.JPopupMenu editMenu;
     private javax.swing.JMenuItem deletePopupItem;
     private javax.swing.JMenuItem zeroMenuItem;
-    private javax.swing.JLabel totalText;
     private javax.swing.JMenuItem editPopupItem;
     private javax.swing.JMenuItem deleteMenuItem;
     // End of variables declaration//GEN-END:variables
@@ -618,27 +563,23 @@ private TableTree timeList;
         public void run(){
             long currTime, currSeconds;
             
-            TimeRecordSet oldTimes; //Copy the old timeset for the property listener
+            //Copy the old timeset for the property listener
+            TimeRecordSet oldTimes; 
             try { oldTimes = (TimeRecordSet)times.clone(); }
             catch (CloneNotSupportedException e) { oldTimes = null; }
                     
             if(clockRunning){
                 selectedIndex = timeList.getSelectedRecord();
-                //Get the current seconds past midnight.
                 currTime = System.currentTimeMillis()/1000;
                 if(selectedIndex >= 0){
-                    
                     currSeconds = currTime - startTime;
                     times.setSeconds(selectedIndex, currSeconds);
-                    
                     //Only repaint if the minutes (or seconds, depending on the
                     //time format) have changed.
                     if ((timeFormat == SECONDS) || (currSeconds % 60 == 0)){
-                        refreshTotalTime();
                         timeList.setRecordAt(times.elementAt(selectedIndex), selectedIndex, 1);
                         timeList.repaint();
                     }
-                    
                     //If the user requested a save now, do it
                     if (currSeconds % saveInterval == 0) savePrefs();
                 }
