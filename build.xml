@@ -1,11 +1,11 @@
 <project default="dist">
   <taskdef name="osxize" classname="com.neo.util.mac.OSXizeAntTask"/>
 
-  <property name="release" value="3beta4"/>
+  <property name="release" value="3beta6"/>
   <property name="src" value="ConsultComm/"/>
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
-  <property name="revision" value="5"/>
+  <property name="revision" value="4"/>
 
   <target name="build">
     <ant dir="${src}" target="all" inheritAll="false"/>
@@ -77,7 +77,6 @@
     <zip zipfile="${releasename}.zip">
       <zipfileset dir="${src}" prefix="${releasename}">
         <include name="ConsultComm"/>
-        <include name="graphics/*"/>
         <include name="plugins/*.jar"/>
         <include name="*.jar"/>
         <include name="README"/>
@@ -92,7 +91,6 @@
     <osxize name="Consultant Communicator" shortname="ConsultComm" mainclass="CsltComm" jars="ConsultComm/CsltComm.jar:ConsultComm/skinlf.jar:ConsultComm/jhbasic.jar" verbose="true"/>
     <copy todir="Consultant Communicator.app/Contents/Resources/Java">
       <fileset dir="${src}">
-        <include name="graphics/*"/>
         <include name="plugins/*.jar"/>
         <include name="README"/>
         <include name="AUTHORS"/>
@@ -111,6 +109,7 @@
   </target>
 
   <target name="clean">
+    <delete file="${releasename}.src.tar"/>
     <delete file="${releasename}.src.tar.gz"/>
     <delete file="${releasename}.zip"/>
     <delete file="${releasename}.MacOSX.tar.gz"/>
