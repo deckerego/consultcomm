@@ -8,7 +8,7 @@
 #include <crtdbg.h>
 #include <stdio.h>
 #include <jni.h>
-#include "ClntComm.h"
+#include "TimeOut.h"
 
 
 #pragma data_seg(".win32idle")
@@ -81,8 +81,7 @@ int WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	return TRUE;
 }
 
-JNIEXPORT jlong JNICALL Java_ClntComm_getIdleTime (JNIEnv *env, jobject obj)
+JNIEXPORT jlong JNICALL Java_TimeOut_getIdleTime (JNIEnv *env, jobject obj)
 {
-	printf("Waited %d", GetTickCount() - lastEvent);
 	return (GetTickCount() - lastEvent);
 }
