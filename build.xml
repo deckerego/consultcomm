@@ -1,0 +1,135 @@
+<project default="dist">
+  <taskdef name="osxize" classname="com.neo.util.mac.OSXizeAntTask"/>
+
+  <property name="release" value="3beta4"/>
+  <property name="src" value="ConsultComm/"/>
+  <property name="releasename" value="ConsultComm-${release}"/>
+  <property name="rpmdir" value="/usr/src/packages"/>
+  <property name="revision" value="2"/>
+
+  <target name="build">
+    <ant dir="${src}" target="all" inheritAll="false"/>
+    <ant dir="TimeOutBean" target="all" inheritAll="false"/>
+    <ant dir="JDBCBean" target="all" inheritAll="false"/>
+    <ant dir="TotalTimesBean" target="all" inheritAll="false"/>
+  </target>
+    
+  <target name="dist" depends="build">
+    <ant target="tarball"/>
+    <ant target="zip"/>
+    <ant target="rpm"/>
+    <ant target="osx"/>
+  </target>
+
+  <target name="X" depends="build">
+    <ant dir="TimeOutBean" target="X" inheritAll="false"/>
+  </target>
+
+  <target name="tarball">
+    <tar tarfile="${releasename}.src.tar">
+      <tarfileset dir="." prefix="${releasename}">
+        <include name="build.xml"/>
+	<include name="consultcomm.spec"/>
+        <include name="${src}/ConsultComm"/>
+        <include name="${src}/*.java"/>
+        <include name="${src}/*.form"/>
+        <include name="${src}/docs/*.html"/>
+        <include name="${src}/graphics/*"/>
+        <include name="${src}/build.xml"/>
+        <include name="${src}/skinlf.jar"/>
+        <include name="${src}/jhbasic.jar"/>
+        <include name="${src}/README"/>
+        <include name="${src}/AUTHORS"/>
+        <include name="${src}/COPYING"/>
+        <include name="${src}/CHANGES"/>
+        <include name="JDBCBean/*.java"/>
+        <include name="JDBCBean/*.form"/>
+        <include name="JDBCBean/*.gif"/>
+        <include name="JDBCBean/build.xml"/>
+        <include name="TotalTimesBean/*.java"/>
+        <include name="TotalTimesBean/*.form"/>
+        <include name="TotalTimesBean/*.gif"/>
+        <include name="TotalTimesBean/build.xml"/>
+        <include name="TimeOutBean/*.java"/>
+        <include name="TimeOutBean/*.form"/>
+        <include name="TimeOutBean/*.gif"/>
+        <include name="TimeOutBean/build.xml"/>
+        <include name="TimeOutBean/X/*.c"/>
+        <include name="TimeOutBean/X/Makefile"/>
+        <include name="TimeOutBean/Win32/*.cpp"/>
+        <include name="TimeOutBean/Win32/Win32Idle.mak"/>
+      </tarfileset>
+    </tar>
+
+    <gzip src="${releasename}.src.tar" zipfile="${releasename}.src.tar.gz"/>
+  </target>
+
+  <target name="rpm">
+    <copy file="consultcomm.spec" todir="${rpmdir}/SPECS"/>
+    <move file="${releasename}.src.tar" todir="${rpmdir}/SOURCES"/>
+    <rpm specFile="consultcomm.spec" topDir="${rpmdir}" cleanBuildDir="yes" removeSpec="yes" removeSource="yes"/>
+    <move file="${rpmdir}/RPMS/i386/${releasename}-${revision}.i386.rpm" todir="."/>
+  </target>
+
+  <target name="zip">
+    <zip zipfile="${releasename}.zip">
+      <zipfileset dir="${src}" prefix="${releasename}">
+        <include name="ConsultComm"/>
+        <include name="docs/*.html"/>
+        <include name="graphics/*"/>
+        <include name="plugins/*.jar"/>
+        <include name="CsltComm.jar"/>
+        <include name="skinlf.jar"/>
+        <include name="README"/>
+        <include name="AUTHORS"/>
+        <include name="COPYING"/>
+        <include name="CHANGES"/>
+      </zipfileset>
+    </zip>
+  </target>
+
+  <target name="osx">
+    <osxize name="Consultant Communicator" shortname="ConsultComm" mainclass="CsltComm" jars="ConsultComm/CsltComm.jar:ConsultComm/skinlf.jar" verbose="true"/>
+    <copy todir="Consultant Communicator.app/Contents/Resources/Java">
+      <fileset dir="${src}">
+        <include name="docs/*.html"/>
+        <include name="graphics/*"/>
+        <include name="plugins/*.jar"/>
+        <include name="README"/>
+        <include name="AUTHORS"/>
+        <include name="COPYING"/>
+        <include name="CHANGES"/>
+      </fileset>
+    </copy>
+    <tar tarfile="${releasename}.MacOSX.tar" basedir="Consultant Communicator.app"/>
+    <delete dir="Consultant Communicator.app"/>
+    <gzip zipfile="${releasename}.MacOSX.tar.gz" src="${releasename}.MacOSX.tar"/> 
+    <delete file="${releasename}.MacOSX.tar"/>
+ </target>
+
+  <target name="sfrelease">
+    <copy file="ConsultComm_Windows_Build_Output/Web_Installers/InstData/Windows/NoVM/CsltComm.exe" tofile="${releasename}.exe"/>
+  </target>
+
+  <target name="clean">
+    <delete file="${releasename}.src.tar.gz"/>
+    <delete file="${releasename}.zip"/>
+    <delete file="${releasename}.MacOSX.tar.gz"/>
+    <delete file="${releasename}.exe"/>
+    <delete file="${releasename}-${revision}.i386.rpm"/>
+    <ant dir="${src}" target="clean" inheritAll="false"/>
+    <ant dir="TimeOutBean" target="clean" inheritAll="false"/>
+    <ant dir="JDBCBean" target="clean" inheritAll="false"/>
+    <ant dir="TotalTimesBean" target="clean" inheritAll="false"/>  
+</target>
+
+  <target name="realclean" depends="clean">
+    <ant dir="${src}" target="realclean" inheritAll="false"/>
+    <delete dir="ConsultComm_Windowslocales"/>
+    <delete dir="ConsultComm_Windows_Build_Output"/>
+    <ant dir="TimeOutBean" target="realclean" inheritAll="false"/>
+    <ant dir="JDBCBean" target="realclean" inheritAll="false"/>
+    <ant dir="TotalTimesBean" target="realclean" inheritAll="false"/>
+</target>
+
+</project>

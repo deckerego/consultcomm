@@ -1,10 +1,10 @@
 Summary: Consultant Communicator (ConsultComm) is a program that allows anyone managing multiple projects, clients or tasks to effectively keep track of exactly how long they've spent on each project.
 Name: ConsultComm
-Version: 3beta1
-Release: 1
+Version: 3beta4
+Release: 2
 Copyright: GPL
 Group: Applications/Productivity
-Source: ConsultComm-3beta1.src.tar
+Source: ConsultComm-3beta4.src.tar
 BuildRoot: /var/tmp/%{name}-buildroot
 
 %description
@@ -24,23 +24,28 @@ all you want.
 %setup
 
 %build
-ant
+ant X
 
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/plugins
-mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/TimeOutBean
-mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/JDBCBean
+mkdir -p $RPM_BUILD_ROOT/usr/local/TotalTimesBean
+mkdir -p $RPM_BUILD_ROOT/usr/local/TimeOutBean
+mkdir -p $RPM_BUILD_ROOT/usr/local/JDBCBean
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/docs
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/icons
+mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/graphics
+mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/syslibs
 mkdir -p $RPM_BUILD_ROOT/usr/local/bin
 
-install *.class $RPM_BUILD_ROOT/usr/local/ConsultComm
-install ConsultComm $RPM_BUILD_ROOT/usr/local/bin
-install docs/* $RPM_BUILD_ROOT/usr/local/ConsultComm/docs
-install graphics/ConsultComm.xpm $RPM_BUILD_ROOT/usr/local/ConsultComm/icons
-install plugins/*.jar $RPM_BUILD_ROOT/usr/local/ConsultComm/plugins
+install ConsultComm/ConsultComm $RPM_BUILD_ROOT/usr/local/bin
+install ConsultComm/graphics/*.xpm $RPM_BUILD_ROOT/usr/local/ConsultComm/icons
+install ConsultComm/graphics/*.gif $RPM_BUILD_ROOT/usr/local/ConsultComm/graphics
+install ConsultComm/plugins/*.jar $RPM_BUILD_ROOT/usr/local/ConsultComm/plugins
+install ConsultComm/*.jar $RPM_BUILD_ROOT/usr/local/ConsultComm
+
+chmod a+w $RPM_BUILD_ROOT/usr/local/ConsultComm/syslibs
 
 %clean
 if [ $RPM_BUILD_ROOT != "/" ] ; then
@@ -49,12 +54,16 @@ fi
 
 %files
 %defattr(-,root,root)
-%doc README CHANGES COPYING AUTHORS
+%doc ConsultComm/README ConsultComm/CHANGES ConsultComm/COPYING ConsultComm/AUTHORS
 
 /usr/local/bin/ConsultComm
 /usr/local/ConsultComm
 
 %changelog
+* Wed Jan 29 2003 John Ellis <john.ellis@ise-indy.com>
+- Modified directory structure for ease in building
+* Wed Jan 22 2003 John Ellis <john.ellis@ise-indy.com>
+- Added files & directories for plugin architecture
 * Wed Oct 16 2002 John Ellis <john.ellis@ise-indy.com>
 - Added shell script, icon, renamed package
 * Tue Oct 15 2002 John Ellis <john.ellis@ise-indy.com>

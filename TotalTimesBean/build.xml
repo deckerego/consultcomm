@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="all" name="TotalTimes">
   <property name="src" value="./"/>
+  <property name="appsrc" value="${src}/../ConsultComm"/>
 
   <target depends="compile" name="all"/>
 
@@ -9,8 +10,8 @@
   </target>
 
   <target depends="init" name="compile">
-    <javac deprecation="on" optimize="on" srcdir="${src}" classpath="${src}:${src}/.."/>
-    <jar destfile="${src}/../plugins/TotalTimes.jar">
+    <javac deprecation="on" optimize="on" srcdir="${src}" classpath="${src}:${appsrc}"/>
+    <jar destfile="${appsrc}/plugins/TotalTimes.jar">
       <fileset dir="${src}" includes="*.class"/>
       <fileset dir="${src}" includes="*.gif"/>
       <manifest>

@@ -12,6 +12,7 @@
     <javac deprecation="on" optimize="on" srcdir="${src}">
       <classpath>
         <pathelement location="skinlf.jar"/>
+        <pathelement location="jhbasic.jar"/>
       </classpath>
     </javac>
     <jar destfile="CsltComm.jar">
@@ -22,13 +23,6 @@
       </manifest>
     </jar>
     <mkdir dir="${src}/plugins"/>
-    <ant dir="TimeOutBean" target="all" inheritAll="false"/>
-    <ant dir="JDBCBean" target="all" inheritAll="false"/>
-    <ant dir="TotalTimesBean" target="all" inheritAll="false"/>
-  </target>
-
-  <target depends="compile" name="X">
-    <ant dir="TimeOutBean" target="X" inheritAll="false"/>
   </target>
 
   <target depends="compile" name="dryrun">
@@ -36,6 +30,7 @@
       <jvmarg value="-Djava.library.path=syslibs"/> 
       <classpath>
         <pathelement location="skinlf.jar"/>
+        <pathelement location="jhbasic.jar"/>
         <pathelement path="${src}"/>
       </classpath>
     </java>
@@ -45,17 +40,11 @@
     <delete>
       <fileset dir="${src}" includes="*.class"/>
     </delete>
-    <ant dir="TimeOutBean" target="clean" inheritAll="false"/>
-    <ant dir="JDBCBean" target="clean" inheritAll="false"/>
-    <ant dir="TotalTimesBean" target="clean" inheritAll="false"/>
   </target>
 
   <target depends="clean" name="realclean">
     <delete>
       <fileset dir="${src}" includes="*~"/>
     </delete>
-    <ant dir="TimeOutBean" target="realclean" inheritAll="false"/>
-    <ant dir="JDBCBean" target="realclean" inheritAll="false"/>
-    <ant dir="TotalTimesBean" target="realclean" inheritAll="false"/>
   </target>
 </project>

@@ -3,6 +3,7 @@
   <property name="src" value="./"/>
   <property name="Xlibdir" value="X"/>
   <property name="Win32libdir" value="Win32"/>
+  <property name="appsrc" value="${src}/../ConsultComm"/>
 
   <target depends="compile" name="all"/>
 
@@ -11,8 +12,8 @@
   </target>
 
   <target depends="init" name="compile">
-    <javac deprecation="on" optimize="on" srcdir="${src}" classpath="${src}:${src}../"/>
-    <jar destfile="${src}/../plugins/TimeOut.jar">
+    <javac deprecation="on" optimize="on" srcdir="${src}" classpath="${src}:${appsrc}"/>
+    <jar destfile="${appsrc}/plugins/TimeOut.jar">
       <fileset dir="${src}" includes="*.class"/>
       <fileset dir="${src}" includes="*.gif"/>
       <fileset dir="${src}" includes="${Xlibdir}/*.so"/>
