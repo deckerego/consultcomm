@@ -53,6 +53,7 @@
     <delete>
       <fileset dir="${src}" includes="**/*~" defaultexcludes="no"/>
       <fileset dir="${src}" includes="CsltComm.jar"/>
+      <fileset dir="${src}" includes="plugins/*.jar"/>
     </delete>
   </target>
 </project>
