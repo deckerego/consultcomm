@@ -14,6 +14,8 @@
        	<mapID target="faq.starting" url="faq.html#ProblemsStarting" />
        	<mapID target="faq.idle" url="faq.html#IdleProblems" />
        	<mapID target="faq.name" url="faq.html#WhyName" />
+       	<mapID target="faq.tablenull" url="faq.html#TableNull" />
+       	<mapID target="faq.createplugins" url="faq.html#CreatePlugins" />
         
 	<mapID target="db" url="dbconnect.html" />
 	<mapID target="db.installing" url="dbconnect.html#installing" />

@@ -17,6 +17,7 @@
   <indexitem text="Crashes When Starting" target="faq.starting" />
 
 <!-- D --> 
+  <indexitem text="Database, see 'JDBC'" />
 
 <!-- E --> 
 
@@ -41,6 +42,7 @@
   <indexitem text="JDBC">
     <indexitem text="Installing" target="db.installing" />
     <indexitem text="Using" target="db.using" />
+    <indexitem text="NULL table error" target="faq.tablenull" />
   </indexitem>
 
 <!-- K --> 
@@ -52,6 +54,7 @@
 
 <!-- N --> 
   <indexitem text="Name, Why Is It Stupid?" target="faq.name" />
+  <indexitem text="NULL table error" target="faq.tablenull" />
 
 <!-- O --> 
   <indexitem text="Overview" target="top" />
@@ -63,6 +66,7 @@
     <indexitem text="Setting Idle Timeout" target="timeout" />
     <indexitem text="Totals for projects" target="totals" />
     <indexitem text="JDBC Exporting" target="db" />
+    <indexitem text="Creating" target="faq.createplugins" />
   </indexitem>
   <indexitem text="Projects" target="using.projects" />
 

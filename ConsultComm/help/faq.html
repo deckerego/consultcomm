@@ -71,6 +71,22 @@ or <I>/usr/share/ConsultComm</I>) and deleting the following files from the
 Restart ConsultComm and see if that helps.
 <P>
 
+<A Name="TableNull"></A>
+<DT><B>I keep getting a "Cannot find table NULL error."</B>
+<DD>Note that some databases require quotes (") around the table name - so if you 
+get a "Cannot find table NULL" error try placing quotes around the name.
+<P>
+
+<A Name="CreatePlugins"></A>
+<DT><B>How can I create plugins?</B>
+<DD>Take a look at EmptyBean in the ConsultComm source distribution. It's
+an example JavaBean that demonstrates how to extend the ConsultComm plugin 
+interface, react to events and register with the "Manage Plugins" window. It
+should be self-documenting enough to explain how to build a plugin of your own.
+If you have any questions along the way, post a message to the user forums
+at http://consultcomm.sourceforge.net.
+<P>
+
 <A Name="WhyName"></A>
 <DT><B>Why the heck is this called "Consultant Communicator?"</B>
 <DD>That's an interesting story. Actually not so much interesting as it is 
