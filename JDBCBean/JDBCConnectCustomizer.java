@@ -533,18 +533,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       
       dbConnection.setTableMap(tableMap);
       
-      try { //Serialize the bean out to an XML file in the user's prefs directory
-          File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
-          File prefsFile = new File(prefsdir, "JDBCConnect.xml");
-          Thread.currentThread().setContextClassLoader(dbConnection.getClass().getClassLoader()); //Sun BugID 4676532
-          FileOutputStream outStream = new FileOutputStream(prefsFile);
-          XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
-          e.writeObject(dbConnection);
-          e.close();
-      } catch (Exception e) {
-          System.err.println("Couldn't save JDBC Prefs");
-      }
-      
+      JDBCConnect.saveDriverSettings(dbConnection);
       exitForm();
   }//GEN-LAST:event_saveDriverSettings
               private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
@@ -563,7 +552,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         toggleODBC(evt);
         toggleValidateProject(evt);
     }
-              
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel optionButtonPanel;
     private javax.swing.JPanel driverPanel;

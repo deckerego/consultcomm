@@ -306,7 +306,20 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
         TotalPanel totalPanel = clntComm.getTotalPanel();
         totalPanel.setEntry("To Export:", getTotalTime());
         
-        if(propertyChangeEvent.getPropertyName().equals("times")) {
+        if(propertyChangeEvent.getPropertyName().equals("record")) { //Edited a project
+            TimeRecord newRecord = (TimeRecord)propertyChangeEvent.getNewValue();
+            TimeRecord oldRecord = (TimeRecord)propertyChangeEvent.getOldValue();
+            
+            if(newRecord != null && oldRecord != null && ! newRecord.toString().equals(oldRecord.toString())) { //The project name changed
+                Hashtable projectMaps = tableMap.getProjectMaps();
+                ProjectMap projectMap = (ProjectMap)projectMaps.get(oldRecord.toString());
+                projectMaps.put(newRecord.toString(), projectMap); //Add new project/alias
+                projectMaps.remove(oldRecord.toString()); //Remove old project/alias
+                saveDriverSettings(this);
+            }
+        }
+
+        if(propertyChangeEvent.getPropertyName().equals("times")) { //Timelist has changed
             TimeRecordSet newTimes = (TimeRecordSet)propertyChangeEvent.getNewValue();
             TimeRecordSet oldTimes = (TimeRecordSet)propertyChangeEvent.getOldValue();
             
@@ -317,6 +330,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
                 "Add Project to Database Export List?",
                 "Add to Export", javax.swing.JOptionPane.YES_NO_OPTION,
                 javax.swing.JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+                
                 if(dialog == 0){
                     frame.getContentPane().setLayout(new java.awt.BorderLayout());
                     Customizer customizer = new JDBCConnectCustomizer();
@@ -340,6 +354,20 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
             totalTime += record.getSeconds();
         }
         return totalTime;
+    }
+
+    static void saveDriverSettings(JDBCConnect dbConnection) {
+      try { //Serialize the bean out to an XML file in the user's prefs directory
+          File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+          File prefsFile = new File(prefsdir, "JDBCConnect.xml");
+          Thread.currentThread().setContextClassLoader(dbConnection.getClass().getClassLoader()); //Sun BugID 4676532
+          FileOutputStream outStream = new FileOutputStream(prefsFile);
+          XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
+          e.writeObject(dbConnection);
+          e.close();
+      } catch (Exception e) {
+          System.err.println("Couldn't save JDBC Prefs");
+      }
     }
     
     public Object clone() throws CloneNotSupportedException {
