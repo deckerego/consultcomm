@@ -199,7 +199,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
                 if(hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) continue;
                 
                 //Find out if this project is exportable or not
-                ProjectMap project = (ProjectMap)this.tableMap.getProjectMaps().get(record.getGroupName()+"-"+record.getProjectName());
+                ProjectMap project = (ProjectMap)this.tableMap.getProjectMaps().get(record.toString());
                 if(project == null || ! project.isExport()) continue;
                 
                 //Start translating the TimeRecord into a SQL statement

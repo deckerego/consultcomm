@@ -75,7 +75,7 @@ public class TableMap implements java.io.Serializable {
         TimeRecordSet records = jdbc.clntComm.getTimes();
         for (int i=0; i<records.size(); i++) {
             TimeRecord record = (TimeRecord)records.elementAt(i);
-            String projectName = record.getGroupName()+"-"+record.getProjectName();
+            String projectName = record.toString();
             ProjectMap projectMap = (ProjectMap)projectMaps.get(projectName);
             if(projectMap == null) model.addRow(new Object[] {new Boolean(false), projectName, ""});
             else model.addRow(new Object[] {new Boolean(projectMap.getExport()), projectName, projectMap.getAlias()});
