@@ -18,16 +18,14 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
     private native long getIdleTime();
     
     static {
-        if(! timeoutLibrary) { //Load twice, cause big JVM CRASH!
-            getNativeLibrary("X/libtimeout.so");
-            getNativeLibrary("Win32/timeout.dll");
-            try {
-                System.loadLibrary("timeout");
-                timeoutLibrary = true;
-            } catch (UnsatisfiedLinkError e) {
-                System.err.println("Couldn't find timeout library in "+System.getProperty("java.library.path"));
-                timeoutLibrary = false;
-            }
+        getNativeLibrary("X/libtimeout.so");
+        getNativeLibrary("Win32/timeout.dll");
+        try {
+            System.loadLibrary("timeout");
+            timeoutLibrary = true;
+        } catch (UnsatisfiedLinkError e) {
+            System.err.println("Couldn't find timeout library in "+System.getProperty("java.library.path"));
+            timeoutLibrary = false;
         }
     }
     
