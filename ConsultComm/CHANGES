@@ -1,5 +1,5 @@
 Consultant Communicator 2.0
-Release 10/08/01
+Release 10/23/01
 First Released 11/99
 
 REVISION HISTORY -
@@ -7,6 +7,7 @@ REVISION HISTORY -
 		- Can sort columns by clicking on their header
 		- JDBC connectivity added; can upload time to any 
 		  JDBC compliant database
+		- Help system added
         o 1.0.3
                 - Remembers window size (again)
                 - Updated for Forte CE 3.0
