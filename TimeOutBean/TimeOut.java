@@ -122,6 +122,7 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
         try{
             String fileName = path.substring(path.lastIndexOf('/'));
             File file = new File(PluginManager.libsdir, fileName);
+            file.deleteOnExit();
             InputStream in = new BufferedInputStream(this.getClass().getResourceAsStream(path));
             OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
             byte[] buffer = new byte[4096];
