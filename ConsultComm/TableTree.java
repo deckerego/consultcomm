@@ -95,7 +95,7 @@ public class TableTree extends JTable {
 
         for(int row=0, oldRow=-1; row < numRows && row != oldRow;) { //Find each matching project, then check it
             path = tree.getNextMatch(selected.getProjectName(), row, javax.swing.text.Position.Bias.Forward);
-            if(path == null) return; //No matches at all
+            if(path == null || path.getLastPathComponent().getClass() != TimeRecord.class) return; //No matches at all
             TimeRecord record = (TimeRecord)path.getLastPathComponent();
             oldRow = row; //Are we checking the same row over again?
             row = tree.getRowForPath(path)+1;
