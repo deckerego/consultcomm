@@ -165,9 +165,6 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="totalText">
           <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" id="black" palette="0" red="0" type="palette"/>
-            </Property>
             <Property name="horizontalTextPosition" type="int" value="2"/>
           </Properties>
 
@@ -177,9 +174,6 @@
         </Component>
         <Component class="javax.swing.JLabel" name="totalTime">
           <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" id="black" palette="0" red="0" type="palette"/>
-            </Property>
             <Property name="horizontalTextPosition" type="int" value="4"/>
           </Properties>
 

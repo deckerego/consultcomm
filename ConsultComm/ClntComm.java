@@ -15,7 +15,6 @@ import javax.swing.event.*;
 
 /*
  * ClntComm.java
- * @version 2.0
  * @author John T. Ellis
  * Created on May 19, 2000, 7:37 PM
  */
@@ -633,7 +632,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       } else {
         doc = docBuilder.newDocument();
         rootNode = doc.createElement("clntcomm");
-        rootNode.setAttribute("version", "2.0");
+        rootNode.setAttribute("version", "2.2");
         doc.appendChild(rootNode);
       }
       rootNode.normalize();
