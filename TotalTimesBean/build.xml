@@ -33,7 +33,7 @@
 
   <target depends="clean" name="realclean">
     <delete>
-      <fileset dir="${src}" includes="*~"/>
+      <fileset dir="${src}" includes="**/*~" defaultexcludes="no"/>
     </delete>
   </target>
 </project>
