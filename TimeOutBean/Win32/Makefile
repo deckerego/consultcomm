@@ -1,11 +1,15 @@
-CC = i586-mingw32-gcc
-AS = i586-mingw32-as
-DLLWRAP = i586-mingw32-dllwrap
+TARGET_ALIAS = i586-mingw32
+WIN32_DIR = /home/jellis/.cxoffice/dotwine/fake_windows
+JAVA_DIR = $(WIN32_DIR)/j2sdk1.4.2_07
+XCOMPILE_DIR = /usr/local/cross-compile/$(TARGET_ALIAS)
 
-INCLUDE = -I/home/jellis/.cxoffice/dotwine/fake_windows/j2sdk1.4.2_07/include -I/home/jellis/.cxoffice/dotwine/fake_windows/j2sdk1.4.2_07/include/win32 -I.
-LDFLAGS = -L/usr/local/cross-compile/i586-mingw32/lib -lm -lmingwex -lsupc++ -lstdc++
+CC = $(TARGET_ALIAS)-gcc
+AS = $(TARGET_ALIAS)-as
+DLLWRAP = $(TARGET_ALIAS)-dllwrap
+
+INCLUDE = -I$(JAVA_DIR)/include -I$(JAVA_DIR)/include/win32 -I.
+LDFLAGS = -L$(XCOMPILE_DIR)/lib -lm -lmingwex -lsupc++ -lstdc++
 CFLAGS = -mms-bitfields $(INCLUDE)
-
 DLLWRAP_FLAGS = --as=$(AS) --export-all --driver-name $(CC) -s
 
 all: ../timeout.dll
@@ -18,8 +22,8 @@ timeout.o: timeout.cpp
 
 clean:
 	@rm -f *.o
-	@rm -f *.dll
 	@rm -f *.def
+	@rm -f ../timeout.dll
 
 realclean: clean
 	@rm -f TimeOut.h

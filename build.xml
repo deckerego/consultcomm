@@ -2,11 +2,11 @@
 <project basedir="." default="dist">
   <taskdef classname="com.izforge.izpack.ant.IzPackTask" name="izpack" classpath="/usr/local/IzPack/lib/compiler.jar"/>
             
-  <property name="release" value="3.1.1"/>
+  <property name="release" value="3.2beta1"/>
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
   <property name="izpackdir" value="/usr/local/IzPack"/>
-  <property name="revision" value="3"/>
+  <property name="revision" value="1"/>
 
   <target name="build">
     <ant dir="ConsultComm" inheritAll="false" target="jar"/>
@@ -21,10 +21,6 @@
     <ant target="zip"/>
     <ant target="rpm"/>
     <ant target="izpack"/>
-  </target>
-
-  <target depends="build" name="X">
-    <ant dir="TimeOutBean" inheritAll="false" target="X"/>
   </target>
 
   <target name="tarball">
@@ -73,7 +69,7 @@
         <include name="TimeOutBean/X/*.c"/>
         <include name="TimeOutBean/X/Makefile"/>
         <include name="TimeOutBean/Win32/*.cpp"/>
-        <include name="TimeOutBean/Win32/Win32Idle.mak"/>
+        <include name="TimeOutBean/Win32/Makefile"/>
         
         <include name="SysTrayBean/src/*"/>
         <include name="SysTrayBean/*.png"/>
@@ -158,8 +154,9 @@
 
   <target depends="clean" name="realclean">
     <delete>
-      <fileset dir="." includes="*~" defaultexcludes="no"/>
+      <fileset dir="." includes="**/*~" defaultexcludes="no"/>
     </delete>
+    <ant dir="TimeOutBean" inheritAll="false" target="realclean"/>
 </target>
 
 </project>

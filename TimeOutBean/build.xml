@@ -68,25 +68,53 @@
     -->
     <property name="Xlibdir" value="X"/>
     <property name="Win32libdir" value="Win32"/>
+    <property name="Solarislibdir" value="Solaris"/>
   
     <target name="X">
       <property file="nbproject/project.properties"/>
       <javah destdir="${Xlibdir}" class="TimeOut" classpath="${run.classpath}"/>
       <exec dir="${Xlibdir}" executable="make"/>
-      <ant target="jar"/>
     </target>
 
     <target name="Win32">
       <property file="nbproject/project.properties"/>
       <javah destdir="${Win32libdir}" class="TimeOut" classpath="${run.classpath}"/>
-      <echo>
-        Win32 header files built, compile the DLL using the
-        included makefile (being sure to include the directory
-        for the J2SDK header files).
-      </echo>
+      <exec dir="${Win32libdir}" executable="make"/>
     </target>
 
-    <target name="-pre-jar">
+    <target name="Solaris">
+      <property file="nbproject/project.properties"/>
+      <javah destdir="${Solarislibdir}" class="TimeOut" classpath="${run.classpath}"/>
+      <!--exec dir="${Solarislibdir}" executable="make"/-->
+    </target>
+
+    <target name="-post-clean">
+      <exec dir="${Xlibdir}" executable="make">
+        <arg line="clean"/>
+      </exec>
+      <exec dir="${Win32libdir}" executable="make">
+        <arg line="clean"/>
+      </exec>
+      <exec dir="${Solarislibdir}" executable="make">
+        <arg line="clean"/>
+      </exec>
+    </target>
+    
+    <target depends="clean" name="realclean">
+      <property file="nbproject/project.properties"/>
+
+      <exec dir="${Xlibdir}" executable="make">
+        <arg line="realclean"/>
+      </exec>
+      <exec dir="${Win32libdir}" executable="make">
+        <arg line="realclean"/>
+      </exec>
+      <exec dir="${Solarislibdir}" executable="make">
+        <arg line="realclean"/>
+      </exec>
+    </target>
+    
+    <target depends="Win32,X" name="-pre-jar">
       <copy todir="${build.classes.dir}">
         <fileset dir="." includes="*.png"/>
         <fileset dir="." includes="*.gif"/>

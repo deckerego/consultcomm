@@ -1,12 +1,12 @@
 Summary: Consultant Communicator (ConsultComm) is a program that allows anyone managing multiple projects, clients or tasks to effectively keep track of exactly how long they've spent on each project.
 Name: ConsultComm
-Version: 3.1.1
-Release: 3
+Version: 3.2beta1
+Release: 1
 Copyright: GPL
 Group: Applications/Productivity
 Source: ConsultComm-%{version}.src.tar
 BuildRoot: /var/tmp/%{name}-buildroot
-BuildRequires: jakarta-ant
+BuildRequires: ant
 
 %description
 Consultant Communicator (ConsultComm) is a small, lightweight, 
@@ -25,7 +25,7 @@ all you want.
 %setup
 
 %build
-ant X
+ant build
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -61,6 +61,18 @@ fi
 /usr/share/applications
 
 %changelog
+* Mon Feb 28 2005 John Ellis <jtellis@users.sourceforge.net>
+- Added group time total in project list
+- Added antialiasing preference for fonts in project list
+- If an alias does not exist in the JDBC plugin, the project name is exported
+- Rebuilt and rewrote the timeout Win32 native class for TimeOut plugin using gcc and MinGW
+- Window events are now broadcast to plugins; EmptyBean updated to demonstrate
+- SysTray plugin now remembers if window was iconified or not
+- Plugins now can add to project list pop-up menu
+- Added easy copy-and-pasting for projects
+- Fixed "Refresh" command in JDBC plugin when changing table or database URL
+- Fixed relative positioning of popup windows
+- Fixed help window aesthetics
 * Wed Sep 27 2004 John Ellis <jtellis@users.sourceforge.net>
 - Fixed bug where adding a new project while the timer was running would reset the selected project's elapsed time
 - Added project name to $PROMPT dialog in JDBC plugin
