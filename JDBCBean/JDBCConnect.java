@@ -24,6 +24,8 @@ public class JDBCConnect extends CsltCommPlugin {
     transient String password="";
     transient boolean validated;
     private String qualifiedTable;
+    private int widthExportList = 640;
+    private int heightExportList = 480;
     
     private TableMap tableMap;
     private String jarFile;
@@ -323,7 +325,12 @@ public class JDBCConnect extends CsltCommPlugin {
                 ProjectMap projectMap = (ProjectMap)projectMaps.get(oldRecord.toString());
                 projectMaps.put(newRecord.toString(), projectMap); //Add new project/alias
                 projectMaps.remove(oldRecord.toString()); //Remove old project/alias
-                saveDriverSettings(this);
+
+                try {
+                  PluginManager.serializeObject(this);
+                } catch (java.io.FileNotFoundException e) {
+                  System.err.println("Error saving prefs for Empty plugin");
+                }
             }
         }
 
@@ -345,6 +352,7 @@ public class JDBCConnect extends CsltCommPlugin {
                     customizer.setObject(this);
                     frame.getContentPane().add((javax.swing.JPanel)customizer, java.awt.BorderLayout.CENTER);
                     frame.pack();
+                    frame.setSize(widthExportList, heightExportList);
                     frame.show();
                     ((JDBCConnectCustomizer)customizer).tabbedPane.setSelectedIndex(2);
                 }
@@ -365,20 +373,6 @@ public class JDBCConnect extends CsltCommPlugin {
         return totalTime;
     }
 
-    static void saveDriverSettings(JDBCConnect dbConnection) {
-      try { //Serialize the bean out to an XML file in the user's prefs directory
-          File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
-          File prefsFile = new File(prefsdir, "JDBCConnect.xml");
-          Thread.currentThread().setContextClassLoader(dbConnection.getClass().getClassLoader()); //Sun BugID 4676532
-          FileOutputStream outStream = new FileOutputStream(prefsFile);
-          XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
-          e.writeObject(dbConnection);
-          e.close();
-      } catch (Exception e) {
-          System.err.println("Couldn't save JDBC Prefs");
-      }
-    }
-    
     public Object clone() throws CloneNotSupportedException {
         JDBCConnect clone = (JDBCConnect)super.clone();
         clone.tableMap = new TableMap();
