@@ -74,8 +74,8 @@ class TimeRecord implements Comparable {
     TimeRecord toRecord = (TimeRecord)to;
     boolean isEqual = true;
     isEqual = isEqual && (seconds == toRecord.seconds);
-    isEqual = isEqual && (projectName.equals(toRecord.projectName));
-    isEqual = isEqual && (alias.equals(toRecord.alias));
+    isEqual = isEqual && ((projectName == toRecord.projectName) || (projectName.equals(toRecord.projectName)));
+    isEqual = isEqual && ((alias == toRecord.alias) || (alias.equals(toRecord.alias)));
     isEqual = isEqual && (billable == toRecord.billable);
     isEqual = isEqual && (export == toRecord.export);
     return isEqual;
