@@ -284,7 +284,6 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     gridBagConstraints2 = new java.awt.GridBagConstraints();
     gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
     optionInputPanel.add(projectCaseCheckBox, gridBagConstraints2);
     
     projValidateCheckBox.setSelected(projectValidate);
@@ -699,7 +698,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
           TimeRecord record = times.elementAt(j);
           FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$HOURS"); //Find out how many hours exist
           java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.getValue(record);
-          if(hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) continue;
+          if((hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) || ! record.export) continue;
           Object[] statement = new Object[tableMap.size()];
           for(int i=0; i < statement.length; i++) {
             FieldMap fieldMap = tableMap.elementAt(i);

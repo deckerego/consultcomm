@@ -14,8 +14,6 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import ClntComm;
-
 public class CsltComm extends javax.swing.JFrame {
   public static final String release = "ConsultComm CVS Release";
   final static File prefsDir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");

@@ -5,17 +5,19 @@ class TimeRecord implements Comparable {
   protected String projectName;
   protected String alias;
   protected boolean billable;
+  protected boolean export;
   
   TimeRecord() {
     projectName = "";
     seconds = 0L;
     billable = true;
   }
-  TimeRecord(String name, String aka, long time, boolean isBillable) {
+  TimeRecord(String name, String aka, long time, boolean isBillable, boolean isExportable) {
     projectName = name;
     alias = aka;
     seconds = time;
     billable = isBillable;
+    export = isExportable;
   }
   
   protected void setSeconds(String secs) {
