@@ -19,12 +19,15 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
     final static int HOUR_FULL = 0;
     final static int HOUR_QUARTER = 1;
     final static int HOUR_TENTH = 2;
+    static final int SHOW_EXPORT = 2;
+    
     final static String odbcDriverName = "sun.jdbc.odbc.JdbcOdbcDriver";
     
     TableMap tableMap;
     
     private Vector errorList;
     private JFrame parentFrame;
+    private ClntComm clntComm;
     
     private String name = "";
     private String url = "";
@@ -90,7 +93,22 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
     public boolean getValidated() { return this.validated; }
     public boolean isValidated() { return this.validated; }
     
-    Connection openConnection() {
+    public javax.swing.JMenuItem[] getMenuItems() {
+        javax.swing.JMenuItem menuitems[] = new javax.swing.JMenuItem[1];
+        
+        menuitems[0] = new javax.swing.JMenuItem();
+        menuitems[0].setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
+        menuitems[0].setText("Export to Database");
+        menuitems[0].addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportTimeRecordSet(clntComm.getTimes());
+            }
+        });
+        
+        return menuitems;
+    }
+    
+    private Connection openConnection() {
         Connection conn = null;
         errorList = new Vector();
         
@@ -163,7 +181,7 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
         if(exception != null) throw exception;
     }
     
-    boolean exportTimeRecordSet(TimeRecordSet times) {
+    public boolean exportTimeRecordSet(TimeRecordSet times) {
         boolean worked = false;
         
         try {
@@ -178,7 +196,7 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
                 TimeRecord record = times.elementAt(j);
                 FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$HOURS"); //Find out how many hours exist
                 java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.getValue(record);
-                if((hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) || (! record.export && useExport)) continue;
+                if(hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) continue;
                 Object[] statement = new Object[tableMap.size()];
                 for(int i=0; i < statement.length; i++) {
                     FieldMap fieldMap = tableMap.elementAt(i);
@@ -204,7 +222,7 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
         return worked;
     }
     
-    String[] getProjectFieldNames() {
+    public String[] getProjectFieldNames() {
         Connection conn = openConnection();
         String[] names = null;
         ResultSet cols = null;
@@ -423,7 +441,8 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
     }
     
     public void clockTick(CsltCommEvent actionEvent) {
-        //We don't worry about actions, nevermind.
+        //Set the referring object
+        clntComm = (ClntComm)actionEvent.getSource();
     }
     
     private class LoginDialog extends JDialog {
@@ -558,8 +577,8 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
                         switch(sqlType) {
                             case java.sql.Types.CHAR:
                             case java.sql.Types.VARCHAR:
-                                if(projectCase) realValue = record.projectName.toUpperCase();
-                                else realValue = record.projectName;
+                                if(projectCase) realValue = record.getProjectName().toUpperCase();
+                                else realValue = record.getProjectName();
                                 if(projectValidate && ! validateProject((String)realValue))
                                     throw new ProjectInvalidException("Project "+realValue+" not in table "+projectDatabase+"."+projectTable);
                                 break;
@@ -618,13 +637,13 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
                     } else if(value.equals("BILLABLE")) {
                         switch(sqlType) {
                             case java.sql.Types.CHAR:
-                                realValue = record.billable ? "Y" : "N";
+                                realValue = record.isBillable() ? "Y" : "N";
                                 break;
                             case java.sql.Types.BIT:
-                                realValue = new Boolean(record.billable);
+                                realValue = new Boolean(record.isBillable());
                                 break;
                             case java.sql.Types.INTEGER:
-                                realValue = record.billable ? new Integer(-1) : new Integer(0);
+                                realValue = record.isBillable() ? new Integer(-1) : new Integer(0);
                                 break;
                             default:
                                 throw new ClassCastException("Unknown conversion for billable flag");

@@ -1,27 +1,33 @@
 import java.util.*;
 
-class TimeRecord implements Comparable {
-  protected long seconds;
-  protected String projectName;
-  protected String alias;
-  protected boolean billable;
-  protected boolean export;
+public class TimeRecord implements Comparable {
+  private long seconds;
+  private String projectName;
+  private String alias;
+  private boolean billable;
   
   TimeRecord() {
     projectName = "";
     seconds = 0L;
     billable = true;
-    export = true;
   }
   TimeRecord(String name, String aka, long time, boolean isBillable, boolean isExportable) {
     projectName = name;
     alias = aka;
     seconds = time;
     billable = isBillable;
-    export = isExportable;
   }
   
-  protected void setSeconds(String secs) {
+  public String getProjectName() { return this.projectName; }
+  public void setProjectName(String name) { this.projectName = name; }
+  public String getAlias() { return this.alias; }
+  public void setAlias(String alias) { this.alias = alias; }
+  public boolean getBillable() { return this.billable; }
+  public void setBillable(boolean billable) { this.billable = billable; }
+  public boolean isBillable() { return this.billable; }
+  public long getSeconds() { return this.seconds; }
+  public void setSeconds(long seconds) { this.seconds = seconds; }
+  public void setSeconds(String secs) {
     StringTokenizer timeWords = new StringTokenizer(secs, ":");
     // If time format is 1:30
     if(timeWords.countTokens() == 2) {
@@ -77,7 +83,6 @@ class TimeRecord implements Comparable {
     isEqual = isEqual && ((projectName == toRecord.projectName) || (projectName.equals(toRecord.projectName)));
     isEqual = isEqual && ((alias == toRecord.alias) || (alias.equals(toRecord.alias)));
     isEqual = isEqual && (billable == toRecord.billable);
-    isEqual = isEqual && (export == toRecord.export);
     return isEqual;
   }
 

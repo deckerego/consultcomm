@@ -1,6 +1,7 @@
 //Standard Components
 import java.util.*;
 import java.io.*;
+import java.beans.*;
 //XML Components
 import org.w3c.dom.*;
 import org.xml.sax.*;
@@ -21,13 +22,10 @@ import javax.swing.event.*;
 public class ClntComm extends javax.swing.JPanel {
     protected static final int SHOW_TOTAL = 0;
     protected static final int SHOW_BILLABLE = 1;
-    protected static final int SHOW_EXPORT = 2;
     protected static final int SHOW_COUNTDOWN = 4;
     protected static final int SHOW_COUNTPAY = 8;
     protected static final int SECONDS = 0;
     protected static final int MINUTES = 1;
-    protected static final int IDLE_PAUSE = 5;
-    protected static final int IDLE_PROJECT = 6;
     
     private static long totalSeconds, billableSeconds, countdownMinutes;
     private static JFrame frame = new JFrame("Consultant Manager");
@@ -43,24 +41,9 @@ public class ClntComm extends javax.swing.JPanel {
     private int showTotal;
     private float perHour;
     private int saveInterval = 60;
-    private int idleAction = IDLE_PAUSE, allowedIdle = 0;
-    private String idleProject = null;
-    private static boolean timeoutLibrary = false;
     private Vector plugins;
     
     private TimeRecordSet times;
-    
-    private native long getIdleTime();
-    
-    static {
-        try {
-            System.loadLibrary("timeout");
-            timeoutLibrary = true;
-        } catch (UnsatisfiedLinkError e) {
-            System.err.println("Couldn't find timeout library in "+System.getProperty("java.library.path"));
-            timeoutLibrary = false;
-        }
-    }
     
     /** Creates new form TimeTrack */
     public ClntComm(CsltComm parent) {
@@ -68,23 +51,13 @@ public class ClntComm extends javax.swing.JPanel {
         
         readPrefs();
         timerTask = new TimerThread();
-        
-        try{
-            plugins = new Vector();
-            plugins = PluginManager.getPlugins();
-            for(int i=0; i<plugins.size(); i++)
-                timerTask.addCsltCommListener((CsltCommListener)plugins.elementAt(i));
-        } catch(Exception e) {
-            System.err.println("Couldn't load plugins: "+e);
-        }
-        
         initComponents();
         initColumns();
-
+        loadPlugins();
+        menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
         timer = new java.util.Timer();
         timer.schedule(timerTask, 0, 1000);
         
-        menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
         try {
             timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
         } catch (IllegalArgumentException e) {
@@ -413,20 +386,14 @@ public void refreshTotalTime(){
             totalText.setText("Billable:");
             totalTime.setText(times.getBillableTimeString());
             break;
-        case SHOW_EXPORT:
-            totalText.setText("To Export:");
-            totalTime.setText(times.getExportTimeString());
-            break;
         case SHOW_COUNTDOWN:
             totalText.setText("Remaining:");
-            if(attributeSet(SHOW_EXPORT)) totalTime.setText(times.getCountdownTimeString(countdownMinutes, SHOW_EXPORT));
-            else if(attributeSet(SHOW_BILLABLE)) totalTime.setText(times.getCountdownTimeString(countdownMinutes, SHOW_BILLABLE));
+            if(attributeSet(SHOW_BILLABLE)) totalTime.setText(times.getCountdownTimeString(countdownMinutes, SHOW_BILLABLE));
             else totalTime.setText(times.getCountdownTimeString(countdownMinutes, SHOW_TOTAL));
             break;
         case SHOW_COUNTPAY:
             totalText.setText("Earned:");
-            if(attributeSet(SHOW_EXPORT)) totalTime.setText(times.getPayAmount(perHour, SHOW_EXPORT));
-            else if(attributeSet(SHOW_BILLABLE)) totalTime.setText(times.getPayAmount(perHour, SHOW_BILLABLE));
+            if(attributeSet(SHOW_BILLABLE)) totalTime.setText(times.getPayAmount(perHour, SHOW_BILLABLE));
             else totalTime.setText(times.getPayAmount(perHour, SHOW_TOTAL));
             break;
         default: //showTotal is undefined, choose default
@@ -434,6 +401,10 @@ public void refreshTotalTime(){
             refreshTotalTime();
     }
     totalTime.repaint();
+}
+
+private CsltCommEvent getCsltCommEvent() {
+    return new CsltCommEvent(this);
 }
 
 public boolean attributeSet(int flag) {
@@ -496,7 +467,7 @@ public void editWindow(int i){
     
     if (edit.getValue().equals("0")) {
         long newTime = System.currentTimeMillis()/1000;
-        if (index == selectedIndex) timerTask.startTime = newTime-record.seconds;
+        if (index == selectedIndex) timerTask.startTime = newTime-record.getSeconds();
         if(newRecord) times.add(record);
         timeList.setModel(times.toTableModel(timeFormat));
         timeList.repaint();
@@ -505,6 +476,28 @@ public void editWindow(int i){
         else
             timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
         refreshTotalTime();
+    }
+}
+
+private void loadPlugins() {
+    try{
+        plugins = new Vector();
+        plugins = PluginManager.getPlugins();
+        for(int i=0; i<plugins.size(); i++) {
+            Object plugin = plugins.elementAt(i);
+            System.out.println("Reading plugin "+plugin.getClass().getName());
+            timerTask.addCsltCommListener((CsltCommListener)plugin);
+            System.out.println("Trying to load menu items...");
+            Expression getMenuItems = new Expression(plugin, "getMenuItems", null);
+            if(getMenuItems == null) continue; //No getMenuItem() method available
+            System.out.println("Loading menu items...");
+            JMenuItem[] menuItems = (JMenuItem[])getMenuItems.getValue();
+            for(int j=0; j<menuItems.length; j++) toolMenu.add(menuItems[j]);
+            System.out.println("Menu items loaded");
+        }
+        timerTask.fireAction(); //Sync everyone on an initial clock tick
+    } catch(Exception e) {
+        System.err.println("Couldn't load plugins: "+e);
     }
 }
 
@@ -579,12 +572,6 @@ private void readPrefs() {
         //Get save interval
         saveInterval = prefs.readFirstInt("saveinfo", "seconds");
         if(saveInterval == 0) saveInterval = 60; //No interval found
-        
-        //Get idle time settings
-        allowedIdle = prefs.readFirstInt("idle", "seconds");
-        String idleActionString = prefs.readFirstString("idle", "action");
-        idleAction = idleActionString.equals("project") ? IDLE_PROJECT : IDLE_PAUSE;
-        idleProject = prefs.readFirstString("idle", "project");
     } catch (Exception e) {
         System.err.println("Cannot read prefs file: "+e);
         e.printStackTrace(System.out);
@@ -606,11 +593,10 @@ private void savePrefs() {
         for(int i=0; i<times.size(); i++){
             TimeRecord record = times.elementAt(i);
             Element newNode = projs.createElement("project");
-            newNode.setAttribute("name", record.projectName);
-            if(record.alias != null) newNode.setAttribute("alias", record.alias);
-            newNode.setAttribute("seconds", Long.toString(record.seconds));
-            newNode.setAttribute("billable", record.billable ? "true" : "false");
-            newNode.setAttribute("export", record.export ? "true" : "false");
+            newNode.setAttribute("name", record.getProjectName());
+            if(record.getAlias() != null) newNode.setAttribute("alias", record.getAlias());
+            newNode.setAttribute("seconds", Long.toString(record.getSeconds()));
+            newNode.setAttribute("billable", record.isBillable() ? "true" : "false");
             if(i == selectedIndex)
                 newNode.setAttribute("selected", "true");
             projs.appendChild(newNode);
@@ -671,13 +657,12 @@ public boolean isRunning(){
      * TimerThread updates system variables upon each tick of the clock.
      */
     private class TimerThread extends TimerTask {
-        public boolean clockRunning, asleep;
+        public boolean clockRunning;
         public long startTime;
         private Vector listeners;
         
         public TimerThread() {
             clockRunning = false;
-            asleep = false;
             startTime = 0;
             listeners = new Vector();
         }
@@ -691,44 +676,16 @@ public boolean isRunning(){
         public void fireAction() {
             Vector targets;
             synchronized (this) { targets = (Vector) listeners.clone(); }
-            CsltCommEvent actionEvt = new CsltCommEvent(this);
+            CsltCommEvent actionEvt = getCsltCommEvent();
             for(int i=0; i<targets.size(); i++) {
                 CsltCommListener target = (CsltCommListener)targets.elementAt(i);
                 target.clockTick(actionEvt);
             }
         }
         
-        private void toggleIdle() {
-            if(idleAction == ClntComm.IDLE_PROJECT) {
-                int index = times.indexOfProject(idleProject);
-                if(index < 0) { //Not a valid project
-                    toggleTimer();
-                } else {
-                    //Set the current project to be the 'idle' project,
-                    //set the idle project to be the current
-                    int oldIndex = timeList.getSelectedRow();
-                    idleProject = times.elementAt(oldIndex).projectName;
-                    timeList.setRowSelectionInterval(index, index);
-                }
-            } else {
-                toggleTimer();
-            }
-        }
-        
         public void run(){
             long currTime, currSeconds;
             int index;
-            int idleSeconds = -1;
-            
-            if(allowedIdle > 0 && timeoutLibrary) //0 means don't worry about idle
-                idleSeconds = (int)(getIdleTime()/1000L);
-            
-            //Check and see if we're supposed to wake up the clock
-            //after the session has been idle
-            if(allowedIdle > 0 && idleSeconds < allowedIdle && asleep) {
-                toggleIdle();
-                asleep = false;
-            }
             
             if(clockRunning){
                 //Get the current seconds past midnight.
@@ -750,13 +707,6 @@ public boolean isRunning(){
                     
                     //If the user requested a save now, do it
                     if (currSeconds % saveInterval == 0) savePrefs();
-                    
-                    //Check and see if we're supposed to do something when the
-                    //user session is idle
-                    if(allowedIdle > 0 && idleSeconds >= allowedIdle && ! asleep) {
-                        toggleIdle();
-                        asleep = true;
-                    }
                     
                     fireAction();
                 }

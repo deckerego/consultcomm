@@ -1,7 +1,7 @@
 import java.util.*;
 import javax.swing.table.*;
 
-class TimeRecordSet {
+public class TimeRecordSet {
   private Vector timeRecords;
   private static final String[] titles = {"Project", "Time"};
   private boolean reverseSort = false;
@@ -16,7 +16,7 @@ class TimeRecordSet {
   }
   public void setSeconds(int index, long time) {
     TimeRecord record = elementAt(index);
-    record.seconds = time;
+    record.setSeconds(time);
   }
   public TimeRecord elementAt(int index) throws java.lang.ArrayIndexOutOfBoundsException {
     return (TimeRecord)timeRecords.elementAt(index);
@@ -39,7 +39,7 @@ class TimeRecordSet {
   }
   public long getSeconds(int index) {
     TimeRecord record = elementAt(index);
-    return record.seconds;
+    return record.getSeconds();
   }
   public String getSecondsString(int index) {
     TimeRecord record = elementAt(index);
@@ -51,14 +51,14 @@ class TimeRecordSet {
   }
   public String getProjectName(int index) {
     TimeRecord record = elementAt(index);
-    return record.projectName;
+    return record.getProjectName();
   }
   public String getBillableTimeString() {
     long total = 0;
     Enumeration records = timeRecords.elements();
     while (records.hasMoreElements()) {
       TimeRecord record = (TimeRecord)records.nextElement();
-      if(record.billable) total += record.seconds;
+      if(record.isBillable()) total += record.getSeconds();
     }
     return parseSeconds(total);
   }
@@ -67,7 +67,7 @@ class TimeRecordSet {
     Enumeration records = timeRecords.elements();
     while (records.hasMoreElements()) {
       TimeRecord record = (TimeRecord)records.nextElement();
-      if(record.export) total += record.seconds;
+      total += record.getSeconds();
     }
     return parseSeconds(total);
   }
@@ -76,7 +76,7 @@ class TimeRecordSet {
     Enumeration records = timeRecords.elements();
     while (records.hasMoreElements()) {
       TimeRecord record = (TimeRecord)records.nextElement();
-      total += record.seconds;
+      total += record.getSeconds();
     }
     return parseSeconds(total);
   }
@@ -85,9 +85,8 @@ class TimeRecordSet {
     Enumeration records = timeRecords.elements();
     while (records.hasMoreElements()) {
       TimeRecord record = (TimeRecord)records.nextElement();
-      if(record.export && criteria == ClntComm.SHOW_EXPORT) total -= record.seconds;
-      else if(record.billable && criteria == ClntComm.SHOW_BILLABLE) total -= record.seconds;
-      else if(criteria == ClntComm.SHOW_TOTAL) total -= record.seconds;
+      if(record.isBillable() && criteria == ClntComm.SHOW_BILLABLE) total -= record.getSeconds();
+      else if(criteria == ClntComm.SHOW_TOTAL) total -= record.getSeconds();
     }
     if(total < 0) total = 0;
     return parseSeconds(total);
@@ -100,9 +99,8 @@ class TimeRecordSet {
     Enumeration records = timeRecords.elements();
     while (records.hasMoreElements()) {
       TimeRecord record = (TimeRecord)records.nextElement();
-      if(record.export && criteria == ClntComm.SHOW_EXPORT) total += record.seconds;
-      else if(record.billable && criteria == ClntComm.SHOW_BILLABLE) total += record.seconds;
-      else if(criteria == ClntComm.SHOW_TOTAL) total += record.seconds;
+      if(record.isBillable() && criteria == ClntComm.SHOW_BILLABLE) total += record.getSeconds();
+      else if(criteria == ClntComm.SHOW_TOTAL) total += record.getSeconds();
     }
     
     float hours = total / (float)(60*60);
@@ -113,7 +111,7 @@ class TimeRecordSet {
     Enumeration records = timeRecords.elements();
     for(int i=0; records.hasMoreElements(); i++) {
       TimeRecord record = (TimeRecord)records.nextElement();
-      names[i] = record.projectName;
+      names[i] = record.getProjectName();
     }
     return names;
   }
@@ -121,7 +119,7 @@ class TimeRecordSet {
     Enumeration records = timeRecords.elements();    
     for(int i=0; records.hasMoreElements(); i++) {
       TimeRecord record = (TimeRecord)records.nextElement();
-      if(projectName.equals(record.projectName))
+      if(projectName.equals(record.getProjectName()))
         return i;
     }
     return -1;
@@ -146,10 +144,10 @@ class TimeRecordSet {
       if(timeFormat == ClntComm.SECONDS) timeString = record.toSecondString();
       else timeString = record.toMinuteString();
       
-      if(record.alias == null)
-        model.addRow(new Object[] {record.projectName, timeString});
+      if(record.getAlias() == null)
+        model.addRow(new Object[] {record.getProjectName(), timeString});
       else
-        model.addRow(new Object[] {record.alias, timeString});
+        model.addRow(new Object[] {record.getAlias(), timeString});
     }
     return model;
   }
