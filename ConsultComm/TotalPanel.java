@@ -3,7 +3,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 public class TotalPanel extends javax.swing.JPanel {
-    LinkedHashMap entries = new LinkedHashMap();
+    Map entries = new LinkedHashMap();
     int timesClicked;
 
     public TotalPanel() {
