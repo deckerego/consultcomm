@@ -17,10 +17,13 @@ public class ProjectAddDialog extends javax.swing.JDialog {
     super(frame, true);
     this.project = project;
     this.projectField = projectField;
-    dbConnection = connection;
+    dbConnection = new JDBCConnect();
     dbConnection.setParentFrame(frame);
     dbConnection.database = dbConnection.projectDatabase;
     dbConnection.table = dbConnection.projectTable;
+    dbConnection.userName = connection.userName;
+    dbConnection.password = connection.password;
+    dbConnection.validated = connection.validated;
     try {
       dbConnection.tableMap.init();
     } catch (java.sql.SQLException e) {
