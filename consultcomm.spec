@@ -1,10 +1,10 @@
 Summary: Consultant Communicator (ConsultComm) is a program that allows anyone managing multiple projects, clients or tasks to effectively keep track of exactly how long they've spent on each project.
-Name: CsltComm
-Version: 2.4
+Name: ConsultComm
+Version: 3beta1
 Release: 1
 Copyright: GPL
 Group: Applications/Productivity
-Source: CsltComm-2.4.src.tar
+Source: ConsultComm-3beta1.src.tar
 BuildRoot: /var/tmp/%{name}-buildroot
 
 %description
@@ -24,35 +24,39 @@ all you want.
 %setup
 
 %build
-ant X
-ant dist
+ant
 
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm
-mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/X
+mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/plugins
+mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/TimeOutBean
+mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/JDBCBean
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/docs
+mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/icons
+mkdir -p $RPM_BUILD_ROOT/usr/local/bin
 
-install -v *.jar $RPM_BUILD_ROOT/usr/local/ConsultComm
-install -v docs/* $RPM_BUILD_ROOT/usr/local/ConsultComm/docs
-install -v X/libtimeout.so $RPM_BUILD_ROOT/usr/local/ConsultComm/X
+install *.class $RPM_BUILD_ROOT/usr/local/ConsultComm
+install ConsultComm $RPM_BUILD_ROOT/usr/local/bin
+install docs/* $RPM_BUILD_ROOT/usr/local/ConsultComm/docs
+install graphics/ConsultComm.xpm $RPM_BUILD_ROOT/usr/local/ConsultComm/icons
+install plugins/*.jar $RPM_BUILD_ROOT/usr/local/ConsultComm/plugins
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+if [ $RPM_BUILD_ROOT != "/" ] ; then
+  rm -rf $RPM_BUILD_ROOT
+fi
 
 %files
 %defattr(-,root,root)
 %doc README CHANGES COPYING AUTHORS
 
-/usr/local/ConsultComm/CsltComm.jar
-/usr/local/ConsultComm/skinlf.jar
-/usr/local/ConsultComm/X/libtimeout.so
-/usr/local/ConsultComm/docs/dbconnect.html
-/usr/local/ConsultComm/docs/faq.html
-/usr/local/ConsultComm/docs/index.html
-/usr/local/ConsultComm/docs/install.html
-/usr/local/ConsultComm/docs/using.html
+/usr/local/bin/ConsultComm
+/usr/local/ConsultComm
 
 %changelog
+* Wed Oct 16 2002 John Ellis <john.ellis@ise-indy.com>
+- Added shell script, icon, renamed package
 * Tue Oct 15 2002 John Ellis <john.ellis@ise-indy.com>
 - initial release (build 1)
+
