@@ -43,8 +43,8 @@ public class ClntComm extends javax.swing.JPanel {
         timerTask = new TimerThread();                      //Create a new "clock" for the project timer
         readPrefs();                                        //Read in user preferences
         setTotals();                                        //Add our predefined counters
-        loadPlugins();                                      //Load all the plugins
         initComponents();                                   //Init all our GUI components specified in the form
+        loadPlugins();                                      //Load all the plugins
         readLayout();                                       //Restore the GUI layout after the components init
         menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);//Add our menu items to the GUI
         timer = new java.util.Timer();                      //Wind up the clock and start it
