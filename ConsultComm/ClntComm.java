@@ -37,7 +37,8 @@ public class ClntComm extends javax.swing.JPanel {
     private java.util.Timer timer;
     private java.awt.Dimension windowSize;
     private int projColumnWidth;
-    private int index, selectedIndex;
+    private int index;
+    private int selectedIndex;
     private int timeFormat;
     private int attributes;
     private int showTotal;
@@ -66,7 +67,13 @@ public class ClntComm extends javax.swing.JPanel {
     
     public void setTimes(TimeRecordSet times) { this.times = times; }
     public TimeRecordSet getTimes() { return this.times; }
-    public Vector getPlugins() { return this.plugins; }
+    public void setSelectedIndex(int i) {
+        this.selectedIndex = i;
+        timeList.setSelectedRecord(selectedIndex);
+    }
+    public int getSelectedIndex() { return this.selectedIndex; }
+    
+    Vector getPlugins() { return this.plugins; }
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -270,9 +277,8 @@ public class ClntComm extends javax.swing.JPanel {
       
       TimeRecord record = times.elementAt(selectedIndex); //find current selected record
       times.sort(column);
-      selectedIndex = times.indexOf(record); //restore selected record
       timeList.setModel(new TableTreeModel(times, timeFormat));
-      timeList.setSelectedRecord(selectedIndex);
+      setSelectedIndex(times.indexOf(record)); //restore selected record
   }
   
   private void editWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editWindow
@@ -352,9 +358,8 @@ public class ClntComm extends javax.swing.JPanel {
       if(selectedIndex < 0) selectedIndex = 0;
       TimeRecord record = times.elementAt(selectedIndex); //find current selected record
       times.sort();
-      selectedIndex = times.indexOf(record); //restore selected record
       timeList.setModel(new TableTreeModel(times, timeFormat));
-      timeList.setSelectedRecord(selectedIndex);
+      setSelectedIndex(times.indexOf(record)); //restore selected record
   }//GEN-LAST:event_newProject
   
 private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleTotals

@@ -29,6 +29,8 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         java.awt.GridBagConstraints gridBagConstraints;
 
         inputPanel = new javax.swing.JPanel();
+        groupLabel = new javax.swing.JLabel();
+        groupField = new javax.swing.JTextField();
         projLabel = new javax.swing.JLabel();
         projField = new javax.swing.JTextField();
         timeLabel = new javax.swing.JLabel();
@@ -47,6 +49,18 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         });
 
         inputPanel.setLayout(new java.awt.GridBagLayout());
+
+        groupLabel.setText("Group:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        inputPanel.add(groupLabel, gridBagConstraints);
+
+        groupField.setText(record.getGroupName());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        inputPanel.add(groupField, gridBagConstraints);
 
         projLabel.setText("Project: ");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -70,6 +84,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         timeField.setText(record.toMinuteString());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         inputPanel.add(timeField, gridBagConstraints);
 
@@ -78,6 +93,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         billable.setText("Billable Project");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         inputPanel.add(billable, gridBagConstraints);
 
@@ -108,6 +124,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     }//GEN-END:initComponents
   
   private void save(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_save
+    record.setGroupName(groupField.getText());
     record.setProjectName(projField.getText());
     record.setSeconds(timeField.getText());
     record.setBillable(billable.isSelected());
@@ -139,6 +156,8 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField groupField;
+    private javax.swing.JLabel groupLabel;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton okButton;
     private javax.swing.JTextField timeField;
