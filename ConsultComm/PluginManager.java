@@ -97,7 +97,7 @@ public class PluginManager extends javax.swing.JFrame {
       }
   }
   
-  public static Vector getPlugins() throws MalformedURLException, ClassNotFoundException, IOException, ArrayIndexOutOfBoundsException {
+  public static Vector getPlugins() throws MalformedURLException, ClassNotFoundException, IOException {
       File pluginsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"plugins");
 
       System.out.println("Looking for plugins in "+pluginsdir);
@@ -121,13 +121,13 @@ public class PluginManager extends javax.swing.JFrame {
           File jarFile = pluginfiles[i];
           Object plugin;
 
-          if(serializedFile.exists()) {
-              System.out.println("Deserializing plugin "+currBean+" from "+serializedFile.getName());
+          try {
               FileInputStream inStream = new FileInputStream(serializedFile);
               XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
+              System.out.println("Deserializing plugin "+currBean+" from "+serializedFile.getName());
               plugin = d.readObject();
               d.close();
-          } else {
+          } catch (Exception e) {
               System.out.println("Instantiating plugin "+currBean+" from "+pluginfiles[i].getName());
               plugin = Beans.instantiate(loader, currBean);
           }
