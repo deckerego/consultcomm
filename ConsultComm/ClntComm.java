@@ -28,7 +28,7 @@ public class ClntComm extends javax.swing.JPanel {
   
   //Flags for initializing components
   private boolean showTotal = true;
-
+  
   // Needed for prompt windows
   private JTextField projField;
   private JTextField timeField;
@@ -39,11 +39,15 @@ public class ClntComm extends javax.swing.JPanel {
   /** Creates new form TimeTrack */
   public ClntComm() {
     readPrefs();
-    initComponents ();
+    initComponents();
     menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
     timer = new TimerThread(1000);
     timer.start();
-    timeList.setRowSelectionInterval(selectedIndex, selectedIndex);    
+    try {
+      timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
+    } catch (IllegalArgumentException e) {
+      System.err.println("Row index invalid, not setting selection.");
+    }
   }
   
   /**
@@ -63,14 +67,14 @@ public class ClntComm extends javax.swing.JPanel {
   public void readPrefs() {
     File prefs = new File("ClntComm.def");
     times = new TimeRecordSet();
-    if (prefs.exists()) { 
+    if (prefs.exists()) {
       try {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
         Document doc = docBuilder.parse(prefs);
         doc.getDocumentElement().normalize();
         NodeList projects = doc.getElementsByTagName("project");
-
+        
         //Get all projects
         for(int i=0; i<projects.getLength(); i++){
           Node project = projects.item(i);
@@ -82,9 +86,9 @@ public class ClntComm extends javax.swing.JPanel {
           Node billableNode = attributes.getNamedItem("billable");
           boolean billable = true;
           if(billableNode.getNodeValue().equals("false")) billable = false;
-
+          
           Node selectedNode = attributes.getNamedItem("selected");
-          if(selectedNode != null && selectedNode.getNodeValue().equals("true")) 
+          if(selectedNode != null && selectedNode.getNodeValue().equals("true"))
             selectedIndex = i;
           TimeRecord record = new TimeRecord(name, seconds, billable);
           times.add(record);
@@ -99,7 +103,7 @@ public class ClntComm extends javax.swing.JPanel {
         double width = Double.parseDouble(attributes.getNamedItem("width").getNodeValue());
         double height = Double.parseDouble(attributes.getNamedItem("height").getNodeValue());
         windowSize = new java.awt.Dimension((int)width, (int)height);
-
+        
         //Decide whether to show total time/billable time
         NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
         Node showTotalTime = showTotalTimes.item(0);
@@ -107,12 +111,12 @@ public class ClntComm extends javax.swing.JPanel {
         if(attributes.getNamedItem("display").getNodeValue().equals("billable"))
           showTotal = false;
       } catch (SAXParseException e) {
-        System.out.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
+        System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
       } catch (SAXException e) {
-        System.out.println("Error reading prefs file: "+e);
+        System.err.println("Error reading prefs file: "+e);
         e.printStackTrace(System.out);
       } catch (Exception e) {
-        System.out.println("Cannot read prefs file: "+e);
+        System.err.println("Cannot read prefs file: "+e);
         e.printStackTrace(System.out);
       }
     }
@@ -127,7 +131,7 @@ public class ClntComm extends javax.swing.JPanel {
       Element rootNode = doc.createElement("clntcomm");
       rootNode.setAttribute("version", "2.0");
       doc.appendChild(rootNode);
-
+      
       //Save projects
       selectedIndex = timeList.getSelectedRow();
       for(int i=0; i<times.size(); i++){
@@ -136,14 +140,14 @@ public class ClntComm extends javax.swing.JPanel {
         newNode.setAttribute("name", record.projectName);
         newNode.setAttribute("seconds", ""+record.seconds);
         newNode.setAttribute("billable", ""+record.billable);
-        if(i == selectedIndex) 
+        if(i == selectedIndex)
           newNode.setAttribute("selected", "true");
         rootNode.appendChild(newNode);
       }
       
       Element newNode = null;
-
-      //Save window dimensions      
+      
+      //Save window dimensions
       java.awt.Dimension size = getSize();
       newNode = doc.createElement("dimensions");
       newNode.setAttribute("width", ""+size.getWidth());
@@ -161,12 +165,12 @@ public class ClntComm extends javax.swing.JPanel {
       Transformer trans = fac.newTransformer();
       trans.transform(new DOMSource(doc.getDocumentElement()), new StreamResult(prefs));
     } catch (ParserConfigurationException e) {
-      System.out.println("Error writing prefs file: "+e);
+      System.err.println("Error writing prefs file: "+e);
       e.printStackTrace(System.out);
     } catch (Exception e) {
-      System.out.println("Cannot write prefs file: "+e);
+      System.err.println("Cannot write prefs file: "+e);
       e.printStackTrace(System.out);
-    } 
+    }
   }
   
   public boolean isRunning(){
@@ -195,140 +199,127 @@ public class ClntComm extends javax.swing.JPanel {
     timeList = new javax.swing.JTable();
     menuPanel = new javax.swing.JPanel();
     startButton = new javax.swing.JButton();
-    menuBar.setBorder(null);
     
+    menuBar.setBorder(null);
     projectMenu.setText("Project");
-      
-      addMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
-        addMenuItem.setText("Add Project");
-        addMenuItem.addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
-            newProject(evt);
-          }
-        }
-        );
-        projectMenu.add(addMenuItem);
-        
-      deleteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
-        deleteMenuItem.setText("Delete Project");
-        deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
-            deleteProject(evt);
-          }
-        }
-        );
-        projectMenu.add(deleteMenuItem);
-        
-      editMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
-        editMenuItem.setText("Edit Project");
-        editMenuItem.addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
-            editProject(evt);
-          }
-        }
-        );
-        projectMenu.add(editMenuItem);
-        
-      zeroMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
-        zeroMenuItem.setText("Reset Timers");
-        zeroMenuItem.addActionListener(new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
-            zeroProject(evt);
-          }
-        }
-        );
-        projectMenu.add(zeroMenuItem);
-        menuBar.add(projectMenu);
-      
-    editPopupItem.setLabel("Edit Project");
-      editPopupItem.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-          editProject(evt);
-        }
+    addMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+    addMenuItem.setText("Add Project");
+    addMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        newProject(evt);
       }
-      );
-      editMenu.add(editPopupItem);
-      
-    deletePopupItem.setLabel("Delete Project");
-      deletePopupItem.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-          deleteProject(evt);
-        }
+    });
+    
+    projectMenu.add(addMenuItem);
+    deleteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
+    deleteMenuItem.setText("Delete Project");
+    deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        deleteProject(evt);
       }
-      );
-      editMenu.add(deletePopupItem);
-      setLayout(new java.awt.BorderLayout());
-    setPreferredSize(windowSize);
+    });
+    
+    projectMenu.add(deleteMenuItem);
+    editMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+    editMenuItem.setText("Edit Project");
+    editMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        editProject(evt);
+      }
+    });
+    
+    projectMenu.add(editMenuItem);
+    zeroMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+    zeroMenuItem.setText("Reset Timers");
+    zeroMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        zeroProject(evt);
+      }
+    });
+    
+    projectMenu.add(zeroMenuItem);
+    menuBar.add(projectMenu);
+    editPopupItem.setText("Edit Project");
+    editPopupItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        editProject(evt);
+      }
+    });
+    
+    editMenu.add(editPopupItem);
+    deletePopupItem.setText("Delete Project");
+    deletePopupItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        deleteProject(evt);
+      }
+    });
+    
+    editMenu.add(deletePopupItem);
+    
+    setLayout(new java.awt.BorderLayout());
     
     totalPanel.setLayout(new java.awt.GridLayout(1, 2));
     
     totalText.setText(showTotal ? "Total:" : "Billable:");
-      totalText.setForeground(java.awt.Color.black);
-      totalText.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-      totalText.addMouseListener(new java.awt.event.MouseAdapter() {
-        public void mouseClicked(java.awt.event.MouseEvent evt) {
-          toggleTotals(evt);
-        }
+    totalText.setForeground(java.awt.Color.black);
+    totalText.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+    totalText.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        toggleTotals(evt);
       }
-      );
-      totalPanel.add(totalText);
-      
-      
+    });
+    
+    totalPanel.add(totalText);
+    
     totalTime.setText(showTotal ? times.getTotalTimeString() : times.getBillableTimeString());
-      totalTime.setForeground(java.awt.Color.black);
-      totalTime.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-      totalTime.addMouseListener(new java.awt.event.MouseAdapter() {
-        public void mouseClicked(java.awt.event.MouseEvent evt) {
-          toggleTotals(evt);
-        }
+    totalTime.setForeground(java.awt.Color.black);
+    totalTime.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+    totalTime.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        toggleTotals(evt);
       }
-      );
-      totalPanel.add(totalTime);
-      
-      
+    });
+    
+    totalPanel.add(totalTime);
+    
     add(totalPanel, java.awt.BorderLayout.SOUTH);
     
-    
-    
     timeList.setModel(times.toTableModel());
-      timeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      ListSelectionModel rowSM = timeList.getSelectionModel();
-      rowSM.addListSelectionListener(new ListSelectionListener() {
-        public void valueChanged(ListSelectionEvent e) {
-          selectionChanged(e);
-        }
-      });
-      timeList.addMouseListener(new java.awt.event.MouseAdapter() {
-        public void mouseClicked(java.awt.event.MouseEvent evt) {
-          editWindow(evt);
-        }
+    timeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    ListSelectionModel rowSM = timeList.getSelectionModel();
+    rowSM.addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent e) {
+        selectionChanged(e);
       }
-      );
-      scrollPane.setViewportView(timeList);
-      
-      
+    });
+    timeList.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        editWindow(evt);
+      }
+    });
+    
+    scrollPane.setViewportView(timeList);
+    
     add(scrollPane, java.awt.BorderLayout.CENTER);
     
+    menuPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
     
-    menuPanel.setLayout(new java.awt.FlowLayout(0, 5, 5));
-    
+    startButton.setMnemonic(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK).getKeyCode());
+    startButton.setText("Start");
     startButton.setBorder(null);
-      startButton.setMnemonic(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK).getKeyCode());
-      startButton.setText("Start");
-      startButton.setBorderPainted(false);
-      startButton.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-          toggleTimer(evt);
-        }
+    startButton.setBorderPainted(false);
+    startButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        toggleTimer(evt);
       }
-      );
-      menuPanel.add(startButton);
-      
-      
+    });
+    
+    menuPanel.add(startButton);
+    
     add(menuPanel, java.awt.BorderLayout.NORTH);
     
   }//GEN-END:initComponents
-
+  
   private void editWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editWindow
     if(evt.getModifiers() == java.awt.event.MouseEvent.BUTTON1_MASK) {
       if(evt.getClickCount() == 2) editWindow(timeList.getSelectedRow());
@@ -339,16 +330,16 @@ public class ClntComm extends javax.swing.JPanel {
       editMenu.show(timeList, evt.getX(), evt.getY());
     }
   }//GEN-LAST:event_editWindow
-
+  
   private void toggleTimer(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleTimer
     if(timer.clockRunning){
       timer.clockRunning = false;
-      startButton.setToolTipText ("Start Timer");
+      startButton.setToolTipText("Start Timer");
       startButton.setText("Start");
     } else {
       setTimer();
       timer.clockRunning = true;
-      startButton.setToolTipText ("Pause Timer");
+      startButton.setToolTipText("Pause Timer");
       startButton.setText("Pause");
     }
   }//GEN-LAST:event_toggleTimer
@@ -368,11 +359,11 @@ public class ClntComm extends javax.swing.JPanel {
       refreshTotalTime();
     }
   }//GEN-LAST:event_zeroProject
-
+  
   private void editProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProject
     editWindow(timeList.getSelectedRow());
   }//GEN-LAST:event_editProject
-
+  
   private void deleteProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteProject
     int len = 0;
     int selectedIndex = timeList.getSelectedRow();
@@ -408,28 +399,28 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     setTimer();
   }
   
-  private void setTimer () {
+  private void setTimer() {
     if(timeList.getSelectedRow() >= 0){
       long currTime = System.currentTimeMillis()/1000;
       timer.startTime = currTime - times.getSeconds(timeList.getSelectedRow());
     }
   }
-          
-/**
- * Create edit project window.
- * @parm Index into the project list
- */
+  
+  /**
+   * Create edit project window.
+   * @parm Index into the project list
+   */
   public void editWindow(int i){
     index = i;
     selectedIndex = timeList.getSelectedRow();
     TimeRecord record;
-
+    
     try {
       record = times.elementAt(index);
     } catch (ArrayIndexOutOfBoundsException e) {
       record = new TimeRecord();
     }
-
+    
     //Set up the edit project window.
     projField = new JTextField(record.projectName);
     timeField = new JTextField(record.toString());
@@ -508,19 +499,19 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   private javax.swing.JButton startButton;
   // End of variables declaration//GEN-END:variables
   
-/**
- * TimerThread updates system variables upon each tick of the clock.
- */
+  /**
+   * TimerThread updates system variables upon each tick of the clock.
+   */
   private class TimerThread extends Thread{
     public boolean runThread, clockRunning;
     public int updateSeconds;
     public long startTime;
     
-/**
- * Create a new timer.
- * @parm How often to update (in milliseconds)
- * @parm The Consultant Manager screen to update
- */
+    /**
+     * Create a new timer.
+     * @parm How often to update (in milliseconds)
+     * @parm The Consultant Manager screen to update
+     */
     public TimerThread(int update) {
       updateSeconds = update;
       clockRunning = false;
@@ -552,7 +543,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
             }
           }
         } catch (InterruptedException e) {
-          System.out.println("Sleep failed.");
+          System.err.println("Sleep failed.");
         }
       }
     }
@@ -619,7 +610,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     }
     
     public DefaultTableModel toTableModel(){
-      DefaultTableModel model = new javax.swing.table.DefaultTableModel (
+      DefaultTableModel model = new javax.swing.table.DefaultTableModel(
       new Object [][] {
       },
       new String [] {
@@ -629,7 +620,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         boolean[] canEdit = new boolean [] {
           false, false
         };
-        public boolean isCellEditable (int rowIndex, int columnIndex) {
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
           return canEdit [columnIndex];
         }
       };
@@ -640,7 +631,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       }
       return model;
     }
-
+    
     public String parseSeconds(long seconds) {
       long minutes = seconds / 60;
       long hours = minutes / 60;
@@ -665,7 +656,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       seconds = time;
       billable = isBillable;
     }
-
+    
     public void setSeconds(String secs) {
       StringTokenizer timeWords = new StringTokenizer(secs, ":");
       // If time format is 1:30
@@ -676,7 +667,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       // If time format is 90
       else if(timeWords.countTokens() == 1) {
         seconds =  Long.parseLong(timeWords.nextToken()) * 60;
-      // Else we have the wrong format
+        // Else we have the wrong format
       } else seconds = 0L;
     }
     
