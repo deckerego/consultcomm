@@ -310,7 +310,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
             TimeRecordSet newTimes = (TimeRecordSet)propertyChangeEvent.getNewValue();
             TimeRecordSet oldTimes = (TimeRecordSet)propertyChangeEvent.getOldValue();
             
-            if(newTimes.size() > oldTimes.size()) { //Added a project, prompt
+            if(newTimes != null && oldTimes != null && newTimes.size() > oldTimes.size()) { //Added a project, prompt
                 javax.swing.JFrame frame = new javax.swing.JFrame();
                 Object[] options = {"OK", "Cancel"};
                 int dialog = javax.swing.JOptionPane.showOptionDialog(frame,
