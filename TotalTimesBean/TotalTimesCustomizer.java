@@ -32,7 +32,7 @@ public class TotalTimesCustomizer extends javax.swing.JPanel implements java.bea
         optionButtonPanel = new javax.swing.JPanel();
         saveButton = new javax.swing.JButton();
 
-        setLayout(new java.awt.GridBagLayout());
+        setLayout(new java.awt.BorderLayout());
 
         setMinimumSize(new java.awt.Dimension(238, 221));
         setPreferredSize(new java.awt.Dimension(387, 254));
@@ -97,11 +97,7 @@ public class TotalTimesCustomizer extends javax.swing.JPanel implements java.bea
 
         tabbedPane.addTab("Options", optionPanel);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        add(tabbedPane, gridBagConstraints);
+        add(tabbedPane, java.awt.BorderLayout.CENTER);
 
     }//GEN-END:initComponents
 
@@ -143,18 +139,18 @@ public class TotalTimesCustomizer extends javax.swing.JPanel implements java.bea
     }    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup selectButtonGroup;
-    private javax.swing.JLabel countdownLabel;
-    private javax.swing.JTextField cashTextField;
-    private javax.swing.JPanel optionInputPanel;
+    private javax.swing.JPanel optionButtonPanel;
     private javax.swing.JCheckBox cashCheckBox;
     private javax.swing.JCheckBox countdownCheckBox;
-    private javax.swing.JPanel optionPanel;
-    private javax.swing.JLabel cashLabel;
-    private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JPanel optionInputPanel;
     private javax.swing.JTextField countdownTextField;
+    private javax.swing.JTextField cashTextField;
+    private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.ButtonGroup selectButtonGroup;
     private javax.swing.JButton saveButton;
-    private javax.swing.JPanel optionButtonPanel;
+    private javax.swing.JPanel optionPanel;
+    private javax.swing.JLabel countdownLabel;
+    private javax.swing.JLabel cashLabel;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -62,9 +62,8 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         optionOK = new javax.swing.JButton();
         optionApply = new javax.swing.JButton();
 
-        setLayout(new java.awt.GridBagLayout());
+        setLayout(new java.awt.BorderLayout());
 
-        setMaximumSize(new java.awt.Dimension(387, 254));
         setMinimumSize(new java.awt.Dimension(387, 254));
         tabbedPane.setPreferredSize(new java.awt.Dimension(387, 254));
         driverPanel.setLayout(new java.awt.BorderLayout());
@@ -366,11 +365,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
 
         tabbedPane.addTab("Options", null, optionPanel, "Set variable options");
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        add(tabbedPane, gridBagConstraints);
+        add(tabbedPane, java.awt.BorderLayout.CENTER);
 
     }//GEN-END:initComponents
 
@@ -570,50 +565,50 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
     }
               
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton driverTest;
-    private javax.swing.JPanel fieldButtonPanel;
-    private javax.swing.JPanel fieldPanel;
-    private javax.swing.JTextField nameField;
-    private javax.swing.JPanel driverInputPanel;
-    private javax.swing.JButton fieldRefresh;
-    private javax.swing.JTable fieldMapping;
-    private javax.swing.JTextField dbField;
-    private javax.swing.JPanel driverButtonPanel;
-    private javax.swing.JCheckBox odbcCheckBox;
-    private javax.swing.JButton fieldOK;
-    private javax.swing.JButton optionApply;
-    private javax.swing.JLabel jarLabel;
-    private javax.swing.JPanel optionInputPanel;
-    private javax.swing.JLabel nameLabel;
-    private javax.swing.JButton mapOK;
-    private javax.swing.JTextField tableField;
-    private javax.swing.JTextField projTableField;
-    private javax.swing.JPanel optionPanel;
-    private javax.swing.JLabel tableLabel;
-    private javax.swing.JLabel dbLabel;
-    private javax.swing.JPanel mapButtonPanel;
-    private javax.swing.JScrollPane mapScrollPane;
-    private javax.swing.JTable projectMapping;
-    private javax.swing.JLabel projTableLabel;
-    private javax.swing.JPanel driverPanel;
-    private javax.swing.JTextField urlField;
-    private javax.swing.JButton optionOK;
-    private javax.swing.JTabbedPane tabbedPane;
-    private javax.swing.JLabel projFieldLabel;
-    private javax.swing.JLabel projDBLabel;
-    private javax.swing.JButton findJarButton;
-    private javax.swing.JLabel urlLabel;
-    private javax.swing.JCheckBox projValidateCheckBox;
-    private javax.swing.JButton driverOK;
-    private javax.swing.JComboBox projFieldComboBox;
-    private javax.swing.JTextField projDBField;
-    private javax.swing.JScrollPane fieldScrollPane;
-    private javax.swing.JTextField jarField;
-    private javax.swing.JLabel hourLabel;
-    private javax.swing.JComboBox hourComboBox;
-    private javax.swing.JCheckBox projectCaseCheckBox;
     private javax.swing.JPanel optionButtonPanel;
-    private javax.swing.JPanel mapPanel;
+    private javax.swing.JPanel driverPanel;
+    private javax.swing.JButton optionApply;
+    private javax.swing.JButton mapOK;
+    private javax.swing.JPanel mapButtonPanel;
+    private javax.swing.JTable projectMapping;
+    private javax.swing.JTable fieldMapping;
+    private javax.swing.JButton findJarButton;
+    private javax.swing.JLabel hourLabel;
+    private javax.swing.JPanel optionInputPanel;
+    private javax.swing.JScrollPane fieldScrollPane;
+    private javax.swing.JTextField nameField;
+    private javax.swing.JCheckBox projectCaseCheckBox;
+    private javax.swing.JPanel fieldPanel;
+    private javax.swing.JPanel driverButtonPanel;
+    private javax.swing.JLabel nameLabel;
     private javax.swing.JCheckBox useDatabaseCheckBox;
+    private javax.swing.JPanel driverInputPanel;
+    private javax.swing.JComboBox hourComboBox;
+    private javax.swing.JTextField projDBField;
+    private javax.swing.JTextField jarField;
+    private javax.swing.JTextField dbField;
+    private javax.swing.JComboBox projFieldComboBox;
+    private javax.swing.JButton driverTest;
+    private javax.swing.JLabel projDBLabel;
+    private javax.swing.JCheckBox odbcCheckBox;
+    private javax.swing.JLabel jarLabel;
+    private javax.swing.JPanel fieldButtonPanel;
+    private javax.swing.JLabel projFieldLabel;
+    private javax.swing.JCheckBox projValidateCheckBox;
+    private javax.swing.JButton fieldOK;
+    private javax.swing.JLabel dbLabel;
+    private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JButton optionOK;
+    private javax.swing.JScrollPane mapScrollPane;
+    private javax.swing.JPanel optionPanel;
+    private javax.swing.JTextField tableField;
+    private javax.swing.JTextField urlField;
+    private javax.swing.JTextField projTableField;
+    private javax.swing.JPanel mapPanel;
+    private javax.swing.JLabel tableLabel;
+    private javax.swing.JLabel urlLabel;
+    private javax.swing.JButton driverOK;
+    private javax.swing.JLabel projTableLabel;
+    private javax.swing.JButton fieldRefresh;
     // End of variables declaration//GEN-END:variables
 }

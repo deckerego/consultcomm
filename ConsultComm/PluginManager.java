@@ -35,11 +35,8 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
         introPanel = new javax.swing.JPanel();
         introTextArea = new javax.swing.JTextArea();
 
-        getContentPane().setLayout(new java.awt.GridBagLayout());
-
         setTitle("Plugin Settings");
         setName("pluginFrame");
-        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 exitForm(evt);
@@ -53,9 +50,7 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
 
         iconsPanel.add(iconScrollPane);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        getContentPane().add(iconsPanel, gridBagConstraints);
+        getContentPane().add(iconsPanel, java.awt.BorderLayout.WEST);
 
         settingsPanel.setLayout(new java.awt.BorderLayout());
 
@@ -71,12 +66,9 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
         introTextArea.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(5, 5, 5, 5)));
         introPanel.add(introTextArea, java.awt.BorderLayout.CENTER);
 
-        settingsPanel.add(introPanel, java.awt.BorderLayout.NORTH);
+        settingsPanel.add(introPanel, java.awt.BorderLayout.CENTER);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        getContentPane().add(settingsPanel, gridBagConstraints);
+        getContentPane().add(settingsPanel, java.awt.BorderLayout.CENTER);
 
         pack();
     }//GEN-END:initComponents
@@ -176,11 +168,11 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
   }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel iconListPanel;
-    private javax.swing.JPanel settingsPanel;
     private javax.swing.JPanel introPanel;
-    private javax.swing.JTextArea introTextArea;
     private javax.swing.JScrollPane iconScrollPane;
+    private javax.swing.JTextArea introTextArea;
+    private javax.swing.JPanel settingsPanel;
+    private javax.swing.JPanel iconListPanel;
     private javax.swing.JPanel iconsPanel;
     // End of variables declaration//GEN-END:variables
   
