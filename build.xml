@@ -1,7 +1,5 @@
 <project default="dist">
-  <taskdef name="osxize" classname="com.neo.util.mac.OSXizeAntTask"/>
-
-  <property name="release" value="3rc4"/>
+  <property name="release" value="3.1beta1"/>
   <property name="src" value="ConsultComm/"/>
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
@@ -87,23 +85,6 @@
     </zip>
   </target>
 
-  <target name="osx">
-    <osxize name="Consultant Communicator" shortname="ConsultComm" mainclass="CsltComm" jars="ConsultComm/CsltComm.jar:ConsultComm/skinlf.jar:ConsultComm/jhbasic.jar" verbose="true"/>
-    <copy todir="Consultant Communicator.app/Contents/Resources/Java">
-      <fileset dir="${src}">
-        <include name="plugins/*.jar"/>
-        <include name="README"/>
-        <include name="AUTHORS"/>
-        <include name="COPYING"/>
-        <include name="CHANGES"/>
-      </fileset>
-    </copy>
-    <tar tarfile="${releasename}.MacOSX.tar" basedir="Consultant Communicator.app"/>
-    <delete dir="Consultant Communicator.app"/>
-    <gzip zipfile="${releasename}.MacOSX.tar.gz" src="${releasename}.MacOSX.tar"/> 
-    <delete file="${releasename}.MacOSX.tar"/>
- </target>
-
   <target name="sfrelease">
     <copy file="ConsultComm_Windows_Build_Output/Web_Installers/InstData/Windows/NoVM/CsltComm.exe" tofile="${releasename}.exe"/>
   </target>
@@ -112,7 +93,6 @@
     <delete file="${releasename}.src.tar"/>
     <delete file="${releasename}.src.tar.gz"/>
     <delete file="${releasename}.zip"/>
-    <delete file="${releasename}.MacOSX.tar.gz"/>
     <delete file="${releasename}.exe"/>
     <delete file="${releasename}-${revision}.i386.rpm"/>
     <ant dir="${src}" target="clean" inheritAll="false"/>
