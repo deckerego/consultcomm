@@ -105,7 +105,10 @@ public class FieldMap implements java.io.Serializable {
                 if(value.equals("PROJECT")) {
                     //Get the project map, then find the associated project mapping, then get its alias
                     ProjectMap project = (ProjectMap)jdbc.getTableMap().getProjectMaps().get(record.toString());
-                    String projectName = project != null ? project.getAlias() : null;
+                    String projectName = null;
+                    if(project != null)
+                        projectName = "".equals(project.getAlias()) ? record.getProjectName() : project.getAlias();
+                    
                     //Put the project in all caps if it needs to be
                     realValue = jdbc.isProjectCase() ? projectName.toUpperCase() : projectName;
                     //Attempt to validate the project
