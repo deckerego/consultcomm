@@ -92,7 +92,7 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
           System.err.println("Couldn't load settings: "+e);
       }
   }
-  
+
   private void loadIcons() {
       try{
           for(int i=0; i<pluginList.size(); i++) {
@@ -108,53 +108,62 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
           System.err.println("Couldn't load icons: "+e);
       }
   }
-  
+
   public static Vector getPlugins() throws MalformedURLException, ClassNotFoundException, IOException {
       File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+      File syslibdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"syslibs");
 
+      //The syslibs directory must exist - all native libraries are
+      //statically linked to this directory.
+      if(! syslibdir.exists()) syslibdir.mkdir();
+
+      //Get a list of all Java Archive files in our plugins directory
       File[] pluginfiles = pluginsdir.listFiles(new FilenameFilter() {
           public boolean accept(File dir, String name) {
               return name.endsWith(".jar");
           }
       });
-      
+
+      //Build URLs for each file
       URL[] pluginurls = new URL[pluginfiles.length];
       for(int i=0; i<pluginfiles.length; i++)
           pluginurls[i] = pluginfiles[i].toURL();
-      
+
+      //Create the custom class loader with all our JavaBeans
       ClassLoader loader = new URLClassLoader(pluginurls);
       Thread.currentThread().setContextClassLoader(loader);  //Sun BugID 4676532
-      
+
+      //Load each plugin
       Vector pluginList = new Vector(pluginfiles.length);
       for(int i=0; i<pluginfiles.length; i++) {
           String currBean = pluginfiles[i].getName();
           currBean = currBean.substring(0, currBean.lastIndexOf(".jar"));
-          
+
           File serializedFile = new File(prefsdir, currBean+".xml");
           File jarFile = pluginfiles[i];
           Object plugin;
 
-          try {
+          try { //Attempt to retrieve plugin settings from serialization file
               FileInputStream inStream = new FileInputStream(serializedFile);
               XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
               System.out.println("Deserializing plugin "+currBean+" from "+serializedFile.getName());
               plugin = d.readObject();
               d.close();
-          } catch (Exception e) {
+          } catch (Exception e) { //No luck restoring bean, invoke a default bean
               System.out.println("Instantiating plugin "+currBean+" from "+pluginfiles[i].getName());
               plugin = Beans.instantiate(loader, currBean);
           }
           pluginList.addElement(plugin);
       }
-      
+
       return pluginList;
   }
-  
+
   public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
       Object o = actionEvent.getSource();
       loadSettingsPanel(buttonList.indexOf(o));
   }
-  
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel iconListPanel;
     private javax.swing.JPanel settingsPanel;
