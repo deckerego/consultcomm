@@ -36,6 +36,7 @@ public class PrefsPanel extends javax.swing.JFrame {
     clntComm = parent;
     dollarFormat = java.text.NumberFormat.getInstance();
     dollarFormat.setMinimumFractionDigits(2);
+    dollarFormat.setMaximumFractionDigits(2);
     readPrefs();
     initComponents();
     if(!themePack.equals("")) toggleThemePack();

@@ -91,8 +91,9 @@ class TimeRecordSet {
   }
   public String getPayAmount(float perHour) {
     float total = 0;
-    java.text.NumberFormat nf = java.text.NumberFormat.getInstance();
-    nf.setMinimumFractionDigits(2);
+    java.text.NumberFormat dollarFormat = java.text.NumberFormat.getInstance();
+    dollarFormat.setMinimumFractionDigits(2);
+    dollarFormat.setMaximumFractionDigits(2);
     Enumeration records = timeRecords.elements();
     while (records.hasMoreElements()) {
       TimeRecord record = (TimeRecord)records.nextElement();
@@ -100,7 +101,7 @@ class TimeRecordSet {
     }
     
     float hours = total / (float)(60*60);
-    return "$"+nf.format(hours*perHour);
+    return "$"+dollarFormat.format(hours*perHour);
   }
   public String[] getAllProjects() {
     String[] names = new String[timeRecords.size()];
