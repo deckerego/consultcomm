@@ -138,6 +138,7 @@ public class HelpDisplay extends javax.swing.JFrame {
     /** Exit the Application */
     private void exitForm() {
       setVisible(false);
+      dispose();
     }
     
     private String getPathPage() {
