@@ -62,16 +62,8 @@ public class ClntComm extends javax.swing.JPanel {
     
     /** Creates new form TimeTrack */
     public ClntComm(CsltComm parent) {
-        try{
-            java.io.File pluginsdir = new File(System.getProperty("user.dir")+"/plugins/JDBCConnect.jar");
-            java.net.URL[] pluginsurl = {pluginsdir.toURL()};
-            ClassLoader loader = new java.net.URLClassLoader(pluginsurl);
-            Object plugin = loader.loadClass("JDBCConnect").newInstance();
-            java.beans.Statement verify = new java.beans.Statement(plugin, "testDriverSettings", null);
-            verify.execute();
-        } catch (Exception e) {
-            System.out.println("Couldn't load bean: "+e);
-        }
+        PluginManager man = new PluginManager();
+        man.show();
         
         csltComm = parent;
         
@@ -296,13 +288,13 @@ public class ClntComm extends javax.swing.JPanel {
   }//GEN-LAST:event_showHelp
   
   private void exportToTable(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportToTable
-      JDBCConnect dbConnection = new JDBCConnect();
-      if(dbConnection.exportTimeRecordSet(times)) zeroProject(evt);
+//      JDBCConnect dbConnection = new JDBCConnect();
+//      if(dbConnection.exportTimeRecordSet(times)) zeroProject(evt);
   }//GEN-LAST:event_exportToTable
   
   private void editJDBC(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editJDBC
-      JDBCConnectCustomizer panel = new JDBCConnectCustomizer();
-      panel.show();
+//      JDBCConnectCustomizer panel = new JDBCConnectCustomizer();
+//      panel.show();
   }//GEN-LAST:event_editJDBC
   
   private void sortColumn(java.awt.event.MouseEvent evt) {
