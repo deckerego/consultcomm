@@ -30,6 +30,10 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private static String password;
   private static String database;
   private static String table;
+  private static String projectDatabase;
+  private static String projectTable;
+  private static String projectField;
+  private static boolean projectValidate;
   private int dateFormat;
   private int hourFormat;
   private boolean projectCase;
@@ -46,6 +50,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   public void initGUI() {
     initComponents();
     toggleODBC();
+    toggleValidateProject();
   }
   
   /** This method is called from within the constructor to
@@ -84,9 +89,17 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     dateLabel = new javax.swing.JLabel();
     dateComboBox = new javax.swing.JComboBox();
     projectCaseCheckBox = new javax.swing.JCheckBox();
+    projValidateCheckBox = new javax.swing.JCheckBox();
+    projDBLabel = new javax.swing.JLabel();
+    projDBField = new javax.swing.JTextField();
+    projTableLabel = new javax.swing.JLabel();
+    projTableField = new javax.swing.JTextField();
+    projFieldLabel = new javax.swing.JLabel();
+    projFieldComboBox = new javax.swing.JComboBox();
     optionButtonPanel = new javax.swing.JPanel();
     optionOK = new javax.swing.JButton();
     optionCancel = new javax.swing.JButton();
+    optionApply = new javax.swing.JButton();
     
     getContentPane().setLayout(new java.awt.GridLayout(1, 1));
     
@@ -96,7 +109,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       }
     });
     
-    tabbedPane.setPreferredSize(new java.awt.Dimension(387, 244));
+    tabbedPane.setPreferredSize(new java.awt.Dimension(387, 254));
     driverPanel.setLayout(new java.awt.BorderLayout());
     
     driverPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -117,6 +130,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     nameField.setText(name);
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     driverInputPanel.add(nameField, gridBagConstraints1);
     
     urlLabel.setText("URL");
@@ -124,10 +138,10 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     driverInputPanel.add(urlLabel, gridBagConstraints1);
     
-    urlField.setColumns(20);
     urlField.setText(url);
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     driverInputPanel.add(urlField, gridBagConstraints1);
     
     dbLabel.setText("Database");
@@ -135,10 +149,10 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     driverInputPanel.add(dbLabel, gridBagConstraints1);
     
-    dbField.setColumns(20);
     dbField.setText(database);
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     driverInputPanel.add(dbField, gridBagConstraints1);
     
     tableLabel.setText("Table");
@@ -146,10 +160,10 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     driverInputPanel.add(tableLabel, gridBagConstraints1);
     
-    tableField.setColumns(20);
     tableField.setText(table);
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     driverInputPanel.add(tableField, gridBagConstraints1);
     
     odbcCheckBox.setSelected(name.equals(odbcDriverName));
@@ -287,6 +301,56 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
     optionInputPanel.add(projectCaseCheckBox, gridBagConstraints2);
     
+    projValidateCheckBox.setSelected(projectValidate);
+    projValidateCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    projValidateCheckBox.setText("Validate Project");
+    projValidateCheckBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        toggleValidateProject(evt);
+      }
+    });
+    
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    optionInputPanel.add(projValidateCheckBox, gridBagConstraints2);
+    
+    projDBLabel.setText("Project Database:");
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    optionInputPanel.add(projDBLabel, gridBagConstraints2);
+    
+    projDBField.setText(projectDatabase);
+    projDBField.setEnabled(false);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    optionInputPanel.add(projDBField, gridBagConstraints2);
+    
+    projTableLabel.setText("Project Table:");
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    optionInputPanel.add(projTableLabel, gridBagConstraints2);
+    
+    projTableField.setText(projectTable);
+    projTableField.setEnabled(false);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    optionInputPanel.add(projTableField, gridBagConstraints2);
+    
+    projFieldLabel.setText("Project Field");
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    optionInputPanel.add(projFieldLabel, gridBagConstraints2);
+    
+    projFieldComboBox.setModel(new DefaultComboBoxModel(new String[] {projectField}));
+    projFieldComboBox.setEnabled(false);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
+    optionInputPanel.add(projFieldComboBox, gridBagConstraints2);
+    
     optionPanel.add(optionInputPanel, java.awt.BorderLayout.CENTER);
     
     optionOK.setText("OK");
@@ -307,6 +371,15 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     
     optionButtonPanel.add(optionCancel);
     
+    optionApply.setText("Refresh");
+    optionApply.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        applyOptions(evt);
+      }
+    });
+    
+    optionButtonPanel.add(optionApply);
+    
     optionPanel.add(optionButtonPanel, java.awt.BorderLayout.SOUTH);
     
     tabbedPane.addTab("Options", optionPanel);
@@ -316,6 +389,39 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     pack();
   }//GEN-END:initComponents
 
+  private void applyOptions(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyOptions
+    projectDatabase = projDBField.getText();
+    projectTable = projTableField.getText();
+    int projFieldIndex = projFieldComboBox.getSelectedIndex();
+    projectField = (String)projFieldComboBox.getItemAt(projFieldIndex);
+    String[] fieldNames = getProjectFieldNames();
+    DefaultComboBoxModel boxModel;
+    if(fieldNames == null) {
+      boxModel = new DefaultComboBoxModel(new String[] {"No Fields Found"});
+      projFieldComboBox.setEnabled(false);
+    } else {
+      boxModel = new DefaultComboBoxModel(fieldNames);
+      projFieldComboBox.setEnabled(true);
+    }
+    projFieldComboBox.setModel(boxModel);
+    optionInputPanel.repaint();
+  }//GEN-LAST:event_applyOptions
+
+  private void toggleValidateProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleValidateProject
+    toggleValidateProject();
+  }//GEN-LAST:event_toggleValidateProject
+
+  private void toggleValidateProject() {
+    if(projValidateCheckBox.isSelected()) {
+      projDBField.enable();
+      projTableField.enable();
+    } else {
+      projDBField.disable();
+      projTableField.disable();
+    }
+    optionInputPanel.repaint();
+  }
+  
   private void showDriverPanel(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showDriverPanel
     getRootPane().setDefaultButton(driverOK);
   }//GEN-LAST:event_showDriverPanel
@@ -334,14 +440,13 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       urlLabel.setText("Data Source");
       int lastColon = url.lastIndexOf(':')+1;
       urlField.setText(url.substring(lastColon));
-      driverInputPanel.repaint();
     } else {
       nameField.setText(name);
       nameField.enable();
       urlLabel.setText("URL");
       urlField.setText(url);
-      driverInputPanel.repaint();
     }
+    driverInputPanel.repaint();
   }
   private void refreshFieldMap(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshFieldMap
       try {
@@ -393,6 +498,11 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     if(name.equals(odbcDriverName)) url = "jdbc:odbc:"+url;
     database = dbField.getText();
     table = tableField.getText();
+    projectDatabase = projDBField.getText();
+    projectTable = projTableField.getText();
+    int projFieldIndex = projFieldComboBox.getSelectedIndex();
+    projectField = (String)projFieldComboBox.getItemAt(projFieldIndex);
+    projectValidate = projValidateCheckBox.isSelected();
     hourFormat = hourComboBox.getSelectedIndex();
     dateFormat = dateComboBox.getSelectedIndex();
     projectCase = projectCaseCheckBox.isSelected();
@@ -434,6 +544,10 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         newNode.setAttribute("hourFormat", ""+hourFormat);
         newNode.setAttribute("dateFormat", ""+dateFormat);
         newNode.setAttribute("projectCase", ""+projectCase);
+        newNode.setAttribute("projectValidate", ""+projectValidate);
+        newNode.setAttribute("projectDatabase", projectDatabase);
+        newNode.setAttribute("projectTable", projectTable);
+        newNode.setAttribute("projectField", projectField);
         rootNode.appendChild(newNode);
         
         //Save field mappings
@@ -476,16 +590,30 @@ public class JDBCControlPanel extends javax.swing.JFrame {
           attributes = driver.getAttributes();
           name = attributes.getNamedItem("name").getNodeValue();
           url = attributes.getNamedItem("url").getNodeValue();
-          userName = attributes.getNamedItem("username").getNodeValue();
-          database = attributes.getNamedItem("database").getNodeValue();
-          table = attributes.getNamedItem("table").getNodeValue();
+          if(attributes.getNamedItem("username") != null)
+            userName = attributes.getNamedItem("username").getNodeValue();
+          if(attributes.getNamedItem("database") != null)
+            database = attributes.getNamedItem("database").getNodeValue();
+          if(attributes.getNamedItem("table") != null)
+            table = attributes.getNamedItem("table").getNodeValue();
 
           NodeList options = doc.getElementsByTagName("options");
           Node option = options.item(0);
           attributes = option.getAttributes();
           hourFormat = Integer.parseInt(attributes.getNamedItem("hourFormat").getNodeValue());
           dateFormat = Integer.parseInt(attributes.getNamedItem("dateFormat").getNodeValue());
-          projectCase = Boolean.valueOf(attributes.getNamedItem("projectCase").getNodeValue()).booleanValue();
+          if(attributes.getNamedItem("projectCase") != null)
+            projectCase = Boolean.valueOf(attributes.getNamedItem("projectCase").getNodeValue()).booleanValue();
+          if(attributes.getNamedItem("projectValidate") != null)
+            projectValidate = Boolean.valueOf(attributes.getNamedItem("projectValidate").getNodeValue()).booleanValue();
+          if(attributes.getNamedItem("projectDatabase") != null)
+            projectDatabase = attributes.getNamedItem("projectDatabase").getNodeValue();
+          if(attributes.getNamedItem("projectTable") != null)
+            projectTable = attributes.getNamedItem("projectTable").getNodeValue();
+          if(attributes.getNamedItem("projectField") != null)
+            projectField = attributes.getNamedItem("projectField").getNodeValue();
+          else
+            projectField = "No Fields Found";
 
           NodeList fieldMaps = doc.getElementsByTagName("fieldmap");
           tableMap.fieldMaps.clear();
@@ -577,32 +705,112 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     
     public boolean exportTimeRecordSet(TimeRecordSet times) {
       Connection conn = openConnection();
+      PreparedStatement insert = null;
+      boolean worked = false;
+
       try {
         if(tableMap.size() == 0) return false;
         String queryString = "?";
         for(int i=1; i<tableMap.size(); i++) queryString += " ,?";
-        PreparedStatement insert = conn.prepareStatement("INSERT INTO "+database+"."+table+" VALUES ("+queryString+")");
+        insert = conn.prepareStatement("INSERT INTO "+database+"."+table+" VALUES ("+queryString+")");
+
+        // Okay... we've got a problem. We want to test for errors
+        // before committing changes to the database but we also
+        // can't depend on the rollback() method working (not all
+        // db's we want to use support transaction management).
+        // So we first load everything into a two dimensional array 
+        // then we insert the records into the database.
+        Vector statements = new Vector();
         for(int j=0; j < times.size(); j++) {
           TimeRecord record = times.elementAt(j);
           FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$HOURS"); //Find out how many hours exist
           java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.getValue(record);
           if((hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) || ! record.billable) continue;
-          for(int i=0; i < tableMap.size(); i++) {
+          Object[] statement = new Object[tableMap.size()];
+          for(int i=0; i < statement.length; i++) {
             FieldMap fieldMap = tableMap.elementAt(i);
-            Object fieldValue = fieldMap.getValue(record);
-            insert.setObject(i+1, fieldValue);
+            statement[i] = fieldMap.getValue(record);
+          }
+          statements.addElement(statement);
+        }
+        
+        for(int j=0; j < statements.size(); j++) {
+          Object[] statement = (Object[])statements.elementAt(j);
+          for(int i=0; i < statement.length; i++) {
+            insert.setObject(i+1, statement[i]);
           }
           insert.execute();
         }
+        
         conn.commit();
-        insert.close();
-        conn.close();
-        return true;
+        worked = true;
+      } catch (ProjectInvalidException e) {
+        JOptionPane.showMessageDialog(this, e.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
+        worked = false;
       } catch (SQLException e) {
         JOptionPane.showMessageDialog(this, e.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
         System.err.println("Could not export timelist to database: "+e);
-        return false;
+        worked = false;
+      } finally {
+        try {
+          if(insert != null) insert.close();
+          if(conn != null) conn.close();
+        } catch (Exception ex) {}
       }
+      return worked;
+    }
+    
+    private String[] getProjectFieldNames() {
+      Connection conn = openConnection();
+      String[] names = null;
+      ResultSet cols = null;
+
+      try {
+        Vector records = new Vector();
+        DatabaseMetaData dbmeta = conn.getMetaData();
+        cols = dbmeta.getColumns(null, projectDatabase, projectTable, null);
+        while(cols.next())
+          records.addElement(cols.getString(4));
+        
+        names = new String[records.size()];
+        for(int i=0; i<names.length; i++)
+          names[i] = (String)records.elementAt(i);
+      } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, e.getMessage(), "Project Error", JOptionPane.ERROR_MESSAGE);
+        System.err.println("Could not get project list from database: "+e);
+      } finally {
+        try {
+          if(cols != null) cols.close();
+          if(conn != null) conn.close();
+        } catch (Exception ex) {}
+      }
+      return names;
+    }
+
+    private boolean validateProject(String project) {
+      Connection conn = openConnection();
+      Statement stmt = null;
+      ResultSet rs = null;
+      boolean isValid = false;
+      try {
+        String queryString = "SELECT "+projectField+" FROM "+projectDatabase+"."+projectTable+
+        " WHERE "+projectField+"='"+project+"'";
+        stmt = conn.createStatement();
+        rs = stmt.executeQuery(queryString);
+        isValid = rs.next();
+        rs.close();
+        stmt.close();
+        conn.close();
+      } catch (SQLException e) {
+        System.err.println("Couldn't attempt project validation: "+e);
+      } finally {
+        try {
+          if(rs != null) rs.close();
+          if(stmt != null) stmt.close();
+          if(conn != null) conn.close();
+        } catch (Exception ex) {}
+      }
+      return isValid;
     }
     
     public static String typeString(int sqlType) {
@@ -686,9 +894,17 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     private javax.swing.JLabel dateLabel;
     private javax.swing.JComboBox dateComboBox;
     private javax.swing.JCheckBox projectCaseCheckBox;
+    private javax.swing.JCheckBox projValidateCheckBox;
+    private javax.swing.JLabel projDBLabel;
+    private javax.swing.JTextField projDBField;
+    private javax.swing.JLabel projTableLabel;
+    private javax.swing.JTextField projTableField;
+    private javax.swing.JLabel projFieldLabel;
+    private javax.swing.JComboBox projFieldComboBox;
     private javax.swing.JPanel optionButtonPanel;
     private javax.swing.JButton optionOK;
     private javax.swing.JButton optionCancel;
+    private javax.swing.JButton optionApply;
     // End of variables declaration//GEN-END:variables
     
     private class LoginDialog extends JDialog {
@@ -812,7 +1028,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         return dbFieldName+"("+dbFieldIndex+"): "+valueExpression+" type "+typeString(sqlType);
       }
       
-      protected Object getValue(TimeRecord record) throws ClassCastException {
+      protected Object getValue(TimeRecord record) throws ClassCastException, ProjectInvalidException {
         StringTokenizer toker = new StringTokenizer(valueExpression, "$ ", true);
         Object realValue = null;
         while(toker.hasMoreTokens()) {
@@ -821,9 +1037,12 @@ public class JDBCControlPanel extends javax.swing.JFrame {
             value = toker.nextToken();
             if(value.equals("PROJECT")) {
               if(sqlType != java.sql.Types.CHAR) throw new ClassCastException("Must be CHAR SQL type for project name");
-              else
+              else {
                 if(projectCase) realValue = record.projectName.toUpperCase();
                 else realValue = record.projectName;
+                if(projectValidate && ! validateProject((String)realValue))
+                  throw new ProjectInvalidException("Project "+realValue+" not in table "+projectDatabase+"."+projectTable);
+              }
             } else if(value.equals("USERNAME")) {
               if(sqlType != java.sql.Types.CHAR) throw new ClassCastException("Must be CHAR SQL type for username");
               else realValue = userName;
