@@ -322,6 +322,7 @@ public class ClntComm extends javax.swing.JPanel {
           catch (CloneNotSupportedException e) { oldTimes = null; }
           times.resetTime();
           changes.firePropertyChange("times", oldTimes, times);
+          setTotals();
           timerTask.startTime = System.currentTimeMillis()/1000;
           timeList.setModel(new TableTreeModel(times, timeFormat));
           totalPanel.repaint();
@@ -350,6 +351,7 @@ public class ClntComm extends javax.swing.JPanel {
               times.delete(selectedIndex);
               timeList.setModel(new TableTreeModel(times, timeFormat));
               changes.firePropertyChange("times", oldTimes, times);
+              setTotals();
           }
       }
   }//GEN-LAST:event_deleteProject
@@ -414,6 +416,7 @@ public void editWindow(int i){
         times.sort();
         timeList.setModel(new TableTreeModel(times, timeFormat));
         changes.firePropertyChange("times", oldTimes, times);
+        setTotals();
         if(selectedIndex == -1) setSelectedIndex(index); //Nothing selected
         else timeList.setSelectedRecord(selectedIndex);
         totalPanel.repaint();
@@ -600,6 +603,7 @@ private TableTree timeList;
                         timeList.setRecordAt(times.elementAt(selectedIndex), selectedIndex, 1);
                         timeList.repaint();
                         totalPanel.repaint();
+                        setTotals();
                     }
                     //If the user requested a save now, do it
                     if (currSeconds % saveInterval == 0) savePrefs();
