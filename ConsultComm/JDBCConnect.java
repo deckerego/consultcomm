@@ -370,11 +370,6 @@ class JDBCConnect {
         FieldMap record = new FieldMap(fieldName, sqlType, fieldIndex, valueExpression);
         tableMap.fieldMaps.addElement(record);
       }
-    } catch (SAXParseException e) {
-      System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
-    } catch (SAXException e) {
-      System.err.println("Error reading prefs file: "+e);
-      e.printStackTrace(System.out);
     } catch (Exception e) {
       System.err.println("Cannot read prefs file: "+e);
       e.printStackTrace(System.out);
@@ -386,11 +381,6 @@ class JDBCConnect {
       //Get attribute flags
       int attributes = prefs.readFirstInt("attributes", "value");
       useExport = (ClntComm.SHOW_EXPORT ^ attributes) != (ClntComm.SHOW_EXPORT | attributes);
-    } catch (SAXParseException e) {
-      System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
-    } catch (SAXException e) {
-      System.err.println("Error reading prefs file: "+e);
-      e.printStackTrace(System.out);
     } catch (Exception e) {
       System.err.println("Cannot read prefs file: "+e);
       e.printStackTrace(System.out);

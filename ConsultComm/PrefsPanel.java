@@ -680,9 +680,6 @@ public class PrefsPanel extends javax.swing.JFrame {
         themePack = prefs.readFirstString("skin", "theme");
         kdeTheme = prefs.readFirstString("skin", "kde");
         gtkTheme = prefs.readFirstString("skin", "gtk");
-      } catch (SAXException e) {
-        System.err.println("Error reading prefs file: "+e);
-        e.printStackTrace(System.out);
       } catch (IOException e) {
         System.err.println("Cannot create new preferences file! "+e);
       } catch (Exception e) {

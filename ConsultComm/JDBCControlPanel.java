@@ -359,11 +359,11 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   
   private void toggleValidateProject() {
     if(projValidateCheckBox.isSelected()) {
-      projDBField.enable();
-      projTableField.enable();
+      projDBField.setEnabled(true);
+      projTableField.setEnabled(true);
     } else {
-      projDBField.disable();
-      projTableField.disable();
+      projDBField.setEnabled(false);
+      projTableField.setEnabled(false);
     }
     optionInputPanel.repaint();
   }
@@ -382,13 +382,13 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private void toggleODBC() {
     if(odbcCheckBox.isSelected()) {
       nameField.setText(JDBCConnect.odbcDriverName);
-      nameField.disable();
+      nameField.setEnabled(false);
       urlLabel.setText("Data Source");
       int lastColon = dbConnection.url.lastIndexOf(':')+1;
       urlField.setText(dbConnection.url.substring(lastColon));
     } else {
       nameField.setText(dbConnection.name);
-      nameField.enable();
+      nameField.setEnabled(true);
       urlLabel.setText("URL");
       urlField.setText(dbConnection.url);
     }

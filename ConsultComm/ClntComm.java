@@ -582,11 +582,6 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       String idleActionString = prefs.readFirstString("idle", "action");
       idleAction = idleActionString.equals("project") ? IDLE_PROJECT : IDLE_PAUSE;
       idleProject = prefs.readFirstString("idle", "project");
-    } catch (SAXParseException e) {
-      System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
-    } catch (SAXException e) {
-      System.err.println("Error reading prefs file: "+e);
-      e.printStackTrace(System.out);
     } catch (Exception e) {
       System.err.println("Cannot read prefs file: "+e);
       e.printStackTrace(System.out);
