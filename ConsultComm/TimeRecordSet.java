@@ -80,6 +80,28 @@ class TimeRecordSet {
     }
     return parseSeconds(total);
   }
+  public String getCountdownTimeString(long minutes) {
+    long total = minutes*60;
+    Enumeration records = timeRecords.elements();
+    while (records.hasMoreElements()) {
+      TimeRecord record = (TimeRecord)records.nextElement();
+      total -= record.seconds;
+    }
+    return parseSeconds(total);
+  }
+  public String getPayAmount(float perHour) {
+    float total = 0;
+    java.text.NumberFormat nf = java.text.NumberFormat.getInstance();
+    nf.setMinimumFractionDigits(2);
+    Enumeration records = timeRecords.elements();
+    while (records.hasMoreElements()) {
+      TimeRecord record = (TimeRecord)records.nextElement();
+      total += record.seconds;
+    }
+    
+    float hours = total / (float)(60*60);
+    return "$"+nf.format(hours*perHour);
+  }
   public String[] getAllProjects() {
     String[] names = new String[timeRecords.size()];
     Enumeration records = timeRecords.elements();

@@ -19,15 +19,17 @@ import javax.swing.event.*;
  * Created on May 19, 2000, 7:37 PM
  */
 public class ClntComm extends javax.swing.JPanel {
+  protected static final int SHOW_TOTAL = 0;
+  protected static final int SHOW_BILLABLE = 1;
+  protected static final int SHOW_EXPORT = 2;
+  protected static final int SHOW_COUNTDOWN = 4;
+  protected static final int SHOW_COUNTPAY = 8;
   protected static final int SECONDS = 0;
   protected static final int MINUTES = 1;
-  protected static final int SHOW_TOTAL = 2;
-  protected static final int SHOW_BILLABLE = 3;
-  protected static final int SHOW_EXPORT = 4;
   protected static final int IDLE_PAUSE = 5;
   protected static final int IDLE_PROJECT = 6;
   
-  private static long totalSeconds, billableSeconds;
+  private static long totalSeconds, billableSeconds, countdownMinutes;
   private static JFrame frame = new JFrame("Consultant Manager");
   
   private CsltComm csltComm;
@@ -39,6 +41,7 @@ public class ClntComm extends javax.swing.JPanel {
   private int timeFormat;
   private int attributes;
   private int showTotal;
+  private float perHour;
   private int saveInterval = 60;
   private int idleAction = IDLE_PAUSE, allowedIdle = 0;
   private String idleProject = null;
@@ -378,14 +381,32 @@ public class ClntComm extends javax.swing.JPanel {
 private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleTotals
   switch(showTotal) {
     case SHOW_TOTAL:
+      if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
+      if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
       if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
       if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
       break;
     case SHOW_BILLABLE:
       if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
+      if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
+      if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
       if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
       break;
     case SHOW_EXPORT:
+      if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
+      if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
+      if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
+      if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
+      break;
+    case SHOW_COUNTPAY:
+      if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
+      if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
+      if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
+      if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
+      break;
+    case SHOW_COUNTDOWN:
+      if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
+      if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
       if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
       if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
       break;
@@ -416,6 +437,14 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       case SHOW_EXPORT:
         totalText.setText("To Export:");
         totalTime.setText(times.getExportTimeString());
+        break;
+      case SHOW_COUNTDOWN:
+        totalText.setText("Remaining:");
+        totalTime.setText(times.getCountdownTimeString(countdownMinutes));
+        break;
+      case SHOW_COUNTPAY:
+        totalText.setText("Earned:");
+        totalTime.setText(times.getPayAmount(perHour));
         break;
       default: //showTotal is undefined, choose default
         showTotal = SHOW_TOTAL;
@@ -554,6 +583,12 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       //Get attribute flags
       attributes = prefs.readFirstInt("attributes", "value");
       if(attributes == 0) attributes = SHOW_TOTAL; //No attributes found
+
+      //Get countdown minutes
+      countdownMinutes = prefs.readFirstLong("countdown", "minutes");
+      
+      //Get dollar amount per hour
+      perHour = prefs.readFirstFloat("countpay", "amount");
       
       //Get save interval
       saveInterval = prefs.readFirstInt("saveinfo", "seconds");
