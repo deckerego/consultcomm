@@ -28,6 +28,7 @@
     <javah destdir="${Xlibdir}" class="TimeOut">
       <classpath>
         <pathelement location="${src}"/>
+        <pathelement location="${appsrc}"/>
       </classpath>
     </javah>
     <exec dir="${Xlibdir}" executable="make"/>
@@ -38,6 +39,7 @@
     <javah destdir="${Win32libdir}" class="TimeOut">
       <classpath>
         <pathelement location="${src}"/>
+        <pathelement location="${appsrc}"/>
       </classpath>
     </javah>
     <echo>
