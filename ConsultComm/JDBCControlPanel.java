@@ -474,17 +474,23 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private void testDriverSettings(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testDriverSettings
     name = nameField.getText();
     url = urlField.getText();
-    if(name.equals(odbcDriverName)) url = "jdbc:odbc:"+url;
-    database = dbField.getText();
-    table = tableField.getText();
-    Connection conn = openConnection();
-    if(conn != null) {
-      JOptionPane.showMessageDialog(this, "Driver connection verified.", "Driver verified", JOptionPane.INFORMATION_MESSAGE);
-      try {
+    try {
+      if(name.equals(odbcDriverName)) url = "jdbc:odbc:"+url;
+      database = dbField.getText();
+      table = tableField.getText();
+      Connection conn = openConnection();
+      if(conn != null) {
+        DatabaseMetaData dbmeta = conn.getMetaData();
+        ResultSet cols = dbmeta.getColumns(null, database, table, null);
+        if((cols == null) || ! cols.next())
+          JOptionPane.showMessageDialog(this, "Table "+database+"."+table+" cannot be found.", "Table Not Found", JOptionPane.ERROR_MESSAGE);
+        else
+          JOptionPane.showMessageDialog(this, "Driver connection verified.", "Driver verified", JOptionPane.INFORMATION_MESSAGE);
+        if(cols != null) cols.close();
         conn.close();
-      } catch (SQLException e) {
-        System.err.println("Couldn't close database driver during test.");
       }
+    } catch (SQLException e) {
+      System.err.println("Uncaught SQL error during test: "+e);
     }
   }//GEN-LAST:event_testDriverSettings
   
@@ -1071,19 +1077,20 @@ public class JDBCControlPanel extends javax.swing.JFrame {
                   throw new ClassCastException("Unknown conversion for date");
               }
             }else if(value.equals("HOURS")) {
-              if(sqlType != java.sql.Types.DECIMAL) throw new ClassCastException("Must be DECIMAL SQL type for project name");
+              if(sqlType != java.sql.Types.DECIMAL && sqlType != java.sql.Types.NUMERIC && sqlType != java.sql.Types.INTEGER)
+                throw new ClassCastException("Must be DECIMAL SQL type for hours");
               switch(hourFormat) {
                 case HOUR_FULL:
-                  realValue = new java.math.BigDecimal(record.getHours(60));
+                  realValue = record.getHours(60, 2);
                   break;
                 case HOUR_QUARTER:
-                  realValue = new java.math.BigDecimal(record.getHours(60*15));
+                  realValue = record.getHours(60*15, 2);
                   break;
                 case HOUR_TENTH:
-                  realValue = new java.math.BigDecimal(record.getHours(60*10));
+                  realValue = record.getHours(60*6, 1);
                   break;
                 default:
-                  realValue = new java.math.BigDecimal(record.getHours(60));
+                  realValue = record.getHours(60, 2);
               }
             } else {
               System.err.println("Unknown expression variable: "+value);
