@@ -47,7 +47,7 @@ public class ClntComm extends javax.swing.JPanel {
       System.err.println("Row index invalid, not setting selection.");
     }
   }
-  
+
   /** This method is called from within the constructor to
    * initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is
@@ -605,8 +605,9 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
             if((index = timeList.getSelectedRow()) >= 0){
               currSeconds = currTime - startTime;
               times.setSeconds(index, currSeconds);
-              //Only repaint if the minutes have changed.
-              if (currSeconds % 60 == 0){
+              //Only repaint if the minutes (or seconds, depending on the 
+              //time format) have changed.
+              if ((timeFormat == SECONDS) || (currSeconds % 60 == 0)){
                 refreshTotalTime();
                 if(timeFormat == SECONDS) 
                   timeList.setValueAt(times.getSecondsString(index), index, 1);
