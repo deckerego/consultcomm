@@ -10,11 +10,15 @@ import javax.swing.event.*;
 public class ProjectEditDialog extends javax.swing.JDialog {
   final TimeRecord record;
   private String value;
+  private int attributes;
   
-  public ProjectEditDialog(JFrame frame, TimeRecord timerec) {
+  public ProjectEditDialog(JFrame frame, TimeRecord timerec, int attrib) {
     super(frame, true);
     record = timerec;
+    attributes = attrib;
     initComponents();
+    billable.setVisible(attributeSet(ClntComm.SHOW_BILLABLE));
+    export.setVisible(attributeSet(ClntComm.SHOW_EXPORT));
   }
   
   /** This method is called from within the constructor to
@@ -110,12 +114,12 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     
     pack();
   }//GEN-END:initComponents
-
+  
   private void saveProject(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_saveProject
     String prop = evt.getPropertyName();
     
     if (isVisible() && (evt.getSource() == optionPane) && (prop.equals(JOptionPane.VALUE_PROPERTY) || prop.equals(JOptionPane.INPUT_VALUE_PROPERTY))) {
-      value = optionPane.getValue().toString();      
+      value = optionPane.getValue().toString();
       if (value.equals("0")) {
         record.projectName = projField.getText();
         record.setSeconds(timeField.getText());
@@ -129,15 +133,20 @@ public class ProjectEditDialog extends javax.swing.JDialog {
       }
     }
   }//GEN-LAST:event_saveProject
-    
-    /** Closes the dialog */
+  
+  /** Closes the dialog */
     private void closeDialog(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_closeDialog
       optionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
     }//GEN-LAST:event_closeDialog
-
+    
     public String getValue() {
       return value;
     }
+    
+    public boolean attributeSet(int flag) {
+      return flag==0 ? true : (flag ^ attributes) != (flag | attributes);
+    }
+    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel inputPanel;
