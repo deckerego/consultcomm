@@ -18,8 +18,6 @@ public class ClntComm extends javax.swing.JPanel {
     public static final int SHOW_BILLABLE = 1;
     public static final int SECONDS = 0;
     public static final int MINUTES = 1;
-    public static final int IDLE_PAUSE = 5;
-    public static final int IDLE_PROJECT = 6;
     
     private static long totalSeconds, billableSeconds, countdownMinutes;
     private static JFrame frame = new JFrame("Consultant Manager");
@@ -58,7 +56,7 @@ public class ClntComm extends javax.swing.JPanel {
         timeList.setSelectedRecord(selectedIndex);
     }
     public int getSelectedIndex() { return this.selectedIndex; }
-    
+    public boolean isRunning(){ return timerTask.clockRunning; }
     Vector getPlugins() { return this.plugins; }
     
     /** This method is called from within the constructor to
@@ -587,10 +585,6 @@ private void savePrefs() {
     } catch (Exception e) {
         System.err.println("Cannot write to prefs file(s): "+e);
     }
-}
-
-public boolean isRunning(){
-    return timerTask.clockRunning;
 }
 
 private TableTree timeList;
