@@ -160,9 +160,10 @@ public class PrefsPanel extends javax.swing.JFrame {
     gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
     prefsInputPanel.add(save2Label, gridBagConstraints1);
     
-    idle1Label.setText("Pause if idle for ");
+    idle1Label.setText("When idle for ");
     idle1Label.setEnabled(timeoutLibrary);
     gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     prefsInputPanel.add(idle1Label, gridBagConstraints1);
     
     idleField.setColumns(3);
