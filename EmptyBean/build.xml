@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="all" name="Empty">
+  <property name="src" value="./"/>
+  <property name="appsrc" value="${src}/../ConsultComm"/>
+
+  <target depends="compile" name="all"/>
+
+  <target name="init">
+    <tstamp/>
+  </target>
+
+  <target depends="init" name="compile">
+    <javac deprecation="on" optimize="on" srcdir="${src}" classpath="${src}:${appsrc}"/>
+    <jar destfile="${appsrc}/plugins/Empty.jar">
+      <fileset dir="${src}" includes="*.class"/>
+      <fileset dir="${src}" includes="*.gif"/>
+      <manifest>
+        <attribute name="Manifest-Version" value="Version 1.0"/>
+        <attribute name="Java-Bean" value="true"/>
+        <attribute name="Specification-Version" value="3.1"/>
+        <attribute name="Implementation-Vendor-Id" value="consultcomm"/>
+        <attribute name="Extension-Name" value="Empty"/>
+        <attribute name="Implementation-Version" value="1.0"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir="${src}" includes="*.class"/>
+    </delete>
+  </target>
+
+  <target depends="clean" name="realclean">
+    <delete>
+      <fileset dir="${src}" includes="**/*~" defaultexcludes="no"/>
+    </delete>
+  </target>
+</project>
