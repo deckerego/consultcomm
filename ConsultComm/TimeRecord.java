@@ -1,9 +1,9 @@
 import java.util.*;
 
 class TimeRecord implements Comparable {
-  long seconds;
-  String projectName;
-  boolean billable;
+  protected long seconds;
+  protected String projectName;
+  protected boolean billable;
   
   TimeRecord() {
     projectName = "";
@@ -36,10 +36,6 @@ class TimeRecord implements Comparable {
     minutes -= hours * 60;
     if (minutes < 10) return ""+hours+":0"+minutes;
     else return ""+hours+":"+minutes;
-  }
-  
-  protected long getSeconds() {
-    return seconds;
   }
   
   public int compareTo(Comparable comp, String type) throws Exception {
