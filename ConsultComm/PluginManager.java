@@ -6,10 +6,11 @@ import java.awt.event.*;
 
 public class PluginManager extends javax.swing.JFrame implements ActionListener {
     Vector pluginList;
-    Vector buttonList; //dt
+    Vector buttonList;
     
     public PluginManager() {
         pluginList = new Vector();
+        buttonList = new Vector();
         try { pluginList = getPlugins(); } 
         catch (Exception e) { System.err.println("Couldn't load all the plugins: "+e); }
         
@@ -18,7 +19,7 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
     
     public PluginManager(ClntComm parent) {
         pluginList = parent.getPlugins();
-        buttonList = new Vector(); //dt
+        buttonList = new Vector();
         
         initComponents();
     }
@@ -81,9 +82,9 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
           Class customizerClass = pluginInfo.getBeanDescriptor().getCustomizerClass();
           Customizer customizer = (Customizer)customizerClass.newInstance();
           customizer.setObject(bean);
-          settingsPanel.removeAll();//dt
+          settingsPanel.removeAll();
           settingsPanel.add((javax.swing.JPanel)customizer);
-          settingsPanel.validate();//dt
+          settingsPanel.validate();
       } catch(Exception e) {
           System.err.println("Couldn't load settings: "+e);
           e.printStackTrace(System.out);
@@ -98,8 +99,8 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
               java.awt.Image icon = pluginInfo.getIcon(SimpleBeanInfo.ICON_COLOR_32x32);
               button.setIcon(new javax.swing.ImageIcon(icon));
               iconListPanel.add(button);
-              buttonList.add(button);//dt
-              button.addActionListener(this);//dt
+              buttonList.add(button);
+              button.addActionListener(this);
           }
       } catch(IntrospectionException e) {
           System.err.println("Couldn't load icons: "+e);
@@ -147,7 +148,6 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
       return pluginList;
   }
   
-  //dt
   public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
       Object o = actionEvent.getSource();
       loadSettingsPanel(buttonList.indexOf(o));
