@@ -42,6 +42,19 @@ class TimeRecord implements Comparable {
   }
   
   public String toString() {
+    return toSecondString();
+  }
+  
+  public String toSecondString() {
+    long minutes = seconds / 60;
+    long hours = minutes / 60;
+    minutes -= hours * 60;
+    long thisSeconds = seconds-(hours*60)+(minutes*60);
+    if (minutes < 10) return ""+hours+":0"+minutes+"."+thisSeconds;
+    else return ""+hours+":"+minutes+"."+thisSeconds;
+  }
+  
+  public String toMinuteString() {
     long minutes = seconds / 60;
     long hours = minutes / 60;
     minutes -= hours * 60;
