@@ -210,6 +210,7 @@
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="times.toTableModel(timeFormat)" type="code"/>
             </Property>
+            <Property name="autoCreateColumnsFromModel" type="boolean" value="false"/>
           </Properties>
 
           <Events>

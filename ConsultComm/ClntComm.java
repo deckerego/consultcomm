@@ -28,6 +28,7 @@ public class ClntComm extends javax.swing.JPanel {
   private TimerThread timer;
   private TimeRecordSet times;
   private java.awt.Dimension windowSize;
+  private int projColumnWidth;
   private int index, selectedIndex;
   private int timeFormat = MINUTES;
   
@@ -38,6 +39,8 @@ public class ClntComm extends javax.swing.JPanel {
   public ClntComm() {
     readPrefs();
     initComponents();
+    initColumns();
+
     menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
     timer = new TimerThread(1000);
     timer.start();
@@ -198,6 +201,7 @@ public class ClntComm extends javax.swing.JPanel {
     add(totalPanel, java.awt.BorderLayout.SOUTH);
     
     timeList.setModel(times.toTableModel(timeFormat));
+    timeList.setAutoCreateColumnsFromModel(false);
     timeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     ListSelectionModel rowSM = timeList.getSelectionModel();
     rowSM.addListSelectionListener(new ListSelectionListener() {
@@ -239,6 +243,11 @@ public class ClntComm extends javax.swing.JPanel {
     
   }//GEN-END:initComponents
 
+  private void initColumns() {
+    TableColumn projectColumn = timeList.getColumnModel().getColumn(0);
+    projectColumn.setPreferredWidth(projColumnWidth);
+  }
+  
   private void showPrefs(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPrefs
     new PrefsPanel().show();
   }//GEN-LAST:event_showPrefs
@@ -435,6 +444,12 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         double height = Double.parseDouble(attributes.getNamedItem("height").getNodeValue());
         windowSize = new java.awt.Dimension((int)width, (int)height);
         
+        //Get project column dimensions
+        NodeList projColumns = doc.getElementsByTagName("projcolumn");
+        Node projColumn = projColumns.item(0);
+        attributes = projColumn.getAttributes();
+        projColumnWidth = Integer.parseInt(attributes.getNamedItem("width").getNodeValue());
+        
         //Decide whether to show total time/billable time
         NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
         Node showTotalTime = showTotalTimes.item(0);
@@ -497,7 +512,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         newNode.setAttribute("name", record.projectName);
         if(record.alias != null)
           newNode.setAttribute("alias", record.alias);
-        newNode.setAttribute("seconds", ""+record.seconds);
+        newNode.setAttribute("seconds", Long.toString(record.seconds));
         newNode.setAttribute("billable", ""+record.billable);
         if(i == selectedIndex)
           newNode.setAttribute("selected", "true");
@@ -510,11 +525,23 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       NodeList dimensions = doc.getElementsByTagName("dimensions");
       java.awt.Dimension size = getSize();
       newNode = doc.createElement("dimensions");
-      newNode.setAttribute("width", ""+size.getWidth());
-      newNode.setAttribute("height", ""+size.getHeight());
+      newNode.setAttribute("width", Double.toString(size.getWidth()));
+      newNode.setAttribute("height", Double.toString(size.getHeight()));
       if(dimensions.getLength() > 0) {
         Node dimension = dimensions.item(0);
         rootNode.replaceChild(newNode, dimension);
+      } else {
+        rootNode.appendChild(newNode);
+      }
+      
+      //Save project column dimensions
+      NodeList projColumns = doc.getElementsByTagName("projcolumn");
+      TableColumn projectColumn = timeList.getColumnModel().getColumn(0);
+      newNode = doc.createElement("projcolumn");
+      newNode.setAttribute("width", Integer.toString(projectColumn.getPreferredWidth()));
+      if(projColumns.getLength() > 0) {
+        Node projColumn = projColumns.item(0);
+        rootNode.replaceChild(newNode, projColumn);
       } else {
         rootNode.appendChild(newNode);
       }
