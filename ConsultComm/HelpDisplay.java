@@ -3,8 +3,8 @@ import java.net.*;
 public class HelpDisplay extends javax.swing.JFrame {
   private final static String fileSeperator = System.getProperty("file.separator");
   private final static String workingDir = System.getProperty("user.dir");
-  private final static String introPage = "file:"+workingDir+fileSeperator+"docs"+fileSeperator+"index.html";
-  private final static String pathPage = "file:"+workingDir+fileSeperator+"docs"+fileSeperator+"$APPPATHS";
+  private static URL introPage;
+  private static URL pathPage;
   private URLHistory history;
   
   /** Creates new form HelpDisplay */
@@ -12,9 +12,10 @@ public class HelpDisplay extends javax.swing.JFrame {
     initComponents();
     history = new URLHistory(10);
     try {
-      URL page = new URL(introPage);
-      mainEditorPane.setPage(page);
-      history.add(page);
+      introPage = new URL("file:"+workingDir+fileSeperator+"docs"+fileSeperator+"index.html");
+      pathPage = new URL("file:"+workingDir+fileSeperator+"docs"+fileSeperator+"$APPPATHS");
+      mainEditorPane.setPage(introPage);
+      history.add(introPage);
     } catch (Exception e) {
       System.err.println("Cannot find help page "+e);
     }
@@ -125,7 +126,7 @@ public class HelpDisplay extends javax.swing.JFrame {
     }//GEN-LAST:event_exitForm
     
     private void setPage(URL page) throws java.io.IOException {
-      if(page.toString().equals(pathPage)) {
+      if(page.equals(pathPage)) {
         mainEditorPane.setDocument(mainEditorPane.getEditorKit().createDefaultDocument());
         mainEditorPane.setContentType("text/html");
         mainEditorPane.setText(getPathPage());
