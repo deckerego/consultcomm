@@ -35,6 +35,7 @@
         <include name="${src}/*.form"/>
         <include name="${src}/help/*"/>
         <exclude name="${src}/help/CVS"/>
+        <exclude name="${src}/help/*~"/>
         <include name="${src}/graphics/*"/>
         <include name="${src}/build.xml"/>
         <include name="${src}/skinlf.jar"/>
@@ -76,11 +77,9 @@
     <zip zipfile="${releasename}.zip">
       <zipfileset dir="${src}" prefix="${releasename}">
         <include name="ConsultComm"/>
-        <include name="docs/*.html"/>
         <include name="graphics/*"/>
         <include name="plugins/*.jar"/>
-        <include name="CsltComm.jar"/>
-        <include name="skinlf.jar"/>
+        <include name="*.jar"/>
         <include name="README"/>
         <include name="AUTHORS"/>
         <include name="COPYING"/>
@@ -90,10 +89,9 @@
   </target>
 
   <target name="osx">
-    <osxize name="Consultant Communicator" shortname="ConsultComm" mainclass="CsltComm" jars="ConsultComm/CsltComm.jar:ConsultComm/skinlf.jar" verbose="true"/>
+    <osxize name="Consultant Communicator" shortname="ConsultComm" mainclass="CsltComm" jars="ConsultComm/CsltComm.jar:ConsultComm/skinlf.jar:ConsultComm/jhbasic.jar" verbose="true"/>
     <copy todir="Consultant Communicator.app/Contents/Resources/Java">
       <fileset dir="${src}">
-        <include name="docs/*.html"/>
         <include name="graphics/*"/>
         <include name="plugins/*.jar"/>
         <include name="README"/>

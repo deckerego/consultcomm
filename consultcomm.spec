@@ -30,10 +30,6 @@ ant X
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/plugins
-mkdir -p $RPM_BUILD_ROOT/usr/local/TotalTimesBean
-mkdir -p $RPM_BUILD_ROOT/usr/local/TimeOutBean
-mkdir -p $RPM_BUILD_ROOT/usr/local/JDBCBean
-mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/help
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/icons
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/graphics
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/syslibs
