@@ -767,7 +767,7 @@ public class PrefsPanel extends javax.swing.JFrame {
         //Save idle info
         NodeList idleTimes = doc.getElementsByTagName("idle");
         newNode = doc.createElement("idle");
-        newNode.setAttribute("seconds", idleField.getText());
+        newNode.setAttribute("seconds", idleCheckBox.isSelected() ? idleField.getText() : "0");
         newNode.setAttribute("action", projectIdleRadioButton.isSelected() ? "project" : "pause");
         newNode.setAttribute("project", projectIdleComboBox.getSelectedItem().toString());
         if(idleTimes.getLength() > 0) {
