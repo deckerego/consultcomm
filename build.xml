@@ -1,8 +1,11 @@
 <project default="dist">
-  <property name="release" value="3.1beta1"/>
+  <taskdef name="izpack" classname="com.izforge.izpack.ant.IzPackTask"/>
+
+  <property name="release" value="3.1beta2"/>
   <property name="src" value="ConsultComm/"/>
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
+  <property name="izpackdir" value="/usr/local/IzPack"/>
   <property name="revision" value="1"/>
 
   <target name="build">
@@ -10,13 +13,18 @@
     <ant dir="TimeOutBean" target="all" inheritAll="false"/>
     <ant dir="JDBCBean" target="all" inheritAll="false"/>
     <ant dir="TotalTimesBean" target="all" inheritAll="false"/>
-  </target>
+    <ant dir="SysTrayBean" target="all" inheritAll="false"/> 
+ </target>
     
   <target name="dist" depends="build">
     <ant target="tarball"/>
     <ant target="zip"/>
     <ant target="rpm"/>
-    <ant target="osx"/>
+    <ant target="installer"/>
+  </target>
+
+  <target name="installer" depends="build">
+    <izpack input="izpack_installer.xml" output="${releasename}_Installer.jar" installerType="standard" basedir="${src}" izPackDir="${izpackdir}"/>
   </target>
 
   <target name="X" depends="build">
@@ -38,6 +46,10 @@
         <include name="${src}/build.xml"/>
         <include name="${src}/skinlf.jar"/>
         <include name="${src}/jhbasic.jar"/>
+        <include name="${src}/tray.jar"/>
+        <include name="${src}/nativeskin.jar"/>
+        <include name="${src}/syslibs/nativeskinwin32.dll"/>
+        <include name="${src}/syslibs/nativeskinwin32JAWT.dll"/>
         <include name="${src}/README"/>
         <include name="${src}/AUTHORS"/>
         <include name="${src}/COPYING"/>
@@ -58,24 +70,32 @@
         <include name="TimeOutBean/X/Makefile"/>
         <include name="TimeOutBean/Win32/*.cpp"/>
         <include name="TimeOutBean/Win32/Win32Idle.mak"/>
+        <include name="SysTrayBean/*.java"/>
+        <include name="SysTrayBean/*.form"/>
+        <include name="SysTrayBean/*.png"/>
+        <include name="SysTrayBean/build.xml"/>
+        <include name="SysTrayBean/*.dll"/>
+        <include name="SysTrayBean/*.so"/>
       </tarfileset>
     </tar>
 
     <gzip src="${releasename}.src.tar" zipfile="${releasename}.src.tar.gz"/>
   </target>
 
-  <target name="rpm">
+  <target name="rpm" depends="tarball">
     <copy file="consultcomm.spec" todir="${rpmdir}/SPECS"/>
     <move file="${releasename}.src.tar" todir="${rpmdir}/SOURCES"/>
     <rpm specFile="consultcomm.spec" topDir="${rpmdir}" cleanBuildDir="yes" removeSpec="yes" removeSource="yes"/>
-    <move file="${rpmdir}/RPMS/i386/${releasename}-${revision}.i386.rpm" todir="."/>
+    <move file="${rpmdir}/RPMS/i586/${releasename}-${revision}.i586.rpm" todir="."/>
   </target>
 
-  <target name="zip">
+  <target name="zip" depends="build">
     <zip zipfile="${releasename}.zip">
       <zipfileset dir="${src}" prefix="${releasename}">
         <include name="ConsultComm"/>
         <include name="plugins/*.jar"/>
+        <include name="syslibs/nativeskinwin32.dll"/>
+        <include name="syslibs/nativeskinwin32JAWT.dll"/>
         <include name="*.jar"/>
         <include name="README"/>
         <include name="AUTHORS"/>
@@ -90,24 +110,24 @@
   </target>
 
   <target name="clean">
-    <delete file="${releasename}.src.tar"/>
     <delete file="${releasename}.src.tar.gz"/>
+    <delete file="${releasename}_Installer.jar"/>
     <delete file="${releasename}.zip"/>
     <delete file="${releasename}.exe"/>
-    <delete file="${releasename}-${revision}.i386.rpm"/>
+    <delete file="${releasename}-${revision}.i586.rpm"/>
     <ant dir="${src}" target="clean" inheritAll="false"/>
     <ant dir="TimeOutBean" target="clean" inheritAll="false"/>
     <ant dir="JDBCBean" target="clean" inheritAll="false"/>
     <ant dir="TotalTimesBean" target="clean" inheritAll="false"/>  
+    <ant dir="SysTrayBean" target="clean" inheritAll="false"/>
 </target>
 
   <target name="realclean" depends="clean">
     <ant dir="${src}" target="realclean" inheritAll="false"/>
-    <delete dir="ConsultComm_Windowslocales"/>
-    <delete dir="ConsultComm_Windows_Build_Output"/>
     <ant dir="TimeOutBean" target="realclean" inheritAll="false"/>
     <ant dir="JDBCBean" target="realclean" inheritAll="false"/>
     <ant dir="TotalTimesBean" target="realclean" inheritAll="false"/>
+    <ant dir="SysTrayBean" target="realclean" inheritAll="false"/>
 </target>
 
 </project>
