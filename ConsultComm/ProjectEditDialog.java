@@ -37,7 +37,8 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     billable = new javax.swing.JCheckBox();
     export = new javax.swing.JCheckBox();
     buttonPanel = new javax.swing.JPanel();
-    optionPane = new javax.swing.JOptionPane();
+    okButton = new javax.swing.JButton();
+    cancelButton = new javax.swing.JButton();
     
     setTitle("Edit Project");
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -100,44 +101,53 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     
     getContentPane().add(inputPanel, java.awt.BorderLayout.CENTER);
     
-    optionPane.setOptionType(javax.swing.JOptionPane.OK_CANCEL_OPTION);
-    optionPane.setMessage(inputPanel);
-    optionPane.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-      public void propertyChange(java.beans.PropertyChangeEvent evt) {
-        saveProject(evt);
+    okButton.setText("OK");
+    okButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        save(evt);
       }
     });
     
-    buttonPanel.add(optionPane);
+    buttonPanel.add(okButton);
+    
+    cancelButton.setText("Cancel");
+    cancelButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        cancel(evt);
+      }
+    });
+    
+    buttonPanel.add(cancelButton);
     
     getContentPane().add(buttonPanel, java.awt.BorderLayout.SOUTH);
     
     pack();
   }//GEN-END:initComponents
   
-  private void saveProject(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_saveProject
-    String prop = evt.getPropertyName();
-    
-    if (isVisible() && (evt.getSource() == optionPane) && (prop.equals(JOptionPane.VALUE_PROPERTY) || prop.equals(JOptionPane.INPUT_VALUE_PROPERTY))) {
-      value = optionPane.getValue().toString();
-      if (value.equals("0")) {
-        record.projectName = projField.getText();
-        record.setSeconds(timeField.getText());
-        if(aliasField.getText().length() > 0) record.alias = aliasField.getText();
-        else record.alias = null;
-        record.billable = billable.isSelected();
-        record.export = export.isSelected();
-        setVisible(false);
-      } else { // user closed dialog or clicked cancel
-        setVisible(false);
-      }
-    }
-  }//GEN-LAST:event_saveProject
+  private void save(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_save
+    record.projectName = projField.getText();
+    record.setSeconds(timeField.getText());
+    if(aliasField.getText().length() > 0) record.alias = aliasField.getText();
+    else record.alias = null;
+    record.billable = billable.isSelected();
+    record.export = export.isSelected();
+    value = "0";
+    closeDialog();
+  }//GEN-LAST:event_save
   
-  /** Closes the dialog */
+  private void cancel(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancel
+    value = "0";
+    closeDialog();
+  }//GEN-LAST:event_cancel
+  
     private void closeDialog(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_closeDialog
-      optionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
+      closeDialog();
     }//GEN-LAST:event_closeDialog
+    
+    private void closeDialog() {
+      setVisible(false);
+      dispose();
+    }
     
     public String getValue() {
       return value;
@@ -159,7 +169,8 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     private javax.swing.JCheckBox billable;
     private javax.swing.JCheckBox export;
     private javax.swing.JPanel buttonPanel;
-    private javax.swing.JOptionPane optionPane;
+    private javax.swing.JButton okButton;
+    private javax.swing.JButton cancelButton;
     // End of variables declaration//GEN-END:variables
     
 }
