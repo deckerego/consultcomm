@@ -18,7 +18,7 @@ class CustomOptionPane extends JOptionPane {
       while(bufferedLine.length() <= lineLength && tokenizer.hasMoreTokens())
         bufferedLine.append(tokenizer.nextToken());
       if(tokenizer.hasMoreTokens()) bufferedLine.append('\n');
-      bufferedMessage.append(bufferedLine);
+      bufferedMessage.append(bufferedLine.toString());
     }
     JOptionPane.showMessageDialog(parentComponent, bufferedMessage.toString(), title, messageType);
   }
