@@ -2,17 +2,8 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
-public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.beans.Customizer {
+public class JDBCConnectCustomizer extends javax.swing.JFrame implements java.beans.Customizer {
   private JDBCConnect dbConnection;
-  
-  /** Creates new form JDBCControlPanel */
-  public JDBCConnectCustomizer() {
-    dbConnection = new JDBCConnect();
-    dbConnection.setParentFrame(this);
-    initComponents();
-    toggleODBC();
-    toggleValidateProject();
-  }
   
   /** This method is called from within the constructor to
    * initialize the form.
@@ -64,12 +55,6 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
 
         getContentPane().setLayout(new java.awt.GridLayout(1, 1));
 
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                exitForm(evt);
-            }
-        });
-
         tabbedPane.setPreferredSize(new java.awt.Dimension(387, 254));
         driverPanel.setLayout(new java.awt.BorderLayout());
 
@@ -87,7 +72,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         driverInputPanel.add(nameLabel, gridBagConstraints);
 
         nameField.setColumns(20);
-        nameField.setText(dbConnection.name);
+        nameField.setText(dbConnection.getName());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -98,7 +83,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         driverInputPanel.add(urlLabel, gridBagConstraints);
 
-        urlField.setText(dbConnection.url);
+        urlField.setText(dbConnection.getUrl());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -109,7 +94,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         driverInputPanel.add(dbLabel, gridBagConstraints);
 
-        dbField.setText(dbConnection.database);
+        dbField.setText(dbConnection.getDatabase());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -120,14 +105,14 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         driverInputPanel.add(tableLabel, gridBagConstraints);
 
-        tableField.setText(dbConnection.table);
+        tableField.setText(dbConnection.getTable());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         driverInputPanel.add(tableField, gridBagConstraints);
 
         odbcCheckBox.setForeground(new java.awt.Color(102, 102, 153));
-        odbcCheckBox.setSelected(dbConnection.name.equals(JDBCConnect.odbcDriverName));
+        odbcCheckBox.setSelected(dbConnection.getName().equals(JDBCConnect.odbcDriverName));
         odbcCheckBox.setText("Use ODBC Bridge");
         odbcCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -233,14 +218,14 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         optionInputPanel.add(hourLabel, gridBagConstraints);
 
         hourComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Full Precision", "Quarter of an hour", "Tenth of an hour" }));
-        hourComboBox.setSelectedIndex(dbConnection.hourFormat);
+        hourComboBox.setSelectedIndex(dbConnection.getHourFormat());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         optionInputPanel.add(hourComboBox, gridBagConstraints);
 
         projectCaseCheckBox.setForeground(new java.awt.Color(102, 102, 153));
-        projectCaseCheckBox.setSelected(dbConnection.projectCase);
+        projectCaseCheckBox.setSelected(dbConnection.getProjectCase());
         projectCaseCheckBox.setText("Upper-Case Project");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
@@ -248,7 +233,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         optionInputPanel.add(projectCaseCheckBox, gridBagConstraints);
 
         projValidateCheckBox.setForeground(new java.awt.Color(102, 102, 153));
-        projValidateCheckBox.setSelected(dbConnection.projectValidate);
+        projValidateCheckBox.setSelected(dbConnection.getProjectValidate());
         projValidateCheckBox.setText("Validate Project");
         projValidateCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -266,7 +251,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         optionInputPanel.add(projDBLabel, gridBagConstraints);
 
-        projDBField.setText(dbConnection.projectDatabase);
+        projDBField.setText(dbConnection.getProjectDatabase());
         projDBField.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
@@ -278,7 +263,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         optionInputPanel.add(projTableLabel, gridBagConstraints);
 
-        projTableField.setText(dbConnection.projectTable);
+        projTableField.setText(dbConnection.getProjectTable());
         projTableField.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
@@ -290,7 +275,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         optionInputPanel.add(projFieldLabel, gridBagConstraints);
 
-        projFieldComboBox.setModel(new DefaultComboBoxModel(new String[] {dbConnection.projectField}));
+        projFieldComboBox.setModel(new DefaultComboBoxModel(new String[] {dbConnection.getProjectField()}));
         projFieldComboBox.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
@@ -332,14 +317,13 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
 
         getContentPane().add(tabbedPane);
 
-        pack();
     }//GEN-END:initComponents
   
   private void applyOptions(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyOptions
-    dbConnection.projectDatabase = projDBField.getText();
-    dbConnection.projectTable = projTableField.getText();
+    dbConnection.setProjectDatabase(projDBField.getText());
+    dbConnection.setProjectTable(projTableField.getText());
     int projFieldIndex = projFieldComboBox.getSelectedIndex();
-    dbConnection.projectField = (String)projFieldComboBox.getItemAt(projFieldIndex);
+    dbConnection.setProjectField((String)projFieldComboBox.getItemAt(projFieldIndex));
     String[] fieldNames = dbConnection.getProjectFieldNames();
     DefaultComboBoxModel boxModel;
     if(fieldNames == null) {
@@ -384,13 +368,13 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       nameField.setText(JDBCConnect.odbcDriverName);
       nameField.setEnabled(false);
       urlLabel.setText("Data Source");
-      int lastColon = dbConnection.url.lastIndexOf(':')+1;
-      urlField.setText(dbConnection.url.substring(lastColon));
+      int lastColon = dbConnection.getUrl().lastIndexOf(':')+1;
+      urlField.setText(dbConnection.getUrl().substring(lastColon));
     } else {
-      nameField.setText(dbConnection.name);
+      nameField.setText(dbConnection.getName());
       nameField.setEnabled(true);
       urlLabel.setText("URL");
-      urlField.setText(dbConnection.url);
+      urlField.setText(dbConnection.getUrl());
     }
     driverInputPanel.repaint();
   }
@@ -431,21 +415,21 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   }//GEN-LAST:event_cancel
   
   private void saveDriverSettings(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDriverSettings
-    dbConnection.name = nameField.getText();
-    dbConnection.url = urlField.getText();
-    if(dbConnection.name.equals(JDBCConnect.odbcDriverName)) 
-      dbConnection.url = "jdbc:odbc:"+dbConnection.url;
-    dbConnection.database = dbField.getText();
-    dbConnection.table = tableField.getText();
-    dbConnection.projectDatabase = projDBField.getText();
-    dbConnection.projectTable = projTableField.getText();
+    dbConnection.setName(nameField.getText());
+    dbConnection.setUrl(urlField.getText());
+    if(dbConnection.getName().equals(JDBCConnect.odbcDriverName)) 
+      dbConnection.setUrl("jdbc:odbc:"+dbConnection.getUrl());
+    dbConnection.setDatabase(dbField.getText());
+    dbConnection.setTable(tableField.getText());
+    dbConnection.setProjectDatabase(projDBField.getText());
+    dbConnection.setProjectTable(projTableField.getText());
     if(projFieldComboBox.getItemCount() != 0) {
       int projFieldIndex = projFieldComboBox.getSelectedIndex();
-      dbConnection.projectField = (String)projFieldComboBox.getItemAt(projFieldIndex);
+      dbConnection.setProjectField((String)projFieldComboBox.getItemAt(projFieldIndex));
     }
-    dbConnection.projectValidate = projValidateCheckBox.isSelected();
-    dbConnection.hourFormat = hourComboBox.getSelectedIndex();
-    dbConnection.projectCase = projectCaseCheckBox.isSelected();
+    dbConnection.setProjectValidate(projValidateCheckBox.isSelected());
+    dbConnection.setHourFormat(hourComboBox.getSelectedIndex());
+    dbConnection.setProjectCase(projectCaseCheckBox.isSelected());
     for(int i=0; i < dbConnection.tableMap.size(); i++) {
       String value = (String)fieldMapping.getValueAt(i, 2);
       JDBCConnect.FieldMap record = (JDBCConnect.FieldMap)dbConnection.tableMap.elementAt(i);
@@ -464,6 +448,10 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
     }
         
     public void setObject(Object obj) {
+        dbConnection = (JDBCConnect)obj;
+        initComponents();
+        toggleODBC();
+        toggleValidateProject();
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

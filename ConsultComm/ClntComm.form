@@ -215,8 +215,8 @@
           </Events>
 
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value=""/>
             <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="timeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);&#xa;ListSelectionModel rowSM = timeList.getSelectionModel();&#xa;rowSM.addListSelectionListener(new ListSelectionListener() {&#xa;  public void valueChanged(ListSelectionEvent e) {&#xa;    selectionChanged(e);&#xa;  }&#xa;});&#xa;JTableHeader timeListHeader = timeList.getTableHeader();&#xa;timeListHeader.addMouseListener(new java.awt.event.MouseAdapter() {&#xa;  public void mouseClicked(java.awt.event.MouseEvent evt) {&#xa;    sortColumn(evt);&#xa;  }&#xa;});"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value=""/>
           </AuxValues>
         </Component>
       </SubComponents>
@@ -254,8 +254,8 @@
           </Events>
 
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value=""/>
             <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value=""/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value=""/>
           </AuxValues>
         </Component>
       </SubComponents>

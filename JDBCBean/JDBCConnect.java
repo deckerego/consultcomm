@@ -12,7 +12,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
-class JDBCConnect implements java.io.Serializable, CsltCommPlugin {
+public class JDBCConnect implements java.io.Serializable {
   final static int DATE_SQLDATE = 0;
   final static int DATE_SQLTIMESTAMP = 1;
   final static int DATE_CCYYMMDD = 2;
@@ -21,8 +21,9 @@ class JDBCConnect implements java.io.Serializable, CsltCommPlugin {
   final static int HOUR_TENTH = 2;
   final static String odbcDriverName = "sun.jdbc.odbc.JdbcOdbcDriver";
   
+  TableMap tableMap;
+  
   private Vector errorList;
-  private TableMap tableMap;
   private JFrame parentFrame;
   
   private String name = "";
@@ -41,13 +42,13 @@ class JDBCConnect implements java.io.Serializable, CsltCommPlugin {
   private boolean validated;
   private Object parentObject;
   
-  JDBCConnect() {
+  public JDBCConnect() {
     tableMap = new TableMap();
     parentFrame = new JFrame();
     readPrefs();
   }
   
-  JDBCConnect(String name, String url, String database, String table) {
+  public JDBCConnect(String name, String url, String database, String table) {
     tableMap = new TableMap();
     parentFrame = new JFrame();
     this.name = name;
