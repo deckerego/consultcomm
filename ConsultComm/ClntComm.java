@@ -722,7 +722,6 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
           if(allowedIdle > 0 && idleSeconds < allowedIdle && asleep) {
             toggleIdle();
             asleep = false;
-            System.out.println("Toggling Out...");
           }
           
           if(clockRunning){
