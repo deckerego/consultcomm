@@ -451,8 +451,11 @@ public class PrefsPanel extends javax.swing.JFrame {
             prefs.putBoolean("animations", showIconCheckBox.isSelected()); //Save animation flag
             prefs.putInt("saveInterval", Integer.parseInt(saveField.getText())); //Save save interval
             if(themeCheckBox.isSelected()) prefs.put("theme", themeField.getText()); //Save skin settings
-            if(kdeCheckBox.isSelected()) prefs.put("kde", kdeField.getText());
+            else prefs.put("theme", "");
+            if(kdeCheckBox.isSelected()) prefs.put("kde", kdeField.getText()); 
+            else prefs.put("kde", "");
             if(gtkCheckBox.isSelected()) prefs.put("gtk", gtkField.getText());
+            else prefs.put("gtk", "");
             
             //Write to file
             prefs.flush();
