@@ -122,7 +122,7 @@
   </target>
 
   <target depends="build" name="izpack">
-    <izpack basedir="${basedir}/ConsultComm" input="${basedir}/izpack_installer.xml" installerType="standard" izPackDir="${izpackdir}" output="${releasename}_Installer.jar"/>
+    <izpack basedir="${basedir}/ConsultComm" input="${basedir}/izpack_installer.xml" installerType="standard" izPackDir="${izpackdir}" output="${basedir}/${releasename}_Installer.jar"/>
     <echo message="jar = ${releasename}_Installer.jar${line.separator}" file="launcher.ini" append="false"/>
     <echo message="download = http://java.com/en/index.jsp${line.separator}" file="launcher.ini" append="true"/>
     <zip zipfile="${releasename}_WinInstall.zip">
