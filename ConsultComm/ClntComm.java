@@ -22,28 +22,35 @@ import javax.swing.event.*;
 public class ClntComm extends javax.swing.JPanel {
   protected static final int SECONDS = 0;
   protected static final int MINUTES = 1;
+  protected static final int SHOW_TOTAL = 0;
+  protected static final int SHOW_BILLABLE = 1;
+  protected static final int SHOW_EXPORT = 2;
   
   private static long totalSeconds, billableSeconds;
   private static JFrame frame = new JFrame("Consultant Manager");
+  
+  private CsltComm csltComm;
   private TimerThread timer;
   private TimeRecordSet times;
   private java.awt.Dimension windowSize;
   private int projColumnWidth;
   private int index, selectedIndex;
   private int timeFormat = MINUTES;
-  
-  //Flags for initializing components
-  private boolean showTotal = true;
+  private int attributes = SHOW_TOTAL | SHOW_BILLABLE | SHOW_EXPORT;
+  private int showTotal;
   
   /** Creates new form TimeTrack */
-  public ClntComm() {
+  public ClntComm(CsltComm parent) {
+    csltComm = parent;
+    
     readPrefs();
     initComponents();
     initColumns();
 
-    menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
     timer = new TimerThread(1000);
     timer.start();
+
+    menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
     try {
       timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
     } catch (IllegalArgumentException e) {
@@ -176,7 +183,6 @@ public class ClntComm extends javax.swing.JPanel {
     setPreferredSize(windowSize);
     totalPanel.setLayout(new java.awt.GridLayout(1, 2));
     
-    totalText.setText(showTotal ? "Total:" : "Billable:");
     totalText.setForeground(java.awt.Color.black);
     totalText.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
     totalText.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -187,9 +193,9 @@ public class ClntComm extends javax.swing.JPanel {
     
     totalPanel.add(totalText);
     
-    totalTime.setText(showTotal ? times.getTotalTimeString() : times.getBillableTimeString());
     totalTime.setForeground(java.awt.Color.black);
     totalTime.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+    refreshTotalTime();
     totalTime.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
         toggleTotals(evt);
@@ -249,7 +255,7 @@ public class ClntComm extends javax.swing.JPanel {
   }
   
   private void showPrefs(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPrefs
-    new PrefsPanel().show();
+    new PrefsPanel(this).show();
   }//GEN-LAST:event_showPrefs
 
   private void showHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHelp
@@ -342,11 +348,23 @@ public class ClntComm extends javax.swing.JPanel {
   }//GEN-LAST:event_newProject
   
 private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleTotals
-  showTotal = showTotal == false;
-  if(showTotal)
-    totalText.setText("Total:");
-  else
-    totalText.setText("Billable:");
+  switch(showTotal) {
+    case SHOW_TOTAL:
+      if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
+      if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
+      break;
+    case SHOW_BILLABLE:
+      if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
+      if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
+      break;
+    case SHOW_EXPORT:
+      if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
+      if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
+      break;
+    default:
+      showTotal = SHOW_TOTAL;
+  }
+  
   refreshTotalTime();
   }//GEN-LAST:event_toggleTotals
   
@@ -354,8 +372,53 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     savePrefs();
   }
   
+  /**
+   * Update the total time elapsed
+   */
+  public void refreshTotalTime(){
+    switch(showTotal) {
+      case SHOW_TOTAL:
+        totalText.setText("Total:");
+        totalTime.setText(times.getTotalTimeString());
+        break;
+      case SHOW_BILLABLE:
+        totalText.setText("Billable:");
+        totalTime.setText(times.getBillableTimeString());
+        break;
+      case SHOW_EXPORT:
+        totalText.setText("To Export:");
+        totalTime.setText(times.getExportTimeString());
+        break;
+    }
+    totalTime.repaint();
+  }
+  
+  public boolean attributeSet(int flag) {
+    return flag==0 ? true : (flag ^ attributes) != (flag | attributes);
+  }
+  
   private void selectionChanged(ListSelectionEvent e) {
     setTimer();
+  }
+  
+  public void reload() {
+    savePrefs();
+    removeAll();
+
+    csltComm.reload();
+    
+    readPrefs();
+    initComponents();
+    initColumns();
+
+    menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
+    try {
+      timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
+    } catch (IllegalArgumentException e) {
+      System.err.println("Row index invalid, not setting selection.");
+    }
+    
+    revalidate();
   }
   
   private void setTimer() {
@@ -383,7 +446,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       newRecord = true;
     }
 
-    ProjectEditDialog edit = new ProjectEditDialog((JFrame)this.getTopLevelAncestor(), record);
+    ProjectEditDialog edit = new ProjectEditDialog((JFrame)this.getTopLevelAncestor(), record, attributes);
     edit.pack();
     edit.setLocationRelativeTo(this);
     edit.setVisible(true);
@@ -400,17 +463,6 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
       refreshTotalTime();
     }
-  }
-  
-  /**
-   * Update the total time elapsed
-   */
-  public void refreshTotalTime(){
-    if(showTotal)
-      totalTime.setText(""+times.getTotalTimeString());
-    else
-      totalTime.setText(""+times.getBillableTimeString());
-    totalTime.repaint();
   }
   
   /**
@@ -450,39 +502,55 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
           times.add(record);
         }
         
-        NamedNodeMap attributes = null;
+        NamedNodeMap attribute = null;
         
         //Get window dimensions
         NodeList dimensions = doc.getElementsByTagName("dimensions");
         Node dimension = dimensions.item(0);
-        attributes = dimension.getAttributes();
-        double width = Double.parseDouble(attributes.getNamedItem("width").getNodeValue());
-        double height = Double.parseDouble(attributes.getNamedItem("height").getNodeValue());
+        attribute = dimension.getAttributes();
+        double width = Double.parseDouble(attribute.getNamedItem("width").getNodeValue());
+        double height = Double.parseDouble(attribute.getNamedItem("height").getNodeValue());
         windowSize = new java.awt.Dimension((int)width, (int)height);
         
         //Get project column dimensions
         NodeList projColumns = doc.getElementsByTagName("projcolumn");
         Node projColumn = projColumns.item(0);
-        attributes = projColumn.getAttributes();
-        projColumnWidth = Integer.parseInt(attributes.getNamedItem("width").getNodeValue());
+        attribute = projColumn.getAttributes();
+        projColumnWidth = Integer.parseInt(attribute.getNamedItem("width").getNodeValue());
         
         //Decide whether to show total time/billable time
         NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
         Node showTotalTime = showTotalTimes.item(0);
-        attributes = showTotalTime.getAttributes();
-        if(attributes.getNamedItem("display").getNodeValue().equals("billable"))
-          showTotal = false;
+        attribute = showTotalTime.getAttributes();
+        if(attribute.getNamedItem("display").getNodeValue().equals("billable"))
+          showTotal = SHOW_BILLABLE;
+        else if(attribute.getNamedItem("display").getNodeValue().equals("export"))
+          showTotal = SHOW_EXPORT;
+        else
+          showTotal = SHOW_TOTAL;
+        
         
         //Get time format
         NodeList timeFormats = doc.getElementsByTagName("timeformat");
         if(timeFormats.getLength() > 0) {
           Node timeFormatting = timeFormats.item(0);
-          attributes = timeFormatting.getAttributes();
-          String timeFormatString = attributes.getNamedItem("type").getNodeValue();
+          attribute = timeFormatting.getAttributes();
+          String timeFormatString = attribute.getNamedItem("type").getNodeValue();
           if(timeFormatString.equals("seconds")) timeFormat = SECONDS;
           if(timeFormatString.equals("minutes")) timeFormat = MINUTES;
         } else {
           timeFormat = MINUTES;
+        }
+
+        //Get attribute flags
+        NodeList attributeFlags = doc.getElementsByTagName("attributes");
+        if(attributeFlags.getLength() > 0) {
+          Node attributeFlag = attributeFlags.item(0);
+          attribute = attributeFlag.getAttributes();
+          String attributesString = attribute.getNamedItem("value").getNodeValue();
+          attributes = Integer.parseInt(attributesString);
+        } else {
+          attributes = SHOW_TOTAL | SHOW_BILLABLE | SHOW_EXPORT;
         }
       } catch (SAXParseException e) {
         System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
@@ -529,8 +597,8 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         if(record.alias != null)
           newNode.setAttribute("alias", record.alias);
         newNode.setAttribute("seconds", Long.toString(record.seconds));
-        newNode.setAttribute("billable", ""+record.billable);
-        newNode.setAttribute("export", ""+record.export);
+        newNode.setAttribute("billable", record.billable ? "true" : "false");
+        newNode.setAttribute("export", record.export ? "true" : "false");
         if(i == selectedIndex)
           newNode.setAttribute("selected", "true");
         rootNode.appendChild(newNode);
@@ -566,7 +634,17 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       //Save show billable/total time flag
       NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
       newNode = doc.createElement("showtotaltime");
-      newNode.setAttribute("display", showTotal ? "total" : "billable");
+      switch(showTotal) {
+        case SHOW_TOTAL:
+          newNode.setAttribute("display", "total");
+          break;
+        case SHOW_BILLABLE:
+          newNode.setAttribute("display", "billable");
+          break;
+        case SHOW_EXPORT:
+          newNode.setAttribute("display", "export");
+          break;
+      }
       if(showTotalTimes.getLength() > 0) {
         Node showTotalTime = showTotalTimes.item(0);
         rootNode.replaceChild(newNode, showTotalTime);
