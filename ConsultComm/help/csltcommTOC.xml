@@ -6,10 +6,9 @@
 <toc version="1.0">
 <tocitem text="ConsultComm Help">
 
-   <tocitem text="Preface" target="top"/>
-
+   <tocitem text="About" target="top"/>
    <tocitem text="Using" target="using"/>
-
+   
    <tocitem text="JDBC" target="db">
          <tocitem text="Installing" target="db.installing"/>
          <tocitem text="Using" target="db.using"/>
@@ -21,6 +20,8 @@
          <tocitem text="Project Totals" target="totals"/>
          <tocitem text="System Tray Icon" target="systray"/>
    </tocitem>
+
+   <tocitem text="License" target="license"/>
 
 </tocitem>
 </toc>

@@ -12,6 +12,7 @@
 <!-- B --> 
 
 <!-- C --> 
+   <indexitem text="COPYING" target="license" />
 
 <!-- D --> 
 
@@ -20,6 +21,7 @@
 <!-- F --> 
 
 <!-- G --> 
+   <indexitem text="GPL" target="license" />
 
 <!-- H --> 
 
@@ -36,6 +38,7 @@
 <!-- K --> 
 
 <!-- L --> 
+   <indexitem text="License" target="license" />
 
 <!-- M --> 
 
