@@ -88,7 +88,6 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
           settingsPanel.validate();
       } catch(Exception e) {
           System.err.println("Couldn't load settings: "+e);
-          e.printStackTrace(System.out);
       }
   }
   
@@ -111,7 +110,6 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
   public static Vector getPlugins() throws MalformedURLException, ClassNotFoundException, IOException {
       File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
 
-      System.out.println("Looking for plugins in "+pluginsdir);
       File[] pluginfiles = pluginsdir.listFiles(new FilenameFilter() {
           public boolean accept(File dir, String name) {
               return name.endsWith(".jar");
