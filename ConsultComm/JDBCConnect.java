@@ -115,9 +115,8 @@ class JDBCConnect {
       
       for(int j=0; j < statements.size(); j++) {
         Object[] statement = (Object[])statements.elementAt(j);
-        for(int i=0; i < statement.length; i++) {
+        for(int i=0; i < statement.length; i++)
           insert.setObject(i+1, statement[i]);
-        }
         insert.execute();
       }
       
@@ -161,6 +160,10 @@ class JDBCConnect {
     } catch (ProjectInvalidException e) {
       CustomOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", CustomOptionPane.ERROR_MESSAGE);
       worked = false;
+    } catch (DataTruncation e) {
+      String errorString = "Data truncation error: make sure the fields in the \"Field Mappings\" tab of your JDBC settings is correct. "+
+      "It appears that one of the values is set incorrectly.";
+      CustomOptionPane.showMessageDialog(parentFrame, errorString, "Export Error", CustomOptionPane.ERROR_MESSAGE);
     } catch (SQLException e) {
       CustomOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", CustomOptionPane.ERROR_MESSAGE);
       System.err.println("Could not export timelist to database: "+e);
