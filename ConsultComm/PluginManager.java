@@ -5,8 +5,10 @@ import java.util.*;
 import java.awt.event.*;
 
 public class PluginManager extends javax.swing.JFrame implements ActionListener {
-    private static final String PLUGINMFST="CsltComm-Plugin";
-    private static final String LOADONLYONCE="LoadOnlyOnce";
+    private static final String PLUGINMFST = "CsltComm-Plugin";
+    private static final String PLUGINVERSION = "CsltComm-Version";
+    private static final String LOADONLYONCE = "LoadOnlyOnce";
+    private static final Double ALLOWEDVERSION = new Double(3.1);
     
     public static File pluginsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"plugins");
     public static File libsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"syslibs");
@@ -153,26 +155,44 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
           currBean = currBean.substring(0, currBean.lastIndexOf(".jar"));
 
           File serializedFile = new File(prefsdir, currBean+".xml");
-          File jarFile = pluginfiles[i];
+          File file = pluginfiles[i];
           CsltCommPlugin plugin;
           
-          String pluginProperties = JarLoader.getManifestAttribute(new java.util.jar.JarFile(jarFile), PLUGINMFST);
-          boolean loadOnlyOnce = pluginProperties != null && pluginProperties.indexOf(LOADONLYONCE) != -1;
+          //Get plugin properties stored in manifest
+          java.util.jar.JarFile jarFile = new java.util.jar.JarFile(file);
+          String pluginProperties = JarLoader.getManifestAttribute(jarFile, PLUGINMFST);
+          String pluginVersion = JarLoader.getManifestAttribute(jarFile, PLUGINVERSION);
           
-          if(! loadOnlyOnce || ! pluginList.containsKey(currBean)) {
-              try { //Attempt to retrieve plugin settings from serialization file
-                  FileInputStream inStream = new FileInputStream(serializedFile);
-                  XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
-                  System.out.println("Deserializing plugin "+currBean+" from "+serializedFile.getName());
-                  plugin = (CsltCommPlugin)d.readObject();
-                  d.close();
-              } catch (Exception e) { //No luck restoring bean, invoke a default bean
-                  System.out.println("Instantiating plugin "+currBean+" from "+pluginfiles[i].getName());
-                  plugin = (CsltCommPlugin)Beans.instantiate(loader, currBean);
-              }
-              
-              pluginList.put(currBean, plugin);
+          //If the version has known incompatibilities, don't load it
+          try {
+            if(pluginVersion == null) { //No version number, load it
+              System.err.println("Warning: Plugin doesn't have a version number. Loading anyway...");
+            } else if(ALLOWEDVERSION.compareTo(new Double(pluginVersion)) > 0) { //Allowed Greater Than Plugin
+              String errorString = "Not loading plugin "+file.toString()+", version is "+
+              pluginVersion+", allowed version is "+ALLOWEDVERSION.toString();
+              System.err.println(errorString);
+              continue;
+            }
+          } catch (NumberFormatException e) { //Number is not formattable... let it ride...
+            System.err.println("Can't understand plugin's version number, loading anyway...");
           }
+          
+          //If the version should only be loaded once, and is, don't load it
+          boolean loadOnlyOnce = pluginProperties != null && pluginProperties.indexOf(LOADONLYONCE) != -1;
+          if(loadOnlyOnce && pluginList.containsKey(currBean)) continue;
+          
+          try { //Attempt to retrieve plugin settings from serialization file
+              FileInputStream inStream = new FileInputStream(serializedFile);
+              XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
+              System.out.println("Deserializing plugin "+currBean+" from "+serializedFile.getName());
+              plugin = (CsltCommPlugin)d.readObject();
+              d.close();
+          } catch (Exception e) { //No luck restoring bean, invoke a default bean
+              System.out.println("Instantiating plugin "+currBean+" from "+pluginfiles[i].getName());
+              plugin = (CsltCommPlugin)Beans.instantiate(loader, currBean);
+          }
+              
+          pluginList.put(currBean, plugin);
       }
   }
   

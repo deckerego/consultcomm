@@ -16,6 +16,7 @@
       <fileset dir="${src}" includes="*.gif"/>
       <manifest>
         <attribute name="Java-Bean" value="true"/>
+        <attribute name="CsltComm-Version" value="3.1"/>
       </manifest>
     </jar>
   </target>

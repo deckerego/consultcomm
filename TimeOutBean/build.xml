@@ -20,6 +20,7 @@
       <fileset dir="${src}" includes="*.dll"/>
       <manifest>
         <attribute name="Java-Bean" value="true"/>
+        <attribute name="CsltComm-Version" value="3.1"/>
       </manifest>
     </jar>
   </target>
