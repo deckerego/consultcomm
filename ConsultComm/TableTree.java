@@ -18,16 +18,8 @@ public class TableTree extends JTable {
      */
     public TableTree(TableTreeModel tableTreeModel) {
         super();
-        tree = new TableTreeCellRenderer(tableTreeModel); //For JTree behavior
-        super.setModel(new TableTreeModelAdapter(tableTreeModel, tree)); //For JTable behavior
-        setDefaultRenderer(TableTreeModel.class, tree); //Print the cell in the tree correctly
+        setModel(tableTreeModel);
         setDefaultEditor(TableTreeModel.class, new TableTreeCellEditor()); //Catch mouse events and pass them on
-        
-        // Force the JTable and JTree to share their row selection models.
-        ListToTreeSelectionModelWrapper selectionWrapper = new ListToTreeSelectionModelWrapper();
-        tree.setSelectionModel(selectionWrapper); //Set to override DefaultTreeSelectionModel actions
-        setSelectionModel(selectionWrapper.getListSelectionModel()); //Set to catch cell options and update JTree accordingly
-        
         setShowGrid(false);
         setIntercellSpacing(new Dimension(0, 0));
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -39,13 +31,14 @@ public class TableTree extends JTable {
      * @param tableTreeModel A TableTreeModel for the TableTree to pattern itself after
      */
     public void setModel(TableTreeModel tableTreeModel) {
-        tree = new TableTreeCellRenderer(tableTreeModel);
-        super.setModel(new TableTreeModelAdapter(tableTreeModel, tree));
-        setDefaultRenderer(TableTreeModel.class, tree);
+        tree = new TableTreeCellRenderer(tableTreeModel); //For JTree behavior
+        super.setModel(new TableTreeModelAdapter(tableTreeModel, tree)); //For JTable behavior
+        setDefaultRenderer(TableTreeModel.class, tree); //Print the cell in the tree correctly
         
+        // Force the JTable and JTree to share their row selection models.
         ListToTreeSelectionModelWrapper selectionWrapper = new ListToTreeSelectionModelWrapper();
-        tree.setSelectionModel(selectionWrapper);
-        setSelectionModel(selectionWrapper.getListSelectionModel());
+        tree.setSelectionModel(selectionWrapper); //Set to override DefaultTreeSelectionModel actions
+        setSelectionModel(selectionWrapper.getListSelectionModel()); //Set to catch cell options and update JTree accordingly
     }
     
     //For ClntComm to set selections based on index into the TimeRecordSet instead of the TableTree itself
