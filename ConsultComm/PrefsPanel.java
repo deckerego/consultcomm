@@ -13,8 +13,19 @@ public class PrefsPanel extends javax.swing.JFrame {
   protected int timeFormat = ClntComm.MINUTES;
   protected boolean animateIcons = true;
   protected int saveInterval = 60;
-  private ClntComm clntComm;
+  protected int allowedIdle = 0;
+  private ClntComm clntComm;  
+  private static boolean timeoutLibrary = false;
   
+  static {
+    try {
+      System.loadLibrary("timeout");
+      timeoutLibrary = true;
+    } catch (UnsatisfiedLinkError e) {
+      timeoutLibrary = false;
+    }
+  }
+
   /** Creates new form PrefsPanel */
   public PrefsPanel(ClntComm parent) {
     clntComm = parent;
@@ -40,6 +51,9 @@ public class PrefsPanel extends javax.swing.JFrame {
     save1Label = new javax.swing.JLabel();
     saveField = new javax.swing.JTextField();
     save2Label = new javax.swing.JLabel();
+    idle1Label = new javax.swing.JLabel();
+    idleField = new javax.swing.JTextField();
+    idle2Label = new javax.swing.JLabel();
     prefsButtonPanel = new javax.swing.JPanel();
     prefsOKButton = new javax.swing.JButton();
     prefsCancelButton = new javax.swing.JButton();
@@ -126,6 +140,26 @@ public class PrefsPanel extends javax.swing.JFrame {
     gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
     prefsInputPanel.add(save2Label, gridBagConstraints1);
+    
+    idle1Label.setText("Pause if idle for ");
+    idle1Label.setEnabled(timeoutLibrary);
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    prefsInputPanel.add(idle1Label, gridBagConstraints1);
+    
+    idleField.setColumns(3);
+    idleField.setText(Integer.toString(allowedIdle));
+    idleField.setEnabled(timeoutLibrary);
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    prefsInputPanel.add(idleField, gridBagConstraints1);
+    
+    idle2Label.setText(" seconds");
+    idle2Label.setEnabled(timeoutLibrary);
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
+    prefsInputPanel.add(idle2Label, gridBagConstraints1);
     
     prefsPanel.add(prefsInputPanel, java.awt.BorderLayout.CENTER);
     
@@ -239,6 +273,7 @@ public class PrefsPanel extends javax.swing.JFrame {
     
     private void exitForm() {
       setVisible(false);
+      dispose();
     }
     
     /**
@@ -290,6 +325,17 @@ public class PrefsPanel extends javax.swing.JFrame {
             saveInterval = Integer.parseInt(saveIntervalString);
           } else {
             saveInterval = 60;
+          }
+
+          //Get allowed idle time
+          NodeList idleTimes = doc.getElementsByTagName("idle");
+          if(idleTimes.getLength() > 0) {
+            Node idleTime = idleTimes.item(0);
+            attributes = idleTime.getAttributes();
+            String allowedIdleString = attributes.getNamedItem("seconds").getNodeValue();
+            allowedIdle = Integer.parseInt(allowedIdleString);
+          } else {
+            allowedIdle = 0;
           }
         } catch (SAXParseException e) {
           System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
@@ -372,6 +418,17 @@ public class PrefsPanel extends javax.swing.JFrame {
           rootNode.appendChild(newNode);
         }
 
+        //Save idle time
+        NodeList idleTimes = doc.getElementsByTagName("idle");
+        newNode = doc.createElement("idle");
+        newNode.setAttribute("seconds", idleField.getText());
+        if(idleTimes.getLength() > 0) {
+          Node idleTime = idleTimes.item(0);
+          rootNode.replaceChild(newNode, idleTime);
+        } else {
+          rootNode.appendChild(newNode);
+        }
+
         //Write to file
         doc.getDocumentElement().normalize();
         TransformerFactory fac = TransformerFactory.newInstance();
@@ -398,6 +455,9 @@ public class PrefsPanel extends javax.swing.JFrame {
     private javax.swing.JLabel save1Label;
     private javax.swing.JTextField saveField;
     private javax.swing.JLabel save2Label;
+    private javax.swing.JLabel idle1Label;
+    private javax.swing.JTextField idleField;
+    private javax.swing.JLabel idle2Label;
     private javax.swing.JPanel prefsButtonPanel;
     private javax.swing.JButton prefsOKButton;
     private javax.swing.JButton prefsCancelButton;
