@@ -19,17 +19,17 @@ public class TableTree extends JTable {
     public TableTree(TableTreeModel tableTreeModel) {
         super();
 
-        //Tell the tree section how to render components
+        //Set Models
         tree = new TableTreeCellRenderer(tableTreeModel); //Make the hybrid row elements
-        ListToTreeSelectionModelWrapper selectionWrapper = new ListToTreeSelectionModelWrapper();
-        tree.setSelectionModel(selectionWrapper); //Set to override DefaultTreeSelectionModel actions
-        
-        //Tell the table section how to render components
         TableTreeModelAdapter adapter = new TableTreeModelAdapter(tableTreeModel, tree);
+        ListToTreeSelectionModelWrapper selectionWrapper = new ListToTreeSelectionModelWrapper();
+
         super.setModel(adapter); //Feed the table a tree
+        tree.setSelectionModel(selectionWrapper); //Set to override DefaultTreeSelectionModel actions
         setSelectionModel(selectionWrapper.getListSelectionModel()); //Set to catch cell options and update JTree accordingly
-        setDefaultRenderer(TableTreeModel.class, tree); //Print the tree in the table correctly
+        setDefaultRenderer(TableTreeModel.class, tree); //Print the cell in the tree correctly
         setDefaultEditor(TableTreeModel.class, new TableTreeCellEditor()); //Collapse and expand trees
+
         setShowGrid(false);
         setIntercellSpacing(new Dimension(0, 0));
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -52,20 +52,22 @@ public class TableTree extends JTable {
         ListToTreeSelectionModelWrapper selectionWrapper = (ListToTreeSelectionModelWrapper)tree.getSelectionModel();
         EventListener[] listeners = selectionWrapper.getListSelectionModelListeners(ListSelectionListener.class);
 
-        //Tell the tree section how to render components
-        tree = new TableTreeCellRenderer(tableTreeModel);  //Make the hybrid row elements
-        selectionWrapper = new ListToTreeSelectionModelWrapper();
-        selectionWrapper.setListSelectionModelListeners(listeners);
-        tree.setSelectionModel(selectionWrapper); //Set to override DefaultTreeSelectionModel actions        
+        //Setup new model
+        tree = new TableTreeCellRenderer(tableTreeModel); //Make the hybrid row elements
+        
         adapter = new TableTreeModelAdapter(tableTreeModel, tree);
         adapter.setExpandedPaths(expanded); //Restore expanded rows
+        super.setModel(adapter); //Feed the table a tree
         
-        //Tell the table section how to render components
-        super.setModel(adapter); //Feed the table a tree        
         projectColumn = getColumnModel().getColumn(0);
         projectColumn.setPreferredWidth(projColumnWidth);
+        
+        selectionWrapper = new ListToTreeSelectionModelWrapper();
+        selectionWrapper.setListSelectionModelListeners(listeners);
+        tree.setSelectionModel(selectionWrapper); //Set to override DefaultTreeSelectionModel actions
         setSelectionModel(selectionWrapper.getListSelectionModel()); //Set to catch cell options and update JTree accordingly
-        setDefaultRenderer(TableTreeModel.class, tree); //Print the tree in the table correctly        
+        
+        setDefaultRenderer(TableTreeModel.class, tree); //Print the cell in the tree correctly        
         setDefaultEditor(TableTreeModel.class, new TableTreeCellEditor()); //Collapse and expand trees
         SwingUtilities.updateComponentTreeUI(this);
     }
@@ -76,8 +78,8 @@ public class TableTree extends JTable {
      */
     public int getSelectedRecordIndex() {
         try {
-            TreeModel model = tree.getModel();
             TimeRecord selected = getSelectedRecord();
+            TreeModel model = tree.getModel();
             TimeRecordSet times = (TimeRecordSet)model.getRoot();
             return times.indexOf(selected);
         } catch(Exception e) {
@@ -86,15 +88,48 @@ public class TableTree extends JTable {
     }
     
     /**
-     * Get the selected project record
-     * @return The TimeRecord object currently selected
+     * Get the selected index relative to the TimeRecordSet used
+     * @return The TimeRecord currently selected
      */
     public TimeRecord getSelectedRecord() {
-        try {
-            TreePath path = tree.getSelectionPath();
-            return (TimeRecord)path.getLastPathComponent();
-        } catch(Exception e) {
-            return null;
+        TreePath path = tree.getSelectionPath();
+        TreeModel model = tree.getModel();
+        return (TimeRecord)path.getLastPathComponent();
+    }
+
+    /**
+     * Set the index into the TableTree based on the TimeRecord at the given
+     * index within the TimeRecordSet
+     * @param index The index into the TimeRecordSet
+     */
+    public void setSelectedRecordIndex(int index) {
+        TreeModel model = tree.getModel();
+        TimeRecordSet times = (TimeRecordSet)model.getRoot();
+        TimeRecord selected = times.elementAt(index);
+        setSelectedRecord(selected);
+    }
+    
+    /**
+     * Set the index into the TableTree based on the TimeRecord at the given
+     * index within the TimeRecordSet
+     * @param index The index into the TimeRecordSet
+     */
+    public void setSelectedRecord(TimeRecord selected) {
+        if(selected == null) return; //Quit if we don't have a selected record
+        
+        TreePath path = null;
+        int numRows = tree.getRowCount();
+
+        for(int row=0, oldRow=-1; row < numRows && row != oldRow;) { //Find each matching project, then check it
+            path = tree.getNextMatch(selected.getProjectName(), row, javax.swing.text.Position.Bias.Forward);
+            if(path == null || path.getLastPathComponent().getClass() != TimeRecord.class) return; //No matches at all
+            TimeRecord record = (TimeRecord)path.getLastPathComponent();
+            oldRow = row; //Are we checking the same row over again?
+            row = tree.getRowForPath(path)+1;
+            if(record.getGroupName().equals(selected.getGroupName())) {
+                tree.setSelectionPath(path);
+                return;
+            }
         }
     }
 
@@ -215,7 +250,7 @@ public class TableTree extends JTable {
         public void addCellEditorListener(CellEditorListener l) { listenerList.add(CellEditorListener.class, l); }
         public void removeCellEditorListener(CellEditorListener l) { listenerList.remove(CellEditorListener.class, l); }
     }
-    
+
     /**
      * Used to sync every selection from the Table's rows - so if you click on a 
      * column that is not a node in the JTree then the tree still updates its
