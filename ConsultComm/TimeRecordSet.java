@@ -32,18 +32,7 @@ public class TimeRecordSet implements java.lang.Cloneable {
         TimeRecord record = elementAt(index);
         return record.getSeconds();
     }
-    public String getSecondsString(int index) {
-        TimeRecord record = elementAt(index);
-        return record.toSecondString();
-    }
-    public String getMinutesString(int index) {
-        TimeRecord record = elementAt(index);
-        return record.toMinuteString();
-    }
-    public String getProjectName(int index) {
-        TimeRecord record = elementAt(index);
-        return record.getProjectName();
-    }
+    
     public String getBillableTimeString() {
         long total = 0;
         Enumeration records = timeRecords.elements();
@@ -53,6 +42,7 @@ public class TimeRecordSet implements java.lang.Cloneable {
         }
         return parseSeconds(total);
     }
+    
     public String getTotalTimeString() {
         long total = 0;
         Enumeration records = timeRecords.elements();
@@ -62,6 +52,7 @@ public class TimeRecordSet implements java.lang.Cloneable {
         }
         return parseSeconds(total);
     }
+    
     public String getCountdownTimeString(long minutes, int criteria) {
         long total = minutes*60;
         Enumeration records = timeRecords.elements();
@@ -73,6 +64,7 @@ public class TimeRecordSet implements java.lang.Cloneable {
         if(total < 0) total = 0;
         return parseSeconds(total);
     }
+    
     public String getPayAmount(float perHour, int criteria) {
         float total = 0;
         java.text.NumberFormat dollarFormat = java.text.NumberFormat.getInstance();
@@ -88,6 +80,7 @@ public class TimeRecordSet implements java.lang.Cloneable {
         float hours = total / (float)(60*60);
         return "$"+dollarFormat.format(hours*perHour);
     }
+    
     public String[] getAllProjects() {
         String[] names = new String[timeRecords.size()];
         Enumeration records = timeRecords.elements();
@@ -96,6 +89,30 @@ public class TimeRecordSet implements java.lang.Cloneable {
             names[i] = record.getProjectName();
         }
         return names;
+    }
+    
+    public Vector getGroupRecords(String groupName) {
+        Vector records = new Vector();
+        for(int i=0; i<timeRecords.size(); i++) {
+            TimeRecord record = (TimeRecord)timeRecords.elementAt(i);
+            if(record.getGroupName().equals(groupName))
+                records.addElement(record);
+        }
+        return records;
+    }
+
+    public Vector getGroups() {
+        Vector records = new Vector();
+        String lastGroupName = null;
+        
+        for(int i=0; i<timeRecords.size(); i++) {
+            TimeRecord record = (TimeRecord)timeRecords.elementAt(i);
+            if(lastGroupName == null || ! lastGroupName.equals(record.getGroupName())) {
+                lastGroupName = record.getGroupName();
+                records.addElement(lastGroupName);
+            }
+        }
+        return records;
     }
     
     public TimeRecord elementAt(int index) throws java.lang.ArrayIndexOutOfBoundsException {
@@ -115,29 +132,6 @@ public class TimeRecordSet implements java.lang.Cloneable {
                 return i;
         }
         return -1;
-    }
-    
-    public DefaultTableModel toTableModel(int timeFormat){
-        DefaultTableModel model = new javax.swing.table.DefaultTableModel(
-        //Set to two empty columns
-        new Object [][] {
-        },
-        titles
-        ) {
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return false;
-            }
-        };
-        
-        Enumeration records = timeRecords.elements();
-        while (records.hasMoreElements()) {
-            TimeRecord record = (TimeRecord)records.nextElement();
-            String timeString = null;
-            if(timeFormat == ClntComm.SECONDS) timeString = record.toSecondString();
-            else timeString = record.toMinuteString();
-            model.addRow(new Object[] {record.getProjectName(), timeString});
-        }
-        return model;
     }
     
     public void sort() {
@@ -190,7 +184,8 @@ public class TimeRecordSet implements java.lang.Cloneable {
         public int compare(Object obj, Object obj1) {
             TimeRecord comp = (TimeRecord)obj;
             TimeRecord compTo = (TimeRecord)obj1;
-            return (int)(comp.getSeconds()-compTo.getSeconds());
+            int groupComp = comp.getGroupName().compareTo(compTo.getGroupName());
+            return groupComp == 0 ? (int)(comp.getSeconds()-compTo.getSeconds()) : groupComp;
         }
     }
     
@@ -198,7 +193,7 @@ public class TimeRecordSet implements java.lang.Cloneable {
         public int compare(Object obj, Object obj1) {
             TimeRecord comp = (TimeRecord)obj;
             TimeRecord compTo = (TimeRecord)obj1;
-            return comp.getProjectName().compareToIgnoreCase(compTo.getProjectName());
+            return comp.getFullName().compareToIgnoreCase(compTo.getFullName());
         }
     }
 
@@ -206,7 +201,8 @@ public class TimeRecordSet implements java.lang.Cloneable {
         public int compare(Object obj, Object obj1) {
             TimeRecord comp = (TimeRecord)obj;
             TimeRecord compTo = (TimeRecord)obj1;
-            return (int)(compTo.getSeconds()-comp.getSeconds());
+            int groupComp = comp.getGroupName().compareTo(compTo.getGroupName());
+            return groupComp == 0 ? (int)(compTo.getSeconds()-comp.getSeconds()) : groupComp;
         }
     }
     
@@ -214,7 +210,7 @@ public class TimeRecordSet implements java.lang.Cloneable {
         public int compare(Object obj, Object obj1) {
             TimeRecord comp = (TimeRecord)obj;
             TimeRecord compTo = (TimeRecord)obj1;
-            return compTo.getProjectName().compareToIgnoreCase(comp.getProjectName());
+            return compTo.getFullName().compareToIgnoreCase(comp.getFullName());
         }
     }
 }

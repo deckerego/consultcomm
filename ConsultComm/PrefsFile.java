@@ -339,7 +339,7 @@ public class PrefsFile {
         Node selectedNode = attributes.getNamedItem("selected");
         if(selectedNode != null && selectedNode.getNodeValue().equals("true"))
           selectedIndex = i;
-        TimeRecord record = new TimeRecord(name, seconds, billable);
+        TimeRecord record = new TimeRecord("TEST", name, seconds, billable);
         times.add(record);
       }
 

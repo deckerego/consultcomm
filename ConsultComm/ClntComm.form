@@ -182,6 +182,10 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JScrollPane" name="scrollPane">
+
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="timeList = new TableTree(new TableTreeModel(times, timeFormat));&#xa;scrollPane.setViewportView(timeList);"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
           <BorderConstraints direction="Center"/>
@@ -189,25 +193,6 @@
       </Constraints>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JTable" name="timeList">
-          <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="times.toTableModel(timeFormat)" type="code"/>
-            </Property>
-            <Property name="autoCreateColumnsFromModel" type="boolean" value="false"/>
-          </Properties>
-
-          <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="editWindow"/>
-          </Events>
-
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value=""/>
-            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="timeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);&#xa;ListSelectionModel rowSM = timeList.getSelectionModel();&#xa;rowSM.addListSelectionListener(new ListSelectionListener() {&#xa;  public void valueChanged(ListSelectionEvent e) {&#xa;    selectionChanged(e);&#xa;  }&#xa;});&#xa;JTableHeader timeListHeader = timeList.getTableHeader();&#xa;timeListHeader.addMouseListener(new java.awt.event.MouseAdapter() {&#xa;  public void mouseClicked(java.awt.event.MouseEvent evt) {&#xa;    sortColumn(evt);&#xa;  }&#xa;});"/>
-          </AuxValues>
-        </Component>
-      </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="menuPanel">
       <Constraints>

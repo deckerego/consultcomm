@@ -2,22 +2,27 @@ import java.util.*;
 
 public class TimeRecord {
     private long seconds;
+    private String groupName;
     private String projectName;
     private boolean billable;
     
     TimeRecord() {
         projectName = "";
+        groupName = "";
         seconds = 0L;
         billable = true;
     }
-    TimeRecord(String name, long time, boolean isBillable) {
+    TimeRecord(String group, String name, long time, boolean isBillable) {
         projectName = name;
+        groupName = group;
         seconds = time;
         billable = isBillable;
     }
     
     public String getProjectName() { return this.projectName; }
     public void setProjectName(String name) { this.projectName = name; }
+    public String getGroupName() { return this.groupName; }
+    public void setGroupName(String name) { this.groupName = name; }
     public boolean getBillable() { return this.billable; }
     public void setBillable(boolean billable) { this.billable = billable; }
     public boolean isBillable() { return this.billable; }
@@ -37,6 +42,8 @@ public class TimeRecord {
         } else seconds = 0L;
     }
     
+    public String getFullName() { return this.groupName+"."+this.projectName; }
+    
     public java.math.BigDecimal getHours(int minutes, int scale) {
         double percent = (double)minutes/(double)(60*60);
         long partialHours = seconds / minutes;
@@ -45,9 +52,9 @@ public class TimeRecord {
         java.math.BigDecimal result = new java.math.BigDecimal(partialHours * percent);
         return result.setScale(scale, java.math.BigDecimal.ROUND_HALF_EVEN);
     }
-    
+
     public String toString() {
-        return toSecondString();
+        return this.projectName;
     }
     
     public String toSecondString() {
