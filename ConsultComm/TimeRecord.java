@@ -83,9 +83,10 @@ public class TimeRecord implements java.io.Serializable {
     public boolean equals(Object to) {
         TimeRecord toRecord = (TimeRecord)to;
         boolean isEqual = true;
-        isEqual = isEqual && (seconds == toRecord.seconds);
-        isEqual = isEqual && ((projectName == toRecord.projectName) || (projectName.equals(toRecord.projectName)));
-        isEqual = isEqual && (billable == toRecord.billable);
+        isEqual = isEqual && seconds == toRecord.seconds;
+        isEqual = isEqual && groupName == toRecord.groupName;
+        isEqual = isEqual && projectName == toRecord.projectName;
+        isEqual = isEqual && billable == toRecord.billable;
         return isEqual;
     }
 }

@@ -50,7 +50,13 @@ public class TableTree extends JTable {
         TimeRecord selected = times.elementAt(index);
         TreePath path = new TreePath(selected);
         tree.setSelectionPath(path);
-        tree.expandPath(path.getParentPath());
+    }
+
+    public void setRecordAt(Object value, int index, int column) {
+        TableTreeModel model = (TableTreeModel)tree.getModel();
+        TimeRecordSet times = (TimeRecordSet)model.getRoot();
+        TimeRecord selected = times.elementAt(index);
+        model.setValueAt(value, selected, column);
     }
 
     public class TableTreeCellRenderer extends JTree implements TableCellRenderer {
@@ -85,8 +91,7 @@ public class TableTree extends JTable {
             return this;
         }
     }
-    
-    
+
     public class TableTreeCellEditor implements TableCellEditor {
         protected EventListenerList listenerList = new EventListenerList();
         

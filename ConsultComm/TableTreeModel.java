@@ -74,19 +74,22 @@ public class TableTreeModel implements TreeModel {
 
         return node.getClass().getName();
     }
-    
+
     public void setValueAt(Object aValue, Object node, int column) {
         if(node.getClass().equals(TimeRecord.class)) {
             TimeRecord record = (TimeRecord)node;
             TimeRecord value = (TimeRecord)aValue;
             switch(column) {
+                case 0:
+                    record.setProjectName(value.getProjectName());
+                    break;
                 case 1:
                     record.setSeconds(value.getSeconds());
                     break;
             }
         }
     }    
-    
+
     public void valueForPathChanged(TreePath path, Object newValue) {}
     
     public int getIndexOfChild(Object parent, Object child) {

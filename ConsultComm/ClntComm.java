@@ -312,7 +312,7 @@ public class ClntComm extends javax.swing.JPanel {
           times.resetTime();
           timerTask.startTime = System.currentTimeMillis()/1000;
           timeList.setModel(new TableTreeModel(times, timeFormat));
-          timeList.repaint();
+          //timeList.repaint();
           refreshTotalTime();
       }
   }//GEN-LAST:event_zeroProject
@@ -385,7 +385,7 @@ public void refreshTotalTime(){
             showTotal = SHOW_TOTAL;
             refreshTotalTime();
     }
-    totalTime.repaint();
+    //totalTime.repaint();
 }
 
 private void selectionChanged(ListSelectionEvent e) {
@@ -452,7 +452,7 @@ public void editWindow(int i){
         if(newRecord) times.add(record);
         
         timeList.setModel(new TableTreeModel(times, timeFormat));
-        timeList.repaint();
+        //timeList.repaint();
         
         changes.firePropertyChange("times", oldTimes, times);
         if(selectedIndex == -1) //Nothing selected
@@ -580,25 +580,25 @@ private TableTree timeList;
         
         public void run(){
             long currTime, currSeconds;
-            int index;
             
             TimeRecordSet oldTimes; //Copy the old timeset for the property listener
             try { oldTimes = (TimeRecordSet)times.clone(); }
             catch (CloneNotSupportedException e) { oldTimes = null; }
                     
             if(clockRunning){
+                selectedIndex = timeList.getSelectedRecord();
                 //Get the current seconds past midnight.
                 currTime = System.currentTimeMillis()/1000;
-                if((index = timeList.getSelectedRecord()) >= 0){
+                if(selectedIndex >= 0){
                     
                     currSeconds = currTime - startTime;
-                    times.setSeconds(index, currSeconds);
+                    times.setSeconds(selectedIndex, currSeconds);
                     
                     //Only repaint if the minutes (or seconds, depending on the
                     //time format) have changed.
                     if ((timeFormat == SECONDS) || (currSeconds % 60 == 0)){
                         refreshTotalTime();
-                        timeList.setValueAt(times.elementAt(index), index, 1);
+                        timeList.setRecordAt(times.elementAt(selectedIndex), selectedIndex, 1);
                         timeList.repaint();
                     }
                     
