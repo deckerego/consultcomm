@@ -51,7 +51,20 @@ class TimeRecord implements Comparable {
   
   public int compareTo(Comparable comp, String type) throws Exception {
     TimeRecord compTo = (TimeRecord)comp;
-    if(type.equals("Time")) return (int)(seconds-compTo.seconds);
-    else return alias.compareToIgnoreCase(compTo.alias);
+    if(type.equals("Time")) {
+      return (int)(seconds-compTo.seconds);
+    } else {
+      boolean useAlias = ! ((alias == null) || alias.equals(""));
+      boolean useAliasTo = ! ((compTo.alias == null) || compTo.alias.equals(""));
+      boolean useProject = ! ((projectName == null) || projectName.equals(""));
+      boolean useProjectTo = ! ((compTo.projectName == null) || compTo.projectName.equals(""));
+      if(useAlias) {
+        if(useAliasTo) return alias.compareToIgnoreCase(compTo.alias);
+        else return alias.compareToIgnoreCase(compTo.projectName);
+      } else {
+        if(useAliasTo) return projectName.compareToIgnoreCase(compTo.alias);
+        else return projectName.compareToIgnoreCase(compTo.projectName);
+      }
+    }
   }
 }
