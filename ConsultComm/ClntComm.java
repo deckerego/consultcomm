@@ -34,7 +34,6 @@ public class ClntComm extends javax.swing.JPanel {
   private JTextField timeField;
   private JCheckBox billable;
   private JFrame editFrame;
-  private TimeRecord record;
   private int index, selectedIndex;
   
   /** Creates new form TimeTrack */
@@ -44,8 +43,8 @@ public class ClntComm extends javax.swing.JPanel {
     menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
     timer = new TimerThread(1000);
     timer.start();
+    timeList.setRowSelectionInterval(selectedIndex, selectedIndex);    
   }
-  
   
   /**
    * Update the total time elapsed
@@ -83,6 +82,10 @@ public class ClntComm extends javax.swing.JPanel {
           Node billableNode = attributes.getNamedItem("billable");
           boolean billable = true;
           if(billableNode.getNodeValue().equals("false")) billable = false;
+
+          Node selectedNode = attributes.getNamedItem("selected");
+          if(selectedNode != null && selectedNode.getNodeValue().equals("true")) 
+            selectedIndex = i;
           TimeRecord record = new TimeRecord(name, seconds, billable);
           times.add(record);
         }
@@ -126,12 +129,15 @@ public class ClntComm extends javax.swing.JPanel {
       doc.appendChild(rootNode);
 
       //Save projects
+      selectedIndex = timeList.getSelectedRow();
       for(int i=0; i<times.size(); i++){
         TimeRecord record = times.elementAt(i);
         Element newNode = doc.createElement("project");
         newNode.setAttribute("name", record.projectName);
         newNode.setAttribute("seconds", ""+record.seconds);
         newNode.setAttribute("billable", ""+record.billable);
+        if(i == selectedIndex) 
+          newNode.setAttribute("selected", "true");
         rootNode.appendChild(newNode);
       }
       
@@ -189,7 +195,6 @@ public class ClntComm extends javax.swing.JPanel {
     timeList = new javax.swing.JTable();
     menuPanel = new javax.swing.JPanel();
     startButton = new javax.swing.JButton();
-    menuBar.setBorder(null);
     
     projectMenu.setText("Project");
       
@@ -235,7 +240,6 @@ public class ClntComm extends javax.swing.JPanel {
         menuBar.add(projectMenu);
       
     editPopupItem.setLabel("Edit Project");
-      editPopupItem.setText("Edit Project");
       editPopupItem.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
           editProject(evt);
@@ -245,7 +249,6 @@ public class ClntComm extends javax.swing.JPanel {
       editMenu.add(editPopupItem);
       
     deletePopupItem.setLabel("Delete Project");
-      deletePopupItem.setText("Delete Project");
       deletePopupItem.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
           deleteProject(evt);
@@ -308,8 +311,7 @@ public class ClntComm extends javax.swing.JPanel {
     
     menuPanel.setLayout(new java.awt.FlowLayout(0, 5, 5));
     
-    startButton.setBorder(null);
-      startButton.setMnemonic(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK).getKeyCode());
+    startButton.setMnemonic(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK).getKeyCode());
       startButton.setText("Start");
       startButton.setBorderPainted(false);
       startButton.addActionListener(new java.awt.event.ActionListener() {
@@ -418,11 +420,12 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   public void editWindow(int i){
     index = i;
     selectedIndex = timeList.getSelectedRow();
+    TimeRecord record;
+
     try {
       record = times.elementAt(index);
     } catch (ArrayIndexOutOfBoundsException e) {
       record = new TimeRecord();
-      times.add(record);
     }
 
     //Set up the edit project window.
@@ -444,6 +447,13 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     JButton okay = new JButton("OK");
     okay.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent e) {
+        TimeRecord record;
+        try {
+          record = times.elementAt(index);
+        } catch (ArrayIndexOutOfBoundsException exc) {
+          record = new TimeRecord();
+          times.add(record);
+        }
         long newTime = System.currentTimeMillis()/1000;
         record.projectName = projField.getText();
         record.setSeconds(timeField.getText());
@@ -453,7 +463,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         timeList.repaint();
         if(selectedIndex == -1)  // Nothing selected
           timeList.setRowSelectionInterval(index, index);
-        else 
+        else
           timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
         refreshTotalTime();
         editFrame.dispose();
@@ -476,7 +486,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     editFrame.pack();
     editFrame.setVisible(true);
   }
-    
+  
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuBar menuBar;
   private javax.swing.JMenu projectMenu;
