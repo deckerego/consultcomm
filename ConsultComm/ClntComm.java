@@ -315,12 +315,17 @@ public class ClntComm extends javax.swing.JPanel {
       CustomOptionPane.WARNING_MESSAGE, null, options, options[1]);
       if(dialog == 0){
           int index = timeList.getSelectedRecord();
+          TimeRecordSet oldTimes; //Copy the old timeset for the property listener
+          try { oldTimes = (TimeRecordSet)times.clone(); }
+          catch (CloneNotSupportedException e) { oldTimes = null; }
           times.resetTime();
+          changes.firePropertyChange("times", oldTimes, times);
           timerTask.startTime = System.currentTimeMillis()/1000;
           timeList.setModel(new TableTreeModel(times, timeFormat));
+          totalPanel.repaint();
       }
   }
-
+  
   private void editProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProject
       editWindow(timeList.getSelectedRecord());
   }//GEN-LAST:event_editProject
@@ -409,6 +414,7 @@ public void editWindow(int i){
         changes.firePropertyChange("times", oldTimes, times);
         if(selectedIndex == -1) timeList.setSelectedRecord(index); //Nothing selected
         else timeList.setSelectedRecord(selectedIndex);
+        totalPanel.repaint();
     }
 }
 
