@@ -10,7 +10,7 @@ public class HelpDisplay extends javax.swing.JFrame {
         try {
             String directory = System.getProperty("user.dir");
             String fileSeperator = System.getProperty("file.separator");
-            URL helpFile = new URL("jar:file:"+directory+fileSeperator+"CsltComm.jar!"+fileSeperator+"help"+fileSeperator+helpSetName);
+            URL helpFile = new URL("jar:file:"+directory+fileSeperator+"CsltComm.jar!/help/"+helpSetName);
             ClassLoader loader = this.getClass().getClassLoader();
             HelpSet set = new HelpSet(loader, helpFile);
             JHelp panel = new JHelp(set);
