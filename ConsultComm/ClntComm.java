@@ -422,8 +422,8 @@ public void editWindow(int i){
             TimeRecordSet oldTimes; //Copy the old timeset for the property listener
             try { oldTimes = (TimeRecordSet)times.clone(); }
             catch (CloneNotSupportedException e) { oldTimes = null; }
-            changes.firePropertyChange("times", oldTimes, times);
             times.add(record);
+            changes.firePropertyChange("times", oldTimes, times);
         } else {
             changes.firePropertyChange("record", oldRecord, record);
         }
