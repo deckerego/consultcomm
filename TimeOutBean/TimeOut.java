@@ -61,42 +61,8 @@ public class TimeOut extends Object implements java.io.Serializable,
         idleSeconds = -1;
     }
     
-    
-    public javax.swing.JMenuItem[] getMenuItems() {
-        javax.swing.JMenuItem menuitems[] = new javax.swing.JMenuItem[1];
-        
-        menuitems[0] = new javax.swing.JMenuItem();
-        menuitems[0].setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_MASK));
-        menuitems[0].setText("Show Time Out Settings...");
-        menuitems[0].addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                displaySettings();
-            }
-        });
-        
-        return menuitems;
-    }
-    
     public String[] getProjectNames(){
         return clntComm.getTimes().getAllProjects();
-    }
-    
-    private void displaySettings(){ 
-        String infoString = "";
-        if(! isUse()){
-            infoString = "You are currently not using the Time Out plugin.";
-        }else{
-            infoString = "You are currently using the Time Out plugin.\n\n" +
-                         "   Idle time:   " + this.getSeconds() + " seconds.\n" +
-                         "Idle Action:   ";
-            if(this.isPauseTimer()){
-                infoString = infoString + "Pause Timer\n";
-            }else{
-                infoString = infoString + "Switch to project " + this.getProject();
-            }
-        }
-       
-            JOptionPane.showMessageDialog(parentFrame, infoString, "Time Out Plugin Info", JOptionPane.INFORMATION_MESSAGE);
     }
     
     /** Getter for property use.
