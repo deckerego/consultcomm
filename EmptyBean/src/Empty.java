@@ -22,6 +22,14 @@ public class Empty extends CsltCommPlugin {
     //If we haven't already retreived a reference to ConsultComm, do so now
     if(clntComm == null) clntComm = (ClntComm)evt.getSource();
 
+    // This tests to see if the GUI window for ConsultComm has opened. 
+    // The types of property changes that correspond to window events
+    // are: activated, closed, closing, deactivated, deiconified, 
+    // iconified and opened
+    if(evt.getPropertyName().equals("opened")) {
+      System.out.println("The ConsultComm window has opened.");
+    }
+    
     // User has edited a project (changed a name or time amount)
     if(evt.getPropertyName().equals("record")) {
       System.out.println("Edited a record");
