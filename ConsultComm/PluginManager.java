@@ -32,11 +32,14 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
         iconScrollPane = new javax.swing.JScrollPane();
         iconListPanel = new javax.swing.JPanel();
         settingsPanel = new javax.swing.JPanel();
+        introPanel = new javax.swing.JPanel();
+        introTextArea = new javax.swing.JTextArea();
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         setTitle("Plugin Settings");
         setName("pluginFrame");
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 exitForm(evt);
@@ -54,9 +57,22 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         getContentPane().add(iconsPanel, gridBagConstraints);
 
-        settingsPanel.setLayout(new java.awt.GridLayout(1, 0));
+        settingsPanel.setLayout(new java.awt.BorderLayout());
 
-        loadSettingsPanel(0);
+        settingsPanel.setPreferredSize(new java.awt.Dimension(387, 254));
+        introPanel.setLayout(new java.awt.BorderLayout());
+
+        introPanel.setPreferredSize(new java.awt.Dimension(387, 254));
+        introTextArea.setEditable(false);
+        introTextArea.setFont(new java.awt.Font("Dialog", 0, 14));
+        introTextArea.setLineWrap(true);
+        introTextArea.setText("Select a plugin icon from the bar on the left side of the window.\n\nIf you're missing icons for plugin settings, make sure you have plugins installed in ConsultComm's plugins/ directory.");
+        introTextArea.setWrapStyleWord(true);
+        introTextArea.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(5, 5, 5, 5)));
+        introPanel.add(introTextArea, java.awt.BorderLayout.CENTER);
+
+        settingsPanel.add(introPanel, java.awt.BorderLayout.NORTH);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -162,6 +178,8 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel iconListPanel;
     private javax.swing.JPanel settingsPanel;
+    private javax.swing.JPanel introPanel;
+    private javax.swing.JTextArea introTextArea;
     private javax.swing.JScrollPane iconScrollPane;
     private javax.swing.JPanel iconsPanel;
     // End of variables declaration//GEN-END:variables
