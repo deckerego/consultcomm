@@ -75,10 +75,14 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
   
   /** Exit the Application */
   private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
+      exitForm();
+  }//GEN-LAST:event_exitForm
+
+  public void exitForm() {
       setVisible(false);
       dispose();
       clntcomm.reload();
-  }//GEN-LAST:event_exitForm
+  }
   
   private void loadSettingsPanel(int index) {
       try{
