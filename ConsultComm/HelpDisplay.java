@@ -147,7 +147,7 @@ public class HelpDisplay extends javax.swing.JFrame {
       "<DD>It is <CODE>"+System.getProperty("java.ext.dirs")+"</CODE>.\n<P>\n"+
       "<DT><B>Where are my preferences stored?</B>\n"+
       "<DD>Preferences are stored in files ending in .def within your "+
-      "user directory, which is <CODE>"+CsltComm.prefsDir+"</CODE>.\n<P>\n"+
+      "user directory, which is <CODE>"+PrefsFile.prefsDir+"</CODE>.\n<P>\n"+
       "<DT><B>What directory is ConsultComm running from?</B>\n"+
       "<DD>The working directory for this applicaition is <CODE>"+System.getProperty("user.dir")+"</CODE>.\n<P>\n"+
       "</DL>\n</BODY>\n</HTML>";
