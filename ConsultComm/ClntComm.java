@@ -25,16 +25,10 @@ public class ClntComm extends javax.swing.JPanel {
   private TimerThread timer;
   private TimeRecordSet times;
   private java.awt.Dimension windowSize;
+  private int index, selectedIndex;
   
   //Flags for initializing components
   private boolean showTotal = true;
-  
-  // Needed for prompt windows
-  private JTextField projField;
-  private JTextField timeField;
-  private JCheckBox billable;
-  private JFrame editFrame;
-  private int index, selectedIndex;
   
   /** Creates new form TimeTrack */
   public ClntComm() {
@@ -270,6 +264,7 @@ public class ClntComm extends javax.swing.JPanel {
     
     setLayout(new java.awt.BorderLayout());
     
+    setPreferredSize(windowSize);
     totalPanel.setLayout(new java.awt.GridLayout(1, 2));
     
     totalText.setText(showTotal ? "Total:" : "Billable:");
@@ -337,13 +332,13 @@ public class ClntComm extends javax.swing.JPanel {
     add(menuPanel, java.awt.BorderLayout.NORTH);
     
   }//GEN-END:initComponents
-
+  
   private void editJDBC(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editJDBC
     JDBCControlPanel panel = new JDBCControlPanel();
     panel.initGUI();
     panel.show();
   }//GEN-LAST:event_editJDBC
-
+  
   private void sortColumn(java.awt.event.MouseEvent evt) {
     TableColumnModel columnModel = timeList.getColumnModel();
     int viewColumn = columnModel.getColumnIndexAtX(evt.getX());
@@ -446,70 +441,16 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     index = i;
     selectedIndex = timeList.getSelectedRow();
     TimeRecord record;
-    
     try {
       record = times.elementAt(index);
     } catch (ArrayIndexOutOfBoundsException e) {
       record = new TimeRecord();
+      times.add(record);
     }
-    
-    //Set up the edit project window.
-    projField = new JTextField(record.projectName);
-    timeField = new JTextField(record.toString());
-    editFrame = new JFrame("Revise Client");
-    
-    JPanel editPanel = new JPanel();
-    editPanel.setLayout(new java.awt.GridLayout(3, 1));
-    editPanel.add(projField);
-    editPanel.add(timeField);
-    
-    //Is project billable or not (otherwise, will it count in the total
-    //minutes or not?)
-    billable = new JCheckBox("Billable Project", record.billable);
-    editPanel.add(billable);
-    
-    //Set up buttons
-    JButton okay = new JButton("OK");
-    okay.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        TimeRecord record;
-        try {
-          record = times.elementAt(index);
-        } catch (ArrayIndexOutOfBoundsException exc) {
-          record = new TimeRecord();
-          times.add(record);
-        }
-        long newTime = System.currentTimeMillis()/1000;
-        record.projectName = projField.getText();
-        record.setSeconds(timeField.getText());
-        if (index == selectedIndex) timer.startTime = newTime-record.seconds;
-        record.billable = billable.isSelected();
-        timeList.setModel(times.toTableModel());
-        timeList.repaint();
-        if(selectedIndex == -1)  // Nothing selected
-          timeList.setRowSelectionInterval(index, index);
-        else
-          timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
-        refreshTotalTime();
-        editFrame.dispose();
-      }
-    });
-    JButton cancel = new JButton("Cancel");
-    cancel.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        editFrame.dispose();
-      }
-    });
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.setLayout(new java.awt.GridLayout(1, 2));
-    buttonPanel.add(okay);
-    buttonPanel.add(cancel);
-    
-    //Create edit window
-    editFrame.getContentPane().add(editPanel, java.awt.BorderLayout.CENTER);
-    editFrame.getContentPane().add(buttonPanel, java.awt.BorderLayout.SOUTH);
-    editFrame.pack();
-    editFrame.setVisible(true);
+    EditDialog edit = new EditDialog((JFrame)this.getTopLevelAncestor(), record);
+    edit.pack();
+    edit.setLocationRelativeTo(this);
+    edit.setVisible(true);
   }
   
   // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -665,7 +606,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       }
       return model;
     }
-
+    
     public void sort(int column) {
       try {
         if((currColumnSorted != column) || reverseSort) {
@@ -695,18 +636,18 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     String projectName;
     boolean billable;
     
-    public TimeRecord() {
+    TimeRecord() {
       projectName = "";
       seconds = 0L;
       billable = true;
     }
-    public TimeRecord(String name, long time, boolean isBillable) {
+    TimeRecord(String name, long time, boolean isBillable) {
       projectName = name;
       seconds = time;
       billable = isBillable;
     }
     
-    public void setSeconds(String secs) {
+    protected void setSeconds(String secs) {
       StringTokenizer timeWords = new StringTokenizer(secs, ":");
       // If time format is 1:30
       if(timeWords.countTokens() == 2) {
@@ -727,7 +668,8 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       if (minutes < 10) return ""+hours+":0"+minutes;
       else return ""+hours+":"+minutes;
     }
-    public long getSeconds() {
+
+    protected long getSeconds() {
       return seconds;
     }
     
@@ -735,6 +677,74 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       TimeRecord compTo = (TimeRecord)comp;
       if(type.equals("Time")) return (int)(seconds-compTo.seconds);
       else return projectName.compareToIgnoreCase(compTo.projectName);
+    }
+  }
+  
+  private class EditDialog extends JDialog {
+    private JOptionPane optionPane;
+    
+    EditDialog(JFrame frame, TimeRecord timerec) {
+      super(frame, true);
+      setTitle("Edit Project");
+      
+      java.awt.GridBagConstraints first = new java.awt.GridBagConstraints();;
+      java.awt.GridBagConstraints last = new java.awt.GridBagConstraints();
+      last.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+      java.awt.GridBagConstraints bottom = new java.awt.GridBagConstraints();
+      bottom.gridwidth = 2;
+      
+      final TimeRecord record = timerec;
+      final JTextField projField = new JTextField(record.projectName);
+      projField.setColumns(10);
+      final JTextField timeField = new JTextField(record.toString());
+      timeField.setColumns(10);
+      final JCheckBox billable = new JCheckBox("Billable Project", record.billable);
+      JPanel editPanel = new JPanel();
+      editPanel.setLayout(new java.awt.GridBagLayout());
+      editPanel.add(new JLabel("Project: "), first);
+      editPanel.add(projField, last);
+      editPanel.add(new JLabel("Time: "), first);
+      editPanel.add(timeField, last);
+      editPanel.add(billable, bottom);
+      
+      optionPane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+      setContentPane(optionPane);
+      setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+      addWindowListener(new java.awt.event.WindowAdapter() {
+        public void windowClosing(java.awt.event.WindowEvent we) {
+          optionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
+        }
+      });
+      
+      optionPane.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        public void propertyChange(java.beans.PropertyChangeEvent e) {
+          String prop = e.getPropertyName();
+          
+          if (isVisible() && (e.getSource() == optionPane) && (prop.equals(JOptionPane.VALUE_PROPERTY) || prop.equals(JOptionPane.INPUT_VALUE_PROPERTY))) {
+            String value = optionPane.getValue().toString();
+            if (value == JOptionPane.UNINITIALIZED_VALUE) return;
+            optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
+            
+            if (value.equals("0")) {
+              long newTime = System.currentTimeMillis()/1000;
+              record.projectName = projField.getText();
+              record.setSeconds(timeField.getText());
+              if (index == selectedIndex) timer.startTime = newTime-record.seconds;
+              record.billable = billable.isSelected();
+              timeList.setModel(times.toTableModel());
+              timeList.repaint();
+              if(selectedIndex == -1) //Nothing selected
+                timeList.setRowSelectionInterval(index, index);
+              else
+                timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
+              refreshTotalTime();
+              setVisible(false);
+            } else { // user closed dialog or clicked cancel
+              setVisible(false);
+            }
+          }
+        }
+      });
     }
   }
 }
