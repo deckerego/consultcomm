@@ -19,15 +19,33 @@
     <ant dir="JDBCBean" target="all" inheritAll="false"/>
   </target>
 
+  <target depends="compile" name="X">
+    <ant dir="TimeOutBean" target="X" inheritAll="false"/>
+  </target>
+
+  <target depends="compile" name="dryrun">
+    <java classname="CsltComm" fork="yes">
+      <jvmarg value="-Djava.library.path=syslibs"/> 
+      <classpath>
+        <pathelement location="skinlf.jar"/>
+        <pathelement path="${src}"/>
+      </classpath>
+    </java>
+  </target>
+
   <target name="clean">
     <delete>
       <fileset dir="${src}" includes="*.class"/>
     </delete>
+    <ant dir="TimeOutBean" target="clean" inheritAll="false"/>
+    <ant dir="JDBCBean" target="clean" inheritAll="false"/>
   </target>
 
   <target depends="clean" name="realclean">
     <delete>
       <fileset dir="${src}" includes="*~"/>
     </delete>
+    <ant dir="TimeOutBean" target="realclean" inheritAll="false"/>
+    <ant dir="JDBCBean" target="realclean" inheritAll="false"/>
   </target>
 </project>

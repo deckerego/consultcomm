@@ -11,7 +11,7 @@
   </target>
 
   <target depends="init" name="compile">
-    <javac deprecation="on" optimize="on" srcdir="${src}"/>
+    <javac deprecation="on" optimize="on" srcdir="${src}" classpath="${src}:${src}../"/>
     <jar destfile="${src}/../plugins/TimeOut.jar">
       <fileset dir="${src}" includes="*.class"/>
       <fileset dir="${src}" includes="*.gif"/>
@@ -30,6 +30,7 @@
       </classpath>
     </javah>
     <exec dir="${Xlibdir}" executable="make"/>
+    <ant target="compile"/>
   </target>
 
   <target depends="compile" name="Win32">
