@@ -355,102 +355,118 @@ class JDBCConnect {
   }
   
   void readPrefs() {
-    File prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
-    if (prefs.exists()) {
-      try {
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document doc = docBuilder.parse(prefs);
+    try {
+      File prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
+      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+      docBuilder = docBuilderFactory.newDocumentBuilder();
+      Document doc;
+      
+      if(prefs.exists()) {
+        doc = docBuilder.parse(prefs);
         doc.getDocumentElement().normalize();
-        
-        NamedNodeMap attributes = null;
-        
-        NodeList drivers = doc.getElementsByTagName("driver");
-        Node driver = drivers.item(0);
-        attributes = driver.getAttributes();
-        name = attributes.getNamedItem("name").getNodeValue();
-        url = attributes.getNamedItem("url").getNodeValue();
-        if(attributes.getNamedItem("username") != null)
-          userName = attributes.getNamedItem("username").getNodeValue();
-        if(attributes.getNamedItem("database") != null)
-          database = attributes.getNamedItem("database").getNodeValue();
-        if(attributes.getNamedItem("table") != null)
-          table = attributes.getNamedItem("table").getNodeValue();
-        
-        NodeList options = doc.getElementsByTagName("options");
-        Node option = options.item(0);
-        attributes = option.getAttributes();
-        hourFormat = Integer.parseInt(attributes.getNamedItem("hourFormat").getNodeValue());
-        if(attributes.getNamedItem("projectCase") != null)
-          projectCase = Boolean.valueOf(attributes.getNamedItem("projectCase").getNodeValue()).booleanValue();
-        if(attributes.getNamedItem("projectValidate") != null)
-          projectValidate = Boolean.valueOf(attributes.getNamedItem("projectValidate").getNodeValue()).booleanValue();
-        if(attributes.getNamedItem("projectDatabase") != null)
-          projectDatabase = attributes.getNamedItem("projectDatabase").getNodeValue();
-        if(attributes.getNamedItem("projectTable") != null)
-          projectTable = attributes.getNamedItem("projectTable").getNodeValue();
-        if(attributes.getNamedItem("projectField") != null)
-          projectField = attributes.getNamedItem("projectField").getNodeValue();
-        else
-          projectField = "No Fields Found";
-        
-        NodeList fieldMaps = doc.getElementsByTagName("fieldmap");
-        tableMap.fieldMaps.clear();
-        for(int i=0; i<fieldMaps.getLength(); i++){
-          Node fieldMap = fieldMaps.item(i);
-          attributes = fieldMap.getAttributes();
-          Node nameNode = attributes.getNamedItem("name");
-          String fieldName = nameNode.getNodeValue();
-          Node typeNode = attributes.getNamedItem("type");
-          short sqlType = Short.parseShort(typeNode.getNodeValue());
-          Node indexNode = attributes.getNamedItem("index");
-          int fieldIndex = Integer.parseInt(indexNode.getNodeValue());
-          Node valueNode = attributes.getNamedItem("value");
-          String valueExpression = valueNode.getNodeValue();
-          FieldMap record = new FieldMap(fieldName, sqlType, fieldIndex, valueExpression);
-          tableMap.fieldMaps.addElement(record);
-        }
-      } catch (SAXParseException e) {
-        System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
-      } catch (SAXException e) {
-        System.err.println("Error reading prefs file: "+e);
-        e.printStackTrace(System.out);
-      } catch (Exception e) {
-        System.err.println("Cannot read prefs file: "+e);
-        e.printStackTrace(System.out);
+      } else {
+        doc = docBuilder.newDocument();
+        Element rootNode = doc.createElement("clntcomm");
+        rootNode.setAttribute("version", "2.2");
+        doc.appendChild(rootNode);
       }
+      
+      NamedNodeMap attributes = null;
+      
+      NodeList drivers = doc.getElementsByTagName("driver");
+      Node driver = drivers.item(0);
+      attributes = driver.getAttributes();
+      name = attributes.getNamedItem("name").getNodeValue();
+      url = attributes.getNamedItem("url").getNodeValue();
+      if(attributes.getNamedItem("username") != null)
+        userName = attributes.getNamedItem("username").getNodeValue();
+      if(attributes.getNamedItem("database") != null)
+        database = attributes.getNamedItem("database").getNodeValue();
+      if(attributes.getNamedItem("table") != null)
+        table = attributes.getNamedItem("table").getNodeValue();
+      
+      NodeList options = doc.getElementsByTagName("options");
+      Node option = options.item(0);
+      attributes = option.getAttributes();
+      hourFormat = Integer.parseInt(attributes.getNamedItem("hourFormat").getNodeValue());
+      if(attributes.getNamedItem("projectCase") != null)
+        projectCase = Boolean.valueOf(attributes.getNamedItem("projectCase").getNodeValue()).booleanValue();
+      if(attributes.getNamedItem("projectValidate") != null)
+        projectValidate = Boolean.valueOf(attributes.getNamedItem("projectValidate").getNodeValue()).booleanValue();
+      if(attributes.getNamedItem("projectDatabase") != null)
+        projectDatabase = attributes.getNamedItem("projectDatabase").getNodeValue();
+      if(attributes.getNamedItem("projectTable") != null)
+        projectTable = attributes.getNamedItem("projectTable").getNodeValue();
+      if(attributes.getNamedItem("projectField") != null)
+        projectField = attributes.getNamedItem("projectField").getNodeValue();
+      else
+        projectField = "No Fields Found";
+      
+      NodeList fieldMaps = doc.getElementsByTagName("fieldmap");
+      tableMap.fieldMaps.clear();
+      for(int i=0; i<fieldMaps.getLength(); i++){
+        Node fieldMap = fieldMaps.item(i);
+        attributes = fieldMap.getAttributes();
+        Node nameNode = attributes.getNamedItem("name");
+        String fieldName = nameNode.getNodeValue();
+        Node typeNode = attributes.getNamedItem("type");
+        short sqlType = Short.parseShort(typeNode.getNodeValue());
+        Node indexNode = attributes.getNamedItem("index");
+        int fieldIndex = Integer.parseInt(indexNode.getNodeValue());
+        Node valueNode = attributes.getNamedItem("value");
+        String valueExpression = valueNode.getNodeValue();
+        FieldMap record = new FieldMap(fieldName, sqlType, fieldIndex, valueExpression);
+        tableMap.fieldMaps.addElement(record);
+      }
+    } catch (SAXParseException e) {
+      System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
+    } catch (SAXException e) {
+      System.err.println("Error reading prefs file: "+e);
+      e.printStackTrace(System.out);
+    } catch (Exception e) {
+      System.err.println("Cannot read prefs file: "+e);
+      e.printStackTrace(System.out);
     }
     
-    prefs = new File(CsltComm.prefsDir, "ClntComm.def");
-    if (prefs.exists()) {
-      try {
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document doc = docBuilder.parse(prefs);
+    try {
+      File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
+      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+      docBuilder = docBuilderFactory.newDocumentBuilder();
+      Document doc;
+      
+      if(prefs.exists()) {
+        doc = docBuilder.parse(prefs);
         doc.getDocumentElement().normalize();
-        
-        NamedNodeMap attribute = null;
-        
-        //Get attribute flags
-        NodeList attributeFlags = doc.getElementsByTagName("attributes");
-        if(attributeFlags.getLength() > 0) {
-          Node attributeFlag = attributeFlags.item(0);
-          attribute = attributeFlag.getAttributes();
-          String attributesString = attribute.getNamedItem("value").getNodeValue();
-          int attributes = Integer.parseInt(attributesString);
-          useExport = (ClntComm.SHOW_EXPORT ^ attributes) != (ClntComm.SHOW_EXPORT | attributes);
-        } else {
-          useExport = true;
-        }
-      } catch (SAXParseException e) {
-        System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
-      } catch (SAXException e) {
-        System.err.println("Error reading prefs file: "+e);
-        e.printStackTrace(System.out);
-      } catch (Exception e) {
-        System.err.println("Cannot read prefs file: "+e);
-        e.printStackTrace(System.out);
+      } else {
+        doc = docBuilder.newDocument();
+        Element rootNode = doc.createElement("clntcomm");
+        rootNode.setAttribute("version", "2.2");
+        doc.appendChild(rootNode);
       }
+      
+      NamedNodeMap attribute = null;
+      
+      //Get attribute flags
+      NodeList attributeFlags = doc.getElementsByTagName("attributes");
+      if(attributeFlags.getLength() > 0) {
+        Node attributeFlag = attributeFlags.item(0);
+        attribute = attributeFlag.getAttributes();
+        String attributesString = attribute.getNamedItem("value").getNodeValue();
+        int attributes = Integer.parseInt(attributesString);
+        useExport = (ClntComm.SHOW_EXPORT ^ attributes) != (ClntComm.SHOW_EXPORT | attributes);
+      } else {
+        useExport = true;
+      }
+    } catch (SAXParseException e) {
+      System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
+    } catch (SAXException e) {
+      System.err.println("Error reading prefs file: "+e);
+      e.printStackTrace(System.out);
+    } catch (Exception e) {
+      System.err.println("Cannot read prefs file: "+e);
+      e.printStackTrace(System.out);
     }
   }
   

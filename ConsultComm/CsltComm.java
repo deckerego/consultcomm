@@ -154,58 +154,65 @@ public class CsltComm extends javax.swing.JFrame {
    * Read through preferances file
    */
   private void readPrefs() {
-    File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
-    
-    if (prefs.exists()) {
-      try {
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document doc = docBuilder.parse(prefs);
+    try {
+      File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
+      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+      docBuilder = docBuilderFactory.newDocumentBuilder();
+      Document doc;
+      
+      if(prefs.exists()) {
+        doc = docBuilder.parse(prefs);
         doc.getDocumentElement().normalize();
-        
-        NamedNodeMap attributes = null;
-        
-        //Get animation flag
-        NodeList iconAnimations = doc.getElementsByTagName("animations");
-        if(iconAnimations.getLength() > 0) {
-          Node iconAnimation = iconAnimations.item(0);
-          attributes = iconAnimation.getAttributes();
-          if(attributes.getNamedItem("display").getNodeValue().equals("true"))
-            animateIcons = true;
-          else
-            animateIcons = false;
-        } else {
-          animateIcons = true;
-        }
-        
-        //Get skins
-        NodeList skinElements = doc.getElementsByTagName("skin");
-        if(skinElements.getLength() > 0) {
-          Node skinElement = skinElements.item(0);
-          attributes = skinElement.getAttributes();
-          Node themePackItem = attributes.getNamedItem("theme");
-          if(themePackItem != null) themePack = themePackItem.getNodeValue();
-          else themePack =  null;
-          Node kdeThemeItem = attributes.getNamedItem("kde");
-          if(kdeThemeItem != null) kdeTheme = kdeThemeItem.getNodeValue();
-          else kdeTheme = null;
-          Node gtkThemeItem = attributes.getNamedItem("gtk");
-          if(gtkThemeItem != null) gtkTheme = gtkThemeItem.getNodeValue();
-          else gtkTheme = null;
-        } else {
-          themePack = null;
-          kdeTheme = null;
-          gtkTheme = null;
-        }
-      } catch (SAXParseException e) {
-        System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
-      } catch (SAXException e) {
-        System.err.println("Error reading prefs file: "+e);
-        e.printStackTrace(System.out);
-      } catch (Exception e) {
-        System.err.println("Cannot read prefs file: "+e);
-        e.printStackTrace(System.out);
+      } else {
+        doc = docBuilder.newDocument();
+        Element rootNode = doc.createElement("clntcomm");
+        rootNode.setAttribute("version", "2.2");
+        doc.appendChild(rootNode);
       }
+      
+      NamedNodeMap attributes = null;
+      
+      //Get animation flag
+      NodeList iconAnimations = doc.getElementsByTagName("animations");
+      Node iconAnimation = iconAnimations.item(0);
+      if(iconAnimation != null) {
+        attributes = iconAnimation.getAttributes();
+        if(attributes.getNamedItem("display").getNodeValue().equals("true"))
+          animateIcons = true;
+        else
+          animateIcons = false;
+      } else {
+        animateIcons = true;
+      }
+      
+      //Get skins
+      NodeList skinElements = doc.getElementsByTagName("skin");
+      Node skinElement = skinElements.item(0);
+      if(skinElement != null) {
+        attributes = skinElement.getAttributes();
+        Node themePackItem = attributes.getNamedItem("theme");
+        if(themePackItem != null) themePack = themePackItem.getNodeValue();
+        else themePack =  null;
+        Node kdeThemeItem = attributes.getNamedItem("kde");
+        if(kdeThemeItem != null) kdeTheme = kdeThemeItem.getNodeValue();
+        else kdeTheme = null;
+        Node gtkThemeItem = attributes.getNamedItem("gtk");
+        if(gtkThemeItem != null) gtkTheme = gtkThemeItem.getNodeValue();
+        else gtkTheme = null;
+      } else {
+        themePack = null;
+        kdeTheme = null;
+        gtkTheme = null;
+      }
+    } catch (SAXParseException e) {
+      System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
+    } catch (SAXException e) {
+      System.err.println("Error reading prefs file: "+e);
+      e.printStackTrace(System.out);
+    } catch (Exception e) {
+      System.err.println("Cannot read prefs file: "+e);
+      e.printStackTrace(System.out);
     }
   }
   

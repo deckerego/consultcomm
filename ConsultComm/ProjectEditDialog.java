@@ -40,8 +40,8 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     okButton = new javax.swing.JButton();
     cancelButton = new javax.swing.JButton();
     
-    setTitle("Edit Project");
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+    setTitle("Edit Project");
     addWindowListener(new java.awt.event.WindowAdapter() {
       public void windowClosing(java.awt.event.WindowEvent evt) {
         closeDialog(evt);
@@ -58,12 +58,6 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     
     projField.setColumns(15);
     projField.setText(record.projectName);
-    projField.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        projFieldActionPerformed(evt);
-      }
-    });
-    
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -95,16 +89,16 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
     inputPanel.add(timeField, gridBagConstraints1);
     
-    billable.setSelected(record.billable);
     billable.setForeground(new java.awt.Color(102, 102, 153));
+    billable.setSelected(record.billable);
     billable.setText("Billable Project");
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
     inputPanel.add(billable, gridBagConstraints1);
     
-    export.setSelected(record.export);
     export.setForeground(new java.awt.Color(102, 102, 153));
+    export.setSelected(record.export);
     export.setText("Export Project to Database");
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
@@ -136,10 +130,6 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     
     pack();
   }//GEN-END:initComponents
-
-  private void projFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projFieldActionPerformed
-    // Add your handling code here:
-  }//GEN-LAST:event_projFieldActionPerformed
   
   private void save(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_save
     record.projectName = projField.getText();

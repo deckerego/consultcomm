@@ -581,7 +581,6 @@ public class PrefsPanel extends javax.swing.JFrame {
         File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        docBuilderFactory = DocumentBuilderFactory.newInstance();
         docBuilder = docBuilderFactory.newDocumentBuilder();
         Document doc;
         
@@ -599,8 +598,8 @@ public class PrefsPanel extends javax.swing.JFrame {
         
         //Get time format
         NodeList timeFormats = doc.getElementsByTagName("timeformat");
-        if(timeFormats.getLength() > 0) {
-          Node timeFormatting = timeFormats.item(0);
+        Node timeFormatting = timeFormats.item(0);
+        if(timeFormatting != null) {
           attributes = timeFormatting.getAttributes();
           String timeFormatString = attributes.getNamedItem("type").getNodeValue();
           if(timeFormatString.equals("seconds")) timeFormat = ClntComm.SECONDS;
@@ -611,8 +610,8 @@ public class PrefsPanel extends javax.swing.JFrame {
         
         //Get animation flag
         NodeList iconAnimations = doc.getElementsByTagName("animations");
-        if(iconAnimations.getLength() > 0) {
-          Node iconAnimation = iconAnimations.item(0);
+        Node iconAnimation = iconAnimations.item(0);
+        if(iconAnimation != null) {
           attributes = iconAnimation.getAttributes();
           if(attributes.getNamedItem("display").getNodeValue().equals("true"))
             animateIcons = true;
@@ -624,8 +623,8 @@ public class PrefsPanel extends javax.swing.JFrame {
         
         //Get save interval
         NodeList saveInfos = doc.getElementsByTagName("saveinfo");
-        if(saveInfos.getLength() > 0) {
-          Node saveInfo = saveInfos.item(0);
+        Node saveInfo = saveInfos.item(0);
+        if(saveInfo != null) {
           attributes = saveInfo.getAttributes();
           String saveIntervalString = attributes.getNamedItem("seconds").getNodeValue();
           saveInterval = Integer.parseInt(saveIntervalString);
@@ -635,8 +634,8 @@ public class PrefsPanel extends javax.swing.JFrame {
         
         //Get idle time settings
         NodeList idleTimes = doc.getElementsByTagName("idle");
-        if(idleTimes.getLength() > 0) {
-          Node idleTime = idleTimes.item(0);
+        Node idleTime = idleTimes.item(0);
+        if(idleTime != null) {
           attributes = idleTime.getAttributes();
           String allowedIdleString = attributes.getNamedItem("seconds").getNodeValue();
           allowedIdle = Integer.parseInt(allowedIdleString);
@@ -665,8 +664,8 @@ public class PrefsPanel extends javax.swing.JFrame {
         
         //Get skins
         NodeList skinElements = doc.getElementsByTagName("skin");
-        if(skinElements.getLength() > 0) {
-          Node skinElement = skinElements.item(0);
+        Node skinElement = skinElements.item(0);
+        if(skinElement != null) {
           attributes = skinElement.getAttributes();
           Node themePackItem = attributes.getNamedItem("theme");
           if(themePackItem != null) themePack = themePackItem.getNodeValue();
@@ -720,23 +719,17 @@ public class PrefsPanel extends javax.swing.JFrame {
         newNode = doc.createElement("timeformat");
         if(secondButton.isSelected()) newNode.setAttribute("type", "seconds");
         if(minuteButton.isSelected()) newNode.setAttribute("type", "minutes");
-        if(timeFormats.getLength() > 0) {
-          Node timeFormatting = timeFormats.item(0);
-          rootNode.replaceChild(newNode, timeFormatting);
-        } else {
-          rootNode.appendChild(newNode);
-        }
+        Node timeFormatting = timeFormats.item(0);
+        if(timeFormatting != null) rootNode.replaceChild(newNode, timeFormatting);
+        else rootNode.appendChild(newNode);
         
         //Save animation flag
         NodeList iconAnimations = doc.getElementsByTagName("animations");
         newNode = doc.createElement("animations");
         newNode.setAttribute("display", ""+showIconCheckBox.isSelected());
-        if(iconAnimations.getLength() > 0) {
-          Node iconAnimation = iconAnimations.item(0);
-          rootNode.replaceChild(newNode, iconAnimation);
-        } else {
-          rootNode.appendChild(newNode);
-        }
+        Node iconAnimation = iconAnimations.item(0);
+        if(iconAnimation != null) rootNode.replaceChild(newNode, iconAnimation);
+        else rootNode.appendChild(newNode);
         
         //Save attribute flag settings
         int attributes = 0;
@@ -746,23 +739,17 @@ public class PrefsPanel extends javax.swing.JFrame {
         NodeList attributeFlags = doc.getElementsByTagName("attributes");
         newNode = doc.createElement("attributes");
         newNode.setAttribute("value", Integer.toString(attributes));
-        if(attributeFlags.getLength() > 0) {
-          Node attributeFlag = attributeFlags.item(0);
-          rootNode.replaceChild(newNode, attributeFlag);
-        } else {
-          rootNode.appendChild(newNode);
-        }
+        Node attributeFlag = attributeFlags.item(0);
+        if(attributeFlag != null) rootNode.replaceChild(newNode, attributeFlag);
+        else rootNode.appendChild(newNode);
         
         //Save save interval
         NodeList saveInfos = doc.getElementsByTagName("saveinfo");
         newNode = doc.createElement("saveinfo");
         newNode.setAttribute("seconds", saveField.getText());
-        if(saveInfos.getLength() > 0) {
-          Node saveInfo = saveInfos.item(0);
-          rootNode.replaceChild(newNode, saveInfo);
-        } else {
-          rootNode.appendChild(newNode);
-        }
+        Node saveInfo = saveInfos.item(0);
+        if(saveInfo != null) rootNode.replaceChild(newNode, saveInfo);
+        else rootNode.appendChild(newNode);
         
         //Save idle info
         NodeList idleTimes = doc.getElementsByTagName("idle");
@@ -770,12 +757,9 @@ public class PrefsPanel extends javax.swing.JFrame {
         newNode.setAttribute("seconds", idleCheckBox.isSelected() ? idleField.getText() : "0");
         newNode.setAttribute("action", projectIdleRadioButton.isSelected() ? "project" : "pause");
         newNode.setAttribute("project", projectIdleComboBox.getSelectedItem().toString());
-        if(idleTimes.getLength() > 0) {
-          Node idleTime = idleTimes.item(0);
-          rootNode.replaceChild(newNode, idleTime);
-        } else {
-          rootNode.appendChild(newNode);
-        }
+        Node idleTime = idleTimes.item(0);
+        if(idleTime != null) rootNode.replaceChild(newNode, idleTime);
+        else rootNode.appendChild(newNode);
         
         //Save skin settings
         NodeList skinElements = doc.getElementsByTagName("skin");
@@ -783,12 +767,9 @@ public class PrefsPanel extends javax.swing.JFrame {
         if(themeCheckBox.isSelected()) newNode.setAttribute("theme", themeField.getText());
         if(kdeCheckBox.isSelected()) newNode.setAttribute("kde", kdeField.getText());
         if(gtkCheckBox.isSelected()) newNode.setAttribute("gtk", gtkField.getText());
-        if(skinElements.getLength() > 0) {
-          Node skinElement = skinElements.item(0);
-          rootNode.replaceChild(newNode, skinElement);
-        } else {
-          rootNode.appendChild(newNode);
-        }
+        Node skinElement = skinElements.item(0);
+        if(skinElement != null) rootNode.replaceChild(newNode, skinElement);
+        else rootNode.appendChild(newNode);
         
         //Write to file
         doc.getDocumentElement().normalize();
