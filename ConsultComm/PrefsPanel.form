@@ -430,7 +430,7 @@
                   <Properties>
                     <Property name="columns" type="int" value="6"/>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="Float.toString(countpay)" type="code"/>
+                      <Connection code="dollarFormat.format(countpay)" type="code"/>
                     </Property>
                     <Property name="enabled" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                       <Connection type="value" value="clntComm.attributeSet(ClntComm.SHOW_COUNTPAY)" valueType="boolean"/>

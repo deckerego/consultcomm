@@ -132,8 +132,9 @@ public class CsltComm extends javax.swing.JFrame {
       PrefsFile prefs = new PrefsFile("ClntComm.def");
 
       //Get animation flag
-      Boolean animateIconsBool = prefs.readFirstBoolean("animations", "display");
-      animateIcons = (animateIconsBool != null && animateIconsBool.booleanValue());
+      Boolean iconAnimation = prefs.readFirstBoolean("animations", "display");
+      if(iconAnimation == null) animateIcons = true;
+      else animateIcons = iconAnimation.booleanValue();
       
       //Get skins
       themePack = prefs.readFirstString("skin", "theme");

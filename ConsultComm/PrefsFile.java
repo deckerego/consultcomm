@@ -145,7 +145,7 @@ public class PrefsFile {
   public void removeFirstElement(String element) {
     NodeList elements = doc.getElementsByTagName(element);
     Node node = elements.item(0);
-    rootNode.removeChild(node);
+    if(node != null) rootNode.removeChild(node);
   }
   
   public void removeAllChildren(String element) {

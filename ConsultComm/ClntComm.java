@@ -560,6 +560,8 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       //Get window dimensions
       double width = prefs.readFirstDouble("dimensions", "width");
       double height = prefs.readFirstDouble("dimensions", "height");
+      if(width == 0) width = 256;
+      if(height == 0) height=256;
       windowSize = new java.awt.Dimension((int)width, (int)height);
       
       //Get project column dimensions
