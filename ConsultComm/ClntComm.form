@@ -127,6 +127,15 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteProject"/>
           </Events>
         </MenuItem>
+        <MenuItem class="javax.swing.JMenuItem" name="addPopupItem">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Add Project"/>
+          </Properties>
+
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newProject"/>
+          </Events>
+        </MenuItem>
       </SubComponents>
     </Menu>
   </NonVisualComponents>

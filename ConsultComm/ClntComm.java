@@ -97,6 +97,7 @@ public class ClntComm extends javax.swing.JPanel {
         editMenu = new javax.swing.JPopupMenu();
         editPopupItem = new javax.swing.JMenuItem();
         deletePopupItem = new javax.swing.JMenuItem();
+        addPopupItem = new javax.swing.JMenuItem();
         scrollPane = new javax.swing.JScrollPane();
         menuPanel = new javax.swing.JPanel();
         startButton = new javax.swing.JButton();
@@ -184,6 +185,14 @@ public class ClntComm extends javax.swing.JPanel {
         });
 
         editMenu.add(deletePopupItem);
+        addPopupItem.setText("Add Project");
+        addPopupItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newProject(evt);
+            }
+        });
+
+        editMenu.add(addPopupItem);
 
         setLayout(new java.awt.BorderLayout());
 
@@ -224,12 +233,12 @@ public class ClntComm extends javax.swing.JPanel {
         });
         JTableHeader timeListHeader = timeList.getTableHeader();
         timeListHeader.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
                 sortColumn(evt);
             }
         });
         timeList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
                 editWindow(evt);
             }
         });
@@ -264,8 +273,8 @@ public class ClntComm extends javax.swing.JPanel {
           if(evt.getModifiers() == java.awt.event.MouseEvent.BUTTON1_MASK)
               if(evt.getClickCount() == 2) editWindow(selectedRow);
           if(evt.getModifiers() == java.awt.event.MouseEvent.BUTTON3_MASK) {
-              selectedIndex = timeList.rowAtPoint(new java.awt.Point(evt.getX(), evt.getY()));
-              timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
+              javax.swing.tree.TreePath selectedPath = timeList.tree.getPathForLocation(evt.getX(), evt.getY());
+              timeList.tree.setSelectionPath(selectedPath);
               editMenu.show(timeList, evt.getX(), evt.getY());
           }
       }
@@ -370,13 +379,18 @@ public void editWindow(int i){
     index = i;
     selectedIndex = timeList.getSelectedRecord();
     TimeRecord record;
-    boolean newRecord = false;
+    boolean newRecord;
     
     try {
         record = times.elementAt(index);
         newRecord = false;
     } catch (ArrayIndexOutOfBoundsException e) {
         record = new TimeRecord();
+        //Suggest a group name based on the currently selected record
+        int currSelected = timeList.getSelectedRecord();
+        TimeRecord currRecord = times.elementAt(currSelected);
+        String groupName = currRecord.getGroupName();
+        record.setGroupName(groupName);
         newRecord = true;
     }
     
@@ -541,6 +555,7 @@ private TableTree timeList;
     private javax.swing.JMenu toolMenu;
     private javax.swing.JButton startButton;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem addPopupItem;
     private javax.swing.JPanel menuPanel;
     private javax.swing.JPopupMenu editMenu;
     private javax.swing.JMenuItem deletePopupItem;
