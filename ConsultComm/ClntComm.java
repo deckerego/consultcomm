@@ -66,7 +66,9 @@ public class ClntComm extends javax.swing.JPanel {
             java.io.File pluginsdir = new File(System.getProperty("user.dir")+"/plugins/JDBCConnect.jar");
             java.net.URL[] pluginsurl = {pluginsdir.toURL()};
             ClassLoader loader = new java.net.URLClassLoader(pluginsurl);
-            java.beans.BeanDescriptor plugin = new java.beans.BeanDescriptor(loader.loadClass("JDBCConnect"));
+            Object plugin = loader.loadClass("JDBCConnect").newInstance();
+            java.beans.Statement verify = new java.beans.Statement(plugin, "testDriverSettings", null);
+            verify.execute();
         } catch (Exception e) {
             System.out.println("Couldn't load bean: "+e);
         }
