@@ -802,23 +802,23 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     }
     
     public void run(){
-      long currTime;
+      long currTime, currSeconds;
       int index;
-      long currSeconds;
       int idleSeconds = -1;
       
       while(runThread){
         try {
           sleep(updateSeconds);
           
-          if((allowedIdle > 0) && timeoutLibrary) //0 means don't worry about idle
+          if(allowedIdle > 0 && timeoutLibrary) //0 means don't worry about idle
             idleSeconds = (int)(getIdleTime()/1000L);
           
           //Check and see if we're supposed to wake up the clock
           //after the session has been idle
-          if((idleSeconds < allowedIdle) && asleep) {
+          if(allowedIdle > 0 && idleSeconds < allowedIdle && asleep) {
             toggleIdle();
             asleep = false;
+            System.out.println("Toggling Out...");
           }
           
           if(clockRunning){
@@ -844,7 +844,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
               
               //Check and see if we're supposed to do something when the
               //user session is idle
-              if((idleSeconds >= allowedIdle) && ! asleep) {
+              if(allowedIdle > 0 && idleSeconds >= allowedIdle && ! asleep) {
                 toggleIdle();
                 asleep = true;
               }
