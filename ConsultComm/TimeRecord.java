@@ -3,6 +3,7 @@ import java.util.*;
 class TimeRecord implements Comparable {
   protected long seconds;
   protected String projectName;
+  protected String alias;
   protected boolean billable;
   
   TimeRecord() {
@@ -10,8 +11,9 @@ class TimeRecord implements Comparable {
     seconds = 0L;
     billable = true;
   }
-  TimeRecord(String name, long time, boolean isBillable) {
+  TimeRecord(String name, String aka, long time, boolean isBillable) {
     projectName = name;
+    alias = aka;
     seconds = time;
     billable = isBillable;
   }

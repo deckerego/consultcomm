@@ -79,7 +79,10 @@ class TimeRecordSet {
     Enumeration records = timeRecords.elements();
     while (records.hasMoreElements()) {
       TimeRecord record = (TimeRecord)records.nextElement();
-      model.addRow(new Object[] {record.projectName, record.toString()});
+      if(record.alias == null)
+        model.addRow(new Object[] {record.projectName, record.toString()});
+      else
+        model.addRow(new Object[] {record.alias, record.toString()});
     }
     return model;
   }

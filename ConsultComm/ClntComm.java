@@ -75,6 +75,9 @@ public class ClntComm extends javax.swing.JPanel {
           NamedNodeMap attributes = project.getAttributes();
           Node nameNode = attributes.getNamedItem("name");
           String name = nameNode.getNodeValue();
+          Node aliasNode = attributes.getNamedItem("alias");
+          String alias = null;
+          if(aliasNode != null) alias = aliasNode.getNodeValue();
           Node secondsNode = attributes.getNamedItem("seconds");
           long seconds = Long.parseLong(secondsNode.getNodeValue());
           Node billableNode = attributes.getNamedItem("billable");
@@ -84,7 +87,7 @@ public class ClntComm extends javax.swing.JPanel {
           Node selectedNode = attributes.getNamedItem("selected");
           if(selectedNode != null && selectedNode.getNodeValue().equals("true"))
             selectedIndex = i;
-          TimeRecord record = new TimeRecord(name, seconds, billable);
+          TimeRecord record = new TimeRecord(name, alias, seconds, billable);
           times.add(record);
         }
         
@@ -132,6 +135,8 @@ public class ClntComm extends javax.swing.JPanel {
         TimeRecord record = times.elementAt(i);
         Element newNode = doc.createElement("project");
         newNode.setAttribute("name", record.projectName);
+        if(record.alias != null)
+          newNode.setAttribute("alias", record.alias);
         newNode.setAttribute("seconds", ""+record.seconds);
         newNode.setAttribute("billable", ""+record.billable);
         if(i == selectedIndex)
@@ -547,6 +552,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       setTitle("Edit Project");
       
       java.awt.GridBagConstraints first = new java.awt.GridBagConstraints();;
+      first.fill = java.awt.GridBagConstraints.HORIZONTAL;
       java.awt.GridBagConstraints last = new java.awt.GridBagConstraints();
       last.gridwidth = java.awt.GridBagConstraints.REMAINDER;
       java.awt.GridBagConstraints bottom = new java.awt.GridBagConstraints();
@@ -555,6 +561,8 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       final TimeRecord record = timerec;
       final JTextField projField = new JTextField(record.projectName);
       projField.setColumns(10);
+      final JTextField aliasField = new JTextField(record.alias);
+      aliasField.setColumns(10);
       final JTextField timeField = new JTextField(record.toString());
       timeField.setColumns(10);
       final JCheckBox billable = new JCheckBox("Billable Project", record.billable);
@@ -562,6 +570,8 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
       editPanel.setLayout(new java.awt.GridBagLayout());
       editPanel.add(new JLabel("Project: "), first);
       editPanel.add(projField, last);
+      editPanel.add(new JLabel("Alias: "), first);
+      editPanel.add(aliasField, last);
       editPanel.add(new JLabel("Time: "), first);
       editPanel.add(timeField, last);
       editPanel.add(billable, bottom);
@@ -588,6 +598,8 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
               long newTime = System.currentTimeMillis()/1000;
               record.projectName = projField.getText();
               record.setSeconds(timeField.getText());
+              if(aliasField.getText().length() > 0) record.alias = aliasField.getText();
+              else record.alias = null;
               if (index == selectedIndex) timer.startTime = newTime-record.seconds;
               record.billable = billable.isSelected();
               timeList.setModel(times.toTableModel());

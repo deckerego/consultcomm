@@ -17,12 +17,22 @@ import javax.xml.transform.stream.*;
  * @author  jellis
  */
 public class JDBCControlPanel extends javax.swing.JFrame {
+  private final static int DATE_SQLDATE = 0;
+  private final static int DATE_SQLTIMESTAMP = 1;
+  private final static int DATE_CCYYMMDD = 2;
+  private final static int HOUR_FULL = 0;
+  private final static int HOUR_QUARTER = 1;
+  private final static int HOUR_TENTH = 2;
+  private final static String odbcDriverName = "sun.jdbc.odbc.JdbcOdbcDriver";
   private String name;
   private String url;
-  private static String userName;
+  private static String userName = "";
   private static String password;
   private static String database;
   private static String table;
+  private int dateFormat;
+  private int hourFormat;
+  private boolean projectCase;
   private Vector errorList;
   private TableMap tableMap;
   private static boolean validated;
@@ -35,6 +45,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   
   public void initGUI() {
     initComponents();
+    toggleODBC();
   }
   
   /** This method is called from within the constructor to
@@ -54,6 +65,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     dbField = new javax.swing.JTextField();
     tableLabel = new javax.swing.JLabel();
     tableField = new javax.swing.JTextField();
+    odbcCheckBox = new javax.swing.JCheckBox();
     driverButtonPanel = new javax.swing.JPanel();
     driverOK = new javax.swing.JButton();
     driverCancel = new javax.swing.JButton();
@@ -65,6 +77,16 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     fieldOK = new javax.swing.JButton();
     fieldCancel = new javax.swing.JButton();
     fieldRefresh = new javax.swing.JButton();
+    optionPanel = new javax.swing.JPanel();
+    optionInputPanel = new javax.swing.JPanel();
+    hourLabel = new javax.swing.JLabel();
+    hourComboBox = new javax.swing.JComboBox();
+    dateLabel = new javax.swing.JLabel();
+    dateComboBox = new javax.swing.JComboBox();
+    projectCaseCheckBox = new javax.swing.JCheckBox();
+    optionButtonPanel = new javax.swing.JPanel();
+    optionOK = new javax.swing.JButton();
+    optionCancel = new javax.swing.JButton();
     
     getContentPane().setLayout(new java.awt.GridLayout(1, 1));
     
@@ -78,51 +100,65 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     driverPanel.setLayout(new java.awt.BorderLayout());
     
     driverInputPanel.setLayout(new java.awt.GridBagLayout());
-    java.awt.GridBagConstraints gridBagConstraints2;
+    java.awt.GridBagConstraints gridBagConstraints1;
     
     nameLabel.setText("Driver Name");
-    gridBagConstraints2 = new java.awt.GridBagConstraints();
-    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    driverInputPanel.add(nameLabel, gridBagConstraints2);
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    driverInputPanel.add(nameLabel, gridBagConstraints1);
     
     nameField.setColumns(20);
     nameField.setText(name);
-    gridBagConstraints2 = new java.awt.GridBagConstraints();
-    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    driverInputPanel.add(nameField, gridBagConstraints2);
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    driverInputPanel.add(nameField, gridBagConstraints1);
     
     urlLabel.setText("URL");
-    gridBagConstraints2 = new java.awt.GridBagConstraints();
-    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    driverInputPanel.add(urlLabel, gridBagConstraints2);
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    driverInputPanel.add(urlLabel, gridBagConstraints1);
     
     urlField.setColumns(20);
     urlField.setText(url);
-    gridBagConstraints2 = new java.awt.GridBagConstraints();
-    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    driverInputPanel.add(urlField, gridBagConstraints2);
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    driverInputPanel.add(urlField, gridBagConstraints1);
     
     dbLabel.setText("Database");
-    gridBagConstraints2 = new java.awt.GridBagConstraints();
-    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    driverInputPanel.add(dbLabel, gridBagConstraints2);
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    driverInputPanel.add(dbLabel, gridBagConstraints1);
     
     dbField.setColumns(20);
     dbField.setText(database);
-    gridBagConstraints2 = new java.awt.GridBagConstraints();
-    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    driverInputPanel.add(dbField, gridBagConstraints2);
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    driverInputPanel.add(dbField, gridBagConstraints1);
     
     tableLabel.setText("Table");
-    gridBagConstraints2 = new java.awt.GridBagConstraints();
-    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    driverInputPanel.add(tableLabel, gridBagConstraints2);
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    driverInputPanel.add(tableLabel, gridBagConstraints1);
     
     tableField.setColumns(20);
     tableField.setText(table);
-    gridBagConstraints2 = new java.awt.GridBagConstraints();
-    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    driverInputPanel.add(tableField, gridBagConstraints2);
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    driverInputPanel.add(tableField, gridBagConstraints1);
+    
+    odbcCheckBox.setSelected(name.equals(odbcDriverName));
+    odbcCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    odbcCheckBox.setText("Use ODBC Bridge");
+    odbcCheckBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        toggleODBC(evt);
+      }
+    });
+    
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    driverInputPanel.add(odbcCheckBox, gridBagConstraints1);
     
     driverPanel.add(driverInputPanel, java.awt.BorderLayout.CENTER);
     
@@ -170,9 +206,6 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     
     fieldPanel.add(fieldScrollPane, java.awt.BorderLayout.CENTER);
     
-    fieldButtonPanel.setLayout(new java.awt.GridBagLayout());
-    java.awt.GridBagConstraints gridBagConstraints3;
-    
     fieldOK.setText("OK");
     fieldOK.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -180,8 +213,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       }
     });
     
-    gridBagConstraints3 = new java.awt.GridBagConstraints();
-    fieldButtonPanel.add(fieldOK, gridBagConstraints3);
+    fieldButtonPanel.add(fieldOK);
     
     fieldCancel.setText("Cancel");
     fieldCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -190,8 +222,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       }
     });
     
-    gridBagConstraints3 = new java.awt.GridBagConstraints();
-    fieldButtonPanel.add(fieldCancel, gridBagConstraints3);
+    fieldButtonPanel.add(fieldCancel);
     
     fieldRefresh.setText("Refresh");
     fieldRefresh.addActionListener(new java.awt.event.ActionListener() {
@@ -200,18 +231,98 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       }
     });
     
-    gridBagConstraints3 = new java.awt.GridBagConstraints();
-    fieldButtonPanel.add(fieldRefresh, gridBagConstraints3);
+    fieldButtonPanel.add(fieldRefresh);
     
     fieldPanel.add(fieldButtonPanel, java.awt.BorderLayout.SOUTH);
     
     tabbedPane.addTab("Field Mappings", fieldPanel);
+    
+    optionPanel.setLayout(new java.awt.BorderLayout());
+    
+    optionInputPanel.setLayout(new java.awt.GridBagLayout());
+    java.awt.GridBagConstraints gridBagConstraints2;
+    
+    hourLabel.setText("Export hours by:");
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    optionInputPanel.add(hourLabel, gridBagConstraints2);
+    
+    hourComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Full Precision", "Quarter of an hour", "Tenth of an hour" }));
+    hourComboBox.setSelectedIndex(hourFormat);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
+    optionInputPanel.add(hourComboBox, gridBagConstraints2);
+    
+    dateLabel.setText("Date Type:");
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    optionInputPanel.add(dateLabel, gridBagConstraints2);
+    
+    dateComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SQL Date", "SQL Timestamp", "Decimal Date (ccyymmdd)" }));
+    dateComboBox.setSelectedIndex(dateFormat);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
+    optionInputPanel.add(dateComboBox, gridBagConstraints2);
+    
+    projectCaseCheckBox.setSelected(projectCase);
+    projectCaseCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    projectCaseCheckBox.setText("Upper-Case Project");
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
+    optionInputPanel.add(projectCaseCheckBox, gridBagConstraints2);
+    
+    optionPanel.add(optionInputPanel, java.awt.BorderLayout.CENTER);
+    
+    optionOK.setText("OK");
+    optionOK.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        saveDriverSettings(evt);
+      }
+    });
+    
+    optionButtonPanel.add(optionOK);
+    
+    optionCancel.setText("Cancel");
+    optionCancel.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        cancel(evt);
+      }
+    });
+    
+    optionButtonPanel.add(optionCancel);
+    
+    optionPanel.add(optionButtonPanel, java.awt.BorderLayout.SOUTH);
+    
+    tabbedPane.addTab("Options", optionPanel);
     
     getContentPane().add(tabbedPane);
     
     pack();
   }//GEN-END:initComponents
 
+  private void toggleODBC(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleODBC
+    toggleODBC();
+  }//GEN-LAST:event_toggleODBC
+  private void toggleODBC() {
+    if(odbcCheckBox.isSelected()) {
+      nameField.setText(odbcDriverName);
+      nameField.disable();
+      urlLabel.setText("Data Source");
+      int lastColon = url.lastIndexOf(':')+1;
+      urlField.setText(url.substring(lastColon));
+      driverInputPanel.repaint();
+    } else {
+      nameField.setText(name);
+      nameField.enable();
+      urlLabel.setText("URL");
+      urlField.setText(url);
+      driverInputPanel.repaint();
+    }
+  }
   private void refreshFieldMap(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshFieldMap
       try {
         tableMap.init();
@@ -237,6 +348,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private void testDriverSettings(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testDriverSettings
     name = nameField.getText();
     url = urlField.getText();
+    if(name.equals(odbcDriverName)) url = "jdbc:odbc:"+url;
     database = dbField.getText();
     table = tableField.getText();
     Connection conn = openConnection();
@@ -257,8 +369,12 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private void saveDriverSettings(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDriverSettings
     name = nameField.getText();
     url = urlField.getText();
+    if(name.equals(odbcDriverName)) url = "jdbc:odbc:"+url;
     database = dbField.getText();
     table = tableField.getText();
+    hourFormat = hourComboBox.getSelectedIndex();
+    dateFormat = dateComboBox.getSelectedIndex();
+    projectCase = projectCaseCheckBox.isSelected();
     for(int i=0; i < tableMap.size(); i++) {
       String value = (String)fieldMapping.getValueAt(i, 2);
       FieldMap record = (FieldMap)tableMap.elementAt(i);
@@ -291,6 +407,12 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         newNode.setAttribute("username", userName);
         newNode.setAttribute("database", database);
         newNode.setAttribute("table", table);
+        rootNode.appendChild(newNode);
+        
+        newNode = doc.createElement("options");
+        newNode.setAttribute("hourFormat", ""+hourFormat);
+        newNode.setAttribute("dateFormat", ""+dateFormat);
+        newNode.setAttribute("projectCase", ""+projectCase);
         rootNode.appendChild(newNode);
         
         //Save field mappings
@@ -336,6 +458,13 @@ public class JDBCControlPanel extends javax.swing.JFrame {
           userName = attributes.getNamedItem("username").getNodeValue();
           database = attributes.getNamedItem("database").getNodeValue();
           table = attributes.getNamedItem("table").getNodeValue();
+
+          NodeList options = doc.getElementsByTagName("options");
+          Node option = options.item(0);
+          attributes = option.getAttributes();
+          hourFormat = Integer.parseInt(attributes.getNamedItem("hourFormat").getNodeValue());
+          dateFormat = Integer.parseInt(attributes.getNamedItem("dateFormat").getNodeValue());
+          projectCase = Boolean.valueOf(attributes.getNamedItem("projectCase").getNodeValue()).booleanValue();
 
           NodeList fieldMaps = doc.getElementsByTagName("fieldmap");
           tableMap.fieldMaps.clear();
@@ -511,6 +640,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     private javax.swing.JTextField dbField;
     private javax.swing.JLabel tableLabel;
     private javax.swing.JTextField tableField;
+    private javax.swing.JCheckBox odbcCheckBox;
     private javax.swing.JPanel driverButtonPanel;
     private javax.swing.JButton driverOK;
     private javax.swing.JButton driverCancel;
@@ -522,6 +652,16 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     private javax.swing.JButton fieldOK;
     private javax.swing.JButton fieldCancel;
     private javax.swing.JButton fieldRefresh;
+    private javax.swing.JPanel optionPanel;
+    private javax.swing.JPanel optionInputPanel;
+    private javax.swing.JLabel hourLabel;
+    private javax.swing.JComboBox hourComboBox;
+    private javax.swing.JLabel dateLabel;
+    private javax.swing.JComboBox dateComboBox;
+    private javax.swing.JCheckBox projectCaseCheckBox;
+    private javax.swing.JPanel optionButtonPanel;
+    private javax.swing.JButton optionOK;
+    private javax.swing.JButton optionCancel;
     // End of variables declaration//GEN-END:variables
     
     private class LoginDialog extends JDialog {
@@ -626,13 +766,12 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       short sqlType;
       int dbFieldIndex;
       String dbFieldName;
-      String valueExpression;
+      String valueExpression = "";
       
       FieldMap(ResultSet rs) throws java.sql.SQLException {
         dbFieldName = rs.getString(4);
         sqlType = rs.getShort(5);
         dbFieldIndex = rs.getInt(17);
-        valueExpression = "";
       }
       
       FieldMap(String name, short type, int index, String value) {
@@ -655,26 +794,45 @@ public class JDBCControlPanel extends javax.swing.JFrame {
             value = toker.nextToken();
             if(value.equals("PROJECT")) {
               if(sqlType != java.sql.Types.CHAR) throw new ClassCastException("Must be CHAR SQL type for project name");
+              if(projectCase) realValue = record.projectName.toUpperCase();
               else realValue = record.projectName;
-            } else if(value.equals("DECIMALDATE")) {
-              if(sqlType != java.sql.Types.DECIMAL) throw new ClassCastException("Must be DECIMAL type for entry date");
-              else {
-                Calendar today = Calendar.getInstance();
-                int year = today.get(Calendar.YEAR);
-                int month = today.get(Calendar.MONTH)+1;
-                int date = today.get(Calendar.DATE);
-                double cymd = (year*10000)+(month*100)+date;
-                realValue = new java.math.BigDecimal(cymd);
+            } else if(value.equals("DATE")) {
+              switch(dateFormat) {
+                case DATE_SQLDATE:
+                  if(sqlType != java.sql.Types.DATE) throw new ClassCastException("Must be DATE SQL type for entry date");
+                  else realValue = new java.sql.Date(System.currentTimeMillis());
+                  break;
+                case DATE_SQLTIMESTAMP:
+                  if(sqlType != java.sql.Types.TIMESTAMP) throw new ClassCastException("Must be TIMESTAMP SQL type for entry timestamp");
+                  else realValue = new java.sql.Timestamp(System.currentTimeMillis());
+                  break;
+                case DATE_CCYYMMDD:
+                  if(sqlType != java.sql.Types.DECIMAL) throw new ClassCastException("Must be DECIMAL type for entry date");
+                  Calendar today = Calendar.getInstance();
+                  int year = today.get(Calendar.YEAR);
+                  int month = today.get(Calendar.MONTH)+1;
+                  int date = today.get(Calendar.DATE);
+                  double cymd = (year*10000)+(month*100)+date;
+                  realValue = new java.math.BigDecimal(cymd);
+                  break;
+                default:
+                  throw new ClassCastException("Unknown conversion for date");
               }
-            } else if(value.equals("SQLDATE")) {
-              if(sqlType != java.sql.Types.DATE) throw new ClassCastException("Must be DATE SQL type for entry date");
-              else realValue = new java.sql.Date(System.currentTimeMillis());
-            } else if(value.equals("TIMESTAMP")) {
-              if(sqlType != java.sql.Types.TIMESTAMP) throw new ClassCastException("Must be TIMESTAMP SQL type for entry timestamp");
-              else realValue = new java.sql.Timestamp(System.currentTimeMillis());
-            } else if(value.equals("HOURS")) {
+            }else if(value.equals("HOURS")) {
               if(sqlType != java.sql.Types.DECIMAL) throw new ClassCastException("Must be DECIMAL SQL type for project name");
-              else realValue = new java.math.BigDecimal(record.getHours(60*15));
+              switch(hourFormat) {
+                case HOUR_FULL:
+                  realValue = new java.math.BigDecimal(record.getHours(60));
+                  break;
+                case HOUR_QUARTER:
+                  realValue = new java.math.BigDecimal(record.getHours(60*15));
+                  break;
+                case HOUR_TENTH:
+                  realValue = new java.math.BigDecimal(record.getHours(60*10));
+                  break;
+                default:
+                  realValue = new java.math.BigDecimal(record.getHours(60));
+              }
             } else {
               System.err.println("Unknown expression variable: "+value);
             }

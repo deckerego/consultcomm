@@ -1,5 +1,5 @@
-Consultant Communicator 1.0.3
-Release 9/11/01
+Consultant Communicator 2.0
+Release 10/08/01
 
 ABOUT CONSULTANT COMMUNICATOR -
 Consultant Communicator (ConsultComm) is a lightweight, 
@@ -8,12 +8,7 @@ clients or tasks to effectively keep track of exactly how long they've
 spent on each project. 
 
 INSTALL -
-To install, simply ensure that the Java Runtime Environment version 1.2 (or 
-greater) is installed on your machine. To see if the JRE has been
-installed or not, simply type:
- 	> java
-at the command line. If a "program not found" error occurs, install the
-Java Runtime Environment, available from http://www.java.sun.com
+Read the file INSTALL for step-by-step directions to install ConsultComm.
 
 STARTING CONSULTANT COMMUNICATOR -
 Simply double-click on the "CsltComm.jar" icon. Or, at the DOS prompt type
@@ -31,6 +26,12 @@ RUNNING CONSULTANT COMMUNICATOR -
 		o Delete Project - Deletes currently seleted project
 		o Edit Project - Edit the currently selected project
 		o Reset Timers - Reset ALL projects to have no elapsed time
+	Tools - Configuration and connectivity
+		o Export to Table - Insert all of your projects and times
+		  into a JDBC database
+		o JDBC Settings - Edit settings to connect to JDBC compliant
+		  databases and insert projects and times into tables. See
+		  the file DBCONNECT for more details
 2) Switching Projects
 	When you are ready to switch to another project, simply click on
 	its name on the list. ConsultComm automatically saves the old
@@ -45,25 +46,25 @@ RUNNING CONSULTANT COMMUNICATOR -
 	minute and when you exit Consultant Communicator.
 
 CURRENT KNOWN BUGS -
-	o Report any bugs to john.ellis@ise-indy.com
+	o Report any bugs to http://consultcomm.sourceforge.net
 
 THINGS TO DO -
 	o Switch to a project automatically at a certain time each day
 	o Add mouse wheel functionality (should be released with JRE 1.4)
-        o Allow sorting by project/time
 
 LICENSE -
-This software is released under the GNU General Public License. 
-Please read the file COPYING for more information on the licensing of this
-application. If you did not receive the file COPYING, please 
-e-mail me at john.ellis@ise-indy.com for a... er... copy.
+Copyright (C) 2000, 2001 Free Software Foundation, Inc.
+License verified on 9/24/2001 by Janet Casey <jcasey@gnu.org>
 
-This software uses the Java API for XML Processing 1.1 from Sun 
-Microsystems, Inc. Usage of ConsultComm is subject to the terms and
-conditions of the "Sun Microsystems, Inc. Binary Code License Agreement"
-and the "JAVA API FOR XML PARSING (JAXP), VERSION 1.1 SUPPLEMENTAL 
-LICENSE TERMS" available on Sun's software site at 
-http://java.sun.com/xml/xml_jaxp.html.
+Permission is granted to copy, distribute, and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts. A copy of this license is included in the file COPYING.
+
+If you did not receive the file COPYING, please e-mail me at 
+john.ellis@ise-indy.com for a... er... copy or take a look at 
+http://www.gnu.org/copyleft/gpl.html .
 
 REPORTING BUGS -
 	http://sourceforge.net/projects/consultcomm/

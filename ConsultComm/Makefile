@@ -1,7 +1,7 @@
 CC=$(JDK_HOME)/bin/javac
 JAVA=$(JDK_HOME)/bin/java
 JAR=$(JDK_HOME)/bin/jar
-CLASSES=$(CLASSPATH):XML/crimson.jar:XML/jaxp.jar:XML/xalan.jar
+CLASSES=$(CLASSPATH)
 MFST=CsltMfst
 CCFLAGS=-O -deprecation
 SOURCEPKG=CsltComm.src.tar.gz
@@ -15,14 +15,14 @@ dryrun:
 
 package:
 	$(JAR) cfm CsltComm.jar $(MFST) *.class graphics/*.gif
-	zip $(BINPKG) CsltComm.jar README AUTHORS COPYING CHANGES INSTALL XML graphics/*.gif
+	zip -r $(BINPKG) CsltComm.jar README AUTHORS COPYING CHANGES INSTALL XML graphics/*.gif
 	tar -cvzf $(SOURCEPKG) *.java *.form graphics/*.gif README AUTHORS COPYING CHANGES INSTALL CsltMfst
 
 clean:
 	rm -f *.class
-	rm -f *.def
 
 realclean: clean
-	rm -f CsltComm.zip
-	rm -f CsltComm.src.tar.gz
+	rm -f *.def
+	rm -f CsltComm*.zip
+	rm -f CsltComm*.src.tar.gz
 	rm -f CsltComm.jar
