@@ -30,7 +30,7 @@ public class CsltComm extends javax.swing.JFrame {
     protected boolean animateIcons = true;
     
     private ClntComm projectList;
-    private String themePack, gtkTheme, kdeTheme;
+    private String themePack, gtkTheme, kdeTheme, lookAndFeel;
     
     /** Creates new form CsltComm */
     public CsltComm() {
@@ -103,7 +103,7 @@ public class CsltComm extends javax.swing.JFrame {
       Skin skin = null;
 
       try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          UIManager.setLookAndFeel(lookAndFeel);
           SwingUtilities.updateComponentTreeUI(this); //OSX treenode icons won't work properly without this
           
           if(! kdeTheme.equals("") && ! gtkTheme.equals(""))
@@ -144,6 +144,7 @@ public class CsltComm extends javax.swing.JFrame {
           themePack = prefs.get("theme", ""); //Get skins
           kdeTheme = prefs.get("kde", "");
           gtkTheme = prefs.get("gtk", "");
+          lookAndFeel = prefs.get("lookandfeel", UIManager.getSystemLookAndFeelClassName());
       } catch(Exception e) {
           System.err.println("Couldn't read prefs: "+e);
       }
