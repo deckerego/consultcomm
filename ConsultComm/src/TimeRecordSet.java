@@ -27,7 +27,7 @@ public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable 
         setSeconds(index, 0L);
     }
     public void resetTime() {
-        for(int i=0; i<size(); i++) resetTime(i);
+        for(int i=0, max=size(); i<max; i++) resetTime(i);
     }
     public void setSeconds(int index, long time) {
         TimeRecord record = elementAt(index);
@@ -70,7 +70,7 @@ public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable 
     
     public Vector getGroupRecords(String groupName) {
         Vector records = new Vector();
-        for(int i=0; i<timeRecords.size(); i++) {
+        for(int i=0, max=timeRecords.size(); i<max; i++) {
             TimeRecord record = (TimeRecord)timeRecords.elementAt(i);
             if(record.getGroupName().equals(groupName))
                 records.addElement(record);
@@ -82,7 +82,7 @@ public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable 
         Vector records = new Vector();
         String lastGroupName = null;
         
-        for(int i=0; i<timeRecords.size(); i++) {
+        for(int i=0, max=timeRecords.size(); i<max; i++) {
             TimeRecord record = (TimeRecord)timeRecords.elementAt(i);
             if(lastGroupName == null || ! lastGroupName.equals(record.getGroupName())) {
                 lastGroupName = record.getGroupName();

@@ -39,7 +39,7 @@ public class TableTreeModelAdapter extends AbstractTableModel {
 
     public Vector getExpandedRows() {
         Vector rows = new Vector();
-        for(int i=0; i<expandedPaths.size(); i++) {
+        for(int i=0, max=expandedPaths.size(); i<max; i++) {
             TreePath path = (TreePath)expandedPaths.elementAt(i);
             Integer rowIndex = new Integer(tree.getRowForPath(path));
             if(rowIndex.intValue() > -1) rows.addElement(rowIndex);
@@ -50,14 +50,14 @@ public class TableTreeModelAdapter extends AbstractTableModel {
     public void setExpandedPaths(Vector expandedPaths) {
         this.expandedPaths = expandedPaths;
         //Reset expanded rows
-        for(int i=0; i<expandedPaths.size(); i++)
+        for(int i=0, max=expandedPaths.size(); i<max; i++)
             tree.expandPath((TreePath)expandedPaths.elementAt(i));
     }
     
     public void setExpandedRows(Vector expandedRows) {
         Collections.sort(expandedRows); //Ensure proper order for restoring
         this.expandedPaths = new Vector();
-        for(int i=0; i<expandedRows.size(); i++) {
+        for(int i=0, max=expandedRows.size(); i<max; i++) {
             Integer row = (Integer)expandedRows.elementAt(i);
             TreePath path = tree.getPathForRow(row.intValue());
             tree.expandPath(path);

@@ -93,7 +93,7 @@ public class TableTreeModel implements TreeModel {
     public void valueForPathChanged(TreePath path, Object newValue) {}
     
     public int getIndexOfChild(Object parent, Object child) {
-        for (int i = 0; i < getChildCount(parent); i++) {
+        for (int i=0, max=getChildCount(parent); i < max; i++) {
             if (getChild(parent, i).equals(child)) {
                 return i;
             }
