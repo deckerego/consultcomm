@@ -55,6 +55,7 @@ public class TableTreeModelAdapter extends AbstractTableModel {
     }
     
     public void setExpandedRows(Vector expandedRows) {
+        Collections.sort(expandedRows); //Ensure proper order for restoring
         this.expandedPaths = new Vector();
         for(int i=0; i<expandedRows.size(); i++) {
             Integer row = (Integer)expandedRows.elementAt(i);
