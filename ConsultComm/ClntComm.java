@@ -38,7 +38,6 @@ public class ClntComm extends javax.swing.JPanel {
      */
     public ClntComm(CsltComm parent) {
         csltComm = parent;                                  //Set parent object for reloading CsltComm
-        changes = new PropertyChangeSupport(this);          //Create new change listener
         totalPanel = new TotalPanel();                      //Create a new total/elapsed counter
         timerTask = new TimerThread();                      //Create a new "clock" for the project timer
         readPrefs();                                        //Read in user preferences
@@ -426,6 +425,7 @@ public void editWindow(int i){
 
 void loadPlugins() {
     try{
+        changes = new PropertyChangeSupport(this);
         plugins = PluginManager.getPlugins();
         for(int i=0; i<plugins.size(); i++) {
             Object plugin = plugins.elementAt(i);
