@@ -79,9 +79,7 @@ public class PrefsFile {
   public Boolean readFirstBoolean(String element, String attribute) {
     String booleanString = readFirstItem(element, attribute);
     if(booleanString == null) return null;
-    else 
-      if(booleanString.equals("true")) return new Boolean(true);
-      else return new Boolean(false);
+    else return new Boolean(booleanString);
   }
   
   public void saveFirst(String element, String attribute, String value) {
