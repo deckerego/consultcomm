@@ -56,10 +56,18 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     inputPanel.add(projLabel, gridBagConstraints1);
     
-    projField.setColumns(10);
+    projField.setColumns(15);
     projField.setText(record.projectName);
+    projField.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        projFieldActionPerformed(evt);
+      }
+    });
+    
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
     inputPanel.add(projField, gridBagConstraints1);
     
     aliasLabel.setText("Alias: ");
@@ -67,10 +75,12 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     inputPanel.add(aliasLabel, gridBagConstraints1);
     
-    aliasField.setColumns(10);
+    aliasField.setColumns(15);
     aliasField.setText(record.alias);
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
     inputPanel.add(aliasField, gridBagConstraints1);
     
     timeLabel.setText("Time: ");
@@ -82,6 +92,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     timeField.setText(record.toMinuteString());
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
     inputPanel.add(timeField, gridBagConstraints1);
     
     billable.setSelected(record.billable);
@@ -97,6 +108,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     export.setText("Export Project to Database");
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
     inputPanel.add(export, gridBagConstraints1);
     
     getContentPane().add(inputPanel, java.awt.BorderLayout.CENTER);
@@ -124,6 +136,10 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     
     pack();
   }//GEN-END:initComponents
+
+  private void projFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projFieldActionPerformed
+    // Add your handling code here:
+  }//GEN-LAST:event_projFieldActionPerformed
   
   private void save(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_save
     record.projectName = projField.getText();
