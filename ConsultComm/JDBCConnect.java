@@ -303,7 +303,7 @@ class JDBCConnect {
   
   void savePrefs() {
     File prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
-    File stylesheet = new File("stylesheet.xsl");
+    File stylesheet = CsltComm.getFile(this, "stylesheet.xsl");
     try {
       DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();

@@ -653,7 +653,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   
   private void savePrefs() {
     File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
-    File stylesheet = new File("stylesheet.xsl");
+    File stylesheet = CsltComm.getFile(this, "stylesheet.xsl");
     try {
       DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
