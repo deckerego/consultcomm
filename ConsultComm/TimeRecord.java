@@ -52,6 +52,6 @@ class TimeRecord implements Comparable {
   public int compareTo(Comparable comp, String type) throws Exception {
     TimeRecord compTo = (TimeRecord)comp;
     if(type.equals("Time")) return (int)(seconds-compTo.seconds);
-    else return projectName.compareToIgnoreCase(compTo.projectName);
+    else return alias.compareToIgnoreCase(compTo.alias);
   }
 }
