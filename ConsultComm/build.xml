@@ -19,6 +19,10 @@
     <jar destfile="CsltComm.jar">
       <fileset dir="${src}">
         <include name="*.class"/>
+        <include name="CHANGES"/>
+        <include name="AUTHORS"/>
+        <include name="COPYING"/>
+        <include name="README"/>
         <include name="graphics/*.gif"/>
         <include name="graphics/*.png"/>
         <include name="help/*"/>
@@ -47,7 +51,7 @@
 
   <target depends="clean" name="realclean">
     <delete>
-      <fileset dir="${src}" includes="*~"/>
+      <fileset dir="${src}" includes="**/*~" defaultexcludes="no"/>
       <fileset dir="${src}" includes="CsltComm.jar"/>
     </delete>
   </target>
