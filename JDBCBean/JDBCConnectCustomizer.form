@@ -384,7 +384,7 @@
                       <Color blue="99" green="66" red="66" type="rgb"/>
                     </Property>
                     <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="dbConnection.getProjectValidate()" type="code"/>
+                      <Connection code="dbConnection.isProjectValidate()" type="code"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Validate Project"/>
                   </Properties>

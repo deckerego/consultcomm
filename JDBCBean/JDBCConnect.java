@@ -13,18 +13,19 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
-public class JDBCConnect implements java.io.Serializable, java.beans.PropertyChangeListener {
+public class JDBCConnect implements java.io.Serializable, java.beans.PropertyChangeListener, java.lang.Cloneable {
     final static String ODBCDRIVERNAME = "sun.jdbc.odbc.JdbcOdbcDriver";
     
     private Vector errorList;
     private JFrame parentFrame;
     ClntComm clntComm;
+    transient String password="";
+    transient boolean validated;
     
     private TableMap tableMap;
     private String name = "";
     private String url = "";
     private String userName = "";
-    private String password="";
     private String database="";
     private String table="";
     private String projectDatabase="";
@@ -33,8 +34,6 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     private int hourFormat;
     private boolean projectValidate;
     private boolean projectCase;
-    private boolean useExport;
-    private boolean validated;
     
     public JDBCConnect() {
         tableMap = new TableMap();
@@ -59,8 +58,6 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     public String getUrl() { return this.url; }
     public void setUserName(String userName) { this.userName = userName; }
     public String getUserName() { return this.userName; }
-    public void setPassword(String password) { this.password = password; }
-    public String getPassword() { return this.password; }
     public void setDatabase(String database) { this.database = database; }
     public String getDatabase() { return this.database; }
     public void setTable(String table) { this.table = table; }
@@ -73,18 +70,12 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     public String getProjectField() { return this.projectField; }
     public void setHourFormat(int hourFormat) { this.hourFormat = hourFormat; }
     public int getHourFormat() { return this.hourFormat; }
-    public void setProjectValidate(boolean porjectValidate) { this.projectValidate = projectValidate; }
+    public void setProjectValidate(boolean projectValidate) { this.projectValidate = projectValidate; }
     public boolean getProjectValidate() { return this.projectValidate; }
     public boolean isProjectValidate() { return this.projectValidate; }
     public void setProjectCase(boolean projectCase) { this.projectCase = projectCase; }
     public boolean getProjectCase() { return this.projectCase; }
     public boolean isProjectCase() { return this.projectCase; }
-    public void setUseExport(boolean useExport) { this.useExport = useExport; }
-    public boolean getUseExport() { return this.useExport; }
-    public boolean isUseExport() { return this.useExport; }
-    public void setValidated(boolean validated) { this.validated = validated; }
-    public boolean getValidated() { return this.validated; }
-    public boolean isValidated() { return this.validated; }
     public void setTableMap(TableMap tableMap) { this.tableMap = tableMap; }
     public TableMap getTableMap() { return this.tableMap; }
     
@@ -108,7 +99,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
         errorList = new Vector();
         
         try{
-            Class.forName(name);
+            Class.forName(this.name);
             if(! validated) { //Send login dialog box
                 LoginDialog prompt = new LoginDialog(userName);
                 prompt.pack();
@@ -116,10 +107,10 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
                 prompt.setVisible(true);
             }
             Properties properties = new Properties();
-            properties.put("password", password);
-            properties.put("user", userName);
+            properties.put("password", this.password);
+            properties.put("user", this.userName);
             properties.put("prompt", "false");
-            conn = DriverManager.getConnection(url, properties);
+            conn = DriverManager.getConnection(this.url, properties);
             if(conn.isClosed()) {
                 errorList.addElement("Cannot open connection");
                 conn = null;
@@ -189,29 +180,30 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
             // So we first load everything into a two dimensional array
             // then we insert the records into the database.
             Vector statements = new Vector();
+            FieldMap.setConnection(this);
             for(int j=0; j < times.size(); j++) {
                 TimeRecord record = times.elementAt(j);
                 
                  //Find out how many hours exist - if no hours exist, skip this record
                 FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$HOURS");
-                hourTest.setConnection(this);
                 java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.valueOf(record);
                 if(hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) continue;
                 
                 //Find out if this project is exportable or not
                 ProjectMap project = (ProjectMap)this.tableMap.getProjectMaps().get(record.getProjectName());
-                if(! project.isExport()) continue;
+                if(project == null || ! project.isExport()) continue;
                 
                 //Start translating the TimeRecord into a SQL statement
                 Object[] statement = new Object[tableMap.getFieldMaps().size()];
                 Vector fieldMaps = tableMap.getFieldMaps();
                 for(int i=0; i < statement.length; i++) {
                     FieldMap fieldMap = (FieldMap)fieldMaps.elementAt(i);
-                    fieldMap.setConnection(this);
                     statement[i] = fieldMap.valueOf(record);
                 }
                 statements.addElement(statement);
             }
+            
+            FieldMap.closeConnection();
             
             //Send the vector of statements
             insertVector(statements);
@@ -281,6 +273,10 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
         if(clntComm == null) clntComm = (ClntComm)propertyChangeEvent.getSource();
     }
     
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+    
     private class LoginDialog extends JDialog {
         private JOptionPane optionPane;
         
@@ -318,7 +314,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
                         optionPane.setValue(JDBCOptionPane.UNINITIALIZED_VALUE);
                         
                         if (value.equals("0")) {
-                            setPassword(new String(passField.getPassword()));
+                            password = new String(passField.getPassword());
                             setUserName(userField.getText());
                             setVisible(false);
                         } else { // user closed dialog or clicked cancel

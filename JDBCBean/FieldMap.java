@@ -10,9 +10,11 @@ public class FieldMap implements java.io.Serializable {
     final static int HOUR_QUARTER = 1;
     final static int HOUR_TENTH = 2;
     final static int SHOW_EXPORT = 2;
-    
+
+    private static PreparedStatement findProject;
+    private static Connection conn;
+    private static JDBCConnect jdbc;
     private JFrame parentFrame;
-    private JDBCConnect jdbc;
 
     private int sqlType;
     private int dbFieldIndex;
@@ -21,16 +23,12 @@ public class FieldMap implements java.io.Serializable {
     private String valueExpression;
     
     public FieldMap() {
-        parentFrame = new JFrame();
-        sqlType = -1;
-        dbFieldIndex = -1;
-        exportable = false;
-        dbFieldName = null;
-        valueExpression = null;
+        this(null, -1, -1, null);
     }
     
     public FieldMap(String name, int type, int index, String value) {
         parentFrame = new JFrame();
+        
         this.dbFieldName = name;
         this.sqlType = type;
         this.dbFieldIndex = index;
@@ -49,22 +47,28 @@ public class FieldMap implements java.io.Serializable {
     public void setValueExpression(String valueExpression) { this.valueExpression = valueExpression; }
     public String getValueExpression() { return this.valueExpression; }
     
-    public void setConnection(JDBCConnect jdbc) { this.jdbc = jdbc; }
+    public static void setConnection(JDBCConnect jdbcConnect) throws SQLException {
+        jdbc = jdbcConnect;
+        conn = jdbc.openConnection();
+        String queryString = "SELECT "+jdbc.getProjectField()+" FROM "+jdbc.getProjectDatabase()+
+        "."+jdbc.getProjectTable()+" WHERE "+jdbc.getProjectField()+"=?";
+        findProject = conn.prepareStatement(queryString);
+    }
+    
+    public static void closeConnection() throws SQLException {
+        if(findProject != null) findProject.close();
+        if(conn != null) conn.close();
+    }
     
     private boolean validateProject(String project) {
-        Connection conn = jdbc.openConnection();
         java.sql.Statement stmt = null;
         ResultSet rs = null;
         boolean isValid = false;
         try {
-            String queryString = "SELECT "+jdbc.getProjectField()+" FROM "+jdbc.getProjectDatabase()+"."+jdbc.getProjectTable()+
-            " WHERE "+jdbc.getProjectField()+"='"+project+"'";
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(queryString);
+            this.findProject.setString(1, project);
+            rs = this.findProject.executeQuery();
             isValid = rs.next();
             rs.close();
-            stmt.close();
-            conn.close();
             
             if(! isValid) {
                 ProjectAddDialog addDialog = new ProjectAddDialog(parentFrame, project, jdbc.getProjectField(), jdbc);
