@@ -81,7 +81,7 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
     if(systrayLibrary) {
       clntComm = (ClntComm)propertyChangeEvent.getSource();
       int selectedIndex = clntComm.getSelectedIndex();
-      if(selectedIndex >= 0) {
+      if(selectedIndex > 0) {
         TimeRecordSet recordSet = clntComm.getTimes();
         String[] projectNames = recordSet.getAllProjects();
         sysTrayIcon.setCaption(projectNames[selectedIndex]);
