@@ -3,26 +3,27 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import java.io.InputStream;
+import java.io.*;
 import ClntComm;
 
 public class CsltComm extends javax.swing.JFrame {
-public static final String release = "ConsultComm 2.0";
-static MediaTracker iconTracker;
-static MTPanel iconPanel;
-public static int frameNumber;
-public static int imageWidth = 16;
-public static int imageHeight = 4;
-public static int frameDelay = 10;
-private ClntComm projectList;
-protected Image appIcon;
-
+  public static final String release = "ConsultComm 2.0";
+  final static File prefsDir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+  static MediaTracker iconTracker;
+  static MTPanel iconPanel;
+  public static int frameNumber;
+  public static int imageWidth = 16;
+  public static int imageHeight = 4;
+  public static int frameDelay = 10;
+  private ClntComm projectList;
+  protected Image appIcon;
+  
   /** Creates new form CsltComm */
   public CsltComm() {
     frameNumber = 0;
     Image clockIcon = getImage("graphics/BlueBar.gif");
     appIcon = getImage("graphics/icon.gif");
-
+    
     // Will this work for Java 1.4 ?
     try {
       Class.forName("javax.xml.parsers.DocumentBuilder"); // jaxp.jar
@@ -35,13 +36,15 @@ protected Image appIcon;
       "http://java.sun.com/xml/download.html and have installed\n"+
       "all .jar files in "+extdir;
       JOptionPane.showMessageDialog(this, errMsg, "JAXP Not Found", JOptionPane.ERROR_MESSAGE);
-      System.exit (0);
+      System.exit(0);
     }
     initComponents();
-
+    prefsDir.mkdir();
+    System.out.println("User directory: "+prefsDir);
+    
     iconTracker = new MediaTracker(this);
     iconTracker.addImage(clockIcon, 0);
-
+    
     Timer iconTimer = new Timer(frameDelay,
     new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -56,21 +59,21 @@ protected Image appIcon;
         }
       }
     });
-
+    
     iconTimer.setInitialDelay(0);
     iconPanel = new MTPanel(clockIcon);
     iconPanel.setPreferredSize(new Dimension(imageWidth, imageHeight));
     iconPanel.setMinimumSize(new Dimension(imageWidth, imageHeight));
     iconPanel.setMaximumSize(new Dimension(1024, imageHeight));
-
+    
     projectList = new ClntComm();
     getContentPane().add(projectList);
     getContentPane().add(iconPanel);
     iconTimer.start();
     
-    pack ();
+    pack();
   }
-
+  
   /** This method is called from within the constructor to
    * initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is
@@ -90,20 +93,20 @@ protected Image appIcon;
     });
     
   }//GEN-END:initComponents
-
+  
   /** Exit the Application */
   private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
     projectList.savePrefs();
-    System.exit (0);
+    System.exit(0);
   }//GEN-LAST:event_exitForm
-
+  
   /**
-  * @param args the command line arguments
-  */
-  public static void main (String args[]) {
-    new CsltComm ().show ();
+   * @param args the command line arguments
+   */
+  public static void main(String args[]) {
+    new CsltComm().show();
   }
-
+  
   private Image getImage(String path) {
     //Load the animated icon from the JAR file... note that we can't just to a getImage()
     //anymore - we have to input the image data as a byte stream.
@@ -120,30 +123,30 @@ protected Image appIcon;
     }
     return image;
   }
-
+  
   // Variables declaration - do not modify//GEN-BEGIN:variables
   // End of variables declaration//GEN-END:variables
-class MTPanel extends JPanel {
-  Image animationFrame;
-
-  public MTPanel(Image frame) {
-    animationFrame = frame;
-  }
-
-  //Draw the current frame of animation.
-  public void paintComponent(Graphics g) {
-    super.paintComponent(g); //paint the background
-    int width = getWidth();
-    int height = getHeight();
-
-    //If not all the images are loaded,
-    //just display a status string.
-    if (!iconTracker.checkAll()) {
-      return;
+  class MTPanel extends JPanel {
+    Image animationFrame;
+    
+    public MTPanel(Image frame) {
+      animationFrame = frame;
     }
-
-    //Paint the frame into the image.
-    g.drawImage(animationFrame, (CsltComm.frameNumber%(width+imageWidth))-imageWidth, 0, this);
+    
+    //Draw the current frame of animation.
+    public void paintComponent(Graphics g) {
+      super.paintComponent(g); //paint the background
+      int width = getWidth();
+      int height = getHeight();
+      
+      //If not all the images are loaded,
+      //just display a status string.
+      if (!iconTracker.checkAll()) {
+        return;
+      }
+      
+      //Paint the frame into the image.
+      g.drawImage(animationFrame, (CsltComm.frameNumber%(width+imageWidth))-imageWidth, 0, this);
+    }
   }
-}
 }
