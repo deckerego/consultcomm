@@ -103,6 +103,7 @@ public class TotalTimesCustomizer extends javax.swing.JPanel implements java.bea
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         saveTimeOutSettings();
+        ((PluginManager)getTopLevelAncestor()).exitForm();
     }//GEN-LAST:event_saveButtonActionPerformed
 
     public void setObject(Object obj) {
