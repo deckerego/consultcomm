@@ -302,6 +302,10 @@ public class ClntComm extends javax.swing.JPanel {
   }
   
   private void zeroProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zeroProject
+    zeroProject();
+  }//GEN-LAST:event_zeroProject
+  
+  public void zeroProject() {
       Object[] options = {"OK", "Cancel"};
       int dialog = CustomOptionPane.showOptionDialog(frame,
       "All projects will be marked as having no elapsed time. Continue?",
@@ -312,10 +316,9 @@ public class ClntComm extends javax.swing.JPanel {
           times.resetTime();
           timerTask.startTime = System.currentTimeMillis()/1000;
           timeList.setModel(new TableTreeModel(times, timeFormat));
-          //timeList.repaint();
           refreshTotalTime();
       }
-  }//GEN-LAST:event_zeroProject
+  }
   
   private void editProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProject
       editWindow(timeList.getSelectedRecord());
@@ -555,25 +558,25 @@ public boolean isRunning(){
 
 private TableTree timeList;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem editMenuItem;
-    private javax.swing.JMenuItem editPopupItem;
-    private javax.swing.JButton startButton;
-    private javax.swing.JMenuItem deletePopupItem;
-    private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem helpMenuItem;
     private javax.swing.JLabel totalTime;
-    private javax.swing.JPanel menuPanel;
-    private javax.swing.JMenuItem prefsMenuItem;
+    private javax.swing.JMenuItem pluginsMenuItem;
     private javax.swing.JPanel totalPanel;
-    private javax.swing.JMenuItem deleteMenuItem;
-    private javax.swing.JMenuItem zeroMenuItem;
+    private javax.swing.JScrollPane scrollPane;
+    private javax.swing.JMenuItem editMenuItem;
+    private javax.swing.JMenuItem addMenuItem;
+    private javax.swing.JMenuItem prefsMenuItem;
+    private javax.swing.JMenuItem helpMenuItem;
     private javax.swing.JMenu projectMenu;
     private javax.swing.JMenu toolMenu;
-    private javax.swing.JScrollPane scrollPane;
-    private javax.swing.JMenuItem addMenuItem;
-    private javax.swing.JMenuItem pluginsMenuItem;
-    private javax.swing.JLabel totalText;
+    private javax.swing.JButton startButton;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JPanel menuPanel;
     private javax.swing.JPopupMenu editMenu;
+    private javax.swing.JMenuItem deletePopupItem;
+    private javax.swing.JMenuItem zeroMenuItem;
+    private javax.swing.JLabel totalText;
+    private javax.swing.JMenuItem editPopupItem;
+    private javax.swing.JMenuItem deleteMenuItem;
     // End of variables declaration//GEN-END:variables
     
     /**
