@@ -23,7 +23,6 @@
       <fileset dir="${src}" includes="*.so"/>
       <fileset dir="${src}" includes="*.dll"/>
       <manifest>
-        <attribute name="CsltComm-Plugin" value="LoadOnlyOnce"/>
         <attribute name="Manifest-Version" value="Version 1.0"/>
         <attribute name="Java-Bean" value="true"/>
         <attribute name="Specification-Version" value="3.1"/>
@@ -42,7 +41,7 @@
 
   <target depends="clean" name="realclean">
     <delete>
-      <fileset dir="${src}" includes="*~"/>
+      <fileset dir="${src}" includes="**/*~" defaultexcludes="no"/>
     </delete>
   </target>
 </project>
