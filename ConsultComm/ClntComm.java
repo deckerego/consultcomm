@@ -236,7 +236,7 @@ public class ClntComm extends javax.swing.JPanel {
         });
         JTableHeader timeListHeader = timeList.getTableHeader();
         timeListHeader.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
                 sortColumn(evt);
             }
         });
