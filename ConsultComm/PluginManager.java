@@ -163,7 +163,7 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
 
           File serializedFile = new File(prefsdir, currBean+".xml");
           File file = pluginfiles[i];
-          CsltCommPlugin plugin;
+          Object plugin;
           
           //Get plugin properties stored in manifest
           java.util.jar.JarFile jarFile = new java.util.jar.JarFile(file);
@@ -184,21 +184,20 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
             System.err.println("Can't understand plugin's version number, loading anyway...");
           }
           
-          //If the version should only be loaded once, and is, don't load it
-          boolean loadOnlyOnce = pluginProperties != null && pluginProperties.indexOf(LOADONLYONCE) != -1;
-          if(loadOnlyOnce && pluginList.containsKey(currBean)) continue;
+          if(pluginList.containsKey(currBean)) continue; //Don't re-load plugins
           
+          pluginList.remove(currBean);
           try { //Attempt to retrieve plugin settings from serialization file
-              FileInputStream inStream = new FileInputStream(serializedFile);
-              XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
-              System.out.println("Deserializing plugin "+currBean+" from "+serializedFile.getName());
-              plugin = (CsltCommPlugin)d.readObject();
-              d.close();
+            FileInputStream inStream = new FileInputStream(serializedFile);
+            XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
+            System.out.println("Deserializing plugin "+currBean+" from "+serializedFile.getName());
+            plugin = d.readObject();
+            d.close();
           } catch (Exception e) { //No luck restoring bean, invoke a default bean
-              System.out.println("Instantiating plugin "+currBean+" from "+pluginfiles[i].getName());
-              plugin = (CsltCommPlugin)Beans.instantiate(loader, currBean);
+            System.out.println("Instantiating plugin "+currBean+" from "+pluginfiles[i].getName());
+            plugin = Beans.instantiate(loader, currBean);
           }
-              
+          
           pluginList.put(currBean, plugin);
       }
   }
