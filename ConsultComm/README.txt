@@ -1,0 +1,143 @@
+Consultant Communicator - Beta 0.4.0
+Release 7/17/00
+
+ABOUT CONSULTANT COMMUNICATOR -
+Consultant Communicator (ConsultComm) is a program that allows anyone
+managing multiple projects, clients or tasks to effectively keep track
+of exactly how long they've spent on each project. 
+
+INSTALL -
+Windows 95, 98, NT
+To install, simply ensure that the Java Runtime Environment version 1.2 (or 
+greater) is installed on your machine. To see if the JRE has been
+installed or not, simply type:
+ 	> java
+at the command line. If a "program not found" error occurs, install the
+Java Runtime Environment, available from http://www.java.sun.com
+
+STARTING CONSULTANT COMMUNICATOR -
+Simply double-click on the "CsltComm.jar" icon. Or, at the DOS prompt type
+	> cd \CsltComm
+	> javaw -jar CsltComm.jar (or java -jar CsltComm.jar on
+	  non-Windows platforms)
+
+RUNNING CONSULTANT COMMUNICATOR -
+1) The Time Tracker
+	Simply use the toolbar to use the following functions:
+	G - "Go!" Start the clock running.
+	S - "Stop" Stop the clock from running.
+	E - "Edit" Edit the currently highlighted project.
+	N - "New Project" Create a new project. Enter in the project name and 
+	    time spent so far.
+	D - "Delete" Remove a project from the list.
+        Z - "Zero-Out" Set all projects to have an elapsed time of zero
+2) Switching Projects
+	When you are ready to switch to another project, simply click on
+	its name on the list. ConsultComm automatically saves the old
+	project's elapsed time and watches elapsed time on the new
+	project.
+3) Total vs. Billable Time
+	To see your billable (instead of total) time, simply click on the
+	"Total:" box at the bottom of ConsultComm. When you want to switch
+	back, simply click on the "Billable:" box.
+5) Saving Preferances
+	Projects, time and preferances are automatically saved every 
+	minute and when you exit Consultant Communicator.
+
+CURRENT KNOWN BUGS -
+	o Report any bugs to john.ellis@ise-indy.com
+
+THINGS TO DO -
+	o Add a reminders feature that automatically switches projects
+	o Switch/Stop project timer when your computer is idle for X 
+	  minutes
+
+LICENSE -
+This software is released under the GNU General Public License. 
+Please read the file COPYING for more information on the licensing of this
+application. If you did not receive the file COPYING, please 
+e-mail me at john.ellis@ise-indy.com for a... er... copy.
+
+This software uses the Java API for XML Processing 1.1 from Sun 
+Microsystems, Inc. Usage of ConsultComm is subject to the terms and
+conditions of the "Sun Microsystems, Inc. Binary Code License Agreement"
+and the "JAVA API FOR XML PARSING (JAXP), VERSION 1.1 SUPPLEMENTAL 
+LICENSE TERMS" available on Sun's software site at 
+http://java.sun.com/xml/xml_jaxp.html.
+
+
+REVISION HISTORY -
+	o 0.4.0
+		- Removed chat client (never worked too well, wasn't used)
+		- Preferences are now saved in XML
+		- Projects are now listed in a table format instead of a
+		  list format
+		- Fixed garbled negative time bug
+                - "Z" now zeros-out all projects
+		- Official site changed
+	o 0.3.0
+		- Added flag for billable/non-billable projects. Keep
+		  track of how long you were at lunch!
+		- Fixed asthetic things, ported over to Sun's Forte IDE.
+	o 0.2.5
+		- Fixed scrolling problem. It... just... disappeared...
+	o 0.2.4
+		- Images now a resource within the JAR file
+		- Fixed scrolling (not two bars, both lists scroll
+		  together)
+	o 0.2.3
+		- Batch (.bat) script is no longer released, path
+		  statements are no longer part of the installation
+		  process. This is left up to Sun's JRE installer.
+		  The installer should both modify the path on its own
+		  and allow a user to double-click on a JAR (.jar) file
+		  for it to be executed.
+		- Fixed bug where "Total Time" field is incorrect when
+		  creating a new project while the clock is running
+		- Fixed bug where time may have been deleted off of the
+		  current project when creating a new one
+		- Package now distributed as a JAR file
+	o 0.2.2:
+		- Fixed bug with total time listing - wasn't refreshing
+		  as projects were deleted, edited or zeroed out
+	o 0.2.1:
+		- Fixed bug where new CoWorkers couldn't be entered
+		  under some circumstances
+	o 0.2.0:
+		- Added "Total Hours" to bottom of window
+		- Fixed problem with chat client where messages were
+		  broken up when they ran too long
+		- Added scroll bars to chat window
+	o 0.1.4:
+		- The "Go" and "Stop" buttons are now merged into one...
+		  having two buttons was too redundant for my tastes
+		- "0" is now marked as "0:00" when reading from the
+		  prefs file
+		- "Z" button added to zero-out projects (show no elapsed
+		  time)
+		- Extremely pesky chat bug fixed... chat requests are
+		  quicker and work every time now
+	o 0.1.3:
+		- Project tracker was updating & backing up every second,
+		  changed to every minute
+		- Code optimized
+	o 0.1.2:
+		- Error message now pops up when trying to send a message
+		  to someone not online
+		- Fixed bug where CoWorker List would only allow one entry
+	o 0.1.1:
+		- Fixed problem with editing a running project and having
+		  the time changes be ignored
+		- Added animated icon at bottom to show that clock is
+		  running
+		- Prefs are backed up every minute now (to safeguard
+		  against crashes, will be a preference itself soon).
+
+REPORTING BUGS -
+	E-mail john.ellis@ise-indy.com with bug reports.
+
+OFFICIAL SITE -
+	http://members.tripod.com/dekr0/csltcomm/
+
+FIRST RELEASED -
+	November 1999
