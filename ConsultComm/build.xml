@@ -27,16 +27,12 @@
     <copy file="CsltComm.jar" todir="${user.home}/ConsultComm"/>
   </target>
 
-  <target depends="init" name="dryrun">
-    <javac srcdir="${src}">
-      <classpath>
-        <pathelement location="${src}"/>
-      </classpath>
-    </javac>
+  <target depends="compile" name="dryrun">
     <java classname="CsltComm" fork="true">
       <classpath>
         <pathelement location="${src}"/>
       </classpath>
+      <jvmarg value="-Djava.library.path=X"/>
     </java>
   </target>
 
