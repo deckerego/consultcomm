@@ -642,26 +642,26 @@ public boolean isRunning(){
 }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem editMenuItem;
-    private javax.swing.JMenuItem editPopupItem;
-    private javax.swing.JButton startButton;
-    private javax.swing.JMenuItem deletePopupItem;
-    private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem helpMenuItem;
     private javax.swing.JLabel totalTime;
-    private javax.swing.JPanel menuPanel;
-    private javax.swing.JMenuItem prefsMenuItem;
+    private javax.swing.JMenuItem pluginsMenuItem;
     private javax.swing.JPanel totalPanel;
-    private javax.swing.JMenuItem deleteMenuItem;
-    private javax.swing.JMenuItem zeroMenuItem;
+    private javax.swing.JScrollPane scrollPane;
+    private javax.swing.JMenuItem editMenuItem;
+    private javax.swing.JMenuItem addMenuItem;
+    private javax.swing.JMenuItem prefsMenuItem;
+    private javax.swing.JMenuItem helpMenuItem;
     private javax.swing.JMenu projectMenu;
     private javax.swing.JMenu toolMenu;
-    private javax.swing.JScrollPane scrollPane;
-    private javax.swing.JMenuItem addMenuItem;
-    private javax.swing.JMenuItem pluginsMenuItem;
-    private javax.swing.JLabel totalText;
+    private javax.swing.JButton startButton;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JPanel menuPanel;
     private javax.swing.JTable timeList;
     private javax.swing.JPopupMenu editMenu;
+    private javax.swing.JMenuItem deletePopupItem;
+    private javax.swing.JMenuItem zeroMenuItem;
+    private javax.swing.JLabel totalText;
+    private javax.swing.JMenuItem editPopupItem;
+    private javax.swing.JMenuItem deleteMenuItem;
     // End of variables declaration//GEN-END:variables
     
     /**
@@ -704,11 +704,10 @@ public boolean isRunning(){
                     
                     //If the user requested a save now, do it
                     if (currSeconds % saveInterval == 0) savePrefs();
-                    
-                    //Send out events to our plugins
-                    changes.firePropertyChange("times", oldTimes, times);
                 }
             }
+            //Send out events to our plugins
+            changes.firePropertyChange("times", oldTimes, times);
         }
     }
 }
