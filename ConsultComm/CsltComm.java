@@ -1,8 +1,3 @@
-/*
- * CsltComm.java
- *
- * Created on May 22, 2000, 4:07 PM
- */
 import java.net.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -11,12 +6,8 @@ import javax.swing.event.*;
 import java.io.InputStream;
 import ClntComm;
 
-/** 
- *
- * @author  jellis
- * @version 
- */
 public class CsltComm extends javax.swing.JFrame {
+public static final String release = "ConsultComm 2.0";
 static MediaTracker iconTracker;
 static MTPanel iconPanel;
 public static int frameNumber;
@@ -31,8 +22,22 @@ protected Image appIcon;
     frameNumber = 0;
     Image clockIcon = getImage("graphics/BlueBar.gif");
     appIcon = getImage("graphics/icon.gif");
-      
-    initComponents ();
+
+    // Will this work for Java 1.4 ?
+    try {
+      Class.forName("javax.xml.parsers.DocumentBuilder"); // jaxp.jar
+      Class.forName("org.w3c.dom.Document"); // crimson.jar
+      Class.forName("org.xml.sax.Parser"); // xalan.jar
+    } catch (ClassNotFoundException e) {
+      String extdir = System.getProperty("java.ext.dirs");
+      String errMsg = "Java API for XML Parsing was not found.\n"+
+      "Make sure you have downloaded the Java API at\n"+
+      "http://java.sun.com/xml/download.html and have installed\n"+
+      "all .jar files in "+extdir;
+      JOptionPane.showMessageDialog(this, errMsg, "JAXP Not Found", JOptionPane.ERROR_MESSAGE);
+      System.exit (0);
+    }
+    initComponents();
 
     iconTracker = new MediaTracker(this);
     iconTracker.addImage(clockIcon, 0);
@@ -75,7 +80,7 @@ protected Image appIcon;
     
     getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
     
-    setTitle("ConsultComm 1.0.3");
+    setTitle(release);
     setName("frame");
     setIconImage(appIcon);
     addWindowListener(new java.awt.event.WindowAdapter() {
