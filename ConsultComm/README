@@ -1,4 +1,4 @@
-Consultant Communicator CVS Release
+Consultant Communicator (ConsultComm)
 
 Copyright (C) 2000, 2001 Free Software Foundation, Inc.
 
@@ -17,6 +17,15 @@ Binary packages are available for most platforms at the ConsultComm
 site: http://consultcomm.sourceforge.net. You can browse documentation 
 online at http://sourceforge.net/projects/consultcomm.
 
-This application uses SkinLF developed by L2F Productions 
+This application uses SkinLF's skinlf.jar developed by L2F Productions
 (http://www.L2FProd.com), Copyright (c) 2000-2001 L2FProd.com. 
-All rights reserved.
+All rights reserved. When building from source place skinlf.jar
+in the same directory as CsltComm.jar.
+
+Help system implemented using JavaHelp's jhbasic.jar
+(http://java.sun.com/products/javahelp/) Copyright 2002 Sun Microsystems, 
+Inc. All rights reserved. Use is subject to license terms. When building 
+from source place jhbasic.jar in the same directory as CsltComm.jar.
+
+Building from source using the default Ant build script requires OSXize
+(http://www.neo.com/projects/osxize/osxize.html) from Neo Ventures, Ltd.
