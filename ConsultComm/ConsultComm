@@ -1,26 +1,37 @@
 #!/bin/sh
 
 CSLTCOMM_ARGS=""
-CSLTCOMM_HOME="/usr/local/ConsultComm"
+CSLTCOMM_HOME=${CSLTCOMM_HOME:-/usr/local/ConsultComm}
+
+if [ ! -x $CSLTCOMM_HOME ]; then
+  echo "$0: CSLTCOMM_HOME $CSLTCOMM_HOME does not exist; you must set it"
+  echo "$0: in your environment or in the ConsultComm script"
+  exit 1
+fi
 
 # See if user passed in the javahome switch
 if [ "$1" = "--javahome" ] ; then
   JAVA_HOME=$2
 fi
 
+# auto-find the JVM on Solaris
+if [ -x /usr/j2se/bin/java ]; then
+  JAVA_HOME=${JAVA_HOME:-/usr/j2se}
+fi
+
 # Determine if the JAVA_HOME varible is set
-if [ -z $JAVA_HOME ] ; then
-  echo "The environment variable JAVA_HOME is not set."
-  echo "Either set JAVA_HOME or call ConsultComm with the --javahome <dir> flag."
+if [ -z "$JAVA_HOME" ] ; then
+  echo "$0: The environment variable JAVA_HOME is not set."
+  echo "$0: Either set JAVA_HOME or call ConsultComm with the --javahome <dir> flag."
   exit -1
 fi
 
 cd $CSLTCOMM_HOME
 
 # See if X library is installed
-if [ -x "X/libtimeout.so" ] ; then
-  CSLTCOMM_ARGS="$CSLTCOMM_ARGS -Djava.library.path=X"
+if [ -x "$CSLTCOMM_HOME/X/libtimeout.so" ] ; then
+  CSLTCOMM_ARGS="$CSLTCOMM_ARGS -Djava.library.path=$CSLTCOMM_HOME/X -Djava.class.path=$CSLTCOMM_HOME/X"
 fi
 
-# Call ConsultComm
-$JAVA_HOME/bin/java $CSLTCOMM_ARGS -jar CsltComm.jar
+# exec the jvm
+exec $JAVA_HOME/bin/java $CSLTCOMM_ARGS -jar CsltComm.jar
