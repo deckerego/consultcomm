@@ -2,6 +2,7 @@
 import java.util.*;
 import java.util.prefs.*;
 import java.io.*;
+import javax.swing.*;
 
 public class PrefsPanel extends javax.swing.JFrame {
     protected int timeFormat = ClntComm.MINUTES;
@@ -11,10 +12,12 @@ public class PrefsPanel extends javax.swing.JFrame {
     protected long countdown;
     protected float countpay;
     protected String idleProject;
+    
     private ClntComm clntComm;
-    private String themePack, kdeTheme, gtkTheme;
+    private String themePack, kdeTheme, gtkTheme, lookAndFeel;
     private static boolean timeoutLibrary = false;
     private java.text.NumberFormat dollarFormat;
+    private Hashtable lookAndFeels;
     
     static {
         try {
@@ -65,6 +68,8 @@ public class PrefsPanel extends javax.swing.JFrame {
     skinsPanel = new javax.swing.JPanel();
     skinsInputPanel = new javax.swing.JPanel();
     skinsLabel = new javax.swing.JLabel();
+    lnfLabel = new javax.swing.JLabel();
+    lnfComboBox = new javax.swing.JComboBox();
     themeCheckBox = new javax.swing.JCheckBox();
     themeField = new javax.swing.JTextField();
     themeBrowse = new javax.swing.JButton();
@@ -100,40 +105,49 @@ public class PrefsPanel extends javax.swing.JFrame {
     generalLabel.setText("General Properties");
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    gridBagConstraints.insets = new java.awt.Insets(10, 0, 5, 0);
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+    gridBagConstraints.insets = new java.awt.Insets(0, 0, 20, 0);
     prefsInputPanel.add(generalLabel, gridBagConstraints);
 
     timeFormatLabel.setText("Show time in:  ");
-    prefsInputPanel.add(timeFormatLabel, new java.awt.GridBagConstraints());
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.ipady = 10;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+    prefsInputPanel.add(timeFormatLabel, gridBagConstraints);
 
+    timeFormatGroup.add(minuteButton);
     minuteButton.setForeground(new java.awt.Color(102, 102, 153));
     minuteButton.setSelected(timeFormat == ClntComm.MINUTES);
     minuteButton.setText("Minutes");
-    timeFormatGroup.add(minuteButton);
-    prefsInputPanel.add(minuteButton, new java.awt.GridBagConstraints());
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    prefsInputPanel.add(minuteButton, gridBagConstraints);
 
+    timeFormatGroup.add(secondButton);
     secondButton.setForeground(new java.awt.Color(102, 102, 153));
     secondButton.setSelected(timeFormat == ClntComm.SECONDS);
     secondButton.setText("Seconds");
-    timeFormatGroup.add(secondButton);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
     prefsInputPanel.add(secondButton, gridBagConstraints);
 
     save1Label.setText("Save info every ");
-    prefsInputPanel.add(save1Label, new java.awt.GridBagConstraints());
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.ipady = 10;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+    prefsInputPanel.add(save1Label, gridBagConstraints);
 
     saveField.setColumns(3);
     saveField.setText(Integer.toString(saveInterval));
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
     prefsInputPanel.add(saveField, gridBagConstraints);
 
     save2Label.setText(" seconds");
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
     prefsInputPanel.add(save2Label, gridBagConstraints);
 
@@ -144,7 +158,7 @@ public class PrefsPanel extends javax.swing.JFrame {
     showIconCheckBox.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
     prefsInputPanel.add(showIconCheckBox, gridBagConstraints);
 
     prefsPanel.add(prefsInputPanel, java.awt.BorderLayout.CENTER);
@@ -184,7 +198,22 @@ public class PrefsPanel extends javax.swing.JFrame {
     skinsLabel.setText("Load Themes/Skins");
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    gridBagConstraints.insets = new java.awt.Insets(0, 0, 20, 0);
     skinsInputPanel.add(skinsLabel, gridBagConstraints);
+
+    lnfLabel.setForeground(new java.awt.Color(102, 102, 153));
+    lnfLabel.setText("Native Look and Feel");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    skinsInputPanel.add(lnfLabel, gridBagConstraints);
+
+    lnfComboBox.setModel(getLookAndFeelBoxModel());
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    skinsInputPanel.add(lnfComboBox, gridBagConstraints);
 
     themeCheckBox.setForeground(new java.awt.Color(102, 102, 153));
     themeCheckBox.setSelected(!themePack.equals(""));
@@ -405,6 +434,27 @@ public class PrefsPanel extends javax.swing.JFrame {
       if(toggle) gtkBrowse.setEnabled(false);
   }
   
+  private ComboBoxModel getLookAndFeelBoxModel() {
+    UIManager.LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
+    String[] names = new String[lookAndFeels.length];
+    this.lookAndFeels = new Hashtable();
+    String selected = null;
+    
+    for(int i=0; i < lookAndFeels.length; i++) {
+      String lnfClassName = lookAndFeels[i].getClassName();
+      String lnfName = lookAndFeels[i].getName();
+      
+      this.lookAndFeels.put(lnfName, lnfClassName);
+      names[i] = lnfName;
+      
+      if(lnfClassName.equals(lookAndFeel)) selected = lnfName;
+    }
+    
+    ComboBoxModel model = new DefaultComboBoxModel(names);
+    if(selected != null) model.setSelectedItem(selected);
+    return model;
+  }
+  
   private void showPrefs(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showPrefs
       getRootPane().setDefaultButton(prefsOKButton);
   }//GEN-LAST:event_showPrefs
@@ -441,6 +491,7 @@ public class PrefsPanel extends javax.swing.JFrame {
         themePack = prefs.get("theme", ""); //Get skins
         kdeTheme = prefs.get("kde", "");
         gtkTheme = prefs.get("gtk", "");
+        lookAndFeel = prefs.get("lookandfeel", "");
     }
     
     private void savePrefs() {
@@ -456,6 +507,8 @@ public class PrefsPanel extends javax.swing.JFrame {
             else prefs.put("kde", "");
             if(gtkCheckBox.isSelected()) prefs.put("gtk", gtkField.getText());
             else prefs.put("gtk", "");
+            if(this.lookAndFeels != null) prefs.put("lookandfeel", (String)this.lookAndFeels.get(lnfComboBox.getSelectedItem()));
+            else prefs.put("lookandfeel", UIManager.getSystemLookAndFeelClassName());
             
             //Write to file
             prefs.flush();
@@ -473,6 +526,8 @@ public class PrefsPanel extends javax.swing.JFrame {
   private javax.swing.JButton kdeBrowse;
   private javax.swing.JCheckBox kdeCheckBox;
   private javax.swing.JTextField kdeField;
+  private javax.swing.JComboBox lnfComboBox;
+  private javax.swing.JLabel lnfLabel;
   private javax.swing.JRadioButton minuteButton;
   private javax.swing.JPanel prefsButtonPanel;
   private javax.swing.JButton prefsCancelButton;
