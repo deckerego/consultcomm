@@ -1,9 +1,11 @@
 [Desktop Entry]
-Comment=Consultant Communicator
-Exec=/usr/local/bin/ConsultComm
-Icon=/usr/local/ConsultComm/graphics/ConsultComm.xpm
+Comment=ConsultComm Project Timekeeper
+Exec='/usr/bin/ConsultComm'
+GenericName=ConsultComm 3.1
+Icon=/usr/share/ConsultComm/icons/ConsultComm.xpm
 Name=ConsultComm
 Path=
+StartupNotify=true
 Terminal=0
 TerminalOptions=
 Type=Application

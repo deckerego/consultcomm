@@ -1,7 +1,7 @@
 #!/bin/sh
 
 CSLTCOMM_ARGS=""
-CSLTCOMM_HOME=${CSLTCOMM_HOME:-/usr/local/ConsultComm}
+CSLTCOMM_HOME=${CSLTCOMM_HOME:-/usr/share/ConsultComm}
 
 if [ ! -x $CSLTCOMM_HOME ]; then
   echo "$0: CSLTCOMM_HOME $CSLTCOMM_HOME does not exist; you must set it"
