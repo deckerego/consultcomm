@@ -14,15 +14,20 @@ public class TableTreeModel implements TreeModel {
     private EventListenerList listenerList = new EventListenerList();
     private Object root;
     private int timeFormat;
+    private boolean groupTime;
     
     public TableTreeModel(TimeRecordSet times, int timeFormat) {
         this.root = times;
         this.timeFormat = timeFormat;
     }
     
-    public Object getRoot() {
-        return root;
-    }
+    public Object getRoot() { return this.root; }
+    public boolean isLeaf(Object node) { return node.getClass().equals(TimeRecord.class); }
+    public int getColumnCount() { return this.cNames.length; }
+    public String getColumnName(int column) { return this.cNames[column]; }
+    public Class getColumnClass(int column) { return this.cTypes[column]; }
+    public boolean getGroupTime() { return this.groupTime; }
+    public void setGroupTime(boolean groupTime) { this.groupTime = groupTime; }
     
     public int getChildCount(Object node) {
         if(node.getClass().equals(TimeRecordSet.class))
@@ -36,22 +41,6 @@ public class TableTreeModel implements TreeModel {
             return ((TimeRecordSet)node).getGroups().elementAt(i);
         else
             return ((TimeRecordSet)root).getGroupRecords((String)node).elementAt(i);
-    }
-    
-    public boolean isLeaf(Object node) {
-        return node.getClass().equals(TimeRecord.class);
-    }
-    
-    public int getColumnCount() {
-        return cNames.length;
-    }
-    
-    public String getColumnName(int column) {
-        return cNames[column];
-    }
-    
-    public Class getColumnClass(int column) {
-        return cTypes[column];
     }
     
     public Object getValueAt(Object node, int column) {
@@ -69,13 +58,17 @@ public class TableTreeModel implements TreeModel {
 
         } else if(node.getClass().equals(String.class)) {
             switch(column) {
-                case 0:
-                    return (String)node;
                 case 1:
-                    String groupName = (String)node;
-                    TimeRecordSet times = (TimeRecordSet)root;
-                    long totalSeconds = times.getGroupTotalTime(groupName);
-                    return timeFormat == ClntComm.SECONDS ? ClntComm.toSecondString(totalSeconds) : ClntComm.toMinuteString(totalSeconds);
+                    if(groupTime) {
+                        String groupName = (String)node;
+                        TimeRecordSet times = (TimeRecordSet)root;
+                        long totalSeconds = times.getGroupTotalTime(groupName);
+                        return timeFormat == ClntComm.SECONDS ? ClntComm.toSecondString(totalSeconds) : ClntComm.toMinuteString(totalSeconds);
+                    } else {
+                        return null;
+                    }
+                default:
+                    return (String)node;
             }
         }            
 
@@ -97,8 +90,6 @@ public class TableTreeModel implements TreeModel {
         }
     }    
 
-    public void valueForPathChanged(TreePath path, Object newValue) {}
-    
     public int getIndexOfChild(Object parent, Object child) {
         for (int i=0, max=getChildCount(parent); i < max; i++) {
             if (getChild(parent, i).equals(child)) {
@@ -108,15 +99,8 @@ public class TableTreeModel implements TreeModel {
         return -1;
     }
     
-    public void addTreeModelListener(TreeModelListener l) {
-        listenerList.add(TreeModelListener.class, l);
-    }
-    
-    public void removeTreeModelListener(TreeModelListener l) {
-        listenerList.remove(TreeModelListener.class, l);
-    }
-
-    public boolean isCellEditable(Object node, int column) {
-        return getColumnClass(column) == TableTreeModel.class;
-    }
+    public void valueForPathChanged(TreePath path, Object newValue) {}
+    public void addTreeModelListener(TreeModelListener l) { listenerList.add(TreeModelListener.class, l); }
+    public void removeTreeModelListener(TreeModelListener l) { listenerList.remove(TreeModelListener.class, l); }
+    public boolean isCellEditable(Object node, int column) { return getColumnClass(column) == TableTreeModel.class; }
 }

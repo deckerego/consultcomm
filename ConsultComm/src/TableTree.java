@@ -75,9 +75,13 @@ public class TableTree extends JTable {
         SwingUtilities.updateComponentTreeUI(this);
     }
     
+    public TableTreeModel getTableTreeModel() { return (TableTreeModel)this.tree.getModel(); }
     public void setAntiAlias(boolean alias) { this.antialias = alias; }
     public boolean getAntiAlias() { return this.antialias; }
     public boolean isAntiAlias() { return this.antialias; }
+    public void setGroupTime(boolean groupTime) { getTableTreeModel().setGroupTime(groupTime); }
+    public boolean getGroupTime() { return getTableTreeModel().getGroupTime(); }
+    public boolean isGroupTime() { return getTableTreeModel().getGroupTime(); }
 
     /**
      * Get the selected index relative to the TimeRecordSet used

@@ -18,6 +18,8 @@ public class PrefsPanel extends javax.swing.JFrame {
     private static boolean timeoutLibrary = false;
     private java.text.NumberFormat dollarFormat;
     private Hashtable lookAndFeels;
+    private boolean antialias;
+    private boolean groupTime;
     
     static {
         try {
@@ -62,6 +64,8 @@ public class PrefsPanel extends javax.swing.JFrame {
     saveField = new javax.swing.JTextField();
     save2Label = new javax.swing.JLabel();
     showIconCheckBox = new javax.swing.JCheckBox();
+    groupTimeCheckBox = new javax.swing.JCheckBox();
+    antialiasCheckBox = new javax.swing.JCheckBox();
     prefsButtonPanel = new javax.swing.JPanel();
     prefsOKButton = new javax.swing.JButton();
     prefsCancelButton = new javax.swing.JButton();
@@ -160,6 +164,22 @@ public class PrefsPanel extends javax.swing.JFrame {
     gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
     prefsInputPanel.add(showIconCheckBox, gridBagConstraints);
+
+    groupTimeCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    groupTimeCheckBox.setSelected(groupTime);
+    groupTimeCheckBox.setText("Show Group Time Totals");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    prefsInputPanel.add(groupTimeCheckBox, gridBagConstraints);
+
+    antialiasCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    antialiasCheckBox.setSelected(antialias);
+    antialiasCheckBox.setText("Force Font AntiAliasing");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    prefsInputPanel.add(antialiasCheckBox, gridBagConstraints);
 
     prefsPanel.add(prefsInputPanel, java.awt.BorderLayout.CENTER);
 
@@ -488,6 +508,8 @@ public class PrefsPanel extends javax.swing.JFrame {
         timeFormat = prefs.getInt("timeFormat", ClntComm.MINUTES); //Get time format
         animateIcons = prefs.getBoolean("animations", true); //Get animation flag
         saveInterval = prefs.getInt("saveInterval", 60); //Get save interval
+        antialias = prefs.getBoolean("antiAlias", true); //AntiAliased fonts flag
+        groupTime = prefs.getBoolean("showGroupTime", true); //Show total group time in tree
         themePack = prefs.get("theme", ""); //Get skins
         kdeTheme = prefs.get("kde", "");
         gtkTheme = prefs.get("gtk", "");
@@ -501,6 +523,8 @@ public class PrefsPanel extends javax.swing.JFrame {
             prefs.putInt("timeFormat", secondButton.isSelected() ? ClntComm.SECONDS : ClntComm.MINUTES); //Save time format
             prefs.putBoolean("animations", showIconCheckBox.isSelected()); //Save animation flag
             prefs.putInt("saveInterval", Integer.parseInt(saveField.getText())); //Save save interval
+            prefs.putBoolean("antiAlias", antialiasCheckBox.isSelected()); //Save antialias flag
+            prefs.putBoolean("showGroupTime", groupTimeCheckBox.isSelected()); //Save group times flag
             if(themeCheckBox.isSelected()) prefs.put("theme", themeField.getText()); //Save skin settings
             else prefs.put("theme", "");
             if(kdeCheckBox.isSelected()) prefs.put("kde", kdeField.getText()); 
@@ -518,7 +542,9 @@ public class PrefsPanel extends javax.swing.JFrame {
     }
     
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JCheckBox antialiasCheckBox;
   private javax.swing.JLabel generalLabel;
+  private javax.swing.JCheckBox groupTimeCheckBox;
   private javax.swing.JButton gtkBrowse;
   private javax.swing.JCheckBox gtkCheckBox;
   private javax.swing.JTextField gtkField;
