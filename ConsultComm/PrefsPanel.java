@@ -12,6 +12,7 @@ import javax.xml.transform.stream.*;
 public class PrefsPanel extends javax.swing.JFrame {
   protected int timeFormat = ClntComm.MINUTES;
   protected boolean animateIcons = true;
+  protected int saveInterval = 60;
   private ClntComm clntComm;
   
   /** Creates new form PrefsPanel */
@@ -36,6 +37,9 @@ public class PrefsPanel extends javax.swing.JFrame {
     minuteButton = new javax.swing.JRadioButton();
     secondButton = new javax.swing.JRadioButton();
     showIconCheckBox = new javax.swing.JCheckBox();
+    save1Label = new javax.swing.JLabel();
+    saveField = new javax.swing.JTextField();
+    save2Label = new javax.swing.JLabel();
     prefsButtonPanel = new javax.swing.JPanel();
     prefsOKButton = new javax.swing.JButton();
     prefsCancelButton = new javax.swing.JButton();
@@ -58,6 +62,12 @@ public class PrefsPanel extends javax.swing.JFrame {
     });
     
     prefsPanel.setLayout(new java.awt.BorderLayout());
+    
+    prefsPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+      public void componentShown(java.awt.event.ComponentEvent evt) {
+        showPrefs(evt);
+      }
+    });
     
     prefsInputPanel.setLayout(new java.awt.GridBagLayout());
     java.awt.GridBagConstraints gridBagConstraints1;
@@ -100,6 +110,23 @@ public class PrefsPanel extends javax.swing.JFrame {
     gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     prefsInputPanel.add(showIconCheckBox, gridBagConstraints1);
     
+    save1Label.setText("Save info every ");
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    prefsInputPanel.add(save1Label, gridBagConstraints1);
+    
+    saveField.setColumns(3);
+    saveField.setText(Integer.toString(saveInterval));
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    prefsInputPanel.add(saveField, gridBagConstraints1);
+    
+    save2Label.setText(" seconds");
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
+    prefsInputPanel.add(save2Label, gridBagConstraints1);
+    
     prefsPanel.add(prefsInputPanel, java.awt.BorderLayout.CENTER);
     
     prefsOKButton.setText("OK");
@@ -126,6 +153,12 @@ public class PrefsPanel extends javax.swing.JFrame {
     
     flagsPanel.setLayout(new java.awt.BorderLayout());
     
+    flagsPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+      public void componentShown(java.awt.event.ComponentEvent evt) {
+        showFlags(evt);
+      }
+    });
+    
     flagsInputPanel.setLayout(new java.awt.GridBagLayout());
     java.awt.GridBagConstraints gridBagConstraints2;
     
@@ -146,7 +179,7 @@ public class PrefsPanel extends javax.swing.JFrame {
     
     exportCheckBox.setSelected(clntComm.attributeSet(ClntComm.SHOW_EXPORT));
     exportCheckBox.setForeground(new java.awt.Color(102, 102, 153));
-    exportCheckBox.setText("Show Export to Database Flag");
+    exportCheckBox.setText("Use Export to Database Flag");
     gridBagConstraints2 = new java.awt.GridBagConstraints();
     gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
@@ -180,6 +213,14 @@ public class PrefsPanel extends javax.swing.JFrame {
     
     pack();
   }//GEN-END:initComponents
+
+  private void showFlags(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showFlags
+    getRootPane().setDefaultButton(flagsOKButton);
+  }//GEN-LAST:event_showFlags
+
+  private void showPrefs(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showPrefs
+    getRootPane().setDefaultButton(prefsOKButton);
+  }//GEN-LAST:event_showPrefs
     
     private void savePrefs(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_savePrefs
       savePrefs();
@@ -214,7 +255,7 @@ public class PrefsPanel extends javax.swing.JFrame {
           doc.getDocumentElement().normalize();
           
           NamedNodeMap attributes = null;
-          
+
           //Get time format
           NodeList timeFormats = doc.getElementsByTagName("timeformat");
           if(timeFormats.getLength() > 0) {
@@ -226,7 +267,7 @@ public class PrefsPanel extends javax.swing.JFrame {
           } else {
             timeFormat = ClntComm.MINUTES;
           }
-          
+
           //Get animation flag
           NodeList iconAnimations = doc.getElementsByTagName("animations");
           if(iconAnimations.getLength() > 0) {
@@ -239,6 +280,17 @@ public class PrefsPanel extends javax.swing.JFrame {
           } else {
             animateIcons = true;
           }
+
+          //Get save interval
+          NodeList saveInfos = doc.getElementsByTagName("saveinfo");
+          if(saveInfos.getLength() > 0) {
+            Node saveInfo = saveInfos.item(0);
+            attributes = saveInfo.getAttributes();
+            String saveIntervalString = attributes.getNamedItem("seconds").getNodeValue();
+            saveInterval = Integer.parseInt(saveIntervalString);
+          } else {
+            saveInterval = 60;
+          }
         } catch (SAXParseException e) {
           System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
         } catch (SAXException e) {
@@ -250,7 +302,7 @@ public class PrefsPanel extends javax.swing.JFrame {
         }
       }
     }
-    
+
     private void savePrefs() {
       File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
       try {
@@ -270,7 +322,7 @@ public class PrefsPanel extends javax.swing.JFrame {
         }
         rootNode.normalize();
         
-        
+
         //Save time format
         NodeList timeFormats = doc.getElementsByTagName("timeformat");
         newNode = doc.createElement("timeformat");
@@ -282,7 +334,7 @@ public class PrefsPanel extends javax.swing.JFrame {
         } else {
           rootNode.appendChild(newNode);
         }
-        
+
         //Save animation flag
         NodeList iconAnimations = doc.getElementsByTagName("animations");
         newNode = doc.createElement("animations");
@@ -293,12 +345,12 @@ public class PrefsPanel extends javax.swing.JFrame {
         } else {
           rootNode.appendChild(newNode);
         }
-        
+
         //Save attribute flag settings
         int attributes = 0;
         if(billableCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_BILLABLE;
         if(exportCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_EXPORT;
-        
+
         NodeList attributeFlags = doc.getElementsByTagName("attributes");
         newNode = doc.createElement("attributes");
         newNode.setAttribute("value", Integer.toString(attributes));
@@ -308,7 +360,18 @@ public class PrefsPanel extends javax.swing.JFrame {
         } else {
           rootNode.appendChild(newNode);
         }
-        
+
+        //Save save interval
+        NodeList saveInfos = doc.getElementsByTagName("saveinfo");
+        newNode = doc.createElement("saveinfo");
+        newNode.setAttribute("seconds", saveField.getText());
+        if(saveInfos.getLength() > 0) {
+          Node saveInfo = saveInfos.item(0);
+          rootNode.replaceChild(newNode, saveInfo);
+        } else {
+          rootNode.appendChild(newNode);
+        }
+
         //Write to file
         doc.getDocumentElement().normalize();
         TransformerFactory fac = TransformerFactory.newInstance();
@@ -332,6 +395,9 @@ public class PrefsPanel extends javax.swing.JFrame {
     private javax.swing.JRadioButton minuteButton;
     private javax.swing.JRadioButton secondButton;
     private javax.swing.JCheckBox showIconCheckBox;
+    private javax.swing.JLabel save1Label;
+    private javax.swing.JTextField saveField;
+    private javax.swing.JLabel save2Label;
     private javax.swing.JPanel prefsButtonPanel;
     private javax.swing.JButton prefsOKButton;
     private javax.swing.JButton prefsCancelButton;
