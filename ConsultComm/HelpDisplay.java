@@ -4,6 +4,7 @@ public class HelpDisplay extends javax.swing.JFrame {
   private final static String fileSeperator = System.getProperty("file.separator");
   private final static String workingDir = System.getProperty("user.dir");
   private final static String introPage = "file:"+workingDir+fileSeperator+"docs"+fileSeperator+"index.html";
+  private final static String pathPage = "file:"+workingDir+fileSeperator+"docs"+fileSeperator+"$APPPATHS";
   private URLHistory history;
   
   /** Creates new form HelpDisplay */
@@ -89,7 +90,7 @@ public class HelpDisplay extends javax.swing.JFrame {
 
   private void goForward(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goForward
     try {
-      mainEditorPane.setPage(history.getNext());
+      setPage(history.getNext());
     } catch (Exception e) {
       System.err.println("Couldn't get next page!");
     }
@@ -97,7 +98,7 @@ public class HelpDisplay extends javax.swing.JFrame {
 
   private void goBack(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goBack
     try {
-      mainEditorPane.setPage(history.getPrevious());
+      setPage(history.getPrevious());
     } catch (Exception e) {
       System.err.println("Couldn't get previous page!");
     }
@@ -107,7 +108,7 @@ public class HelpDisplay extends javax.swing.JFrame {
     if(evt.getEventType().equals(javax.swing.event.HyperlinkEvent.EventType.ACTIVATED)) {
       try {
         URL newPage = evt.getURL();
-        mainEditorPane.setPage(newPage);
+        setPage(newPage);
         history.add(newPage);
       } catch (Exception e) {
         System.err.println("Bad page: "+e);
@@ -123,9 +124,31 @@ public class HelpDisplay extends javax.swing.JFrame {
       exitForm();
     }//GEN-LAST:event_exitForm
     
+    private void setPage(URL page) throws java.io.IOException {
+      if(page.toString().equals(pathPage)) {
+        mainEditorPane.setDocument(mainEditorPane.getEditorKit().createDefaultDocument());
+        mainEditorPane.setContentType("text/html");
+        mainEditorPane.setText(getPathPage());
+      } else {
+        mainEditorPane.setPage(page);
+      }
+    }
+    
     /** Exit the Application */
     private void exitForm() {
       setVisible(false);
+    }
+    
+    private String getPathPage() {
+      return "<HTML>\n<BODY>\n<FONT Size=\"+1\">File Paths You Might Need to Know</FONT>\n<P>\n"+
+      "<DL>\n<DT><B>What is my extensions directory?</B>\n"+
+      "<DD>It is <CODE>"+System.getProperty("java.ext.dirs")+"</CODE>.\n<P>\n"+
+      "<DT><B>Where are my preferences stored?</B>\n"+
+      "<DD>Preferences are stored in files ending in .def within your "+
+      "user directory, which is <CODE>"+CsltComm.prefsDir+"</CODE>.\n<P>\n"+
+      "<DT><B>What directory is ConsultComm running from?</B>\n"+
+      "<DD>The working directory for this applicaition is <CODE>"+System.getProperty("user.dir")+"</CODE>.\n<P>\n"+
+      "</DL>\n</BODY>\n</HTML>";
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
