@@ -13,8 +13,7 @@
   <target depends="init" name="compile">
     <javac deprecation="on" optimize="on" srcdir="${src}">
       <classpath>
-        <pathelement location="${src}"/>
-        <pathelement location="${src}/skinlf.jar"/>
+        <pathelement location="skinlf.jar"/>
       </classpath>
     </javac>
   </target>
@@ -72,6 +71,9 @@
   </target>
 
   <target depends="clean" name="realclean">
+    <delete>
+      <fileset dir="${src}" includes="*~"/>
+    </delete>
     <delete file="CsltComm.jar"/>
     <delete file="${Win32libdir}/ClntComm.h"/>
     <exec dir="${Xlibdir}" executable="make">
