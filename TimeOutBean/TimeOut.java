@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.io.*;
 
-public class TimeOut extends Object implements java.io.Serializable, java.lang.Cloneable, java.beans.PropertyChangeListener{
+public class TimeOut extends CsltCommPlugin {
     public static final int IDLE_PAUSE = 5;
     public static final int IDLE_PROJECT = 6;
     
@@ -71,4 +71,8 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
             }
         }
     }
+    
+    public void unregister() {
+    }
+    
 }

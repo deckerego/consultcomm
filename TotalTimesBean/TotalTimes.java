@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.io.*;
 
-public class TotalTimes extends Object implements java.io.Serializable, java.lang.Cloneable, java.beans.PropertyChangeListener{
+public class TotalTimes extends CsltCommPlugin {
     final String REMAINING_TITLE = "Remaining:";
     final String EARNED_TITLE = "Earned:";
     
@@ -38,4 +38,8 @@ public class TotalTimes extends Object implements java.io.Serializable, java.lan
         if(this.countdownTime != 0) totalPanel.setEntry(REMAINING_TITLE, getRemainingTime());
         if(this.cashAmount != 0) totalPanel.setEntry(EARNED_TITLE, getTotalCash());
     }
+    
+    public void unregister() {
+    }
+    
 }

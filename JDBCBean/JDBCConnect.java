@@ -14,7 +14,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
-public class JDBCConnect implements java.io.Serializable, java.beans.PropertyChangeListener, java.lang.Cloneable {
+public class JDBCConnect extends CsltCommPlugin {
     final static String ODBCDRIVERNAME = "sun.jdbc.odbc.JdbcOdbcDriver";
     final String TOTAL_TITLE = "To Export:";
     
@@ -384,6 +384,9 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
         JDBCConnect clone = (JDBCConnect)super.clone();
         clone.tableMap = new TableMap();
         return clone;
+    }
+    
+    public void unregister() {
     }
     
     private class LoginDialog extends JDialog {
