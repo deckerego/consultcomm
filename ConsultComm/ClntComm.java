@@ -55,12 +55,15 @@ public class ClntComm extends javax.swing.JPanel {
         savePrefs();
         removeAll();
         csltComm.reload();
+        totalPanel = new TotalPanel();
         readPrefs();
+        setTotals();
         initComponents();
+        loadPlugins();
         readLayout();
         menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
         try {
-            timeList.setSelectedRecord(selectedIndex);
+            if(times.size() != 0) timeList.setSelectedRecord(selectedIndex);
         } catch (IllegalArgumentException e) {
             System.err.println("Row index invalid, not setting selection.");
         }
@@ -298,9 +301,8 @@ public class ClntComm extends javax.swing.JPanel {
   }
   
   private void setTotals() {
-      //Assume that total and billable times are the first and second totals added
-      totalPanel.setValueAt(times.getTotalTime(), 0);
-      totalPanel.setValueAt(times.getBillableTime(), 1);
+      totalPanel.setEntry("Total:", times.getTotalTime());
+      totalPanel.setEntry("Billable:", times.getBillableTime());
   }
   
   private void zeroProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zeroProject
@@ -418,9 +420,8 @@ public void editWindow(int i){
     }
 }
 
-private void loadPlugins() {
+void loadPlugins() {
     try{
-        plugins = new Vector();
         plugins = PluginManager.getPlugins();
         for(int i=0; i<plugins.size(); i++) {
             Object plugin = plugins.elementAt(i);

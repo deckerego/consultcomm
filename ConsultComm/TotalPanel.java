@@ -3,43 +3,33 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 public class TotalPanel extends javax.swing.JPanel {
-    Vector titles = new Vector();
-    Vector values = new Vector();
+    LinkedHashMap entries = new LinkedHashMap();
     int timesClicked;
 
-    /** Creates new form TotalPanel */
     public TotalPanel() {
-        addElement("Total:", 0);
-        addElement("Billable:", 0);
         initComponents();
     }
 
-    public int addElement(String title, long seconds) {
-        int index = titles.size();
-        titles.addElement(title);
-        values.addElement(parseSeconds(seconds));
-        return index;
-    }
-    public int addElement(String title, String value) {
-        int index = titles.size();
-        titles.addElement(title);
-        values.addElement(value);
-        return index;
-    }
-    public void removeValueAt(int index) {
-        values.removeElementAt(index);
-        titles.removeElementAt(index);
-    }
-    public void setValueAt(long seconds, int index) { values.setElementAt(parseSeconds(seconds), index); }
-    public void setValueAt(String value, int index) { values.setElementAt(value, index); }
+    public void removeEntry(String title) { entries.remove(title); }
+    public void setEntry(String title, long value) { entries.put(title, new Long(value)); }
+    public void setEntry(String title, String value) { entries.put(title, value); }
     public int getIndex() { return timesClicked; }
 
     public void toggleTotal(int index) {
-        timesClicked = index;
-        titleLabel.setText((String)titles.elementAt(index));
-        valueLabel.setText((String)values.elementAt(index));
+        Object[] keySet = entries.keySet().toArray();
+        if(index > keySet.length) timesClicked = 0;
+        else timesClicked = index;
+        String title = (String)keySet[timesClicked];
+        
+        Object valueObj = entries.get(title);
+        String value;
+        if(valueObj.getClass() == Long.class) value = parseSeconds(((Long)valueObj).longValue());
+        else value = valueObj.toString();
+        
+        titleLabel.setText(title);
+        valueLabel.setText(value);
     }
-
+    
     public String parseSeconds(long seconds) {
         long minutes = seconds / 60;
         long hours = minutes / 60;
@@ -49,10 +39,10 @@ public class TotalPanel extends javax.swing.JPanel {
     }
     
     public void repaint() {
-        if(valueLabel != null) valueLabel.setText((String)values.elementAt(timesClicked));
+        if(valueLabel != null) toggleTotal(timesClicked);
         super.repaint();
-    }        
-
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -86,9 +76,9 @@ public class TotalPanel extends javax.swing.JPanel {
 
     private void toggleTotal(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleTotal
         if(evt.getModifiers() == java.awt.event.MouseEvent.BUTTON3_MASK) {
-            if(--timesClicked < 0) timesClicked = titles.size()-1;
+            if(--timesClicked < 0) timesClicked = entries.size()-1;
         } else {
-            timesClicked = (timesClicked+1)%titles.size();
+            timesClicked = (timesClicked+1)%entries.size();
         }
         toggleTotal(timesClicked);
     }//GEN-LAST:event_toggleTotal

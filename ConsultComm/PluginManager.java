@@ -8,22 +8,15 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
     public static File pluginsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"plugins");
     public static File libsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"syslibs");
     
-    Vector pluginList;
-    Vector buttonList;
+    private Vector pluginList;
+    private Vector buttonList;
+    private ClntComm clntcomm;
 
-    public PluginManager() {
-        pluginList = new Vector();
-        buttonList = new Vector();
-        try { pluginList = getPlugins(); } 
-        catch (Exception e) { System.err.println("Couldn't load all the plugins: "+e); }
-        
-        initComponents();
-    }
-    
     public PluginManager(ClntComm parent) {
-        pluginList = parent.getPlugins();
-        buttonList = new Vector();
-        
+        parent.loadPlugins();
+        this.clntcomm = parent;
+        this.pluginList = parent.getPlugins();
+        this.buttonList = new Vector();
         initComponents();
     }
 
@@ -76,6 +69,7 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
   private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
       setVisible(false);
       dispose();
+      clntcomm.reload();
   }//GEN-LAST:event_exitForm
   
   private void loadSettingsPanel(int index) {
@@ -90,6 +84,7 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
           settingsPanel.validate();
       } catch(Exception e) {
           System.err.println("Couldn't load settings: "+e);
+          e.printStackTrace();
       }
   }
 
