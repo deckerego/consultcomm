@@ -300,7 +300,7 @@
                   <Properties>
                     <Property name="columns" type="int" value="25"/>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="kdeTheme" type="code"/>
+                      <Connection code="gtkTheme" type="code"/>
                     </Property>
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
@@ -353,7 +353,7 @@
                   <Properties>
                     <Property name="columns" type="int" value="25"/>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="gtkTheme" type="code"/>
+                      <Connection code="kdeTheme" type="code"/>
                     </Property>
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
