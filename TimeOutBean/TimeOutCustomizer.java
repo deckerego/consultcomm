@@ -15,6 +15,9 @@ import java.beans.*;
 import java.io.*;
 import javax.swing.*;
 
+/**
+ * Customizes the TimeOut bean
+ */
 public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.Customizer{
     
     private TimeOut timeOut;
@@ -44,6 +47,7 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
     pauseRadioButton = new javax.swing.JRadioButton();
     switchRadioButton = new javax.swing.JRadioButton();
     projectCombo = new javax.swing.JComboBox();
+    warningLabel = new javax.swing.JLabel();
     optionButtonPanel = new javax.swing.JPanel();
     saveButton = new javax.swing.JButton();
 
@@ -106,6 +110,15 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
     gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
     optionInputPanel.add(projectCombo, gridBagConstraints);
+
+    warningLabel.setFont(new java.awt.Font("Dialog", 0, 12));
+    warningLabel.setForeground(new java.awt.Color(153, 0, 0));
+    warningLabel.setText("Please restart ConsultComm for changes to take effect");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints.insets = new java.awt.Insets(15, 0, 0, 0);
+    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+    optionInputPanel.add(warningLabel, gridBagConstraints);
 
     optionPanel.add(optionInputPanel, java.awt.BorderLayout.CENTER);
 
@@ -203,6 +216,7 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
   private javax.swing.JRadioButton switchRadioButton;
   private javax.swing.JTabbedPane tabbedPane;
   private javax.swing.JCheckBox useCheckBox;
+  private javax.swing.JLabel warningLabel;
   // End of variables declaration//GEN-END:variables
     
 }
