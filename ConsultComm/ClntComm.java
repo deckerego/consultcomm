@@ -279,7 +279,7 @@ public class ClntComm extends javax.swing.JPanel {
       toggleTimer();
   }//GEN-LAST:event_toggleTimer
   
-  void toggleTimer() {
+  public void toggleTimer() {
       if(timerTask.clockRunning){
           timerTask.clockRunning = false;
           startButton.setToolTipText("Start Timer");
