@@ -7,6 +7,7 @@ import java.beans.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.event.*;
+import java.awt.event.*;
 
 /*
  * ClntComm.java
@@ -52,6 +53,31 @@ public class ClntComm extends javax.swing.JPanel {
         menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);//Add our menu items to the GUI
         timer = new java.util.Timer();                      //Wind up the clock and start it
         timer.schedule(timerTask, 0, 1000);
+        changes.firePropertyChange("load", null, times);    //Tell all the plugins we finished loading
+        
+        csltComm.addWindowListener(new WindowListener() {   //Add listeners to tell plugins about window events
+            public void windowActivated(WindowEvent e) { 
+                changes.firePropertyChange("activated", null, times);
+            }
+            public void windowClosed(WindowEvent e) {
+                changes.firePropertyChange("closed", null, times);
+            }
+            public void windowClosing(WindowEvent e) {
+                changes.firePropertyChange("closing", null, times);
+            }
+            public void windowDeactivated(WindowEvent e) {
+                changes.firePropertyChange("deactivated", null, times);
+            }
+            public void windowDeiconified(WindowEvent e) {
+                changes.firePropertyChange("deiconified", null, times);
+            }
+            public void windowIconified(WindowEvent e) {
+                changes.firePropertyChange("iconified", null, times);
+            }
+            public void windowOpened(WindowEvent e) {
+                changes.firePropertyChange("opened", null, times);
+            }
+        });
     }
     
     public void reload() {
@@ -72,6 +98,7 @@ public class ClntComm extends javax.swing.JPanel {
         } catch (IllegalArgumentException e) {
             System.err.println("Row index invalid, not setting selection.");
         }
+        changes.firePropertyChange("load", null, times);
     }
     
     public void setTimes(TimeRecordSet times) { this.times = times; }
@@ -416,6 +443,7 @@ public class ClntComm extends javax.swing.JPanel {
   
   public void exitForm() {
       savePrefs();
+      changes.firePropertyChange("unload", null, times);
   }
   
   private void selectionChanged(ListSelectionEvent e) {
@@ -625,6 +653,28 @@ public class ClntComm extends javax.swing.JPanel {
       } catch (Exception e) {
           System.err.println("Cannot write to prefs file(s): "+e);
       }
+  }
+  
+  public static String toSecondString(long seconds) {
+      long minutes = seconds / 60;
+      long hours = minutes / 60;
+      minutes -= hours * 60;
+      long thisSeconds = seconds-(hours*60*60)-(minutes*60);
+      
+      String hourString = Long.toString(hours);
+      String minuteString = minutes < 10 ? "0"+minutes : Long.toString(minutes);
+      String secondString = thisSeconds < 10 ? "0"+thisSeconds : Long.toString(thisSeconds);
+      return ""+hourString+":"+minuteString+"."+secondString;
+  }
+  
+  public static String toMinuteString(long seconds) {
+      long minutes = seconds / 60;
+      long hours = minutes / 60;
+      minutes -= hours * 60;
+      
+      String hourString = Long.toString(hours);
+      String minuteString = minutes < 10 ? "0"+minutes : Long.toString(minutes);
+      return ""+hourString+":"+minuteString;
   }
   
   private TableTree timeList;

@@ -13,6 +13,7 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
   private SystemTray tray;
   private ClntComm clntComm;
   private long lastClicked;
+  private boolean visible;
       
   static {
     //Even on non-*nix platforms we load this file. Doesn't hurt, and ensures that we have a
@@ -27,6 +28,10 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
     //prepackaged jar we get from JDIC.
   }
   
+  public void setVisible(boolean visible) { this.visible = visible; }
+  public boolean getVisible() { return this.visible; }
+  public boolean isVisible() { return this.visible; }
+  
   public SysTray() {
     if(systrayLibrary) {
       try {
@@ -39,10 +44,14 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
         sysTrayIcon.setIconAutoSize(true);
         tray.addTrayIcon(sysTrayIcon);
         
-        menu = new JPopupMenu("A Menu");
+        menu = new JPopupMenu("ConsultComm");
         menuItem = new JMenuItem("Quit", KeyEvent.VK_Q);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.ALT_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription("Quit ConsultComm");
+        menuItem.addActionListener(this);
+        menu.add(menuItem);
+        menuItem = new JMenuItem("Cancel");
+        menuItem.getAccessibleContext().setAccessibleDescription("Nevermind.");
         menuItem.addActionListener(this);
         menu.add(menuItem);
         
@@ -54,7 +63,8 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
             if(evt.getWhen() - lastClicked < CLICK_THRESHHOLD) return;
             lastClicked = evt.getWhen();
             Component csltCommComponent = clntComm.getTopLevelAncestor();
-            csltCommComponent.setVisible(! csltCommComponent.isVisible());
+            visible = csltCommComponent.isVisible();
+            csltCommComponent.setVisible(! visible);
           }
         });
         
@@ -69,6 +79,7 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
     JMenuItem source = (JMenuItem) (e.getSource());
     String s = source.getText();
     if (s.equalsIgnoreCase("Quit")) {
+      clntComm.exitForm();
       System.exit(0);
     }
   }
@@ -79,12 +90,27 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
   
   public void propertyChange(java.beans.PropertyChangeEvent propertyChangeEvent) {
     if(systrayLibrary) {
+      String eventName = propertyChangeEvent.getPropertyName();
+      
       clntComm = (ClntComm)propertyChangeEvent.getSource();
       int selectedIndex = clntComm.getSelectedIndex();
       if(selectedIndex > 0) {
         TimeRecordSet recordSet = clntComm.getTimes();
         String[] projectNames = recordSet.getAllProjects();
         sysTrayIcon.setCaption(projectNames[selectedIndex]);
+      }
+            
+      if("opened".equals(eventName)) {
+        clntComm.getTopLevelAncestor().setVisible(visible);
+      }
+      
+      if("unload".equals(eventName)) {
+        try { //Save the app's state
+          visible = clntComm.getTopLevelAncestor().isVisible();
+          PluginManager.serializeObject(this);
+        } catch (java.io.FileNotFoundException e) {
+          System.err.println("Error saving prefs for SysTray plugin");
+        }
       }
     }
   }
