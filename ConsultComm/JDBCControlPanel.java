@@ -12,10 +12,6 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
-/**
- *
- * @author  jellis
- */
 public class JDBCControlPanel extends javax.swing.JFrame {
   private final static int DATE_SQLDATE = 0;
   private final static int DATE_SQLTIMESTAMP = 1;
@@ -24,7 +20,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private final static int HOUR_QUARTER = 1;
   private final static int HOUR_TENTH = 2;
   private final static String odbcDriverName = "sun.jdbc.odbc.JdbcOdbcDriver";
-
+  
   private String name = "";
   private String url = "";
   private static String userName = "";
@@ -37,6 +33,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private static boolean projectValidate;
   private int hourFormat;
   private boolean projectCase;
+  private boolean useExport;
   private Vector errorList;
   private TableMap tableMap;
   private static boolean validated;
@@ -373,7 +370,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     
     pack();
   }//GEN-END:initComponents
-
+  
   private void applyOptions(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyOptions
     projectDatabase = projDBField.getText();
     projectTable = projTableField.getText();
@@ -391,11 +388,11 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     projFieldComboBox.setModel(boxModel);
     optionInputPanel.repaint();
   }//GEN-LAST:event_applyOptions
-
+  
   private void toggleValidateProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleValidateProject
     toggleValidateProject();
   }//GEN-LAST:event_toggleValidateProject
-
+  
   private void toggleValidateProject() {
     if(projValidateCheckBox.isSelected()) {
       projDBField.enable();
@@ -410,11 +407,11 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private void showDriverPanel(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showDriverPanel
     getRootPane().setDefaultButton(driverOK);
   }//GEN-LAST:event_showDriverPanel
-
+  
   private void showOptionPanel(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showOptionPanel
     getRootPane().setDefaultButton(optionOK);
   }//GEN-LAST:event_showOptionPanel
-
+  
   private void toggleODBC(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleODBC
     toggleODBC();
   }//GEN-LAST:event_toggleODBC
@@ -434,13 +431,13 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     driverInputPanel.repaint();
   }
   private void refreshFieldMap(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshFieldMap
-      try {
-        tableMap.init();
-        fieldMapping.setModel(tableMap.toTableModel());
-        fieldMapping.repaint();
-      } catch (SQLException e) {
-        System.err.println("Couldn't initialize table mapping");
-      }
+    try {
+      tableMap.init();
+      fieldMapping.setModel(tableMap.toTableModel());
+      fieldMapping.repaint();
+    } catch (SQLException e) {
+      System.err.println("Couldn't initialize table mapping");
+    }
   }//GEN-LAST:event_refreshFieldMap
   
   private void showFieldMap(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showFieldMap
@@ -506,8 +503,8 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     savePrefs();
     exitForm();
   }//GEN-LAST:event_saveDriverSettings
-      private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
-        exitForm();
+        private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
+          exitForm();
     }//GEN-LAST:event_exitForm
     
     private void exitForm() {
@@ -587,7 +584,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
             database = attributes.getNamedItem("database").getNodeValue();
           if(attributes.getNamedItem("table") != null)
             table = attributes.getNamedItem("table").getNodeValue();
-
+          
           NodeList options = doc.getElementsByTagName("options");
           Node option = options.item(0);
           attributes = option.getAttributes();
@@ -604,7 +601,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
             projectField = attributes.getNamedItem("projectField").getNodeValue();
           else
             projectField = "No Fields Found";
-
+          
           NodeList fieldMaps = doc.getElementsByTagName("fieldmap");
           tableMap.fieldMaps.clear();
           for(int i=0; i<fieldMaps.getLength(); i++){
@@ -620,6 +617,38 @@ public class JDBCControlPanel extends javax.swing.JFrame {
             String valueExpression = valueNode.getNodeValue();
             FieldMap record = new FieldMap(fieldName, sqlType, fieldIndex, valueExpression);
             tableMap.fieldMaps.addElement(record);
+          }
+        } catch (SAXParseException e) {
+          System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
+        } catch (SAXException e) {
+          System.err.println("Error reading prefs file: "+e);
+          e.printStackTrace(System.out);
+        } catch (Exception e) {
+          System.err.println("Cannot read prefs file: "+e);
+          e.printStackTrace(System.out);
+        }
+      }
+      
+      prefs = new File(CsltComm.prefsDir, "ClntComm.def");
+      if (prefs.exists()) {
+        try {
+          DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+          DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+          Document doc = docBuilder.parse(prefs);
+          doc.getDocumentElement().normalize();
+
+          NamedNodeMap attribute = null;
+
+          //Get attribute flags
+          NodeList attributeFlags = doc.getElementsByTagName("attributes");
+          if(attributeFlags.getLength() > 0) {
+            Node attributeFlag = attributeFlags.item(0);
+            attribute = attributeFlag.getAttributes();
+            String attributesString = attribute.getNamedItem("value").getNodeValue();
+            int attributes = Integer.parseInt(attributesString);
+            useExport = (ClntComm.SHOW_EXPORT ^ attributes) != (ClntComm.SHOW_EXPORT | attributes);
+          } else {
+            useExport = true;
           }
         } catch (SAXParseException e) {
           System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
@@ -698,7 +727,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
           TimeRecord record = times.elementAt(j);
           FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$HOURS"); //Find out how many hours exist
           java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.getValue(record);
-          if((hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) || ! record.export) continue;
+          if((hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) || (! record.export && useExport)) continue;
           Object[] statement = new Object[tableMap.size()];
           for(int i=0; i < statement.length; i++) {
             FieldMap fieldMap = tableMap.elementAt(i);
@@ -945,7 +974,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         cols.close();
         conn.close();
       }
-
+      
       public int size() {
         return fieldMaps.size();
       }
@@ -953,7 +982,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       public FieldMap elementAt(int i) {
         return (FieldMap)fieldMaps.elementAt(i);
       }
-
+      
       public DefaultTableModel toTableModel(){
         DefaultTableModel model = new javax.swing.table.DefaultTableModel(
         //Set to three empty columns
