@@ -1,5 +1,7 @@
 import java.util.*;
 import java.sql.*;
+import java.text.*;
+import java.math.BigDecimal;
 import javax.swing.*;
 
 public class FieldMap implements java.io.Serializable {
@@ -21,6 +23,7 @@ public class FieldMap implements java.io.Serializable {
     private boolean exportable;
     private String dbFieldName;
     private String valueExpression;
+    private String globalPromptValue = null;
     
     public FieldMap() {
         this(null, -1, -1, null);
@@ -156,6 +159,7 @@ public class FieldMap implements java.io.Serializable {
                 } else if(value.equals("BILLABLE")) {
                     switch(sqlType) {
                         case java.sql.Types.CHAR:
+                        case java.sql.Types.VARCHAR:
                             realValue = record.isBillable() ? "Y" : "N";
                             break;
                         case java.sql.Types.BIT:
@@ -171,6 +175,65 @@ public class FieldMap implements java.io.Serializable {
                             System.err.println("Unknown conversion: assuming INTEGER");
                             realValue = record.isBillable() ? new Integer(-1) : new Integer(0);
                     }
+                } else if(value.equals("PROMPT")) {
+                  String promptValue = (String)JOptionPane.showInputDialog(parentFrame, "Value for "+dbFieldName+":", dbFieldName, JOptionPane.PLAIN_MESSAGE);
+                  try {
+                    switch(sqlType) {
+                      case java.sql.Types.CHAR:
+                      case java.sql.Types.VARCHAR:
+                      case java.sql.Types.CLOB:
+                        realValue = promptValue;
+                        break;
+                      case java.sql.Types.INTEGER:
+                        realValue = new Integer(promptValue);
+                        break;
+                      case java.sql.Types.DECIMAL:
+                      case java.sql.Types.NUMERIC:
+                        realValue = new BigDecimal(promptValue);
+                        break;
+                      case java.sql.Types.DATE:
+                        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT); //Default for user's locale
+                        realValue = dateFormat.parse(promptValue);
+                        break;
+                      default:
+                        System.err.println("Unknown conversion: assuming CHAR");
+                        realValue = promptValue;
+                    }
+                  } catch (NumberFormatException e) {
+                    System.err.println("Couldn't reformat number: "+promptValue);
+                  } catch (ParseException e) {
+                    System.err.println("Couldn't reformat date: "+promptValue);
+                  }
+                } else if(value.equals("GLOBALPROMPT")) {
+                  if(globalPromptValue == null)
+                    globalPromptValue = (String)JOptionPane.showInputDialog(parentFrame, "Global value for "+dbFieldName+":", dbFieldName, JOptionPane.PLAIN_MESSAGE);
+                  try {
+                    switch(sqlType) {
+                      case java.sql.Types.CHAR:
+                      case java.sql.Types.VARCHAR:
+                      case java.sql.Types.CLOB:
+                        realValue = globalPromptValue;
+                        break;
+                      case java.sql.Types.INTEGER:
+                        realValue = new Integer(globalPromptValue);
+                        break;
+                      case java.sql.Types.DECIMAL:
+                      case java.sql.Types.NUMERIC:
+                        realValue = new BigDecimal(globalPromptValue);
+                        break;
+                      case java.sql.Types.DATE:
+                        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT); //Default for user's locale
+                        realValue = dateFormat.parse(globalPromptValue);
+                        break;
+                      default:
+                        System.err.println("Unknown conversion: assuming CHAR");
+                        realValue = globalPromptValue;
+                    }
+                  } catch (NumberFormatException e) {
+                    System.err.println("Couldn't reformat number: "+globalPromptValue);
+                  } catch (ParseException e) {
+                    System.err.println("Couldn't reformat date: "+globalPromptValue);
+                  }
                 } else {
                     System.err.println("Unknown expression variable: "+value);
                 }
