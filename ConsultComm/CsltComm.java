@@ -1,12 +1,11 @@
 //Standard Components
 import java.io.*;
-import java.util.*;
 import java.util.prefs.*;
 //Swing/AWT Components
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.*;
 import javax.swing.*;
-import javax.swing.event.*;
 //SkinLF support from L2FProd.com
 import com.l2fprod.gui.plaf.skin.Skin;
 import com.l2fprod.gui.plaf.skin.CompoundSkin;
@@ -27,34 +26,15 @@ public class CsltComm extends javax.swing.JFrame {
     
     /** Creates new form CsltComm */
     public CsltComm() {
-        appIcon = CsltComm.getImage(this, "graphics/icon.gif");
-        
-        // We need to attempt to find all weird XML errors before they happen...
-        try { // This test will fail if the JVM < 1.4 or XML pack is not installed
-            Class.forName("javax.xml.parsers.DocumentBuilder"); // jaxp.jar
-            Class.forName("org.w3c.dom.Document"); // crimson.jar
-            Class.forName("org.xml.sax.SAXException"); // xalan.jar
-        } catch (ClassNotFoundException e) {
-            String version = System.getProperty("java.vm.version");
-            String errMsg;
-            if(version.compareTo("1.4.0") < 0) {
-                String extdir = System.getProperty("java.ext.dirs");
-                errMsg = "Java API for XML Parsing was not found. "+
-                "Make sure you have downloaded the Java API at "+
-                "http://java.sun.com/xml/download.html and have installed "+
-                "all .jar files in "+extdir;
-            } else {
-                errMsg = "You have Java 1.4 or higher installed, but "+
-                "for some reason you're missing the Java XML libraries. Make "+
-                "sure you've received your copy of the Java Runtime Environment "+
-                "from Sun at http://java.sun.com. You can also report this "+
-                "error to the ConsultComm web page at http://consultcomm."+
-                "sourceforge.net";
-            }
-            CustomOptionPane.showMessageDialog(this, errMsg, "Error Loading XML", CustomOptionPane.ERROR_MESSAGE);
+        if(System.getProperty("java.vm.version").compareTo("1.4.0") < 0) {
+            String errMsg = "ConsultComm 3 requires Java 1.4 or higher. "+
+            "Download the latest release of the Java Runtime Environment "+
+            "at http://java.sun.com";
+            CustomOptionPane.showMessageDialog(this, errMsg, "Error Loading ConsultComm", CustomOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
         
+        appIcon = new ImageIcon("graphics/icon.gif").getImage();
         readPrefs();
         loadSkin();
         initComponents();
@@ -63,7 +43,7 @@ public class CsltComm extends javax.swing.JFrame {
         getContentPane().add(projectList);
         
         if(animateIcons) {
-            Image clockIcon = CsltComm.getImage(this, "graphics/BlueBar.gif");
+            Image clockIcon = new ImageIcon("graphics/BlueBar.gif").getImage();
             iconPanel = new AnimatePanel(clockIcon);
             getContentPane().add(iconPanel);
             iconPanel.start();
@@ -157,49 +137,6 @@ public class CsltComm extends javax.swing.JFrame {
   
   public static void main(String args[]) {
       new CsltComm().show();
-  }
-  
-  /**
-   * Translate a file from a bytestream in the JAR file
-   * @param parent The parent object that is loading the file
-   * @param path The relative path to the file stored in a Java Archive
-   */
-  static File getFile(Object parent, String path) {
-      File file = null;
-      byte[] tn = null;
-      InputStream in = parent.getClass().getResourceAsStream(path);
-      try{
-          file = File.createTempFile("csltcomm", null);
-          file.deleteOnExit();
-          FileOutputStream fout = new FileOutputStream(file);
-          int length = in.available();
-          tn = new byte[length];
-          in.read(tn);
-          fout.write(tn);
-      } catch(Exception e){
-          System.out.println("Error loading file "+path+": "+e);
-      }
-      return file;
-  }
-  
-  /**
-   * Translate an image from a bytestream in the JAR file
-   * @param parent The parent object that is loading the file
-   * @param path The relative path to the file stored in a Java Archive
-   */
-  static Image getImage(Object parent, String path) {
-      Image image = null;
-      byte[] tn = null;
-      InputStream in = parent.getClass().getResourceAsStream(path);
-      try{
-          int length = in.available();
-          tn = new byte[length];
-          in.read(tn);
-          image = Toolkit.getDefaultToolkit().createImage(tn);
-      } catch(Exception e){
-          System.out.println("Error loading image "+path+": "+e);
-      }
-      return image;
   }
   
     // Variables declaration - do not modify//GEN-BEGIN:variables
