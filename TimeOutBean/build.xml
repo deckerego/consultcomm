@@ -34,7 +34,7 @@
     <ant target="compile"/>
   </target>
 
-  <target depends="compile" name="Win32">
+  <target name="Win32">
     <javah destdir="${Win32libdir}" class="TimeOut">
       <classpath>
         <pathelement location="${src}"/>
