@@ -97,14 +97,16 @@ public class PluginManager extends javax.swing.JFrame {
       }
   }
   
-  public static Vector getPlugins() throws MalformedURLException, ClassNotFoundException, IOException {
-      File pluginsdir = new File(System.getProperty("user.dir")+"/plugins");
+  public static Vector getPlugins() throws MalformedURLException, ClassNotFoundException, IOException, ArrayIndexOutOfBoundsException {
+      File pluginsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"plugins");
+
       System.out.println("Looking for plugins in "+pluginsdir);
       File[] pluginfiles = pluginsdir.listFiles(new FilenameFilter() {
           public boolean accept(File dir, String name) {
               return name.endsWith(".jar");
           }
       });
+      
       URL[] pluginurls = new URL[pluginfiles.length];
       for(int i=0; i<pluginfiles.length; i++)
           pluginurls[i] = pluginfiles[i].toURL();
@@ -114,8 +116,21 @@ public class PluginManager extends javax.swing.JFrame {
       for(int i=0; i<pluginurls.length; i++) {
           String currBean = pluginfiles[i].getName();
           currBean = currBean.substring(0, currBean.lastIndexOf(".jar"));
-          System.out.println("Loading plugin "+currBean+" from "+pluginfiles[i].getName());
-          Object plugin = Beans.instantiate(loader, currBean);
+          
+          File serializedFile = new File(pluginsdir, currBean+".ser");
+          File jarFile = pluginfiles[i];
+          Object plugin;
+
+          if(serializedFile.exists()) {
+              System.out.println("Deserializing plugin "+currBean+" from "+serializedFile.getName());
+              FileInputStream inStream = new FileInputStream(serializedFile);
+              XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
+              plugin = d.readObject();
+              d.close();
+          } else {
+              System.out.println("Instantiating plugin "+currBean+" from "+pluginfiles[i].getName());
+              plugin = Beans.instantiate(loader, currBean);
+          }
           pluginList.addElement(plugin);
       }
       
@@ -123,9 +138,9 @@ public class PluginManager extends javax.swing.JFrame {
   }
   
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane iconScrollPane;
-    private javax.swing.JPanel settingsPanel;
     private javax.swing.JPanel iconListPanel;
+    private javax.swing.JPanel settingsPanel;
+    private javax.swing.JScrollPane iconScrollPane;
     private javax.swing.JPanel iconsPanel;
     // End of variables declaration//GEN-END:variables
   
