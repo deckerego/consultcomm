@@ -1,6 +1,7 @@
 import java.util.*;
 import java.sql.*;
 import java.io.*;
+import java.net.*;
 import java.beans.*;
 //GUI Componenets
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     private int totalIndex;
     
     private TableMap tableMap;
+    private String jarFile;
     private String name = "";
     private String url = "";
     private String userName = "";
@@ -54,6 +56,8 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     }
     
     //Setters/getters
+    public void setJarFile(String jarFile) { this.jarFile = jarFile; }
+    public String getJarFile() { return this.jarFile; }
     public void setName(String name) { this.name = name; }
     public String getName() { return this.name; }
     public void setUrl(String url) { this.url = url; }
@@ -106,9 +110,21 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     public Connection openConnection() {
         Connection conn = null;
         errorList = new Vector();
+        ClassLoader loader = this.getClass().getClassLoader();
         
         try{
-            Class.forName(this.name);
+            if(jarFile != null && jarFile.length() > 0) {
+                File jar = new File(jarFile);
+                if(jar.exists()) {
+                    try { loader = new URLClassLoader(new URL[] {jar.toURL()}); } 
+                    catch (MalformedURLException e) { System.err.println("Error loading Jar file: "+e); }
+                } else {
+                    System.err.println("Jar file doesn't exist. Using default classpath.");
+                }
+            }
+
+            Class driverClass = loader.loadClass(this.name);
+            Driver driver = (Driver)driverClass.newInstance();
             if(! validated) { //Send login dialog box
                 LoginDialog prompt = new LoginDialog(userName);
                 prompt.pack();
@@ -119,7 +135,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
             properties.put("password", this.password);
             properties.put("user", this.userName);
             properties.put("prompt", "false");
-            conn = DriverManager.getConnection(this.url, properties);
+            conn = driver.connect(this.url, properties);
             if(conn.isClosed()) {
                 errorList.addElement("Cannot open connection");
                 conn = null;
@@ -130,20 +146,26 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
             if(conn != null) validated = true;
         } catch (ClassNotFoundException e) {
             String extdir = System.getProperty("java.ext.dirs");
-            String msgString = "Could not find JDBC driver "+name+"."+
-            "Make sure you have the correct driver files and that they"+
-            "are installed in "+extdir+", then restart ConsultComm.";
+            String msgString = "Could not find JDBC driver "+name+". "+
+            "Make sure you have the correct driver file installed in "
+            +extdir+" or specified in the JDBC preferences screen, "+
+            "then restart ConsultComm.";
             errorList.addElement(msgString);
         } catch (SQLException e) {
-            String msgString = e.toString().substring(0, 512);
+            String msgString = e.toString();
             errorList.addElement("Could not build JDBC connection: "+msgString);
         } catch (NullPointerException e) {
             errorList.addElement("One or more arguments are null");
         } catch (Exception e) {
             errorList.addElement(e.toString());
         }
-        if(errorList.size() > 0)
-            JDBCOptionPane.showMessageDialog(parentFrame, errorList.elementAt(0), "Database Connection Error", JDBCOptionPane.ERROR_MESSAGE);
+        
+        if(errorList.size() > 0) {
+            String msgString = (String)errorList.elementAt(0);
+            if(msgString.length() > 512) msgString = msgString.substring(0, 512);
+            JDBCOptionPane.showMessageDialog(parentFrame, msgString, "Database Connection Error", JDBCOptionPane.ERROR_MESSAGE);
+        }
+        
         return conn;
     }
     

@@ -19,6 +19,9 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         tabbedPane = new javax.swing.JTabbedPane();
         driverPanel = new javax.swing.JPanel();
         driverInputPanel = new javax.swing.JPanel();
+        jarLabel = new javax.swing.JLabel();
+        jarField = new javax.swing.JTextField();
+        findJarButton = new javax.swing.JButton();
         nameLabel = new javax.swing.JLabel();
         nameField = new javax.swing.JTextField();
         urlLabel = new javax.swing.JLabel();
@@ -73,6 +76,29 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         });
 
         driverInputPanel.setLayout(new java.awt.GridBagLayout());
+
+        jarLabel.setText("Driver File");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        driverInputPanel.add(jarLabel, gridBagConstraints);
+
+        jarField.setColumns(20);
+        jarField.setText(dbConnection.getJarFile());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        driverInputPanel.add(jarField, gridBagConstraints);
+
+        findJarButton.setFont(new java.awt.Font("Dialog", 1, 10));
+        findJarButton.setText("Browse...");
+        findJarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                findJar(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        driverInputPanel.add(findJarButton, gridBagConstraints);
 
         nameLabel.setText("Driver Name ");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -347,6 +373,16 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         add(tabbedPane, gridBagConstraints);
 
     }//GEN-END:initComponents
+
+    private void findJar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findJar
+        final javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
+        int returnVal = fc.showOpenDialog(this);
+        if(returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
+            File jar = fc.getSelectedFile();
+            String jarFile = jar.toString();
+            jarField.setText(jarFile);
+        }
+    }//GEN-LAST:event_findJar
     
     private void toggleNoDatabase(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleNoDatabase
         if(useDatabaseCheckBox.isSelected()) {
@@ -367,6 +403,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
     }//GEN-LAST:event_showProjectNames
     
   private void applyOptions(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyOptions
+      dbConnection.setJarFile(jarField.getText());
       dbConnection.setProjectDatabase(projDBField.getText());
       dbConnection.setProjectTable(projTableField.getText());
       int projFieldIndex = projFieldComboBox.getSelectedIndex();
@@ -456,11 +493,13 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       String database = dbField.getText();
       String table = tableField.getText();
       JDBCConnect testConnection = new JDBCConnect(name, url, database, table);
+      testConnection.setJarFile(jarField.getText());
       testConnection.testDriverSettings();
   }//GEN-LAST:event_testDriverSettings
   
   private void saveDriverSettings(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDriverSettings
       //Give the bean all its setter values
+      dbConnection.setJarFile(jarField.getText());
       dbConnection.setName(nameField.getText());
       dbConnection.setUrl(urlField.getText());
       if(dbConnection.getName().equals(JDBCConnect.ODBCDRIVERNAME))
@@ -520,7 +559,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
     private void exitForm() {
         //Don't do anything - this is an embedded component
     }
-              
+    
     public void setObject(Object obj) {
         dbConnection = (JDBCConnect)obj;
         initComponents();
@@ -543,6 +582,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
     private javax.swing.JCheckBox odbcCheckBox;
     private javax.swing.JButton fieldOK;
     private javax.swing.JButton optionApply;
+    private javax.swing.JLabel jarLabel;
     private javax.swing.JPanel optionInputPanel;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JButton mapOK;
@@ -561,17 +601,19 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JLabel projFieldLabel;
     private javax.swing.JLabel projDBLabel;
+    private javax.swing.JButton findJarButton;
     private javax.swing.JLabel urlLabel;
     private javax.swing.JCheckBox projValidateCheckBox;
     private javax.swing.JButton driverOK;
     private javax.swing.JComboBox projFieldComboBox;
     private javax.swing.JTextField projDBField;
     private javax.swing.JScrollPane fieldScrollPane;
+    private javax.swing.JTextField jarField;
     private javax.swing.JLabel hourLabel;
     private javax.swing.JComboBox hourComboBox;
     private javax.swing.JCheckBox projectCaseCheckBox;
     private javax.swing.JPanel optionButtonPanel;
-    private javax.swing.JCheckBox useDatabaseCheckBox;
     private javax.swing.JPanel mapPanel;
+    private javax.swing.JCheckBox useDatabaseCheckBox;
     // End of variables declaration//GEN-END:variables
 }
