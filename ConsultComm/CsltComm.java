@@ -1,6 +1,8 @@
 //Standard Components
 import java.io.*;
+import java.util.*;
 import java.net.*;
+import java.beans.*;
 //XML Components
 import org.w3c.dom.*;
 import org.xml.sax.*;
@@ -23,11 +25,13 @@ public class CsltComm extends javax.swing.JFrame {
   public static final String release = "ConsultComm CVS Release";
   static MediaTracker iconTracker;
   static AnimatePanel iconPanel;
-  static Timer iconTimer;
-  private ClntComm projectList;
-  private String themePack, gtkTheme, kdeTheme;
+  static javax.swing.Timer iconTimer;
+
   protected Image appIcon;
   protected boolean animateIcons = true;
+  
+  private ClntComm projectList;
+  private String themePack, gtkTheme, kdeTheme;
   
   /** Creates new form CsltComm */
   public CsltComm() {
@@ -211,7 +215,7 @@ public class CsltComm extends javax.swing.JFrame {
     Image animationFrame;
     int frameNumber, frameDelay;
     int imageWidth, imageHeight;
-    Timer iconTimer;
+    javax.swing.Timer iconTimer;
     
     public AnimatePanel(Image frame) {
       super();
@@ -233,7 +237,7 @@ public class CsltComm extends javax.swing.JFrame {
       setMinimumSize(new Dimension(imageWidth, imageHeight));
       setMaximumSize(new Dimension(1024, imageHeight));
       
-      iconTimer = new Timer(frameDelay,
+      iconTimer = new javax.swing.Timer(frameDelay,
       new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           if(projectList.isRunning()){

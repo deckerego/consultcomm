@@ -73,25 +73,13 @@
             <Property name="text" type="java.lang.String" value="Tools"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="dbexportMenuItem">
+            <MenuItem class="javax.swing.JMenuItem" name="pluginsMenuItem">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Ctrl+X"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Export to Table"/>
+                <Property name="text" type="java.lang.String" value="Manage Plugins"/>
               </Properties>
 
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportToTable"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jdbcMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="JDBC Settings"/>
-              </Properties>
-
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editJDBC"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editPlugins"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="prefsMenuItem">
@@ -215,8 +203,8 @@
           </Events>
 
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value=""/>
             <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="timeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);&#xa;ListSelectionModel rowSM = timeList.getSelectionModel();&#xa;rowSM.addListSelectionListener(new ListSelectionListener() {&#xa;  public void valueChanged(ListSelectionEvent e) {&#xa;    selectionChanged(e);&#xa;  }&#xa;});&#xa;JTableHeader timeListHeader = timeList.getTableHeader();&#xa;timeListHeader.addMouseListener(new java.awt.event.MouseAdapter() {&#xa;  public void mouseClicked(java.awt.event.MouseEvent evt) {&#xa;    sortColumn(evt);&#xa;  }&#xa;});"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value=""/>
           </AuxValues>
         </Component>
       </SubComponents>
@@ -254,8 +242,8 @@
           </Events>
 
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value=""/>
             <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value=""/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value=""/>
           </AuxValues>
         </Component>
       </SubComponents>

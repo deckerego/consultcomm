@@ -12,7 +12,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
-public class JDBCConnect implements java.io.Serializable {
+public class JDBCConnect implements java.io.Serializable, CsltCommListener {
     final static int DATE_SQLDATE = 0;
     final static int DATE_SQLTIMESTAMP = 1;
     final static int DATE_CCYYMMDD = 2;
@@ -420,6 +420,10 @@ public class JDBCConnect implements java.io.Serializable {
             System.err.println("Cannot read prefs file: "+e);
             e.printStackTrace(System.out);
         }
+    }
+    
+    public void clockTick(CsltCommEvent actionEvent) {
+        //We don't worry about actions, nevermind.
     }
     
     private class LoginDialog extends JDialog {

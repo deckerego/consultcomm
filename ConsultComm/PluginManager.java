@@ -10,7 +10,7 @@ public class PluginManager extends javax.swing.JFrame {
     public PluginManager() {
         pluginList = new Vector();
         
-        try { loadPlugins(); } 
+        try { pluginList = getPlugins(); } 
         catch (Exception e) { System.err.println("Couldn't load all the plugins: "+e); }
         
         initComponents();
@@ -92,7 +92,7 @@ public class PluginManager extends javax.swing.JFrame {
       }
   }
   
-  private void loadPlugins() throws MalformedURLException, ClassNotFoundException, IOException {
+  public static Vector getPlugins() throws MalformedURLException, ClassNotFoundException, IOException {
       File pluginsdir = new File(System.getProperty("user.dir")+"/plugins");
       System.out.println("Looking for plugins in "+pluginsdir);
       File[] pluginfiles = pluginsdir.listFiles(new FilenameFilter() {
@@ -105,6 +105,7 @@ public class PluginManager extends javax.swing.JFrame {
           pluginurls[i] = pluginfiles[i].toURL();
       ClassLoader loader = new URLClassLoader(pluginurls);
       
+      Vector pluginList = new Vector(pluginurls.length);
       for(int i=0; i<pluginurls.length; i++) {
           String currBean = pluginfiles[i].getName();
           currBean = currBean.substring(0, currBean.lastIndexOf(".jar"));
@@ -112,6 +113,8 @@ public class PluginManager extends javax.swing.JFrame {
           Object plugin = Beans.instantiate(loader, currBean);
           pluginList.addElement(plugin);
       }
+      
+      return pluginList;
   }
   
     // Variables declaration - do not modify//GEN-BEGIN:variables
