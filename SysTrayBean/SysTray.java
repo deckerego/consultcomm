@@ -26,7 +26,7 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
       JMenuItem menuItem;
       
       tray = SystemTray.getDefaultSystemTray();
-      ImageIcon icon = JarLoader.loadImageIcon("systray.png", SysTray.class);
+      ImageIcon icon = JarLoader.loadImageIcon("systray_22.png", SysTray.class);
       sysTrayIcon = new TrayIcon(icon, "Consultant Communicator 3", new JPopupMenu());
       sysTrayIcon.setIconAutoSize(true);
       tray.addTrayIcon(sysTrayIcon);
