@@ -68,6 +68,8 @@
         <include name="TimeOutBean/manifest.mf"/>
         <include name="TimeOutBean/X/*.c"/>
         <include name="TimeOutBean/X/Makefile"/>
+        <include name="TimeOutBean/Solaris/*.c"/>
+        <include name="TimeOutBean/Solaris/Makefile"/>
         <include name="TimeOutBean/Win32/*.cpp"/>
         <include name="TimeOutBean/Win32/Makefile"/>
         
