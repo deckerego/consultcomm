@@ -1,5 +1,5 @@
-INCLUDE = -I/usr/include/glib-1.2 -I/usr/lib/glib/include -I/usr/X11R6/include -I/usr/java/j2sdk1.4.0/include -I/usr/java/j2sdk1.4.0/include/linux
-LDFLAGS = -lXss -lXext -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
+INCLUDE = -I/usr/X11R6/include -I/usr/java/j2sdk1.4.1/include -I/usr/java/j2sdk1.4.1/include/linux
+LDFLAGS = -L/usr/X11R6/lib -rdynamic -lX11
 CFLAGS = -shared $(INCLUDE)
 
 all: libtimeout.so
