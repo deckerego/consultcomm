@@ -14,9 +14,17 @@
         <pathelement location="skinlf.jar"/>
       </classpath>
     </javac>
+    <jar destfile="CsltComm.jar">
+      <fileset dir="${src}" includes="*.class"/>
+      <manifest>
+        <attribute name="Main-Class" value="CsltComm"/>
+        <attribute name="Class-Path" value="skinlf.jar"/>
+      </manifest>
+    </jar>
     <mkdir dir="${src}/plugins"/>
     <ant dir="TimeOutBean" target="all" inheritAll="false"/>
     <ant dir="JDBCBean" target="all" inheritAll="false"/>
+    <ant dir="TotalTimesBean" target="all" inheritAll="false"/>
   </target>
 
   <target depends="compile" name="X">
@@ -39,6 +47,7 @@
     </delete>
     <ant dir="TimeOutBean" target="clean" inheritAll="false"/>
     <ant dir="JDBCBean" target="clean" inheritAll="false"/>
+    <ant dir="TotalTimesBean" target="clean" inheritAll="false"/>
   </target>
 
   <target depends="clean" name="realclean">
@@ -47,5 +56,6 @@
     </delete>
     <ant dir="TimeOutBean" target="realclean" inheritAll="false"/>
     <ant dir="JDBCBean" target="realclean" inheritAll="false"/>
+    <ant dir="TotalTimesBean" target="realclean" inheritAll="false"/>
   </target>
 </project>
