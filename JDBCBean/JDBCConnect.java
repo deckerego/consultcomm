@@ -332,7 +332,6 @@ public class JDBCConnect extends CsltCommPlugin {
             TimeRecordSet oldTimes = (TimeRecordSet)propertyChangeEvent.getOldValue();
             
             if(newTimes != null && oldTimes != null && newTimes.size() > oldTimes.size()) { //Added a project, prompt
-                System.out.println("Received edited time list");
                 javax.swing.JFrame frame = new javax.swing.JFrame();
                 Object[] options = {"OK", "Cancel"};
                 int dialog = javax.swing.JOptionPane.showOptionDialog(frame,
