@@ -1,60 +1,7 @@
 Consultant Communicator 2.0
 Release 10/08/01
 
-ABOUT CONSULTANT COMMUNICATOR -
-Consultant Communicator (ConsultComm) is a lightweight, 
-cross-platform program that allows anyone managing multiple projects, 
-clients or tasks to effectively keep track of exactly how long they've 
-spent on each project. 
-
-INSTALL -
-Read the file INSTALL for step-by-step directions to install ConsultComm.
-
-STARTING CONSULTANT COMMUNICATOR -
-Simply double-click on the "CsltComm.jar" icon. Or, at the DOS prompt type
-	> cd \CsltComm
-	> javaw -jar CsltComm.jar (or java -jar CsltComm.jar on
-	  non-Windows platforms)
-
-RUNNING CONSULTANT COMMUNICATOR -
-1) The Time Tracker
-	Simply use the toolbar to use the following functions:
-	Start - Start the clock running.
-	Pause - Stop the clock from running.
-	Project - Maintain your projects by selecting:
-		o Add Project - Place a new project at the end of the list
-		o Delete Project - Deletes currently seleted project
-		o Edit Project - Edit the currently selected project
-		o Reset Timers - Reset ALL projects to have no elapsed time
-	Tools - Configuration and connectivity
-		o Export to Table - Insert all of your projects and times
-		  into a JDBC database
-		o JDBC Settings - Edit settings to connect to JDBC compliant
-		  databases and insert projects and times into tables. See
-		  the file DBCONNECT for more details
-2) Switching Projects
-	When you are ready to switch to another project, simply click on
-	its name on the list. ConsultComm automatically saves the old
-	project's elapsed time and watches elapsed time on the new
-	project.
-3) Total vs. Billable Time
-	To see your billable (instead of total) time, simply click on the
-	"Total:" box at the bottom of ConsultComm. When you want to switch
-	back, simply click on the "Billable:" box.
-4) Saving Preferances
-	Projects, time and preferances are automatically saved every 
-	minute and when you exit Consultant Communicator.
-
-CURRENT KNOWN BUGS -
-	o Report any bugs to http://consultcomm.sourceforge.net
-
-THINGS TO DO -
-	o Switch to a project automatically at a certain time each day
-	o Add mouse wheel functionality (should be released with JRE 1.4)
-
-LICENSE -
 Copyright (C) 2000, 2001 Free Software Foundation, Inc.
-License verified on 9/24/2001 by Janet Casey <jcasey@gnu.org>
 
 Permission is granted to copy, distribute, and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.1 or
@@ -62,12 +9,14 @@ any later version published by the Free Software Foundation; with no
 Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
 Texts. A copy of this license is included in the file COPYING.
 
-If you did not receive the file COPYING, please e-mail me at 
-john.ellis@ise-indy.com for a... er... copy or take a look at 
-http://www.gnu.org/copyleft/gpl.html .
+  All documentation has been rewritten in HTML format and is now saved in the 
+docs/ directory. Check there for info on how to setup up and use ConsultComm. 
+Or you can browse documentation at 
+http://sourceforge.net/projects/consultcomm.
 
-REPORTING BUGS -
-	http://sourceforge.net/projects/consultcomm/
-
-OFFICIAL SITE -
-	http://consultcomm.sourceforge.net/
+INSTALLING
+  See docs/install.html
+USING
+  See docs/using.html
+CONNECTING WITH JDBC
+  See docs/dbconnect.html
