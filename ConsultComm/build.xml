@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="all" name="ConsultComm">
   <property name="src" value="./"/>
+  <property name="Xlibdir" value="X"/>
 
   <target depends="compile" name="all"/>
 
@@ -14,6 +15,15 @@
         <pathelement location="${src}"/>
       </classpath>
     </javac>
+  </target>
+
+  <target depends="compile" name = "X">
+    <javah destdir="${Xlibdir}" class="ClntComm">
+      <classpath>
+        <pathelement location="${src}"/>
+      </classpath>
+    </javah>
+    <exec dir="${Xlibdir}" executable="make"/>
   </target>
 
   <target depends="all" name="dist">
@@ -40,9 +50,15 @@
     <delete>
       <fileset dir="${src}" includes="*.class"/>
     </delete>
+    <exec dir="${Xlibdir}" executable="make">
+      <arg line="clean"/>
+    </exec>
   </target>
 
   <target depends="clean" name="realclean">
     <delete file="CsltComm.jar"/>
+    <exec dir="${Xlibdir}" executable="make">
+      <arg line="realclean"/>
+    </exec>
   </target>
 </project>
