@@ -17,7 +17,11 @@
   <indexitem text="Crashes When Starting" target="faq.starting" />
 
 <!-- D --> 
-  <indexitem text="Database, see 'JDBC'" />
+  <indexitem text="Database Connectivity">
+    <indexitem text="Installing Plugin" target="db.installing" />
+    <indexitem text="Using Plugin" target="db.using" />
+    <indexitem text="NULL table error" target="faq.tablenull" />
+  </indexitem>
 
 <!-- E --> 
 
@@ -39,11 +43,7 @@
 
 <!-- J --> 
   <indexitem text="Java Version" target="faq.java" />
-  <indexitem text="JDBC">
-    <indexitem text="Installing" target="db.installing" />
-    <indexitem text="Using" target="db.using" />
-    <indexitem text="NULL table error" target="faq.tablenull" />
-  </indexitem>
+  <indexitem text="JDBC, see 'Database'" />
 
 <!-- K --> 
 

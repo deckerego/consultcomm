@@ -10,7 +10,7 @@
    <tocitem text="Using" target="using"/>
    <tocitem text="FAQ" target="faq"/>
    
-   <tocitem text="JDBC" target="db">
+   <tocitem text="Database Connectivity" target="db">
          <tocitem text="Installing" target="db.installing"/>
          <tocitem text="Using" target="db.using"/>
          <tocitem text="Mapping" target="db.mapping"/>
