@@ -1,8 +1,15 @@
-Consultant Communicator 3.1
-Released September 20, 2004
+Consultant Communicator 3.1.1
+Released October 27, 2004
 First Released: November 1999
 
 REVISION HISTORY -
+  o 3.1.1    [10/27/04]
+    - Fixed bug where adding a new project while the timer was running would reset the selected project's elapsed time
+    - Added project name to $PROMPT dialog in JDBC plugin
+    - User can now select the Java installed look-and-feel in the preferences panel
+    - If a native library already exists when a plugin is trying to extract it, the existing plugin is deleted
+    - Build structure updated for use with NetBeans 4.0
+    - Binaries compiled using Java 1.5, JRE 1.4 is still the target platform (1.4 and 1.5 installations can run ConsultComm without problems)
   o 3.1      [09/20/04]
     - Created plugin to display icon in system tray
     - Records & prefs are saved whenever a project in the list is changed
