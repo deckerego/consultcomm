@@ -505,24 +505,10 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
    */
   private void readPrefs() {
     try {
-      File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
-      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-      docBuilder = docBuilderFactory.newDocumentBuilder();
-      Document doc;
-      
-      if(prefs.exists()) {
-        doc = docBuilder.parse(prefs);
-        doc.getDocumentElement().normalize();
-      } else {
-        doc = docBuilder.newDocument();
-        Element rootNode = doc.createElement("clntcomm");
-        rootNode.setAttribute("version", "2.2");
-        doc.appendChild(rootNode);
-      }
+      PrefsFile prefs = new PrefsFile("ClntComm.def");
       
       //Get all projects
-      NodeList projects = doc.getElementsByTagName("project");
+      NodeList projects = prefs.getElementsByTagName("project");
       times = new TimeRecordSet();
       for(int i=0; i<projects.getLength(); i++){
         Node project = projects.item(i);
@@ -546,107 +532,42 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         times.add(record);
       }
       
-      NamedNodeMap attribute = null;
-      
       //Get window dimensions
-      NodeList dimensions = doc.getElementsByTagName("dimensions");
-      Node dimension = dimensions.item(0);
-      if(dimension != null) {
-        attribute = dimension.getAttributes();
-        double width = Double.parseDouble(attribute.getNamedItem("width").getNodeValue());
-        double height = Double.parseDouble(attribute.getNamedItem("height").getNodeValue());
-        windowSize = new java.awt.Dimension((int)width, (int)height);
-      }
+      double width = prefs.readFirstDouble("dimensions", "width");
+      double height = prefs.readFirstDouble("dimensions", "height");
+      windowSize = new java.awt.Dimension((int)width, (int)height);
       
       //Get project column dimensions
-      NodeList projColumns = doc.getElementsByTagName("projcolumn");
-      Node projColumn = projColumns.item(0);
-      if(projColumn != null) {
-        attribute = projColumn.getAttributes();
-        projColumnWidth = Integer.parseInt(attribute.getNamedItem("width").getNodeValue());
-      }
+      projColumnWidth = prefs.readFirstInt("projcolumn", "width");
       
       //Decide whether to show total time/billable time
-      NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
-      Node showTotalTime = showTotalTimes.item(0);
-      if(showTotalTime != null) {
-        attribute = showTotalTime.getAttributes();
-        String showTotalString = attribute.getNamedItem("display").getNodeValue();
-        try {
-          showTotal = Integer.parseInt(showTotalString);
-        } catch (NumberFormatException e) {
-          //Older versions used a string or a boolean to save the pref instead
-          //of an int, so just give it a default value
-          showTotal = SHOW_TOTAL;
-        }
-      } else {
+      try {
+        showTotal = prefs.readFirstInt("showtotaltime", "display");
+      } catch (NumberFormatException e) {
+        //Older versions used a string or a boolean to save the pref instead
+        //of an int, so just give it a default value
         showTotal = SHOW_TOTAL;
       }
       
-      
       //Get time format
-      NodeList timeFormats = doc.getElementsByTagName("timeformat");
-      Node timeFormatting = timeFormats.item(0);
-      if(timeFormatting != null) {
-        attribute = timeFormatting.getAttributes();
-        String timeFormatString = attribute.getNamedItem("type").getNodeValue();
-        if(timeFormatString.equals("seconds")) timeFormat = SECONDS;
-        if(timeFormatString.equals("minutes")) timeFormat = MINUTES;
-      } else {
-        timeFormat = MINUTES;
-      }
+      String timeFormatString = prefs.readFirstString("timeformat", "type");
+      if(timeFormatString.equals("seconds")) timeFormat = SECONDS;
+      else if(timeFormatString.equals("minutes")) timeFormat = MINUTES;
+      else timeFormat = MINUTES;
       
       //Get attribute flags
-      NodeList attributeFlags = doc.getElementsByTagName("attributes");
-      Node attributeFlag = attributeFlags.item(0);
-      if(attributeFlag != null) {
-        attribute = attributeFlag.getAttributes();
-        String attributesString = attribute.getNamedItem("value").getNodeValue();
-        attributes = Integer.parseInt(attributesString);
-      } else {
-        attributes = SHOW_TOTAL | SHOW_BILLABLE | SHOW_EXPORT;
-      }
+      attributes = prefs.readFirstInt("attributes", "value");
+      if(attributes == 0) attributes = SHOW_TOTAL; //No attributes found
       
       //Get save interval
-      NodeList saveInfos = doc.getElementsByTagName("saveinfo");
-      Node saveInfo = saveInfos.item(0);
-      if(saveInfo != null) {
-        attribute = saveInfo.getAttributes();
-        String saveIntervalString = attribute.getNamedItem("seconds").getNodeValue();
-        saveInterval = Integer.parseInt(saveIntervalString);
-      } else {
-        saveInterval = 60;
-      }
+      saveInterval = prefs.readFirstInt("saveinfo", "seconds");
+      if(saveInterval == 0) saveInterval = 60; //No interval found
       
       //Get idle time settings
-      NodeList idleTimes = doc.getElementsByTagName("idle");
-      Node idleTime = idleTimes.item(0);
-      if(idleTime != null) {
-        attribute = idleTime.getAttributes();
-        String allowedIdleString = attribute.getNamedItem("seconds").getNodeValue();
-        allowedIdle = Integer.parseInt(allowedIdleString);
-        
-        Node idleActionItem = attribute.getNamedItem("action");
-        if(idleActionItem != null) {
-          String idleActionString = idleActionItem.getNodeValue();
-          if(idleActionString.equals("project"))
-            idleAction = ClntComm.IDLE_PROJECT;
-          else
-            idleAction = ClntComm.IDLE_PAUSE;
-        } else {
-          idleAction = ClntComm.IDLE_PAUSE;
-        }
-        
-        Node idleProjectItem = attribute.getNamedItem("project");
-        if(idleProjectItem != null)
-          idleProject = idleProjectItem.getNodeValue();
-        else
-          idleProject = "";
-      } else {
-        allowedIdle = 0;
-        idleAction = ClntComm.IDLE_PAUSE;
-        idleProject = "";
-      }
+      allowedIdle = prefs.readFirstInt("idle", "seconds");
+      String idleActionString = prefs.readFirstString("idle", "action");
+      idleAction = idleActionString.equals("project") ? IDLE_PROJECT : IDLE_PAUSE;
+      idleProject = prefs.readFirstString("idle", "project");
     } catch (SAXParseException e) {
       System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
     } catch (SAXException e) {
@@ -660,32 +581,16 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   
   private void savePrefs() {
     try {
-      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-      Document doc;
-      Element rootNode;
-      
-      if (prefs.exists()) {
-        doc = docBuilder.parse(prefs);
-        rootNode = doc.getDocumentElement();
-      } else {
-        doc = docBuilder.newDocument();
-        rootNode = doc.createElement("clntcomm");
-        rootNode.setAttribute("version", "2.2");
-        doc.appendChild(rootNode);
-      }
-      rootNode.normalize();
-      
+      PrefsFile prefs = new PrefsFile("ClntComm.def");
+
       //Delete projects
-      NodeList projects = rootNode.getElementsByTagName("project");
-      for(int i=projects.getLength()-1; i>=0; i--)
-        rootNode.removeChild(projects.item(i));
+      prefs.removeAllChildren("project");
       
       //Save projects
       selectedIndex = timeList.getSelectedRow();
       for(int i=0; i<times.size(); i++){
         TimeRecord record = times.elementAt(i);
-        Element newNode = doc.createElement("project");
+        Element newNode = prefs.createElement("project");
         newNode.setAttribute("name", record.projectName);
         if(record.alias != null)
           newNode.setAttribute("alias", record.alias);
@@ -694,44 +599,24 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         newNode.setAttribute("export", record.export ? "true" : "false");
         if(i == selectedIndex)
           newNode.setAttribute("selected", "true");
-        rootNode.appendChild(newNode);
+        prefs.appendChild(newNode);
       }
       
-      Element newNode = null;
-      
       //Save window dimensions
-      NodeList dimensions = doc.getElementsByTagName("dimensions");
       java.awt.Dimension size = getSize();
-      newNode = doc.createElement("dimensions");
-      newNode.setAttribute("width", Double.toString(size.getWidth()));
-      newNode.setAttribute("height", Double.toString(size.getHeight()));
-      Node dimension = dimensions.item(0);
-      if(dimension != null) rootNode.replaceChild(newNode, dimension);
-      else rootNode.appendChild(newNode);
+      String[] attributeList = {"width", "height"};
+      double[] valueList = {size.getWidth(), size.getHeight()};
+      prefs.saveFirst("dimensions", attributeList, valueList);
       
       //Save project column dimensions
-      NodeList projColumns = doc.getElementsByTagName("projcolumn");
       TableColumn projectColumn = timeList.getColumnModel().getColumn(0);
-      newNode = doc.createElement("projcolumn");
-      newNode.setAttribute("width", Integer.toString(projectColumn.getPreferredWidth()));
-      Node projColumn = projColumns.item(0);
-      if(projColumn != null) rootNode.replaceChild(newNode, projColumn);
-      else rootNode.appendChild(newNode);
+      prefs.saveFirst("projcolumn", "width", projectColumn.getPreferredWidth());
       
       //Save show billable/total time flag
-      NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
-      newNode = doc.createElement("showtotaltime");
-      newNode.setAttribute("display", Integer.toString(showTotal));
-      Node showTotalTime = showTotalTimes.item(0);
-      if(showTotalTime != null) rootNode.replaceChild(newNode, showTotalTime);
-      else rootNode.appendChild(newNode);
+      prefs.saveFirst("showtotaltime", "display", showTotal);
       
       //Write to file
-      doc.getDocumentElement().normalize();
-      StreamSource stylesource = new StreamSource(stylesheet);
-      TransformerFactory tFactory = TransformerFactory.newInstance();
-      Transformer transformer = tFactory.newTransformer(stylesource);
-      transformer.transform(new DOMSource(doc.getDocumentElement()), new StreamResult(prefs));
+      prefs.write();
     } catch (ParserConfigurationException e) {
       System.err.println("Error writing prefs file: "+e);
     } catch (Exception e) {
