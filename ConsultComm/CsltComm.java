@@ -32,7 +32,6 @@ public class CsltComm extends javax.swing.JFrame {
   /** Creates new form CsltComm */
   public CsltComm() {
     appIcon = CsltComm.getImage(this, "graphics/icon.gif");
-    Skin skin = null;
     
     try {
       Class.forName("javax.xml.parsers.DocumentBuilder"); // jaxp.jar
@@ -49,27 +48,7 @@ public class CsltComm extends javax.swing.JFrame {
     }
     
     readPrefs();
-    
-    try {
-      if((kdeTheme != null) && (gtkTheme != null))
-        skin = new CompoundSkin(SkinLookAndFeel.loadSkin(kdeTheme), SkinLookAndFeel.loadSkin(gtkTheme));
-      else if(kdeTheme != null)
-        skin = SkinLookAndFeel.loadSkin(kdeTheme);
-      else if(gtkTheme != null)
-        skin = SkinLookAndFeel.loadSkin(gtkTheme);
-      else if(themePack != null)
-        skin = SkinLookAndFeel.loadThemePack(themePack);
-      
-      if(skin != null) {
-        SkinLookAndFeel.setSkin(skin);
-        UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
-      }
-    } catch (ClassNotFoundException e) {
-      System.err.println("Couldn't load theme engine!");
-    } catch (Exception e) {
-      System.err.println("Couldn't load theme! "+e);
-    }
-    
+    loadSkin();
     initComponents();
     
     projectList = new ClntComm(this);
@@ -112,40 +91,37 @@ public class CsltComm extends javax.swing.JFrame {
   }//GEN-LAST:event_exitForm
   
   public void reload() {
-    Skin skin = null;
-    
     if(iconPanel != null) remove(iconPanel);
-    
-    readPrefs();
-    
+    readPrefs();    
+    loadSkin();
+    if(animateIcons) {
+      getContentPane().add(iconPanel);
+      iconPanel.start();
+    }
+    pack();
+  }
+
+  private void loadSkin() {
+    Skin skin = null;
     try {
-      if((kdeTheme != null) && (gtkTheme != null))
+      if(! kdeTheme.equals("") && ! gtkTheme.equals(""))
         skin = new CompoundSkin(SkinLookAndFeel.loadSkin(kdeTheme), SkinLookAndFeel.loadSkin(gtkTheme));
-      else if(kdeTheme != null)
+      else if(! kdeTheme.equals(""))
         skin = SkinLookAndFeel.loadSkin(kdeTheme);
-      else if(gtkTheme != null)
+      else if(! gtkTheme.equals(""))
         skin = SkinLookAndFeel.loadSkin(gtkTheme);
-      else if(themePack != null)
+      else if(! themePack.equals(""))
         skin = SkinLookAndFeel.loadThemePack(themePack);
       
       if(skin != null) {
         SkinLookAndFeel.setSkin(skin);
         UIManager.setLookAndFeel("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
-      } else {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
       }
     } catch (ClassNotFoundException e) {
       System.err.println("Couldn't load theme engine!");
     } catch (Exception e) {
       System.err.println("Couldn't load theme! "+e);
     }
-
-    if(animateIcons) {
-      getContentPane().add(iconPanel);
-      iconPanel.start();
-    }
-    
-    pack();
   }
   
   /**
