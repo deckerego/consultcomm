@@ -32,11 +32,13 @@ class TimeRecord implements Comparable {
     } else seconds = 0L;
   }
 
-  public double getHours(int minutes) {
-    long quarterHours = seconds / minutes;
+  public java.math.BigDecimal getHours(int minutes, int scale) {
+    double percent = (double)minutes/(double)(60*60);
+    long partialHours = seconds / minutes;
     long remainder = seconds % minutes;
-    if(remainder >= minutes/2) quarterHours++;
-    return quarterHours * 0.25;
+    if(remainder >= minutes/2) partialHours++;
+    java.math.BigDecimal result = new java.math.BigDecimal(partialHours * percent);
+    return result.setScale(scale, java.math.BigDecimal.ROUND_HALF_EVEN);
   }
   
   public String toString() {
