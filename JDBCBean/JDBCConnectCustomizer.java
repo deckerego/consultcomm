@@ -2,7 +2,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
-public class JDBCConnectCustomizer extends javax.swing.JFrame implements java.beans.Customizer {
+public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.beans.Customizer {
   private JDBCConnect dbConnection;
   
   /** This method is called from within the constructor to
@@ -27,14 +27,12 @@ public class JDBCConnectCustomizer extends javax.swing.JFrame implements java.be
         odbcCheckBox = new javax.swing.JCheckBox();
         driverButtonPanel = new javax.swing.JPanel();
         driverOK = new javax.swing.JButton();
-        driverCancel = new javax.swing.JButton();
         driverTest = new javax.swing.JButton();
         fieldPanel = new javax.swing.JPanel();
         fieldScrollPane = new javax.swing.JScrollPane();
         fieldMapping = new javax.swing.JTable();
         fieldButtonPanel = new javax.swing.JPanel();
         fieldOK = new javax.swing.JButton();
-        fieldCancel = new javax.swing.JButton();
         fieldRefresh = new javax.swing.JButton();
         optionPanel = new javax.swing.JPanel();
         optionInputPanel = new javax.swing.JPanel();
@@ -50,10 +48,9 @@ public class JDBCConnectCustomizer extends javax.swing.JFrame implements java.be
         projFieldComboBox = new javax.swing.JComboBox();
         optionButtonPanel = new javax.swing.JPanel();
         optionOK = new javax.swing.JButton();
-        optionCancel = new javax.swing.JButton();
         optionApply = new javax.swing.JButton();
 
-        getContentPane().setLayout(new java.awt.GridLayout(1, 1));
+        setLayout(new java.awt.GridBagLayout());
 
         tabbedPane.setPreferredSize(new java.awt.Dimension(387, 254));
         driverPanel.setLayout(new java.awt.BorderLayout());
@@ -136,15 +133,6 @@ public class JDBCConnectCustomizer extends javax.swing.JFrame implements java.be
 
         driverButtonPanel.add(driverOK);
 
-        driverCancel.setText("Cancel");
-        driverCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancel(evt);
-            }
-        });
-
-        driverButtonPanel.add(driverCancel);
-
         driverTest.setText("Test");
         driverTest.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -179,15 +167,6 @@ public class JDBCConnectCustomizer extends javax.swing.JFrame implements java.be
         });
 
         fieldButtonPanel.add(fieldOK);
-
-        fieldCancel.setText("Cancel");
-        fieldCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancel(evt);
-            }
-        });
-
-        fieldButtonPanel.add(fieldCancel);
 
         fieldRefresh.setText("Refresh");
         fieldRefresh.addActionListener(new java.awt.event.ActionListener() {
@@ -293,15 +272,6 @@ public class JDBCConnectCustomizer extends javax.swing.JFrame implements java.be
 
         optionButtonPanel.add(optionOK);
 
-        optionCancel.setText("Cancel");
-        optionCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancel(evt);
-            }
-        });
-
-        optionButtonPanel.add(optionCancel);
-
         optionApply.setText("Refresh");
         optionApply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -315,7 +285,11 @@ public class JDBCConnectCustomizer extends javax.swing.JFrame implements java.be
 
         tabbedPane.addTab("Options", null, optionPanel, "Set variable options");
 
-        getContentPane().add(tabbedPane);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        add(tabbedPane, gridBagConstraints);
 
     }//GEN-END:initComponents
   
@@ -409,11 +383,7 @@ public class JDBCConnectCustomizer extends javax.swing.JFrame implements java.be
     JDBCConnect testConnection = new JDBCConnect(name, url, database, table);
     testConnection.testDriverSettings();
   }//GEN-LAST:event_testDriverSettings
-  
-  private void cancel(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancel
-    exitForm();
-  }//GEN-LAST:event_cancel
-  
+    
   private void saveDriverSettings(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDriverSettings
     dbConnection.setName(nameField.getText());
     dbConnection.setUrl(urlField.getText());
@@ -443,8 +413,7 @@ public class JDBCConnectCustomizer extends javax.swing.JFrame implements java.be
     }//GEN-LAST:event_exitForm
     
     private void exitForm() {
-      setVisible(false);
-      dispose();
+        //Don't do anything - this is an embedded component
     }
         
     public void setObject(Object obj) {
@@ -480,10 +449,8 @@ public class JDBCConnectCustomizer extends javax.swing.JFrame implements java.be
     private javax.swing.JCheckBox projValidateCheckBox;
     private javax.swing.JButton fieldOK;
     private javax.swing.JLabel dbLabel;
-    private javax.swing.JButton fieldCancel;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JButton optionOK;
-    private javax.swing.JButton optionCancel;
     private javax.swing.JPanel optionPanel;
     private javax.swing.JTextField tableField;
     private javax.swing.JTextField urlField;
@@ -492,7 +459,6 @@ public class JDBCConnectCustomizer extends javax.swing.JFrame implements java.be
     private javax.swing.JLabel urlLabel;
     private javax.swing.JButton driverOK;
     private javax.swing.JLabel projTableLabel;
-    private javax.swing.JButton driverCancel;
     private javax.swing.JButton fieldRefresh;
     // End of variables declaration//GEN-END:variables
 }
