@@ -3,12 +3,14 @@
 <FONT Size="+1">ConsultComm Frequently Asked Questions</FONT>
 <P>
 
+<A Name="JavaVersion"></A>
 <DL>
 <DT><B>What version of the Java Runtime Environment is needed?</B>
 <DD>ConsultComm needs Java 1.4.1 or higher to run. Earlier versions
 of the JRE are supported with the ConsultComm 2 series.
 <P>
 
+<A Name="WindowsInstaller"></A>
 <DT><B>The Windows installer just bombs out and says "Configuration file is broken"</B>
 <DD>You're probably trying to execute Setup.exe from within a .zip file, which is
 confusing the installation program. The contents of the Windows installer .zip file 
@@ -17,12 +19,14 @@ easiest way to do this is to just open up the .zip file as you normally would, t
 the folder you just copied over and things should work fine.
 <P>
 
+<A Name="Backup"></A>
 <DT><B>How do I backup/restore my personal settings?</B>
 <DD>Just archive the CsltComm directory from your user directory (in Windows, this 
 is a subfolder underneath <I>C:\Documents and Settings</I>). When you need them again, 
 just place the contents of the folder back in your user directory.
 <P>
 
+<A Name="ProblemsStarting"></A>
 <DT><B>Nothing happens when I double-click on CsltComm.jar</B>
 <DD>There are a few ways to launch ConsultComm, depending on your operating
 system. The Windows installer (named something akin to ConsultComm_Installer.jar 
@@ -39,10 +43,11 @@ invoking ConsultComm from the command line by changing into your installation
 directory and using <CODE>java -Djava.library.path=syslibs -jar CsltComm.jar</CODE>.
 <P>
 
+<A Name="IdleProblems"></A>
 <DT><B>Why can't I set ConsultComm to pause after being idle for <I>x</I>
-seconds?
-<DT><B>Why doesn't the system tray icon appear?
-<DD>Currently only Microsoft&#174; Windows&#174;, Solaris, Linux or other 
+seconds?</B>
+<DT><B>Why doesn't the system tray icon appear?</B>
+<DD>Currently only Microsoft&#174; Windows&#174;, Linux or other 
 Unix variants running X Windows can detect how long a user session is idle 
 or display the system tray icon under ConsultComm. I can support other 
 platforms as well, but I would need someone to supply the source code to do 
@@ -56,14 +61,17 @@ ConsultComm installation directory (i.e. <I>C:\Program Files\ConsultComm</I>
 or <I>/usr/share/ConsultComm</I>) and deleting the following files from the 
 <I>syslibs</I> folder:
 <BR>
+<UL>
 <LI>timeout.dll
 <LI>tray.dll
 <LI>libtimeout.so
 <LI>libtray.so
+</UL>
 <BR>
 Restart ConsultComm and see if that helps.
 <P>
 
+<A Name="WhyName"></A>
 <DT><B>Why the heck is this called "Consultant Communicator?"</B>
 <DD>That's an interesting story. Actually not so much interesting as it is 
 long.
