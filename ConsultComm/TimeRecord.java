@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class TimeRecord {
+public class TimeRecord implements java.io.Serializable {
     private long seconds;
     private String groupName;
     private String projectName;

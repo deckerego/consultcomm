@@ -1,15 +1,21 @@
 import java.util.*;
 import javax.swing.table.*;
 
-public class TimeRecordSet implements java.lang.Cloneable {
+public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable {
     private Vector timeRecords;
-    private static final String[] titles = {"Project", "Time"};
     private boolean reverseSort = false;
     private int currColumnSorted = 0;
     
     public TimeRecordSet() {
             timeRecords = new Vector();
     }
+    
+    public void setTimeRecords(Vector records) { this.timeRecords = records; }
+    public Vector getTimeRecords() { return this.timeRecords; }
+    public void setReverseSort(boolean sort) { this.reverseSort = sort; }
+    public boolean getReverseSort() { return this.reverseSort; }
+    public void setCurrColumnSorted(int column) { this.currColumnSorted = column; }
+    public int getCurrColumnSorted() { return this.currColumnSorted; }
     
     public void add(TimeRecord rec) {
         timeRecords.add(rec);
@@ -23,7 +29,6 @@ public class TimeRecordSet implements java.lang.Cloneable {
     public void resetTime() {
         for(int i=0; i<size(); i++) resetTime(i);
     }
-
     public void setSeconds(int index, long time) {
         TimeRecord record = elementAt(index);
         record.setSeconds(time);
@@ -32,7 +37,6 @@ public class TimeRecordSet implements java.lang.Cloneable {
         TimeRecord record = elementAt(index);
         return record.getSeconds();
     }
-    
     public String getBillableTimeString() {
         long total = 0;
         Enumeration records = timeRecords.elements();
@@ -136,12 +140,12 @@ public class TimeRecordSet implements java.lang.Cloneable {
     
     public void sort() {
         if(reverseSort)
-            if(titles[currColumnSorted].equals("Project"))
+            if(currColumnSorted == 0) //Project column
                 Collections.sort(timeRecords, new ProjectComparator());
             else
                 Collections.sort(timeRecords, new TimeComparator());
         else
-            if(titles[currColumnSorted].equals("Project"))
+            if(currColumnSorted == 0) //Project column
                 Collections.sort(timeRecords, new ProjectReverseComparator());
             else
                 Collections.sort(timeRecords, new TimeReverseComparator());
@@ -150,13 +154,13 @@ public class TimeRecordSet implements java.lang.Cloneable {
     public void sort(int column) {
         try {
             if((currColumnSorted != column) || reverseSort) {
-                if(titles[currColumnSorted].equals("Project"))
+                if(currColumnSorted == 0) //Project column
                     Collections.sort(timeRecords, new ProjectComparator());
                 else
                     Collections.sort(timeRecords, new TimeComparator());
                 reverseSort = false;
             } else {
-                if(titles[currColumnSorted].equals("Project"))
+                if(currColumnSorted == 0) //Project column
                     Collections.sort(timeRecords, new ProjectReverseComparator());
                 else
                     Collections.sort(timeRecords, new TimeReverseComparator());
