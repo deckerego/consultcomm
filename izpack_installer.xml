@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<installation version="1.0">
+
+    <info>
+        <appname>ConsultComm</appname>
+        <appversion>3.1 Beta 2</appversion>
+        <authors>
+            <author name="John Ellis" email="jtellis@sourceforge.net"/>
+        </authors>
+        <url>http://consultcomm.sourceforge.net/</url>
+    </info>
+    
+    <guiprefs width="640" height="480" resizable="no"/>
+    
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+
+    <resources>
+        <res id="LicencePanel.licence" src="COPYING"/>
+        <res id="InfoPanel.info" src="README"/>
+    </resources>
+    
+    <panels>
+        <panel classname="HelloPanel"/>
+        <panel classname="InfoPanel"/>
+        <panel classname="LicencePanel"/>
+        <panel classname="TargetPanel"/> 
+        <panel classname="PacksPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="FinishPanel"/>
+    </panels>
+    
+    <packs>
+        <pack name="Base" required="yes">
+            <description>Base Installation</description>
+            <fileset dir="." targetdir="$INSTALL_PATH">
+                <include name="plugins/*.jar"/>
+                <include name="syslibs/nativeskinwin32.dll"/>
+                <include name="syslibs/nativeskinwin32JAWT.dll"/>
+                <include name="*.jar"/>
+                <include name="ConsultComm"/>
+                <include name="README"/>
+                <include name="AUTHORS"/>
+                <include name="COPYING"/>
+                <include name="CHANGES"/>
+            </fileset>
+        </pack>
+        <pack name="JDBC Connectivity" required="no">
+            <description>Database connectivity for exporting/validating tasks against a JDBC-compliant database</description>
+            <fileset dir="." targetdir="$INSTALL_PATH">
+                <include name="plugins/JDBCConnect.jar"/>
+            </fileset>
+        </pack>
+        <pack name="Idle Time Detection" required="no">
+            <description>Detects user idle time in X Windows or Windows and either switches to an alternate project or pauses the timer</description>
+            <fileset dir="." targetdir="$INSTALL_PATH">
+                <include name="plugins/TimeOut.jar"/>
+            </fileset>
+        </pack>
+        <pack name="Elapsed Time Tracker" required="no">
+            <description>Keeps track of elapsed or remaining time</description>
+            <fileset dir="." targetdir="$INSTALL_PATH">
+                <include name="plugins/TotalTimes.jar"/>
+            </fileset>
+        </pack>
+        <pack name="System Tray" required="no">
+            <description>Displays a system tray icon in Windows, KDE 3.2 or Gnome</description>
+            <fileset dir="." targetdir="$INSTALL_PATH">
+                <include name="plugins/SysTray.jar"/>
+            </fileset>
+        </pack>
+    </packs>
+    
+</installation>
