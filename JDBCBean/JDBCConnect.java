@@ -283,7 +283,9 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     }
     
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        JDBCConnect clone = (JDBCConnect)super.clone();
+        clone.tableMap = new TableMap();
+        return clone;
     }
     
     private class LoginDialog extends JDialog {

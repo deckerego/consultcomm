@@ -392,6 +392,12 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
           projDBField.setEnabled(false);
           projTableField.setEnabled(false);
       }
+      
+      if(useDatabaseCheckBox.isSelected()) {
+          projDBField.setEnabled(false);
+          projDBLabel.setEnabled(false);
+      }
+      
       optionInputPanel.repaint();
   }//GEN-LAST:event_toggleValidateProject
   
@@ -461,7 +467,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
           dbConnection.setUrl("jdbc:odbc:"+dbConnection.getUrl());
       dbConnection.setDatabase(useDatabaseCheckBox.isSelected() ? null : dbField.getText());
       dbConnection.setTable(tableField.getText());
-      dbConnection.setProjectDatabase(projDBField.getText());
+      dbConnection.setProjectDatabase(useDatabaseCheckBox.isSelected() ? null : projDBField.getText());
       dbConnection.setProjectTable(projTableField.getText());
       if(projFieldComboBox.getItemCount() != 0) {
           int projFieldIndex = projFieldComboBox.getSelectedIndex();

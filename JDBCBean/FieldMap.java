@@ -50,8 +50,8 @@ public class FieldMap implements java.io.Serializable {
     public static void setConnection(JDBCConnect jdbcConnect) throws SQLException {
         jdbc = jdbcConnect;
         conn = jdbc.openConnection();
-        String queryString = "SELECT "+jdbc.getProjectField()+" FROM "+jdbc.getProjectDatabase()+
-        "."+jdbc.getProjectTable()+" WHERE "+jdbc.getProjectField()+"=?";
+        String queryString = "SELECT "+jdbc.getProjectField()+" FROM "+
+        jdbc.getProjectTable()+" WHERE "+jdbc.getProjectField()+"=?";
         findProject = conn.prepareStatement(queryString);
     }
     
@@ -60,8 +60,7 @@ public class FieldMap implements java.io.Serializable {
         if(conn != null) conn.close();
     }
     
-    private boolean validateProject(String project) {
-        java.sql.Statement stmt = null;
+    private boolean validateProject(String project, String name) {
         ResultSet rs = null;
         boolean isValid = false;
         try {
@@ -71,10 +70,10 @@ public class FieldMap implements java.io.Serializable {
             rs.close();
             
             if(! isValid) {
-                ProjectAddDialog addDialog = new ProjectAddDialog(parentFrame, project, jdbc.getProjectField(), jdbc);
+                ProjectAddDialog addDialog = new ProjectAddDialog(parentFrame, project, name, jdbc);
                 addDialog.show();
                 if(addDialog.getValue().equals("0"))
-                    isValid = validateProject(project);
+                    isValid = validateProject(project, name);
                 else
                     isValid = false;
             }
@@ -83,8 +82,6 @@ public class FieldMap implements java.io.Serializable {
         } finally {
             try {
                 if(rs != null) rs.close();
-                if(stmt != null) stmt.close();
-                if(conn != null) conn.close();
             } catch (Exception ex) {}
         }
         return isValid;
@@ -106,7 +103,7 @@ public class FieldMap implements java.io.Serializable {
                     //Put the project in all caps if it needs to be
                     realValue = jdbc.isProjectCase() ? projectName.toUpperCase() : projectName;
                     //Attempt to validate the project
-                    if(jdbc.getProjectValidate() && ! validateProject((String)realValue))
+                    if(jdbc.getProjectValidate() && ! validateProject((String)realValue, record.getProjectName()))
                         throw new ProjectInvalidException("Project "+realValue+" not in table "+jdbc.getProjectDatabase()+"."+jdbc.getProjectTable());
                     
                 } else if(value.equals("USERNAME")) {

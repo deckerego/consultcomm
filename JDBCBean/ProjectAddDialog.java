@@ -7,12 +7,16 @@ import javax.swing.table.*;
 public class ProjectAddDialog extends javax.swing.JDialog {
     private JDBCConnect dbConnection;
     private String value;
-    private String project, projectField;
+    private String project;
+    private String projectField;
+    private String name;
     
-    public ProjectAddDialog(JFrame frame, String project, String projectField, JDBCConnect connection) {
+    public ProjectAddDialog(JFrame frame, String project, String name, JDBCConnect connection) {
         super(frame, true);
+        this.projectField = connection.getProjectField();
         this.project = project;
-        this.projectField = projectField;
+        this.name = name;
+        
         try {
             dbConnection = (JDBCConnect)connection.clone();
             dbConnection.setDatabase(dbConnection.getProjectDatabase());
@@ -24,6 +28,7 @@ public class ProjectAddDialog extends javax.swing.JDialog {
         } catch (CloneNotSupportedException e) {
             System.err.println("Couldn't make a copy of the connection: "+e);
         }
+        
         initComponents();
         setLocationRelativeTo(frame);
         
@@ -55,7 +60,7 @@ public class ProjectAddDialog extends javax.swing.JDialog {
         });
 
         titleLabel.setForeground(java.awt.Color.black);
-        titleLabel.setText("Add new project "+project+":");
+        titleLabel.setText("Add new project "+name+":");
         getContentPane().add(titleLabel, java.awt.BorderLayout.NORTH);
 
         fieldScrollPane.setPreferredSize(new java.awt.Dimension(387, 254));
