@@ -85,11 +85,11 @@ class TimeRecordSet {
     Enumeration records = timeRecords.elements();
     while (records.hasMoreElements()) {
       TimeRecord record = (TimeRecord)records.nextElement();
-      total -= record.seconds;
+      if(record.export) total -= record.seconds;
     }
     return parseSeconds(total);
   }
-  public String getPayAmount(float perHour) {
+  public String getPayAmount(float perHour, int criteria) {
     float total = 0;
     java.text.NumberFormat dollarFormat = java.text.NumberFormat.getInstance();
     dollarFormat.setMinimumFractionDigits(2);
@@ -97,7 +97,9 @@ class TimeRecordSet {
     Enumeration records = timeRecords.elements();
     while (records.hasMoreElements()) {
       TimeRecord record = (TimeRecord)records.nextElement();
-      total += record.seconds;
+      if(record.export && criteria == ClntComm.SHOW_EXPORT) total += record.seconds;
+      else if(record.billable && criteria == ClntComm.SHOW_BILLABLE) total += record.seconds;
+      else if(criteria == ClntComm.SHOW_TOTAL) total += record.seconds;
     }
     
     float hours = total / (float)(60*60);

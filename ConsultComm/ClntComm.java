@@ -381,34 +381,34 @@ public class ClntComm extends javax.swing.JPanel {
 private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleTotals
   switch(showTotal) {
     case SHOW_TOTAL:
-      if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
-      if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
-      if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
       if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
+      else if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
+      else if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
+      else if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
       break;
     case SHOW_BILLABLE:
-      if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
-      if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
-      if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
       if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
+      else if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
+      else if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
+      else if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
       break;
     case SHOW_EXPORT:
-      if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
-      if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
-      if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
       if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
+      else if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
+      else if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
+      else if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
       break;
     case SHOW_COUNTPAY:
-      if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
-      if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
-      if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
       if(attributeSet(SHOW_COUNTDOWN)) showTotal = SHOW_COUNTDOWN;
+      else if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
+      else if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
+      else if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
       break;
     case SHOW_COUNTDOWN:
-      if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
-      if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
-      if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
       if(attributeSet(SHOW_TOTAL)) showTotal = SHOW_TOTAL;
+      else if(attributeSet(SHOW_BILLABLE)) showTotal = SHOW_BILLABLE;
+      else if(attributeSet(SHOW_EXPORT)) showTotal = SHOW_EXPORT;
+      else if(attributeSet(SHOW_COUNTPAY)) showTotal = SHOW_COUNTPAY;
       break;
     default:
       showTotal = SHOW_TOTAL;
@@ -444,7 +444,9 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         break;
       case SHOW_COUNTPAY:
         totalText.setText("Earned:");
-        totalTime.setText(times.getPayAmount(perHour));
+        if(attributeSet(SHOW_EXPORT)) totalTime.setText(times.getPayAmount(perHour, SHOW_EXPORT));
+        else if(attributeSet(SHOW_BILLABLE)) totalTime.setText(times.getPayAmount(perHour, SHOW_BILLABLE));
+        else totalTime.setText(times.getPayAmount(perHour, SHOW_TOTAL));
         break;
       default: //showTotal is undefined, choose default
         showTotal = SHOW_TOTAL;
