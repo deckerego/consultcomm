@@ -125,16 +125,8 @@ public class HelpDisplay extends javax.swing.JFrame {
     
     /** Exit the Application */
     private void exitForm() {
-      System.exit(0);
+      setVisible(false);
     }
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-      new HelpDisplay().show();
-    }
-    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane helpScrollPane;
@@ -165,13 +157,15 @@ public class HelpDisplay extends javax.swing.JFrame {
       }
       
       protected URL getPrevious() {
-        URL page = historyList[--currIndex];
+        if(--currIndex < 0) currIndex = historyList.length-1;
+        URL page = historyList[currIndex];
         forwardButton.setEnabled(true);
         if(! existsPrevious()) backButton.setEnabled(false);
         return page;
       }
       protected URL getNext() {
-        URL page = historyList[++currIndex];
+        currIndex = (currIndex+1)%historyList.length;
+        URL page = historyList[currIndex];
         backButton.setEnabled(true);
         if(! existsNext()) forwardButton.setEnabled(false);
         return page;
@@ -183,8 +177,8 @@ public class HelpDisplay extends javax.swing.JFrame {
         return currIndex != endIndex-1;
       }
       protected void add(URL page) {
-        historyList[++currIndex] = page;
-        currIndex = currIndex%historyList.length;
+        currIndex = (currIndex+1)%historyList.length;
+        historyList[currIndex] = page;
         endIndex = (currIndex+1)%historyList.length;
         if(endIndex == startIndex)
           startIndex = (startIndex+1)%historyList.length;
