@@ -1,0 +1,6 @@
+Manifest-Version: Version 1.0
+Java-Bean: true
+Specification-Version: 3.1
+Implementation-Vendor-Id: consultcomm
+Extension-Name: JDBCConnect
+Implementation-Version: 2.0
