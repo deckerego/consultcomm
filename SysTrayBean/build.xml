@@ -10,7 +10,13 @@
   </target>
 
   <target depends="init" name="compile">
-    <javac deprecation="on" optimize="on" srcdir="${src}" classpath="${src}:${appsrc}:${appsrc}/tray.jar"/>
+    <javac deprecation="on" optimize="on" srcdir="${src}">
+      <classpath>
+        <pathelement location="${src}"/>
+        <pathelement location="${appsrc}"/>
+        <pathelement location="${appsrc}/tray.jar"/>
+      </classpath>
+    </javac>
     <jar destfile="${appsrc}/plugins/SysTray.jar">
       <fileset dir="${src}" includes="*.class"/>
       <fileset dir="${src}" includes="*.png"/>
