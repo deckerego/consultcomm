@@ -95,13 +95,12 @@ public class TableTree extends JTable {
 
         for(int row=0; row < numRows;) { //Find each matching project, then check it
             path = tree.getNextMatch(selected.getProjectName(), row, javax.swing.text.Position.Bias.Forward);
-            if(path != null) {
-                TimeRecord record = (TimeRecord)path.getLastPathComponent();
-                row = tree.getRowForPath(path)+1;
-                if(record.getGroupName().equals(selected.getGroupName()) && record.getGroupName().equals(selected.getGroupName())) {
-                    tree.setSelectionPath(path);
-                    return;
-                }
+            if(path == null) return;
+            TimeRecord record = (TimeRecord)path.getLastPathComponent();
+            row = tree.getRowForPath(path)+1;
+            if(record.getGroupName().equals(selected.getGroupName()) && record.getGroupName().equals(selected.getGroupName())) {
+                tree.setSelectionPath(path);
+                return;
             }
         }
     }

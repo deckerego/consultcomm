@@ -412,7 +412,7 @@ public void editWindow(int i){
         times.sort();
         timeList.setModel(new TableTreeModel(times, timeFormat));
         changes.firePropertyChange("times", oldTimes, times);
-        if(selectedIndex == -1) timeList.setSelectedRecord(index); //Nothing selected
+        if(selectedIndex == -1) setSelectedIndex(index); //Nothing selected
         else timeList.setSelectedRecord(selectedIndex);
         totalPanel.repaint();
     }
