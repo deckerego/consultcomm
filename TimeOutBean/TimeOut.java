@@ -18,7 +18,7 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
     private native long getIdleTime();
     
     static {
-        if(getNativeLibrary("X/libtimeout.so") || getNativeLibrary("Win32/timeout.dll")) {
+        if(JarLoader.loadNativeLibrary("libtimeout.so", TimeOut.class) && JarLoader.loadNativeLibrary("timeout.dll", TimeOut.class)) {
             try {
                 System.loadLibrary("timeout");
                 timeoutLibrary = true;
@@ -69,36 +69,6 @@ public class TimeOut extends Object implements java.io.Serializable, java.lang.C
                 }
                 paused = false;
             }
-        }
-    }
-    
-    /**
-     * Translate a file from a bytestream in the JAR file
-     * @param path The relative path to the file stored in a Java Archive
-     * @return True if the library was loaded, false if it was already present
-     * or an exception occured
-     */
-    private static boolean getNativeLibrary(String path) {
-        try{
-            String fileName = path.substring(path.lastIndexOf('/'));
-            File file = new File(PluginManager.libsdir, fileName);
-            if(file.exists()) return false; //Don't reload the file if it already exists
-            file.deleteOnExit();
-            InputStream in = new BufferedInputStream(TimeOut.class.getResourceAsStream(path));
-            OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
-            byte[] buffer = new byte[4096];
-            while(true) { //Read in the file byte by byte
-                int nBytes = in.read(buffer);
-                if (nBytes <= 0) break;
-                out.write(buffer, 0, nBytes);
-            }
-            out.flush();
-            out.close();
-            in.close();
-            return true;
-        } catch(Exception e){
-            System.out.println("Error loading file "+path+": "+e);
-            return false;
         }
     }
 }

@@ -16,8 +16,8 @@
     <jar destfile="${appsrc}/plugins/TimeOut.jar">
       <fileset dir="${src}" includes="*.class"/>
       <fileset dir="${src}" includes="*.gif"/>
-      <fileset dir="${src}" includes="${Xlibdir}/*.so"/>
-      <fileset dir="${src}" includes="${Win32libdir}/*.dll"/>
+      <fileset dir="${src}" includes="*.so"/>
+      <fileset dir="${src}" includes="*.dll"/>
       <manifest>
         <attribute name="Java-Bean" value="true"/>
       </manifest>
@@ -60,7 +60,6 @@
     <delete>
       <fileset dir="${src}" includes="*~"/>
     </delete>
-    <delete file="CsltComm.jar"/>
     <delete file="${Win32libdir}/ClntComm.h"/>
     <exec dir="${Xlibdir}" executable="make">
       <arg line="realclean"/>

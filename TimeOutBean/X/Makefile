@@ -1,4 +1,4 @@
-INCLUDE = -I/usr/X11R6/include -I/usr/java/j2sdk1.4.1/include -I/usr/java/j2sdk1.4.1/include/linux
+INCLUDE = -I/usr/X11R6/include -I/usr/lib/java2/include -I/usr/lib/java2/include/linux
 LDFLAGS = -L/usr/X11R6/lib -rdynamic -lX11 -lXss -lXext 
 CFLAGS = -shared $(INCLUDE)
 CC=gcc
@@ -11,9 +11,9 @@ CC=gcc
 # Known to work with GCC and the SunPro compiler
 #CC=cc
 
-all: libtimeout.so
+all: ../libtimeout.so
 
-libtimeout.so: timeout.o
+../libtimeout.so: timeout.o
 	$(CC) $(CFLAGS) -o $@ timeout.o $(LDFLAGS)
 
 clean:
