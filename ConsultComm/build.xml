@@ -19,13 +19,14 @@
       <fileset dir="${src}">
         <include name="*.class"/>
         <include name="graphics/*.gif"/>
+        <include name="graphics/*.png"/>
         <include name="help/*"/>
         <exclude name="help/CVS"/>
         <exclude name="help/*~"/>
       </fileset>
       <manifest>
         <attribute name="Main-Class" value="CsltComm"/>
-        <attribute name="Class-Path" value="skinlf.jar jhbasic.jar"/>
+        <attribute name="Class-Path" value="skinlf.jar jhbasic.jar tray.jar"/>
       </manifest>
     </jar>
     <mkdir dir="${src}/plugins"/>

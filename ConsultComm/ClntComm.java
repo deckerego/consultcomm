@@ -460,28 +460,32 @@ public class ClntComm extends javax.swing.JPanel {
   
   void loadPlugins() {
       try{
-          Vector plugins = new Vector(PluginManager.getPluginList());
-          
           //Deregister our old plugins, if they exist
-          for(int i=0, max=plugins.size(); i<max; i++) {
-              CsltCommPlugin plugin = (CsltCommPlugin)plugins.elementAt(i);
+          Iterator plugins = PluginManager.getPluginList().iterator();
+          while(plugins.hasNext()) {
+              CsltCommPlugin plugin = (CsltCommPlugin)plugins.next();
               plugin.unregister();
           }
           
           //Get our new plugins and activate them
-          changes = new PropertyChangeSupport(this);
           PluginManager.getPlugins();
-          for(int i=0, max=plugins.size(); i<max; i++) {
-              String className = plugins.elementAt(i).getClass().getName();
-              CsltCommPlugin plugin = (CsltCommPlugin)plugins.elementAt(i);
-
-                  changes.addPropertyChangeListener((PropertyChangeListener)plugin);
-                  JMenuItem[] menuItems = (JMenuItem[])plugin.getMenuItems();
-                  for(int j=0; j<menuItems.length; j++) toolMenu.add(menuItems[j]);
+          plugins = PluginManager.getPluginList().iterator();
+          changes = new PropertyChangeSupport(this);
+          while(plugins.hasNext()) {
+              CsltCommPlugin plugin = (CsltCommPlugin)plugins.next();
+              changes.addPropertyChangeListener((PropertyChangeListener)plugin);
+              
+              JMenuItem[] menuItems = (JMenuItem[])plugin.getMenuItems();
+              if(menuItems != null) { //Add menu items to the main interface
+                  for(int j=0, max=menuItems.length; j<max; j++) {
+                      toolMenu.add(menuItems[j]);
+                  }
+              }
           }
           changes.firePropertyChange("times", null, times); //Sync everyone on an initial clock tick
       } catch(Exception e) {
           System.err.println("Couldn't load plugins: "+e);
+          e.printStackTrace(System.err);
       }
   }
   
