@@ -102,7 +102,9 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="totalText">
           <Properties>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.beaninfo.editors.StringEditor" value="Total:"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="showTotal ? &quot;Total:&quot; : &quot;Billable:&quot;" type="code"/>
+            </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" id="black" palette="0" red="0" type="palette"/>
             </Property>
@@ -121,7 +123,7 @@
         <Component class="javax.swing.JLabel" name="totalTime">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="times.getTotalTimeString()" type="code"/>
+              <Connection code="showTotal ? times.getTotalTimeString() : times.getBillableTimeString()" type="code"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" id="black" palette="0" red="0" type="palette"/>

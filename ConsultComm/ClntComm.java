@@ -15,7 +15,7 @@ import javax.swing.event.*;
 
 /*
  * ClntComm.java
- * @version 2.0
+ * @version 1.0
  * @author John T. Ellis
  * Created on May 19, 2000, 7:37 PM
  */
@@ -25,6 +25,9 @@ public class ClntComm extends javax.swing.JPanel {
   private TimerThread timer;
   private TimeRecordSet times;
   private java.awt.Dimension windowSize;
+  
+  //Flags for initializing components
+  private boolean showTotal = true;
 
   // Needed for prompt windows
   private JTextField projField;
@@ -32,7 +35,7 @@ public class ClntComm extends javax.swing.JPanel {
   private JCheckBox billable;
   private JFrame editFrame;
   private TimeRecord record;
-  private int index;
+  private int index, selectedIndex;
   
   /** Creates new form TimeTrack */
   public ClntComm() {
@@ -47,11 +50,10 @@ public class ClntComm extends javax.swing.JPanel {
    * Update the total time elapsed
    */
   public void refreshTotalTime(){
-    if(totalText.getText() == "Total:"){
+    if(showTotal)
       totalTime.setText(""+times.getTotalTimeString());
-    } else {
+    else
       totalTime.setText(""+times.getBillableTimeString());
-    }
     totalTime.repaint();
   }
   
@@ -93,6 +95,13 @@ public class ClntComm extends javax.swing.JPanel {
         double width = Double.parseDouble(attributes.getNamedItem("width").getNodeValue());
         double height = Double.parseDouble(attributes.getNamedItem("height").getNodeValue());
         windowSize = new java.awt.Dimension((int)width, (int)height);
+
+        //Decide whether to show total time/billable time
+        NodeList showTotalTimes = doc.getElementsByTagName("showtotaltime");
+        Node showTotalTime = showTotalTimes.item(0);
+        attributes = showTotalTime.getAttributes();
+        if(attributes.getNamedItem("display").getNodeValue().equals("billable"))
+          showTotal = false;
       } catch (SAXParseException e) {
         System.out.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
       } catch (SAXException e) {
@@ -132,6 +141,11 @@ public class ClntComm extends javax.swing.JPanel {
       newNode = doc.createElement("dimensions");
       newNode.setAttribute("width", ""+size.getWidth());
       newNode.setAttribute("height", ""+size.getHeight());
+      rootNode.appendChild(newNode);
+      
+      //Save show billable/total time flag
+      newNode = doc.createElement("showtotaltime");
+      newNode.setAttribute("display", showTotal ? "total" : "billable");
       rootNode.appendChild(newNode);
       
       //Write to file
@@ -233,7 +247,7 @@ public class ClntComm extends javax.swing.JPanel {
     
     totalPanel.setLayout(new java.awt.GridLayout(1, 2));
     
-    totalText.setText("Total:");
+    totalText.setText(showTotal ? "Total:" : "Billable:");
       totalText.setForeground(java.awt.Color.black);
       totalText.addMouseListener(new java.awt.event.MouseAdapter() {
         public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -244,7 +258,7 @@ public class ClntComm extends javax.swing.JPanel {
       totalPanel.add(totalText);
       
       
-    totalTime.setText(times.getTotalTimeString());
+    totalTime.setText(showTotal ? times.getTotalTimeString() : times.getBillableTimeString());
       totalTime.setForeground(java.awt.Color.black);
       totalTime.addMouseListener(new java.awt.event.MouseAdapter() {
         public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -275,41 +289,35 @@ public class ClntComm extends javax.swing.JPanel {
   }//GEN-END:initComponents
   
 private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toggleTotals
-  if(totalText.getText() == "Total:"){
-    totalText.setText("Billable:");
-  } else {
+  showTotal = showTotal == false;
+  if(showTotal)
     totalText.setText("Total:");
-  }
+  else
+    totalText.setText("Billable:");
   refreshTotalTime();
   }//GEN-LAST:event_toggleTotals
   
   private void selectionChanged(ListSelectionEvent e) {
-    setTimer(timeList);
+    setTimer();
   }
   
-  private void setTimer (JTable theList) {
-    if(theList.getSelectedRow() >= 0){
-      Calendar newTime = Calendar.getInstance();
-      timer.startTime = (newTime.get(Calendar.HOUR_OF_DAY)*3600)
-        + (newTime.get(Calendar.MINUTE)*60)
-        + newTime.get(Calendar.SECOND)
-        - times.getSeconds(theList.getSelectedRow());
+  private void setTimer () {
+    if(timeList.getSelectedRow() >= 0){
+      long currTime = System.currentTimeMillis()/1000;
+      timer.startTime = currTime - times.getSeconds(timeList.getSelectedRow());
     }
   }
   
 private void zeroProj (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zeroProj
   Object[] options = {"OK", "Cancel"};
   int dialog = JOptionPane.showOptionDialog(frame,
-  "Project will be marked as having \n no elapsed time. Continue?",
-  "Zero-Out Project", JOptionPane.YES_NO_OPTION,
+  "All projects will be marked as having \n no elapsed time. Continue?",
+  "Zero-Out All Projects", JOptionPane.YES_NO_OPTION,
   JOptionPane.WARNING_MESSAGE, null, options, options[1]);
   if(dialog == 0){
-    Calendar newTime = Calendar.getInstance();
     int index = timeList.getSelectedRow();
-    times.resetTime(index);
-    timer.startTime = (newTime.get(Calendar.HOUR_OF_DAY)*3600)
-    + (newTime.get(Calendar.MINUTE)*60)
-    + newTime.get(Calendar.SECOND);
+    times.resetTime();
+    timer.startTime = System.currentTimeMillis()/1000;
     timeList.setModel(times.toTableModel());
     timeList.repaint();
     refreshTotalTime();
@@ -348,6 +356,7 @@ private void editWindow (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edit
  */
   public void editWindow(int i){
     index = i;
+    selectedIndex = timeList.getSelectedRow();
     try {
       record = times.elementAt(index);
     } catch (ArrayIndexOutOfBoundsException e) {
@@ -374,18 +383,14 @@ private void editWindow (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edit
     JButton okay = new JButton("OK");
     okay.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent e) {
-        Calendar newTime = Calendar.getInstance();
+        long newTime = System.currentTimeMillis()/1000;
         record.projectName = projField.getText();
         record.setSeconds(timeField.getText());
-        if (index == timeList.getSelectedRow()){
-          timer.startTime = (newTime.get(Calendar.HOUR_OF_DAY)*3600)
-          + (newTime.get(Calendar.MINUTE)*60)
-          + newTime.get(Calendar.SECOND)
-          - record.seconds;
-        }
+        if (index == selectedIndex) timer.startTime = newTime-record.seconds;
         record.billable = billable.isSelected();
         timeList.setModel(times.toTableModel());
         timeList.repaint();
+        timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
         refreshTotalTime();
         editFrame.dispose();
       }
@@ -414,7 +419,7 @@ private void toggleTimer (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tog
     start_button.setToolTipText ("Start Timer");
     start_button.setText("G");
   } else {
-    setTimer(timeList);
+    setTimer();
     timer.clockRunning = true;
     start_button.setToolTipText ("Pause Timer");
     start_button.setText("S");
@@ -456,7 +461,6 @@ private void toggleTimer (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tog
     }
     
     public void run(){
-      Calendar currCalendar;
       long currTime;
       int index;
       long currSeconds;
@@ -466,11 +470,7 @@ private void toggleTimer (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tog
           sleep(updateSeconds);
           if(clockRunning){
             //Get the current seconds past midnight.
-            currCalendar = Calendar.getInstance();
-            currTime = (currCalendar.get(Calendar.HOUR_OF_DAY)*3600)
-              + (currCalendar.get(Calendar.MINUTE)*60)
-              + currCalendar.get(Calendar.SECOND);
-            
+            currTime = System.currentTimeMillis()/1000;
             if((index = timeList.getSelectedRow()) >= 0){
               currSeconds = currTime - startTime;
               times.setSeconds(index, currSeconds);
@@ -501,7 +501,7 @@ private void toggleTimer (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tog
       timeRecords.add(rec);
     }
     public void setSeconds(int index, long time) {
-      TimeRecord record = (TimeRecord)elementAt(index);
+      TimeRecord record = elementAt(index);
       record.seconds = time;
     }
     public TimeRecord elementAt(int index) throws java.lang.ArrayIndexOutOfBoundsException {
@@ -511,22 +511,24 @@ private void toggleTimer (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tog
       timeRecords.remove(index);
     }
     public void resetTime(int index) {
-      TimeRecord record = (TimeRecord)elementAt(index);
-      record.seconds = 0L;
+      setSeconds(index, 0L);
+    }
+    public void resetTime() {
+      for(int i=0; i<size(); i++) resetTime(i);
     }
     
     public int size() {
       return timeRecords.size();
     }
     public long getSeconds(int index) {
-      TimeRecord record = (TimeRecord)elementAt(index);
+      TimeRecord record = elementAt(index);
       return record.seconds;
     }
     public String getTime(int index) {
       return parseSeconds(getSeconds(index));
     }
     public String getProjectName(int index) {
-      TimeRecord record = (TimeRecord)elementAt(index);
+      TimeRecord record = elementAt(index);
       return record.projectName;
     }
     public String getBillableTimeString() {
