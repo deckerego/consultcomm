@@ -29,6 +29,8 @@ public class ClntComm extends javax.swing.JPanel {
   
   private static long totalSeconds, billableSeconds;
   private static JFrame frame = new JFrame("Consultant Manager");
+  private static File stylesheet;
+  private static File prefs;
   
   private CsltComm csltComm;
   private TimerThread timer;
@@ -58,6 +60,8 @@ public class ClntComm extends javax.swing.JPanel {
   
   /** Creates new form TimeTrack */
   public ClntComm(CsltComm parent) {
+    prefs = new File(CsltComm.prefsDir, "ClntComm.def");
+    stylesheet = CsltComm.getFile(this, "stylesheet.xsl");
     csltComm = parent;
     
     readPrefs();
@@ -652,8 +656,6 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   }
   
   private void savePrefs() {
-    File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
-    File stylesheet = CsltComm.getFile(this, "stylesheet.xsl");
     try {
       DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();

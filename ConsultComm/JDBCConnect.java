@@ -21,6 +21,9 @@ class JDBCConnect {
   final static int HOUR_TENTH = 2;
   final static String odbcDriverName = "sun.jdbc.odbc.JdbcOdbcDriver";
   
+  private static File stylesheet;
+  private static File prefs;
+  
   String name = "";
   String url = "";
   String userName = "";
@@ -40,12 +43,16 @@ class JDBCConnect {
   JFrame parentFrame;
   
   JDBCConnect() {
+    prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
+    stylesheet = CsltComm.getFile(this, "stylesheet.xsl");
     tableMap = new TableMap();
     parentFrame = new JFrame();
     readPrefs();
   }
   
   JDBCConnect(String name, String url, String database, String table) {
+    prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
+    stylesheet = CsltComm.getFile(this, "stylesheet.xsl");
     tableMap = new TableMap();
     parentFrame = new JFrame();
     this.name = name;
@@ -302,8 +309,6 @@ class JDBCConnect {
   }
   
   void savePrefs() {
-    File prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
-    File stylesheet = CsltComm.getFile(this, "stylesheet.xsl");
     try {
       DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -356,7 +361,6 @@ class JDBCConnect {
   
   void readPrefs() {
     try {
-      File prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
       DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
       docBuilder = docBuilderFactory.newDocumentBuilder();
