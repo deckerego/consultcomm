@@ -90,7 +90,7 @@ public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable 
         Enumeration records = timeRecords.elements();
         for(int i=0; records.hasMoreElements(); i++) {
             TimeRecord record = (TimeRecord)records.nextElement();
-            names[i] = record.getGroupName()+"-"+record.getProjectName();
+            names[i] = record.toString();
         }
         return names;
     }

@@ -163,6 +163,15 @@ public class TableTree extends JTable {
             visibleRow = row;
             return this;
         }
+        
+        public String convertValueToText(Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+            if(leaf && value.getClass().equals(TimeRecord.class)) {
+                TimeRecord record = (TimeRecord)value;
+                return record.getProjectName();
+            } else {
+                return value.toString();
+            }
+        }
     }
     
     /**
