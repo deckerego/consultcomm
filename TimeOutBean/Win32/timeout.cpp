@@ -5,7 +5,7 @@
  */
 
 #include <windows.h>
-#include <crtdbg.h>
+//#include <crtdbg.h>
 #include <stdio.h>
 #include <jni.h>
 #include "TimeOut.h"
