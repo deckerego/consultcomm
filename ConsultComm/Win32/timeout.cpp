@@ -11,12 +11,16 @@
 #include "ClntComm.h"
 
 
-HINSTANCE handleInstance = NULL;
+#pragma data_seg(".win32idle")
 HHOOK 	keyboardHook = NULL;
 HHOOK 	mouseHook = NULL;
 LONG	mouseX = -1;
 LONG	mouseY = -1;
 DWORD	lastEvent = 0;
+#pragma data_seg()
+#pragma comment(linker, "/section:.win32idle,rws")
+
+HINSTANCE handleInstance = NULL;
 
 LRESULT CALLBACK KeyboardTracker(int code, WPARAM wParam, LPARAM lParam)
 {
@@ -27,10 +31,10 @@ LRESULT CALLBACK KeyboardTracker(int code, WPARAM wParam, LPARAM lParam)
 LRESULT CALLBACK MouseTracker(int code, WPARAM wParam, LPARAM lParam)
 {
 	if (code==HC_ACTION) {
-		MOUSEHOOKSTRUCT* pStruct = (MOUSEHOOKSTRUCT*)lParam;
-		if (pStruct->pt.x != mouseX || pStruct->pt.y != mouseY) {
-			mouseX = pStruct->pt.x;
-			mouseY = pStruct->pt.y;
+		MOUSEHOOKSTRUCT* pointer = (MOUSEHOOKSTRUCT*)lParam;
+		if (pointer->pt.x != mouseX || pointer->pt.y != mouseY) {
+			mouseX = pointer->pt.x;
+			mouseY = pointer->pt.y;
 			lastEvent = GetTickCount();
 		}
 	}
@@ -39,37 +43,25 @@ LRESULT CALLBACK MouseTracker(int code, WPARAM wParam, LPARAM lParam)
 
 __declspec(dllexport) BOOL load()
 {
-	if (keyboardHook == NULL) {
+	if (keyboardHook == NULL)
 		keyboardHook = SetWindowsHookEx(WH_KEYBOARD, KeyboardTracker, handleInstance, 0);
-	}
-	if (mouseHook == NULL) {
+	if (mouseHook == NULL)
 		mouseHook = SetWindowsHookEx(WH_MOUSE, MouseTracker, handleInstance, 0);
-	}
-
-	_ASSERT(keyboardHook);
-	_ASSERT(mouseHook);
 
 	lastEvent = GetTickCount();
 
-	if (!keyboardHook || !mouseHook)
-		return FALSE;
-	else
-		return TRUE;
+	if (!keyboardHook || !mouseHook) return FALSE;
+	else return TRUE;
 }
 
 __declspec(dllexport) void unload()
 {
-	BOOL bResult;
-	if (keyboardHook)
-	{
-		bResult = UnhookWindowsHookEx(keyboardHook);
-		_ASSERT(bResult);
+	if (keyboardHook) {
+		UnhookWindowsHookEx(keyboardHook);
 		keyboardHook = NULL;
 	}
-	if (mouseHook)
-	{
-		bResult = UnhookWindowsHookEx(mouseHook);
-		_ASSERT(bResult);
+	if (mouseHook) {
+		UnhookWindowsHookEx(mouseHook);
 		mouseHook = NULL;
 	}
 }
@@ -78,8 +70,8 @@ int WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 {
 	switch(dwReason) {
 		case DLL_PROCESS_ATTACH:
-			DisableThreadLibraryCalls(hInstance);
 			handleInstance = hInstance;
+			DisableThreadLibraryCalls(handleInstance);
 			load();
 			break;
 		case DLL_PROCESS_DETACH:
@@ -91,5 +83,5 @@ int WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 
 JNIEXPORT jlong JNICALL Java_ClntComm_getIdleTime (JNIEnv *env, jobject obj)
 {
-  return (GetTickCount() - lastEvent);
+	return (GetTickCount() - lastEvent);
 }
