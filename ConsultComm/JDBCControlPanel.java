@@ -584,9 +584,9 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         PreparedStatement insert = conn.prepareStatement("INSERT INTO "+database+"."+table+" VALUES ("+queryString+")");
         for(int j=0; j < times.size(); j++) {
           TimeRecord record = times.elementAt(j);
-          FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$PROJECT"); //Find out how many hours exist
+          FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$HOURS"); //Find out how many hours exist
           java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.getValue(record);
-          if((hours.compareTo(new java.math.BigDecimal(0.0)) > 0) || ! record.billable) continue;
+          if((hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) || ! record.billable) continue;
           for(int i=0; i < tableMap.size(); i++) {
             FieldMap fieldMap = tableMap.elementAt(i);
             Object fieldValue = fieldMap.getValue(record);
