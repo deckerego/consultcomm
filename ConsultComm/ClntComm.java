@@ -258,6 +258,7 @@ public class ClntComm extends javax.swing.JPanel {
     
     setLayout(new java.awt.BorderLayout());
     
+    setPreferredSize(windowSize);
     totalPanel.setLayout(new java.awt.GridLayout(1, 2));
     
     totalText.setText(showTotal ? "Total:" : "Billable:");
