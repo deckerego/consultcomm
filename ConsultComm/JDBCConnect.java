@@ -212,7 +212,7 @@ class JDBCConnect {
       conn.close();
       
       if(! isValid) {
-        ProjectAddDialog addDialog = new ProjectAddDialog(parentFrame, project, projectField);
+        ProjectAddDialog addDialog = new ProjectAddDialog(parentFrame, project, projectField, this);
         addDialog.show();
         if(addDialog.getValue().equals("0"))
           isValid = validateProject(project);
