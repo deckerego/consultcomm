@@ -105,9 +105,8 @@ public class PrefsPanel extends javax.swing.JFrame {
     prefsInputPanel.setLayout(new java.awt.GridBagLayout());
     java.awt.GridBagConstraints gridBagConstraints1;
     
-    generalLabel.setText("General Properties");
-    generalLabel.setForeground(java.awt.Color.black);
     generalLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    generalLabel.setText("General Properties");
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -118,26 +117,26 @@ public class PrefsPanel extends javax.swing.JFrame {
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     prefsInputPanel.add(timeFormatLabel, gridBagConstraints1);
     
-    minuteButton.setSelected(timeFormat == ClntComm.MINUTES);
     minuteButton.setForeground(new java.awt.Color(102, 102, 153));
+    minuteButton.setSelected(timeFormat == ClntComm.MINUTES);
     minuteButton.setText("Minutes");
     timeFormatGroup.add(minuteButton);
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     prefsInputPanel.add(minuteButton, gridBagConstraints1);
     
-    secondButton.setSelected(timeFormat == ClntComm.SECONDS);
     secondButton.setForeground(new java.awt.Color(102, 102, 153));
+    secondButton.setSelected(timeFormat == ClntComm.SECONDS);
     secondButton.setText("Seconds");
     timeFormatGroup.add(secondButton);
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     prefsInputPanel.add(secondButton, gridBagConstraints1);
     
-    showIconCheckBox.setSelected(animateIcons);
     showIconCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    showIconCheckBox.setSelected(animateIcons);
     showIconCheckBox.setText("Show Animated Icons");
-    showIconCheckBox.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     showIconCheckBox.setMargin(new java.awt.Insets(6, 2, 2, 2));
+    showIconCheckBox.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -217,22 +216,21 @@ public class PrefsPanel extends javax.swing.JFrame {
     java.awt.GridBagConstraints gridBagConstraints2;
     
     flagLabel.setText("Project Attribute Flags");
-    flagLabel.setForeground(java.awt.Color.black);
     gridBagConstraints2 = new java.awt.GridBagConstraints();
     gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints2.insets = new java.awt.Insets(10, 0, 5, 0);
     flagsInputPanel.add(flagLabel, gridBagConstraints2);
     
-    billableCheckBox.setSelected(clntComm.attributeSet(ClntComm.SHOW_BILLABLE));
     billableCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    billableCheckBox.setSelected(clntComm.attributeSet(ClntComm.SHOW_BILLABLE));
     billableCheckBox.setText("Show Billable Flag");
     gridBagConstraints2 = new java.awt.GridBagConstraints();
     gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
     flagsInputPanel.add(billableCheckBox, gridBagConstraints2);
     
-    exportCheckBox.setSelected(clntComm.attributeSet(ClntComm.SHOW_EXPORT));
     exportCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    exportCheckBox.setSelected(clntComm.attributeSet(ClntComm.SHOW_EXPORT));
     exportCheckBox.setText("Use Export to Database Flag");
     gridBagConstraints2 = new java.awt.GridBagConstraints();
     gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
@@ -269,13 +267,12 @@ public class PrefsPanel extends javax.swing.JFrame {
     java.awt.GridBagConstraints gridBagConstraints3;
     
     skinsLabel.setText("Load Themes/Skins");
-    skinsLabel.setForeground(java.awt.Color.black);
     gridBagConstraints3 = new java.awt.GridBagConstraints();
     gridBagConstraints3.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     skinsInputPanel.add(skinsLabel, gridBagConstraints3);
     
-    themeCheckBox.setSelected(!themePack.equals(""));
     themeCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    themeCheckBox.setSelected(!themePack.equals(""));
     themeCheckBox.setText("Use Theme Pack: ");
     themeCheckBox.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -288,7 +285,7 @@ public class PrefsPanel extends javax.swing.JFrame {
     gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
     skinsInputPanel.add(themeCheckBox, gridBagConstraints3);
     
-    themeField.setColumns(15);
+    themeField.setColumns(25);
     themeField.setText(themePack);
     themeField.setEnabled(false);
     gridBagConstraints3 = new java.awt.GridBagConstraints();
@@ -309,8 +306,8 @@ public class PrefsPanel extends javax.swing.JFrame {
     gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
     skinsInputPanel.add(themeBrowse, gridBagConstraints3);
     
-    gtkCheckBox.setSelected(!gtkTheme.equals(""));
     gtkCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    gtkCheckBox.setSelected(!gtkTheme.equals(""));
     gtkCheckBox.setText("Use GTK Theme: ");
     gtkCheckBox.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -323,7 +320,7 @@ public class PrefsPanel extends javax.swing.JFrame {
     gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
     skinsInputPanel.add(gtkCheckBox, gridBagConstraints3);
     
-    gtkField.setColumns(15);
+    gtkField.setColumns(25);
     gtkField.setText(kdeTheme);
     gtkField.setEnabled(false);
     gridBagConstraints3 = new java.awt.GridBagConstraints();
@@ -344,8 +341,8 @@ public class PrefsPanel extends javax.swing.JFrame {
     gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
     skinsInputPanel.add(gtkBrowse, gridBagConstraints3);
     
-    kdeCheckBox.setSelected(!kdeTheme.equals(""));
     kdeCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    kdeCheckBox.setSelected(!kdeTheme.equals(""));
     kdeCheckBox.setText("Use KDE Theme: ");
     kdeCheckBox.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -358,7 +355,7 @@ public class PrefsPanel extends javax.swing.JFrame {
     gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
     skinsInputPanel.add(kdeCheckBox, gridBagConstraints3);
     
-    kdeField.setColumns(15);
+    kdeField.setColumns(25);
     kdeField.setText(gtkTheme);
     kdeField.setEnabled(false);
     gridBagConstraints3 = new java.awt.GridBagConstraints();
@@ -521,95 +518,105 @@ public class PrefsPanel extends javax.swing.JFrame {
      * Read through preferances file
      */
     private void readPrefs() {
-      File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
-      
-      if (prefs.exists()) {
-        try {
-          DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-          DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-          Document doc = docBuilder.parse(prefs);
+      try {
+        File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        docBuilderFactory = DocumentBuilderFactory.newInstance();
+        docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document doc;
+        
+        if(prefs.exists()) {
+          doc = docBuilder.parse(prefs);
           doc.getDocumentElement().normalize();
-          
-          NamedNodeMap attributes = null;
-
-          //Get time format
-          NodeList timeFormats = doc.getElementsByTagName("timeformat");
-          if(timeFormats.getLength() > 0) {
-            Node timeFormatting = timeFormats.item(0);
-            attributes = timeFormatting.getAttributes();
-            String timeFormatString = attributes.getNamedItem("type").getNodeValue();
-            if(timeFormatString.equals("seconds")) timeFormat = ClntComm.SECONDS;
-            if(timeFormatString.equals("minutes")) timeFormat = ClntComm.MINUTES;
-          } else {
-            timeFormat = ClntComm.MINUTES;
-          }
-
-          //Get animation flag
-          NodeList iconAnimations = doc.getElementsByTagName("animations");
-          if(iconAnimations.getLength() > 0) {
-            Node iconAnimation = iconAnimations.item(0);
-            attributes = iconAnimation.getAttributes();
-            if(attributes.getNamedItem("display").getNodeValue().equals("true"))
-              animateIcons = true;
-            else
-              animateIcons = false;
-          } else {
-            animateIcons = true;
-          }
-
-          //Get save interval
-          NodeList saveInfos = doc.getElementsByTagName("saveinfo");
-          if(saveInfos.getLength() > 0) {
-            Node saveInfo = saveInfos.item(0);
-            attributes = saveInfo.getAttributes();
-            String saveIntervalString = attributes.getNamedItem("seconds").getNodeValue();
-            saveInterval = Integer.parseInt(saveIntervalString);
-          } else {
-            saveInterval = 60;
-          }
-
-          //Get allowed idle time
-          NodeList idleTimes = doc.getElementsByTagName("idle");
-          if(idleTimes.getLength() > 0) {
-            Node idleTime = idleTimes.item(0);
-            attributes = idleTime.getAttributes();
-            String allowedIdleString = attributes.getNamedItem("seconds").getNodeValue();
-            allowedIdle = Integer.parseInt(allowedIdleString);
-          } else {
-            allowedIdle = 0;
-          }
-
-          //Get skins
-          NodeList skinElements = doc.getElementsByTagName("skin");
-          if(skinElements.getLength() > 0) {
-            Node skinElement = skinElements.item(0);
-            attributes = skinElement.getAttributes();
-            Node themePackItem = attributes.getNamedItem("theme");
-            if(themePackItem != null) themePack = themePackItem.getNodeValue();
-            else themePack = "";
-            Node kdeThemeItem = attributes.getNamedItem("kde");
-            if(kdeThemeItem != null) kdeTheme = kdeThemeItem.getNodeValue();
-            else kdeTheme = "";
-            Node gtkThemeItem = attributes.getNamedItem("gtk");
-            if(gtkThemeItem != null) gtkTheme = gtkThemeItem.getNodeValue();
-            else gtkTheme = "";
-          } else {
-            themePack = "";
-            kdeTheme = "";
-            gtkTheme = "";
-          }
-        } catch (SAXParseException e) {
-          System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
-        } catch (SAXException e) {
-          System.err.println("Error reading prefs file: "+e);
-          e.printStackTrace(System.out);
-        } catch (Exception e) {
-          System.err.println("Cannot read prefs file: "+e);
-          e.printStackTrace(System.out);
+        } else {
+          doc = docBuilder.newDocument();
+          Element rootNode = doc.createElement("clntcomm");
+          rootNode.setAttribute("version", "2.2");
+          doc.appendChild(rootNode);
         }
+      
+        NamedNodeMap attributes = null;
+        
+        //Get time format
+        NodeList timeFormats = doc.getElementsByTagName("timeformat");
+        if(timeFormats.getLength() > 0) {
+          Node timeFormatting = timeFormats.item(0);
+          attributes = timeFormatting.getAttributes();
+          String timeFormatString = attributes.getNamedItem("type").getNodeValue();
+          if(timeFormatString.equals("seconds")) timeFormat = ClntComm.SECONDS;
+          if(timeFormatString.equals("minutes")) timeFormat = ClntComm.MINUTES;
+        } else {
+          timeFormat = ClntComm.MINUTES;
+        }
+        
+        //Get animation flag
+        NodeList iconAnimations = doc.getElementsByTagName("animations");
+        if(iconAnimations.getLength() > 0) {
+          Node iconAnimation = iconAnimations.item(0);
+          attributes = iconAnimation.getAttributes();
+          if(attributes.getNamedItem("display").getNodeValue().equals("true"))
+            animateIcons = true;
+          else
+            animateIcons = false;
+        } else {
+          animateIcons = true;
+        }
+        
+        //Get save interval
+        NodeList saveInfos = doc.getElementsByTagName("saveinfo");
+        if(saveInfos.getLength() > 0) {
+          Node saveInfo = saveInfos.item(0);
+          attributes = saveInfo.getAttributes();
+          String saveIntervalString = attributes.getNamedItem("seconds").getNodeValue();
+          saveInterval = Integer.parseInt(saveIntervalString);
+        } else {
+          saveInterval = 60;
+        }
+        
+        //Get allowed idle time
+        NodeList idleTimes = doc.getElementsByTagName("idle");
+        if(idleTimes.getLength() > 0) {
+          Node idleTime = idleTimes.item(0);
+          attributes = idleTime.getAttributes();
+          String allowedIdleString = attributes.getNamedItem("seconds").getNodeValue();
+          allowedIdle = Integer.parseInt(allowedIdleString);
+        } else {
+          allowedIdle = 0;
+        }
+        
+        //Get skins
+        NodeList skinElements = doc.getElementsByTagName("skin");
+        if(skinElements.getLength() > 0) {
+          Node skinElement = skinElements.item(0);
+          attributes = skinElement.getAttributes();
+          Node themePackItem = attributes.getNamedItem("theme");
+          if(themePackItem != null) themePack = themePackItem.getNodeValue();
+          else themePack = "";
+          Node kdeThemeItem = attributes.getNamedItem("kde");
+          if(kdeThemeItem != null) kdeTheme = kdeThemeItem.getNodeValue();
+          else kdeTheme = "";
+          Node gtkThemeItem = attributes.getNamedItem("gtk");
+          if(gtkThemeItem != null) gtkTheme = gtkThemeItem.getNodeValue();
+          else gtkTheme = "";
+        } else {
+          themePack = "";
+          kdeTheme = "";
+          gtkTheme = "";
+        }
+      } catch (SAXParseException e) {
+        System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
+      } catch (SAXException e) {
+        System.err.println("Error reading prefs file: "+e);
+        e.printStackTrace(System.out);
+      } catch (IOException e) {
+        System.err.println("Cannot create new preferences file! "+e);
+      } catch (Exception e) {
+        System.err.println("Cannot read prefs file: "+e);
+        e.printStackTrace(System.out);
       }
     }
-
+    
     private void savePrefs() {
       File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
       try {
@@ -624,12 +631,12 @@ public class PrefsPanel extends javax.swing.JFrame {
         } else {
           doc = docBuilder.newDocument();
           rootNode = doc.createElement("clntcomm");
-          rootNode.setAttribute("version", "2.0");
+          rootNode.setAttribute("version", "2.2");
           doc.appendChild(rootNode);
         }
         rootNode.normalize();
         
-
+        
         //Save time format
         NodeList timeFormats = doc.getElementsByTagName("timeformat");
         newNode = doc.createElement("timeformat");
@@ -641,7 +648,7 @@ public class PrefsPanel extends javax.swing.JFrame {
         } else {
           rootNode.appendChild(newNode);
         }
-
+        
         //Save animation flag
         NodeList iconAnimations = doc.getElementsByTagName("animations");
         newNode = doc.createElement("animations");
@@ -652,12 +659,12 @@ public class PrefsPanel extends javax.swing.JFrame {
         } else {
           rootNode.appendChild(newNode);
         }
-
+        
         //Save attribute flag settings
         int attributes = 0;
         if(billableCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_BILLABLE;
         if(exportCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_EXPORT;
-
+        
         NodeList attributeFlags = doc.getElementsByTagName("attributes");
         newNode = doc.createElement("attributes");
         newNode.setAttribute("value", Integer.toString(attributes));
@@ -667,7 +674,7 @@ public class PrefsPanel extends javax.swing.JFrame {
         } else {
           rootNode.appendChild(newNode);
         }
-
+        
         //Save save interval
         NodeList saveInfos = doc.getElementsByTagName("saveinfo");
         newNode = doc.createElement("saveinfo");
@@ -678,7 +685,7 @@ public class PrefsPanel extends javax.swing.JFrame {
         } else {
           rootNode.appendChild(newNode);
         }
-
+        
         //Save idle time
         NodeList idleTimes = doc.getElementsByTagName("idle");
         newNode = doc.createElement("idle");
@@ -689,7 +696,7 @@ public class PrefsPanel extends javax.swing.JFrame {
         } else {
           rootNode.appendChild(newNode);
         }
-
+        
         //Save skin settings
         NodeList skinElements = doc.getElementsByTagName("skin");
         newNode = doc.createElement("skin");
@@ -702,7 +709,7 @@ public class PrefsPanel extends javax.swing.JFrame {
         } else {
           rootNode.appendChild(newNode);
         }
-
+        
         //Write to file
         doc.getDocumentElement().normalize();
         TransformerFactory fac = TransformerFactory.newInstance();

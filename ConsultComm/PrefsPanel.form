@@ -55,11 +55,8 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="generalLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="General Properties"/>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" id="black" palette="0" red="0" type="palette"/>
-                    </Property>
                     <Property name="horizontalAlignment" type="int" value="0"/>
+                    <Property name="text" type="java.lang.String" value="General Properties"/>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -79,11 +76,11 @@
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="minuteButton">
                   <Properties>
-                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection type="value" value="timeFormat == ClntComm.MINUTES" valueType="boolean"/>
-                    </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
+                    </Property>
+                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection type="value" value="timeFormat == ClntComm.MINUTES" valueType="boolean"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Minutes"/>
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
@@ -98,11 +95,11 @@
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="secondButton">
                   <Properties>
-                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection type="value" value="timeFormat == ClntComm.SECONDS" valueType="boolean"/>
-                    </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
+                    </Property>
+                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection type="value" value="timeFormat == ClntComm.SECONDS" valueType="boolean"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Seconds"/>
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
@@ -117,17 +114,17 @@
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="showIconCheckBox">
                   <Properties>
-                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection type="value" value="animateIcons" valueType="boolean"/>
-                    </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
                     </Property>
+                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection type="value" value="animateIcons" valueType="boolean"/>
+                    </Property>
                     <Property name="text" type="java.lang.String" value="Show Animated Icons"/>
-                    <Property name="verticalAlignment" type="int" value="1"/>
                     <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                       <Insets value="[6, 2, 2, 2]"/>
                     </Property>
+                    <Property name="verticalAlignment" type="int" value="1"/>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -268,9 +265,6 @@
                 <Component class="javax.swing.JLabel" name="flagLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Project Attribute Flags"/>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" id="black" palette="0" red="0" type="palette"/>
-                    </Property>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -280,11 +274,11 @@
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="billableCheckBox">
                   <Properties>
-                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection type="value" value="clntComm.attributeSet(ClntComm.SHOW_BILLABLE)" valueType="boolean"/>
-                    </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
+                    </Property>
+                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection type="value" value="clntComm.attributeSet(ClntComm.SHOW_BILLABLE)" valueType="boolean"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Show Billable Flag"/>
                   </Properties>
@@ -296,11 +290,11 @@
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="exportCheckBox">
                   <Properties>
-                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection type="value" value="clntComm.attributeSet(ClntComm.SHOW_EXPORT)" valueType="boolean"/>
-                    </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
+                    </Property>
+                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection type="value" value="clntComm.attributeSet(ClntComm.SHOW_EXPORT)" valueType="boolean"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Use Export to Database Flag"/>
                   </Properties>
@@ -364,9 +358,6 @@
                 <Component class="javax.swing.JLabel" name="skinsLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Load Themes/Skins"/>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="0" green="0" id="black" palette="0" red="0" type="palette"/>
-                    </Property>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -376,11 +367,11 @@
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="themeCheckBox">
                   <Properties>
-                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="!themePack.equals(&quot;&quot;)" type="code"/>
-                    </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
+                    </Property>
+                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="!themePack.equals(&quot;&quot;)" type="code"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Use Theme Pack: "/>
                   </Properties>
@@ -396,7 +387,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="themeField">
                   <Properties>
-                    <Property name="columns" type="int" value="15"/>
+                    <Property name="columns" type="int" value="25"/>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                       <Connection code="themePack" type="code"/>
                     </Property>
@@ -428,11 +419,11 @@
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="gtkCheckBox">
                   <Properties>
-                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="!gtkTheme.equals(&quot;&quot;)" type="code"/>
-                    </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
+                    </Property>
+                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="!gtkTheme.equals(&quot;&quot;)" type="code"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Use GTK Theme: "/>
                   </Properties>
@@ -448,7 +439,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="gtkField">
                   <Properties>
-                    <Property name="columns" type="int" value="15"/>
+                    <Property name="columns" type="int" value="25"/>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                       <Connection code="kdeTheme" type="code"/>
                     </Property>
@@ -480,11 +471,11 @@
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="kdeCheckBox">
                   <Properties>
-                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="!kdeTheme.equals(&quot;&quot;)" type="code"/>
-                    </Property>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="66" red="66" type="rgb"/>
+                    </Property>
+                    <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="!kdeTheme.equals(&quot;&quot;)" type="code"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Use KDE Theme: "/>
                   </Properties>
@@ -504,7 +495,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="kdeField">
                   <Properties>
-                    <Property name="columns" type="int" value="15"/>
+                    <Property name="columns" type="int" value="25"/>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                       <Connection code="gtkTheme" type="code"/>
                     </Property>
