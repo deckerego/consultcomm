@@ -63,8 +63,8 @@ public class ClntComm extends javax.swing.JPanel {
     toolMenu = new javax.swing.JMenu();
     dbexportMenuItem = new javax.swing.JMenuItem();
     jdbcMenuItem = new javax.swing.JMenuItem();
-    helpMenuItem = new javax.swing.JMenuItem();
     prefsMenuItem = new javax.swing.JMenuItem();
+    helpMenuItem = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JPopupMenu();
     editPopupItem = new javax.swing.JMenuItem();
     deletePopupItem = new javax.swing.JMenuItem();
@@ -87,7 +87,7 @@ public class ClntComm extends javax.swing.JPanel {
     });
     
     projectMenu.add(addMenuItem);
-    deleteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
+    deleteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
     deleteMenuItem.setText("Delete Project");
     deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -133,6 +133,14 @@ public class ClntComm extends javax.swing.JPanel {
     });
     
     toolMenu.add(jdbcMenuItem);
+    prefsMenuItem.setText("Preferences");
+    prefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        showPrefs(evt);
+      }
+    });
+    
+    toolMenu.add(prefsMenuItem);
     helpMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
     helpMenuItem.setText("Help");
     helpMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -142,14 +150,6 @@ public class ClntComm extends javax.swing.JPanel {
     });
     
     toolMenu.add(helpMenuItem);
-    prefsMenuItem.setText("Preferences");
-    prefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        showPrefs(evt);
-      }
-    });
-    
-    toolMenu.add(prefsMenuItem);
     menuBar.add(toolMenu);
     editPopupItem.setText("Edit Project");
     editPopupItem.addActionListener(new java.awt.event.ActionListener() {
@@ -557,8 +557,8 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   private javax.swing.JMenu toolMenu;
   private javax.swing.JMenuItem dbexportMenuItem;
   private javax.swing.JMenuItem jdbcMenuItem;
-  private javax.swing.JMenuItem helpMenuItem;
   private javax.swing.JMenuItem prefsMenuItem;
+  private javax.swing.JMenuItem helpMenuItem;
   private javax.swing.JPopupMenu editMenu;
   private javax.swing.JMenuItem editPopupItem;
   private javax.swing.JMenuItem deletePopupItem;
