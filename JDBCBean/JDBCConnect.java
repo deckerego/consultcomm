@@ -64,12 +64,12 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     public String getUrl() { return this.url; }
     public void setUserName(String userName) { this.userName = userName; }
     public String getUserName() { return this.userName; }
-    public void setDatabase(String database) { 
+    public void setDatabase(String database) {
         this.database = database;
         this.qualifiedTable = database == null ? table : database+"."+table;
     }
     public String getDatabase() { return this.database; }
-    public void setTable(String table) { 
+    public void setTable(String table) {
         this.table = table;
         this.qualifiedTable = database == null ? table : database+"."+table;
     }
@@ -116,13 +116,13 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
             if(jarFile != null && jarFile.length() > 0) {
                 File jar = new File(jarFile);
                 if(jar.exists()) {
-                    try { loader = new URLClassLoader(new URL[] {jar.toURL()}); } 
+                    try { loader = new URLClassLoader(new URL[] {jar.toURL()}); }
                     catch (MalformedURLException e) { System.err.println("Error loading Jar file: "+e); }
                 } else {
                     System.err.println("Jar file doesn't exist. Using default classpath.");
                 }
             }
-
+            
             Class driverClass = loader.loadClass(this.name);
             Driver driver = (Driver)driverClass.newInstance();
             if(! validated) { //Send login dialog box
@@ -216,7 +216,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
             for(int j=0; j < times.size(); j++) {
                 TimeRecord record = times.elementAt(j);
                 
-                 //Find out how many hours exist - if no hours exist, skip this record
+                //Find out how many hours exist - if no hours exist, skip this record
                 FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$HOURS");
                 java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.valueOf(record);
                 if(hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) continue;
@@ -305,8 +305,30 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
         if(clntComm == null) clntComm = (ClntComm)propertyChangeEvent.getSource();
         TotalPanel totalPanel = clntComm.getTotalPanel();
         totalPanel.setEntry("To Export:", getTotalTime());
+        
+        if(propertyChangeEvent.getPropertyName().equals("times")) {
+            TimeRecordSet newTimes = (TimeRecordSet)propertyChangeEvent.getNewValue();
+            TimeRecordSet oldTimes = (TimeRecordSet)propertyChangeEvent.getOldValue();
+            
+            if(newTimes.size() > oldTimes.size()) { //Added a project, prompt
+                javax.swing.JFrame frame = new javax.swing.JFrame();
+                Object[] options = {"OK", "Cancel"};
+                int dialog = javax.swing.JOptionPane.showOptionDialog(frame,
+                "Add Project to Database Export List?",
+                "Add to Export", javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+                if(dialog == 0){
+                    frame.getContentPane().setLayout(new java.awt.BorderLayout());
+                    Customizer customizer = new JDBCConnectCustomizer();
+                    customizer.setObject(this);
+                    frame.getContentPane().add((javax.swing.JPanel)customizer, java.awt.BorderLayout.CENTER);
+                    frame.pack();
+                    frame.show();
+                }
+            }
+        }
     }
-
+    
     private long getTotalTime() {
         long totalTime = 0;
         TimeRecordSet times = clntComm.getTimes();
