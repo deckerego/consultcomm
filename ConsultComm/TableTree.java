@@ -80,7 +80,7 @@ public class TableTree extends JTable {
             return -1;
         }
     }
-    
+
     /**
      * Set the index into the TableTree based on the TimeRecord at the given
      * index within the TimeRecordSet
@@ -90,10 +90,20 @@ public class TableTree extends JTable {
         TreeModel model = tree.getModel();
         TimeRecordSet times = (TimeRecordSet)model.getRoot();
         TimeRecord selected = times.elementAt(index);
-        TreePath path = tree.getNextMatch(selected.toString(), 0, javax.swing.text.Position.Bias.Forward);
-        tree.setSelectionPath(path);
+        TreePath path = null;
+        int numRows = tree.getRowCount();
+
+        for(int row=0; row < numRows;) { //Find each matching project, then check it
+            path = tree.getNextMatch(selected.getProjectName(), row, javax.swing.text.Position.Bias.Forward);
+            TimeRecord record = (TimeRecord)path.getLastPathComponent();
+            row = tree.getRowForPath(path)+1;
+            if(record.getGroupName().equals(selected.getGroupName()) && record.getGroupName().equals(selected.getGroupName())) {
+                tree.setSelectionPath(path);
+                return;
+            }
+        }
     }
-    
+
     /**
      * Set the value for the record at the given index into a TimeRecordSet
      * @param value The TimeRecord that contains the needed values to set
@@ -164,6 +174,9 @@ public class TableTree extends JTable {
             return this;
         }
         
+        /**
+         * If the node is a TimeRecord, just show the project name, not the <group>-<project name>
+         */
         public String convertValueToText(Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
             if(leaf && value.getClass().equals(TimeRecord.class)) {
                 TimeRecord record = (TimeRecord)value;
