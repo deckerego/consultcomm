@@ -1,4 +1,6 @@
 import java.util.*;
+import java.io.*;
+import java.beans.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
@@ -114,7 +116,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         driverInputPanel.add(tableField, gridBagConstraints);
 
         odbcCheckBox.setForeground(new java.awt.Color(102, 102, 153));
-        odbcCheckBox.setSelected(dbConnection.getName().equals(JDBCConnect.odbcDriverName));
+        odbcCheckBox.setSelected(dbConnection.getName().equals(JDBCConnect.ODBCDRIVERNAME));
         odbcCheckBox.setText("Use ODBC Bridge");
         odbcCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -159,7 +161,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
             }
         });
 
-        fieldMapping.setModel(dbConnection.tableMap.toFieldValuesTableModel());
+        fieldMapping.setModel(dbConnection.getTableMap().toFieldValuesTableModel());
         fieldScrollPane.setViewportView(fieldMapping);
 
         fieldPanel.add(fieldScrollPane, java.awt.BorderLayout.CENTER);
@@ -194,7 +196,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
             }
         });
 
-        projectMapping.setModel(dbConnection.tableMap.toProjectNamesTableModel());
+        projectMapping.setModel(dbConnection.getTableMap().toProjectNamesTableModel());
         mapScrollPane.setViewportView(projectMapping);
 
         mapPanel.add(mapScrollPane, java.awt.BorderLayout.CENTER);
@@ -326,10 +328,10 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
     
     private void showProjectNames(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showProjectNames
         getRootPane().setDefaultButton(mapOK);
-        if(dbConnection.tableMap.size() == 0) {
+        if(dbConnection.getTableMap().size() == 0) {
             try {
-                dbConnection.tableMap.init();
-                projectMapping.setModel(dbConnection.tableMap.toProjectNamesTableModel());
+                dbConnection.getTableMap().init();
+                projectMapping.setModel(dbConnection.getTableMap().toProjectNamesTableModel());
                 projectMapping.repaint();
             } catch (java.sql.SQLException e) {
                 System.err.println("Couldn't initialize project mapping");
@@ -383,7 +385,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   }//GEN-LAST:event_toggleODBC
   private void toggleODBC() {
       if(odbcCheckBox.isSelected()) {
-          nameField.setText(JDBCConnect.odbcDriverName);
+          nameField.setText(JDBCConnect.ODBCDRIVERNAME);
           nameField.setEnabled(false);
           urlLabel.setText("Data Source");
           int lastColon = dbConnection.getUrl().lastIndexOf(':')+1;
@@ -398,8 +400,8 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   }
   private void refreshFieldMap(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshFieldMap
       try {
-          dbConnection.tableMap.init();
-          fieldMapping.setModel(dbConnection.tableMap.toFieldValuesTableModel());
+          dbConnection.getTableMap().init();
+          fieldMapping.setModel(dbConnection.getTableMap().toFieldValuesTableModel());
           fieldMapping.repaint();
       } catch (java.sql.SQLException e) {
           System.err.println("Couldn't initialize table mapping");
@@ -408,10 +410,10 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   
   private void showFieldMap(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showFieldMap
       getRootPane().setDefaultButton(fieldOK);
-      if(dbConnection.tableMap.size() == 0) {
+      if(dbConnection.getTableMap().size() == 0) {
           try {
-              dbConnection.tableMap.init();
-              fieldMapping.setModel(dbConnection.tableMap.toFieldValuesTableModel());
+              dbConnection.getTableMap().init();
+              fieldMapping.setModel(dbConnection.getTableMap().toFieldValuesTableModel());
               fieldMapping.repaint();
           } catch (java.sql.SQLException e) {
               System.err.println("Couldn't initialize table mapping");
@@ -431,7 +433,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   private void saveDriverSettings(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDriverSettings
       dbConnection.setName(nameField.getText());
       dbConnection.setUrl(urlField.getText());
-      if(dbConnection.getName().equals(JDBCConnect.odbcDriverName))
+      if(dbConnection.getName().equals(JDBCConnect.ODBCDRIVERNAME))
           dbConnection.setUrl("jdbc:odbc:"+dbConnection.getUrl());
       dbConnection.setDatabase(dbField.getText());
       dbConnection.setTable(tableField.getText());
@@ -444,12 +446,26 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       dbConnection.setProjectValidate(projValidateCheckBox.isSelected());
       dbConnection.setHourFormat(hourComboBox.getSelectedIndex());
       dbConnection.setProjectCase(projectCaseCheckBox.isSelected());
-      for(int i=0; i < dbConnection.tableMap.size(); i++) {
+      
+      TableMap tableMap = dbConnection.getTableMap();      
+      for(int i=0; i < tableMap.size(); i++) {
           String value = (String)fieldMapping.getValueAt(i, 2);
-          JDBCConnect.FieldMap record = (JDBCConnect.FieldMap)dbConnection.tableMap.elementAt(i);
-          record.valueExpression = value;
+          FieldMap record = (FieldMap)tableMap.elementAt(i);
+          record.setValueExpression(value);
       }
-      dbConnection.savePrefs();
+      dbConnection.setTableMap(tableMap);
+      
+      try {
+          File prefsFile = new File("plugins"+System.getProperty("file.separator")+"JDBCConnect.ser");
+          FileOutputStream outStream = new FileOutputStream(prefsFile);
+          XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
+          e.writeObject(dbConnection);
+          e.close();
+      } catch (Exception e) {
+          System.err.println("Couldn't save JDBC Prefs");
+          e.printStackTrace(System.out);
+      }
+      
       exitForm();
   }//GEN-LAST:event_saveDriverSettings
           private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
@@ -468,46 +484,46 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
           }
           
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel optionButtonPanel;
-    private javax.swing.JPanel driverPanel;
-    private javax.swing.JButton optionApply;
-    private javax.swing.JButton mapOK;
-    private javax.swing.JPanel mapButtonPanel;
-    private javax.swing.JTable projectMapping;
-    private javax.swing.JTable fieldMapping;
-    private javax.swing.JLabel hourLabel;
-    private javax.swing.JPanel optionInputPanel;
-    private javax.swing.JScrollPane fieldScrollPane;
-    private javax.swing.JTextField nameField;
-    private javax.swing.JCheckBox projectCaseCheckBox;
-    private javax.swing.JPanel fieldPanel;
-    private javax.swing.JPanel driverButtonPanel;
-    private javax.swing.JLabel nameLabel;
-    private javax.swing.JPanel driverInputPanel;
-    private javax.swing.JComboBox hourComboBox;
-    private javax.swing.JTextField projDBField;
-    private javax.swing.JTextField dbField;
-    private javax.swing.JComboBox projFieldComboBox;
     private javax.swing.JButton driverTest;
-    private javax.swing.JLabel projDBLabel;
-    private javax.swing.JCheckBox odbcCheckBox;
     private javax.swing.JPanel fieldButtonPanel;
-    private javax.swing.JLabel projFieldLabel;
-    private javax.swing.JCheckBox projValidateCheckBox;
-    private javax.swing.JButton fieldOK;
-    private javax.swing.JLabel dbLabel;
-    private javax.swing.JTabbedPane tabbedPane;
-    private javax.swing.JButton optionOK;
-    private javax.swing.JScrollPane mapScrollPane;
-    private javax.swing.JPanel optionPanel;
-    private javax.swing.JTextField tableField;
-    private javax.swing.JTextField urlField;
-    private javax.swing.JTextField projTableField;
-    private javax.swing.JPanel mapPanel;
-    private javax.swing.JLabel tableLabel;
-    private javax.swing.JLabel urlLabel;
-    private javax.swing.JButton driverOK;
-    private javax.swing.JLabel projTableLabel;
+    private javax.swing.JPanel fieldPanel;
+    private javax.swing.JTextField nameField;
+    private javax.swing.JPanel driverInputPanel;
     private javax.swing.JButton fieldRefresh;
+    private javax.swing.JTable fieldMapping;
+    private javax.swing.JTextField dbField;
+    private javax.swing.JPanel driverButtonPanel;
+    private javax.swing.JCheckBox odbcCheckBox;
+    private javax.swing.JButton fieldOK;
+    private javax.swing.JButton optionApply;
+    private javax.swing.JPanel optionInputPanel;
+    private javax.swing.JLabel nameLabel;
+    private javax.swing.JButton mapOK;
+    private javax.swing.JTextField tableField;
+    private javax.swing.JTextField projTableField;
+    private javax.swing.JPanel optionPanel;
+    private javax.swing.JLabel tableLabel;
+    private javax.swing.JLabel dbLabel;
+    private javax.swing.JPanel mapButtonPanel;
+    private javax.swing.JScrollPane mapScrollPane;
+    private javax.swing.JTable projectMapping;
+    private javax.swing.JLabel projTableLabel;
+    private javax.swing.JPanel driverPanel;
+    private javax.swing.JTextField urlField;
+    private javax.swing.JButton optionOK;
+    private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JLabel projFieldLabel;
+    private javax.swing.JLabel projDBLabel;
+    private javax.swing.JLabel urlLabel;
+    private javax.swing.JCheckBox projValidateCheckBox;
+    private javax.swing.JButton driverOK;
+    private javax.swing.JComboBox projFieldComboBox;
+    private javax.swing.JTextField projDBField;
+    private javax.swing.JScrollPane fieldScrollPane;
+    private javax.swing.JLabel hourLabel;
+    private javax.swing.JComboBox hourComboBox;
+    private javax.swing.JCheckBox projectCaseCheckBox;
+    private javax.swing.JPanel optionButtonPanel;
+    private javax.swing.JPanel mapPanel;
     // End of variables declaration//GEN-END:variables
 }

@@ -14,24 +14,15 @@ import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
 public class JDBCConnect implements java.io.Serializable, CsltCommListener {
-    final static int DATE_SQLDATE = 0;
-    final static int DATE_SQLTIMESTAMP = 1;
-    final static int DATE_CCYYMMDD = 2;
-    final static int HOUR_FULL = 0;
-    final static int HOUR_QUARTER = 1;
-    final static int HOUR_TENTH = 2;
-    static final int SHOW_EXPORT = 2;
-    
-    final static String odbcDriverName = "sun.jdbc.odbc.JdbcOdbcDriver";
-    
-    TableMap tableMap;
+    final static String ODBCDRIVERNAME = "sun.jdbc.odbc.JdbcOdbcDriver";
     
     private Vector errorList;
     private JFrame parentFrame;
-    private ClntComm clntComm;
+    ClntComm clntComm;
     
-    protected String name = "";
-    protected String url = "";
+    private TableMap tableMap;
+    private String name = "";
+    private String url = "";
     private String userName = "";
     private String password="";
     private String database="";
@@ -47,11 +38,13 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
     
     public JDBCConnect() {
         tableMap = new TableMap();
+        tableMap.setConnection(this);
         parentFrame = new JFrame();
     }
     
     public JDBCConnect(String name, String url, String database, String table) {
         tableMap = new TableMap();
+        tableMap.setConnection(this);
         parentFrame = new JFrame();
         this.name = name;
         this.url = url;
@@ -92,6 +85,8 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
     public void setValidated(boolean validated) { this.validated = validated; }
     public boolean getValidated() { return this.validated; }
     public boolean isValidated() { return this.validated; }
+    public void setTableMap(TableMap tableMap) { this.tableMap = tableMap; }
+    public TableMap getTableMap() { return this.tableMap; }
     
     public javax.swing.JMenuItem[] getMenuItems() {
         javax.swing.JMenuItem menuitems[] = new javax.swing.JMenuItem[1];
@@ -195,12 +190,14 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
             for(int j=0; j < times.size(); j++) {
                 TimeRecord record = times.elementAt(j);
                 FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$HOURS"); //Find out how many hours exist
-                java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.getValue(record);
+                hourTest.setConnection(this);
+                java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.valueOf(record);
                 if(hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) continue;
                 Object[] statement = new Object[tableMap.size()];
                 for(int i=0; i < statement.length; i++) {
                     FieldMap fieldMap = tableMap.elementAt(i);
-                    statement[i] = fieldMap.getValue(record);
+                    fieldMap.setConnection(this);
+                    statement[i] = fieldMap.valueOf(record);
                 }
                 statements.addElement(statement);
             }
@@ -247,41 +244,6 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
             } catch (Exception ex) {}
         }
         return names;
-    }
-    
-    private boolean validateProject(String project) {
-        Connection conn = openConnection();
-        java.sql.Statement stmt = null;
-        ResultSet rs = null;
-        boolean isValid = false;
-        try {
-            String queryString = "SELECT "+projectField+" FROM "+projectDatabase+"."+projectTable+
-            " WHERE "+projectField+"='"+project+"'";
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(queryString);
-            isValid = rs.next();
-            rs.close();
-            stmt.close();
-            conn.close();
-            
-            if(! isValid) {
-                ProjectAddDialog addDialog = new ProjectAddDialog(parentFrame, project, projectField, this);
-                addDialog.show();
-                if(addDialog.getValue().equals("0"))
-                    isValid = validateProject(project);
-                else
-                    isValid = false;
-            }
-        } catch (SQLException e) {
-            System.err.println("Couldn't attempt project validation: "+e);
-        } finally {
-            try {
-                if(rs != null) rs.close();
-                if(stmt != null) stmt.close();
-                if(conn != null) conn.close();
-            } catch (Exception ex) {}
-        }
-        return isValid;
     }
     
     public static String typeString(int sqlType) {
@@ -337,7 +299,7 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
     
     public void testDriverSettings() {
         try {
-            if(name.equals(odbcDriverName)) url = "jdbc:odbc:"+url;
+            if(name.equals(ODBCDRIVERNAME)) url = "jdbc:odbc:"+url;
             Connection conn = openConnection();
             if(conn != null) {
                 DatabaseMetaData dbmeta = conn.getMetaData();
@@ -351,19 +313,6 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
             }
         } catch (SQLException e) {
             System.err.println("Uncaught SQL error during test: "+e);
-        }
-    }
-    
-    void savePrefs() {
-        try {
-            File prefsFile = new File("JDBCConnect.def");
-            FileOutputStream outStream = new FileOutputStream(prefsFile);
-            XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
-            e.writeObject(this);
-            e.close();
-        } catch (Exception e) {
-            System.err.println("Couldn't save JDBC Prefs");
-            e.printStackTrace(System.out);
         }
     }
     
@@ -409,8 +358,8 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
                         optionPane.setValue(JDBCOptionPane.UNINITIALIZED_VALUE);
                         
                         if (value.equals("0")) {
-                            password = new String(passField.getPassword());
-                            userName = userField.getText();
+                            setPassword(new String(passField.getPassword()));
+                            setUserName(userField.getText());
                             setVisible(false);
                         } else { // user closed dialog or clicked cancel
                             setVisible(false);
@@ -418,223 +367,6 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
                     }
                 }
             });
-        }
-    }
-
-    class TableMap {
-        Vector fieldMaps;
-        Hashtable projectMaps;
-        private final String[] projectNameTitles = {"Export", "Project", "Alias"};
-        private final String[] fieldValueTitles = {"Field Name", "Type", "Value"};
-        
-        TableMap() {
-            this.fieldMaps = new Vector();
-            this.projectMaps = new Hashtable();
-        }
-        
-        protected void init() throws java.sql.SQLException {
-            fieldMaps.clear();
-            Connection conn = openConnection();
-            DatabaseMetaData dbmeta = conn.getMetaData();
-            ResultSet cols = dbmeta.getColumns(null, getDatabase(), getTable(), null);
-            while(cols.next())
-                fieldMaps.addElement(new FieldMap(cols));
-            cols.close();
-            conn.close();
-        }
-        
-        public int size() {
-            return fieldMaps.size();
-        }
-        
-        public FieldMap elementAt(int i) {
-            return (FieldMap)fieldMaps.elementAt(i);
-        }
-        
-        public DefaultTableModel toFieldValuesTableModel(){
-            DefaultTableModel model = new javax.swing.table.DefaultTableModel(
-            //Set to three empty columns
-            new Object [][][] {
-            },
-            fieldValueTitles
-            ) {
-                public boolean isCellEditable(int rowIndex, int columnIndex) {
-                    boolean[] editable = {false, false, true};
-                    return editable[columnIndex];
-                }
-            };
-            
-            Enumeration records = fieldMaps.elements();
-            while (records.hasMoreElements()) {
-                FieldMap record = (FieldMap)records.nextElement();
-                model.addRow(new Object[] {record.dbFieldName, JDBCConnect.typeString(record.sqlType), record.valueExpression});
-            }
-            return model;
-        }
-
-        public DefaultTableModel toProjectNamesTableModel(){
-            DefaultTableModel model = new javax.swing.table.DefaultTableModel(
-            //Set to three empty columns
-            new Object [][][] {
-            },
-            projectNameTitles
-            ) {
-                public Class getColumnClass(int columnIndex) {
-                    Class[] types = new Class[] {Boolean.class, String.class, String.class};
-                    return types[columnIndex];
-                }
-                
-                public boolean isCellEditable(int rowIndex, int columnIndex) {
-                    boolean[] editable = {true, false, true};
-                    return editable[columnIndex];
-                }
-            };
-            
-            TimeRecordSet records = clntComm.getTimes();
-            for (int i=0; i<records.size(); i++) {
-                TimeRecord record = (TimeRecord)records.elementAt(i);
-                String projectName = record.getProjectName();
-                ProjectMap projectMap = (ProjectMap)projectMaps.get(projectName);
-                if(projectMap == null) model.addRow(new Object[] {new Boolean(false), projectName, ""});
-                else model.addRow(new Object[] {new Boolean(projectMap.export), projectName, projectMap.alias});
-            }
-            return model;
-        }
-    }
-    
-    class ProjectMap {
-        String alias = "";
-        boolean export;
-        
-        ProjectMap(String alias, boolean export) {
-            this.alias = alias;
-            this.export = export;
-        }
-    }
-    
-    class FieldMap {
-        int sqlType;
-        int dbFieldIndex;
-        boolean exportable;
-        String dbFieldName;
-        String valueExpression;
-        
-        FieldMap(ResultSet rs) throws java.sql.SQLException {
-            this.dbFieldName = rs.getString(4);
-            this.sqlType = rs.getShort(5);
-            this.dbFieldIndex = rs.getInt(17);
-            this.valueExpression = "";
-        }
-        
-        FieldMap(String name, int type, int index, String value) {
-            this.dbFieldName = name;
-            this.sqlType = type;
-            this.dbFieldIndex = index;
-            this.valueExpression = value;
-        }
-
-        public String toString() {
-            return dbFieldName+"("+dbFieldIndex+"): "+valueExpression+" type "+JDBCConnect.typeString(sqlType);
-        }
-        
-        protected Object getValue(TimeRecord record) throws ClassCastException, ProjectInvalidException {
-            StringTokenizer toker = new StringTokenizer(valueExpression, "$ ", true);
-            Object realValue = null;
-            while(toker.hasMoreTokens()) {
-                String value = toker.nextToken();
-                if(value.equals("$")) {
-                    value = toker.nextToken();
-                    if(value.equals("PROJECT")) {
-                        switch(sqlType) {
-                            case java.sql.Types.CHAR:
-                            case java.sql.Types.VARCHAR:
-                                if(projectCase) realValue = record.getProjectName().toUpperCase();
-                                else realValue = record.getProjectName();
-                                if(projectValidate && ! validateProject((String)realValue))
-                                    throw new ProjectInvalidException("Project "+realValue+" not in table "+projectDatabase+"."+projectTable);
-                                break;
-                            default:
-                                throw new ClassCastException("Must be CHAR SQL type for project name");
-                        }
-                    } else if(value.equals("USERNAME")) {
-                        switch(sqlType) {
-                            case java.sql.Types.CHAR:
-                            case java.sql.Types.VARCHAR:
-                                realValue = userName;
-                                break;
-                            default:
-                                throw new ClassCastException("Must be CHAR SQL type for username");
-                        }
-                    } else if(value.equals("DATE")) {
-                        switch(sqlType) {
-                            case java.sql.Types.DATE:
-                                realValue = new java.sql.Date(System.currentTimeMillis());
-                                break;
-                            case java.sql.Types.TIMESTAMP:
-                                realValue = new java.sql.Timestamp(System.currentTimeMillis());
-                                break;
-                            case java.sql.Types.TIME:
-                                realValue = new java.sql.Time(System.currentTimeMillis());
-                                break;
-                            case java.sql.Types.INTEGER:
-                            case java.sql.Types.DECIMAL:
-                            case java.sql.Types.NUMERIC:
-                                Calendar today = Calendar.getInstance();
-                                int year = today.get(Calendar.YEAR);
-                                int month = today.get(Calendar.MONTH)+1;
-                                int date = today.get(Calendar.DATE);
-                                double cymd = (year*10000)+(month*100)+date;
-                                realValue = new java.math.BigDecimal(cymd);
-                                break;
-                            default:
-                                throw new ClassCastException("Unknown conversion for date");
-                        }
-                    }else if(value.equals("HOURS")) {
-                        if(sqlType != java.sql.Types.DECIMAL && sqlType != java.sql.Types.NUMERIC && sqlType != java.sql.Types.INTEGER)
-                            throw new ClassCastException("Must be DECIMAL SQL type for hours");
-                        switch(hourFormat) {
-                            case HOUR_FULL:
-                                realValue = record.getHours(60, 2);
-                                break;
-                            case HOUR_QUARTER:
-                                realValue = record.getHours(60*15, 2);
-                                break;
-                            case HOUR_TENTH:
-                                realValue = record.getHours(60*6, 1);
-                                break;
-                            default:
-                                realValue = record.getHours(60, 2);
-                        }
-                    } else if(value.equals("BILLABLE")) {
-                        switch(sqlType) {
-                            case java.sql.Types.CHAR:
-                                realValue = record.isBillable() ? "Y" : "N";
-                                break;
-                            case java.sql.Types.BIT:
-                                realValue = new Boolean(record.isBillable());
-                                break;
-                            case java.sql.Types.INTEGER:
-                                realValue = record.isBillable() ? new Integer(-1) : new Integer(0);
-                                break;
-                            default:
-                                throw new ClassCastException("Unknown conversion for billable flag");
-                        }
-                    } else {
-                        System.err.println("Unknown expression variable: "+value);
-                    }
-                } else {
-                    try {
-                        realValue = new Integer(value);
-                    } catch (NumberFormatException e) {
-                        try {
-                            realValue = new java.math.BigDecimal(value);
-                        } catch (NumberFormatException e2) {
-                            realValue = value;
-                        }
-                    }
-                }
-            }
-            return realValue;
         }
     }
 }
