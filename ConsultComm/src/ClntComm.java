@@ -8,17 +8,17 @@ import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.event.*;
 import java.awt.event.*;
+//Clipboard Components
+import java.awt.datatransfer.*;
 
 /*
  * ClntComm.java
  * @author John T. Ellis
  * Created on May 19, 2000, 7:37 PM
  */
-public class ClntComm extends javax.swing.JPanel {
+public class ClntComm extends javax.swing.JPanel implements ClipboardOwner {
     public static final int SECONDS = 0;
     public static final int MINUTES = 1;
-    
-    private static JFrame frame = new JFrame("Consultant Manager");
     
     /**
      * There are currently two types of property changes:
@@ -26,6 +26,8 @@ public class ClntComm extends javax.swing.JPanel {
      * 2) 'record' when a record is edited but the TimeRecordSet stays the same
      */
     private PropertyChangeSupport changes;
+    
+    private JFrame frame;
     
     private CsltComm csltComm;
     private TimerThread timerTask;
@@ -43,6 +45,7 @@ public class ClntComm extends javax.swing.JPanel {
      */
     public ClntComm(CsltComm parent) {
         csltComm = parent;                                  //Set parent object for reloading CsltComm
+        frame = (JFrame)parent;
         totalPanel = new TotalPanel();                      //Create a new total/elapsed counter
         timerTask = new TimerThread();                      //Create a new "clock" for the project timer
         readPrefs();                                        //Read in user preferences
@@ -110,7 +113,6 @@ public class ClntComm extends javax.swing.JPanel {
     
     public boolean isRunning(){ return timerTask.clockRunning; }
     public TotalPanel getTotalPanel() { return this.totalPanel; }
-    //Vector getPlugins() { return this.plugins; }
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -133,6 +135,8 @@ public class ClntComm extends javax.swing.JPanel {
     resetPopupItem = new javax.swing.JMenuItem();
     deletePopupItem = new javax.swing.JMenuItem();
     addPopupItem = new javax.swing.JMenuItem();
+    copyProjectMenuItem = new javax.swing.JMenuItem();
+    copyTimeMenuItem = new javax.swing.JMenuItem();
     scrollPane = new javax.swing.JScrollPane();
     menuPanel = new javax.swing.JPanel();
     startButton = new javax.swing.JButton();
@@ -249,12 +253,29 @@ public class ClntComm extends javax.swing.JPanel {
 
     editMenu.add(addPopupItem);
 
+    copyProjectMenuItem.setText("Copy Name to Clipboard");
+    copyProjectMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        copyProjectMenuItemActionPerformed(evt);
+      }
+    });
+
+    editMenu.add(copyProjectMenuItem);
+
+    copyTimeMenuItem.setText("Copy Time to Clipboard");
+    copyTimeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        copyTimeMenuItemActionPerformed(evt);
+      }
+    });
+
+    editMenu.add(copyTimeMenuItem);
+
     setLayout(new java.awt.BorderLayout());
 
-    scrollPane.setMaximumSize(null);
-    scrollPane.setMinimumSize(null);
-    scrollPane.setPreferredSize(null);
     timeList = new TableTree(new TableTreeModel(times, timeFormat));
+    scrollPane.setMaximumSize(null);
+    scrollPane.setPreferredSize(null);
     scrollPane.setViewportView(timeList);
     add(scrollPane, java.awt.BorderLayout.CENTER);
 
@@ -283,6 +304,22 @@ public class ClntComm extends javax.swing.JPanel {
     add(totalGUIPanel, java.awt.BorderLayout.SOUTH);
 
   }//GEN-END:initComponents
+
+  private void copyTimeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyTimeMenuItemActionPerformed
+    Clipboard clipboard = getToolkit().getSystemClipboard();
+    TimeRecord record = this.times.elementAt(this.selectedIndex);
+    long time = record.getSeconds();
+    String timeString = this.timeFormat == ClntComm.SECONDS ? ClntComm.toSecondString(time) : ClntComm.toMinuteString(time);
+    StringSelection contents = new StringSelection(timeString);
+    clipboard.setContents(contents, this);
+  }//GEN-LAST:event_copyTimeMenuItemActionPerformed
+
+  private void copyProjectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyProjectMenuItemActionPerformed
+    Clipboard clipboard = getToolkit().getSystemClipboard();
+    TimeRecord record = this.times.elementAt(this.selectedIndex);
+    StringSelection contents = new StringSelection(record.getProjectName());
+    clipboard.setContents(contents, this);
+  }//GEN-LAST:event_copyProjectMenuItemActionPerformed
 
   private void resetProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetProject
     Object[] options = {"OK", "Cancel"};
@@ -331,7 +368,9 @@ public class ClntComm extends javax.swing.JPanel {
   }//GEN-LAST:event_showPrefs
   
   private void showHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHelp
-      new HelpDisplay().setVisible(true);
+      JFrame helpWindow = new HelpDisplay();
+      helpWindow.setSize(720, 640);
+      helpWindow.setVisible(true);
   }//GEN-LAST:event_showHelp
   
   private void editPlugins(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPlugins
@@ -457,6 +496,11 @@ public class ClntComm extends javax.swing.JPanel {
       }
   }
   
+  public void lostOwnership(Clipboard clipboard, Transferable transferable){
+      //Used to notify us that the clipboard is busy with other stuff right now
+      System.err.println("System clipboard is busy. Try again.");
+  }
+  
   /**
    * Create edit project window.
    * @parm Index into the project list
@@ -515,7 +559,6 @@ public class ClntComm extends javax.swing.JPanel {
           Iterator plugins = PluginManager.getPluginList().iterator();
           while(plugins.hasNext()) {
               CsltCommPlugin plugin = (CsltCommPlugin)plugins.next();
-              plugin.unregister();
           }
           
           //Get our new plugins and activate them
@@ -530,6 +573,13 @@ public class ClntComm extends javax.swing.JPanel {
               if(menuItems != null) { //Add menu items to the main interface
                   for(int j=0, max=menuItems.length; j<max; j++) {
                       toolMenu.add(menuItems[j]);
+                  }
+              }
+              
+              menuItems = (JMenuItem[])plugin.getPopupMenuItems();
+              if(menuItems != null) { //Add menu items to the popup menu
+                  for(int j=0, max=menuItems.length; j<max; j++) {
+                      editMenu.add(menuItems[j]);
                   }
               }
           }
@@ -681,6 +731,8 @@ public class ClntComm extends javax.swing.JPanel {
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuItem addMenuItem;
   private javax.swing.JMenuItem addPopupItem;
+  private javax.swing.JMenuItem copyProjectMenuItem;
+  private javax.swing.JMenuItem copyTimeMenuItem;
   private javax.swing.JMenuItem deleteMenuItem;
   private javax.swing.JMenuItem deletePopupItem;
   private javax.swing.JPopupMenu editMenu;
