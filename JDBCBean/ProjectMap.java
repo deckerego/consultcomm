@@ -16,4 +16,5 @@ public class ProjectMap implements java.io.Serializable {
     public String getAlias() { return this.alias; }
     public void setExport(boolean export) { this.export = export; }
     public boolean getExport() { return this.export; }
+    public boolean isExport() { return this.export; }
 }

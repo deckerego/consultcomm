@@ -24,7 +24,7 @@ public class ProjectAddDialog extends javax.swing.JDialog {
     dbConnection.setPassword(connection.getPassword());
     dbConnection.setValidated(connection.isValidated());
     try {
-      dbConnection.tableMap.init();
+      dbConnection.getTableMap().clearFieldMaps();
     } catch (java.sql.SQLException e) {
       System.err.println("Couldn't initialize table mapping");
     }
@@ -63,7 +63,7 @@ public class ProjectAddDialog extends javax.swing.JDialog {
         getContentPane().add(titleLabel, java.awt.BorderLayout.NORTH);
 
         fieldScrollPane.setPreferredSize(new java.awt.Dimension(387, 254));
-        fieldTable.setModel(dbConnection.tableMap.toFieldValuesTableModel());
+        fieldTable.setModel(dbConnection.getTableMap().toFieldValuesTableModel());
         fieldScrollPane.setViewportView(fieldTable);
 
         getContentPane().add(fieldScrollPane, java.awt.BorderLayout.CENTER);
@@ -98,10 +98,10 @@ public class ProjectAddDialog extends javax.swing.JDialog {
 
   private void addProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addProject
     Vector statements = new Vector(1); //We'll only need one row
-    Object[] statement = new Object[dbConnection.tableMap.size()];
+    Object[] statement = new Object[dbConnection.getTableMap().getFieldMaps().size()];
 
     try {
-     for(int i=0; i < dbConnection.tableMap.size(); i++)
+     for(int i=0; i < dbConnection.getTableMap().getFieldMaps().size(); i++)
         statement[i] = (String)fieldTable.getValueAt(i, 2);    
       statements.addElement(statement);
       dbConnection.insertVector(statements);
@@ -128,11 +128,11 @@ public class ProjectAddDialog extends javax.swing.JDialog {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel titleLabel;
-    private javax.swing.JTable fieldTable;
-    private javax.swing.JScrollPane fieldScrollPane;
-    private javax.swing.JButton okButton;
     private javax.swing.JPanel fieldPanel;
+    private javax.swing.JTable fieldTable;
+    private javax.swing.JButton okButton;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JScrollPane fieldScrollPane;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -51,10 +51,6 @@ public class FieldMap implements java.io.Serializable {
     
     public void setConnection(JDBCConnect jdbc) { this.jdbc = jdbc; }
     
-    public String toString() {
-        return dbFieldName+"("+dbFieldIndex+"): "+valueExpression+" type "+JDBCConnect.typeString(sqlType);
-    }
-    
     private boolean validateProject(String project) {
         Connection conn = jdbc.openConnection();
         java.sql.Statement stmt = null;
@@ -95,29 +91,23 @@ public class FieldMap implements java.io.Serializable {
         Object realValue = null;
         while(toker.hasMoreTokens()) {
             String value = toker.nextToken();
-            if(value.equals("$")) {
+            
+            if(value.equals("$")) { //We have a variable to decipher
                 value = toker.nextToken();
+                
                 if(value.equals("PROJECT")) {
-                    switch(sqlType) {
-                        case java.sql.Types.CHAR:
-                        case java.sql.Types.VARCHAR:
-                            if(jdbc.getProjectCase()) realValue = record.getProjectName().toUpperCase();
-                            else realValue = record.getProjectName();
-                            if(jdbc.getProjectValidate() && ! validateProject((String)realValue))
-                                throw new ProjectInvalidException("Project "+realValue+" not in table "+jdbc.getProjectDatabase()+"."+jdbc.getProjectTable());
-                            break;
-                        default:
-                            throw new ClassCastException("Must be CHAR SQL type for project name");
-                    }
+                    //Get the project map, then find the associated project mapping, then get its alias
+                    ProjectMap project = (ProjectMap)jdbc.getTableMap().getProjectMaps().get(record.getProjectName());
+                    String projectName = project != null ? project.getAlias() : null;
+                    //Put the project in all caps if it needs to be
+                    realValue = jdbc.isProjectCase() ? projectName.toUpperCase() : projectName;
+                    //Attempt to validate the project
+                    if(jdbc.getProjectValidate() && ! validateProject((String)realValue))
+                        throw new ProjectInvalidException("Project "+realValue+" not in table "+jdbc.getProjectDatabase()+"."+jdbc.getProjectTable());
+                    
                 } else if(value.equals("USERNAME")) {
-                    switch(sqlType) {
-                        case java.sql.Types.CHAR:
-                        case java.sql.Types.VARCHAR:
-                            realValue = jdbc.getUserName();
-                            break;
-                        default:
-                            throw new ClassCastException("Must be CHAR SQL type for username");
-                    }
+                    realValue = jdbc.getUserName();
+                    
                 } else if(value.equals("DATE")) {
                     switch(sqlType) {
                         case java.sql.Types.DATE:
@@ -142,9 +132,8 @@ public class FieldMap implements java.io.Serializable {
                         default:
                             throw new ClassCastException("Unknown conversion for date");
                     }
+                    
                 }else if(value.equals("HOURS")) {
-                    if(sqlType != java.sql.Types.DECIMAL && sqlType != java.sql.Types.NUMERIC && sqlType != java.sql.Types.INTEGER)
-                        throw new ClassCastException("Must be DECIMAL SQL type for hours");
                     switch(jdbc.getHourFormat()) {
                         case HOUR_FULL:
                             realValue = record.getHours(60, 2);
@@ -158,6 +147,7 @@ public class FieldMap implements java.io.Serializable {
                         default:
                             realValue = record.getHours(60, 2);
                     }
+                    
                 } else if(value.equals("BILLABLE")) {
                     switch(sqlType) {
                         case java.sql.Types.CHAR:

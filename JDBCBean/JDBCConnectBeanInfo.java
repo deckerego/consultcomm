@@ -39,21 +39,7 @@ public class JDBCConnectBeanInfo extends SimpleBeanInfo {
   
   
   //GEN-FIRST:Superclass
-/*  public java.awt.Image loadImage(String resourceName) {
-      java.awt.Image image = null;
-      byte[] tn = null;
-      java.io.InputStream in = this.getClass().getResourceAsStream(resourceName);
-      try{
-          int length = in.available();
-          tn = new byte[length];
-          in.read(tn);
-          image = java.awt.Toolkit.getDefaultToolkit().createImage(tn);
-      } catch(Exception e){
-          System.out.println("Error loading image "+resourceName+": "+e);
-      } finally {
-          return image;
-      }
-  } */
+
   //GEN-LAST:Superclass
   
   /**

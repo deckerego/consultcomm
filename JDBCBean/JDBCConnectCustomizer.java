@@ -328,15 +328,8 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
     
     private void showProjectNames(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showProjectNames
         getRootPane().setDefaultButton(mapOK);
-        if(dbConnection.getTableMap().size() == 0) {
-            try {
-                dbConnection.getTableMap().init();
-                projectMapping.setModel(dbConnection.getTableMap().toProjectNamesTableModel());
-                projectMapping.repaint();
-            } catch (java.sql.SQLException e) {
-                System.err.println("Couldn't initialize project mapping");
-            }
-        }
+        projectMapping.setModel(dbConnection.getTableMap().toProjectNamesTableModel());
+        projectMapping.repaint();
     }//GEN-LAST:event_showProjectNames
     
   private void applyOptions(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyOptions
@@ -400,7 +393,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   }
   private void refreshFieldMap(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshFieldMap
       try {
-          dbConnection.getTableMap().init();
+          dbConnection.getTableMap().clearFieldMaps();
           fieldMapping.setModel(dbConnection.getTableMap().toFieldValuesTableModel());
           fieldMapping.repaint();
       } catch (java.sql.SQLException e) {
@@ -410,9 +403,9 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   
   private void showFieldMap(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showFieldMap
       getRootPane().setDefaultButton(fieldOK);
-      if(dbConnection.getTableMap().size() == 0) {
+      if(dbConnection.getTableMap().getFieldMaps().size() == 0) {
           try {
-              dbConnection.getTableMap().init();
+              dbConnection.getTableMap().clearFieldMaps();
               fieldMapping.setModel(dbConnection.getTableMap().toFieldValuesTableModel());
               fieldMapping.repaint();
           } catch (java.sql.SQLException e) {
@@ -431,6 +424,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   }//GEN-LAST:event_testDriverSettings
   
   private void saveDriverSettings(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDriverSettings
+      //Give the bean all its setter values
       dbConnection.setName(nameField.getText());
       dbConnection.setUrl(urlField.getText());
       if(dbConnection.getName().equals(JDBCConnect.ODBCDRIVERNAME))
@@ -447,15 +441,29 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       dbConnection.setHourFormat(hourComboBox.getSelectedIndex());
       dbConnection.setProjectCase(projectCaseCheckBox.isSelected());
       
-      TableMap tableMap = dbConnection.getTableMap();      
-      for(int i=0; i < tableMap.size(); i++) {
+      //Now populate collections
+      TableMap tableMap = dbConnection.getTableMap();
+      Vector fieldMaps = tableMap.getFieldMaps();
+      Hashtable projectMaps = new Hashtable();
+      
+      for(int i=0; i < fieldMaps.size(); i++) {
           String value = (String)fieldMapping.getValueAt(i, 2);
-          FieldMap record = (FieldMap)tableMap.elementAt(i);
+          FieldMap record = (FieldMap)fieldMaps.elementAt(i);
           record.setValueExpression(value);
-      }
+      } //Associate all existing fields with values from the JTable
+      tableMap.setFieldMaps(fieldMaps);
+      
+      for(int i=0; i < projectMapping.getRowCount(); i++) {
+          String projectName = (String)projectMapping.getValueAt(i, 1);
+          boolean export = ((Boolean)projectMapping.getValueAt(i, 0)).booleanValue();
+          String alias = (String)projectMapping.getValueAt(i, 2);
+          projectMaps.put(projectName, new ProjectMap(alias, export));
+      } //Add all the project maps listed in the JTable
+      tableMap.setProjectMaps(projectMaps);
+      
       dbConnection.setTableMap(tableMap);
       
-      try {
+      try { //Serialize the bean out to an XML file in the user's prefs directory
           File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
           File prefsFile = new File(prefsdir, "JDBCConnect.xml");
           FileOutputStream outStream = new FileOutputStream(prefsFile);
@@ -469,21 +477,21 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       
       exitForm();
   }//GEN-LAST:event_saveDriverSettings
-          private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
-              exitForm();
+            private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
+                exitForm();
     }//GEN-LAST:event_exitForm
-          
-          private void exitForm() {
-              //Don't do anything - this is an embedded component
-          }
-          
-          public void setObject(Object obj) {
-              dbConnection = (JDBCConnect)obj;
-              initComponents();
-              toggleODBC();
-              toggleValidateProject();
-          }
-          
+            
+            private void exitForm() {
+                //Don't do anything - this is an embedded component
+            }
+            
+            public void setObject(Object obj) {
+                dbConnection = (JDBCConnect)obj;
+                initComponents();
+                toggleODBC();
+                toggleValidateProject();
+            }
+            
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton driverTest;
     private javax.swing.JPanel fieldButtonPanel;

@@ -22,7 +22,7 @@ public class TableMap implements java.io.Serializable {
 
     public void setConnection(JDBCConnect jdbc) { this.jdbc = jdbc; }
     
-    protected void init() throws java.sql.SQLException {
+    protected void clearFieldMaps() throws java.sql.SQLException {
         fieldMaps.clear();
         Connection conn = jdbc.openConnection();
         DatabaseMetaData dbmeta = conn.getMetaData();
@@ -31,14 +31,6 @@ public class TableMap implements java.io.Serializable {
             fieldMaps.addElement(new FieldMap(cols.getString(4), cols.getShort(5), cols.getInt(17), ""));
         cols.close();
         conn.close();
-    }
-    
-    public int size() {
-        return fieldMaps.size();
-    }
-    
-    public FieldMap elementAt(int i) {
-        return (FieldMap)fieldMaps.elementAt(i);
     }
     
     public DefaultTableModel toFieldValuesTableModel(){
@@ -57,7 +49,7 @@ public class TableMap implements java.io.Serializable {
         Enumeration records = fieldMaps.elements();
         while (records.hasMoreElements()) {
             FieldMap record = (FieldMap)records.nextElement();
-            model.addRow(new Object[] {record.getDbFieldName(), JDBCConnect.typeString(record.getSqlType()), record.getValueExpression()});
+            model.addRow(new Object[] {record.getDbFieldName(), typeString(record.getSqlType()), record.getValueExpression()});
         }
         return model;
     }
@@ -89,5 +81,56 @@ public class TableMap implements java.io.Serializable {
             else model.addRow(new Object[] {new Boolean(projectMap.getExport()), projectName, projectMap.getAlias()});
         }
         return model;
+    }
+    
+    public static String typeString(int sqlType) {
+        switch(sqlType) {
+            case java.sql.Types.ARRAY:
+                return "ARRAY";
+            case java.sql.Types.BIGINT:
+                return "BIGINT";
+            case java.sql.Types.BINARY:
+                return "BINARY";
+            case java.sql.Types.BIT:
+                return "BIT";
+            case java.sql.Types.BLOB:
+                return "BLOB";
+            case java.sql.Types.CHAR:
+                return "CHAR";
+            case java.sql.Types.CLOB:
+                return "CLOB";
+            case java.sql.Types.DATE:
+                return "DATE";
+            case java.sql.Types.DECIMAL:
+                return "DECIMAL";
+            case java.sql.Types.DOUBLE:
+                return "DOUBLE";
+            case java.sql.Types.FLOAT:
+                return "FLOAT";
+            case java.sql.Types.INTEGER:
+                return "INTEGER";
+            case java.sql.Types.LONGVARBINARY:
+                return "LONGVARBINARY";
+            case java.sql.Types.LONGVARCHAR:
+                return "LONGVARCHAR";
+            case java.sql.Types.NULL:
+                return "NULL";
+            case java.sql.Types.NUMERIC:
+                return "NUMERIC";
+            case java.sql.Types.SMALLINT:
+                return "SMALLINT";
+            case java.sql.Types.TIME:
+                return "TIME";
+            case java.sql.Types.TIMESTAMP:
+                return "TIMESTAMP";
+            case java.sql.Types.TINYINT:
+                return "TINYINT";
+            case java.sql.Types.VARBINARY:
+                return "VARBINARY";
+            case java.sql.Types.VARCHAR:
+                return "VARCHAR";
+            default:
+                return "OTHER";
+        }
     }
 }

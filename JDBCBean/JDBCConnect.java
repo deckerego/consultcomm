@@ -151,12 +151,14 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
         PreparedStatement insert = null;
         SQLException exception = null;
         
-        if(tableMap.size() == 0) throw new SQLException("Table map is empty.");
+        if(tableMap.getFieldMaps().size() == 0) throw new SQLException("Table map is empty.");
         
         try {
-            String queryString = "?";
-            for(int i=1; i<tableMap.size(); i++) queryString += " ,?";
-            insert = conn.prepareStatement("INSERT INTO "+database+"."+table+" VALUES ("+queryString+")");
+            StringBuffer queryString = new StringBuffer("INSERT INTO "+database+"."+table+" VALUES (");
+            queryString.append("?");
+            for(int i=1; i<tableMap.getFieldMaps().size(); i++) queryString.append(" ,?");
+            queryString.append(")");
+            insert = conn.prepareStatement(queryString.toString());
             
             for(int j=0; j < statements.size(); j++) {
                 Object[] statement = (Object[])statements.elementAt(j);
@@ -189,19 +191,29 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
             Vector statements = new Vector();
             for(int j=0; j < times.size(); j++) {
                 TimeRecord record = times.elementAt(j);
-                FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$HOURS"); //Find out how many hours exist
+                
+                 //Find out how many hours exist - if no hours exist, skip this record
+                FieldMap hourTest = new FieldMap("TEST", java.sql.Types.DECIMAL, 0, "$HOURS");
                 hourTest.setConnection(this);
                 java.math.BigDecimal hours = (java.math.BigDecimal)hourTest.valueOf(record);
                 if(hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) continue;
-                Object[] statement = new Object[tableMap.size()];
+                
+                //Find out if this project is exportable or not
+                ProjectMap project = (ProjectMap)this.tableMap.getProjectMaps().get(record.getProjectName());
+                if(! project.isExport()) continue;
+                
+                //Start translating the TimeRecord into a SQL statement
+                Object[] statement = new Object[tableMap.getFieldMaps().size()];
+                Vector fieldMaps = tableMap.getFieldMaps();
                 for(int i=0; i < statement.length; i++) {
-                    FieldMap fieldMap = tableMap.elementAt(i);
+                    FieldMap fieldMap = (FieldMap)fieldMaps.elementAt(i);
                     fieldMap.setConnection(this);
                     statement[i] = fieldMap.valueOf(record);
                 }
                 statements.addElement(statement);
             }
             
+            //Send the vector of statements
             insertVector(statements);
             worked = true;
         } catch (ProjectInvalidException e) {
@@ -244,57 +256,6 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
             } catch (Exception ex) {}
         }
         return names;
-    }
-    
-    public static String typeString(int sqlType) {
-        switch(sqlType) {
-            case java.sql.Types.ARRAY:
-                return "ARRAY";
-            case java.sql.Types.BIGINT:
-                return "BIGINT";
-            case java.sql.Types.BINARY:
-                return "BINARY";
-            case java.sql.Types.BIT:
-                return "BIT";
-            case java.sql.Types.BLOB:
-                return "BLOB";
-            case java.sql.Types.CHAR:
-                return "CHAR";
-            case java.sql.Types.CLOB:
-                return "CLOB";
-            case java.sql.Types.DATE:
-                return "DATE";
-            case java.sql.Types.DECIMAL:
-                return "DECIMAL";
-            case java.sql.Types.DOUBLE:
-                return "DOUBLE";
-            case java.sql.Types.FLOAT:
-                return "FLOAT";
-            case java.sql.Types.INTEGER:
-                return "INTEGER";
-            case java.sql.Types.LONGVARBINARY:
-                return "LONGVARBINARY";
-            case java.sql.Types.LONGVARCHAR:
-                return "LONGVARCHAR";
-            case java.sql.Types.NULL:
-                return "NULL";
-            case java.sql.Types.NUMERIC:
-                return "NUMERIC";
-            case java.sql.Types.SMALLINT:
-                return "SMALLINT";
-            case java.sql.Types.TIME:
-                return "TIME";
-            case java.sql.Types.TIMESTAMP:
-                return "TIMESTAMP";
-            case java.sql.Types.TINYINT:
-                return "TINYINT";
-            case java.sql.Types.VARBINARY:
-                return "VARBINARY";
-            case java.sql.Types.VARCHAR:
-                return "VARCHAR";
-            default:
-                return "OTHER";
-        }
     }
     
     public void testDriverSettings() {
