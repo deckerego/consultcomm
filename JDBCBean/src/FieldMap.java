@@ -16,7 +16,7 @@ public class FieldMap implements java.io.Serializable {
     private static PreparedStatement findProject;
     private static Connection conn;
     private static JDBCConnect jdbc;
-    private JFrame parentFrame;
+    private static JFrame parentFrame = new JFrame();
 
     private int sqlType;
     private int dbFieldIndex;
@@ -30,8 +30,6 @@ public class FieldMap implements java.io.Serializable {
     }
     
     public FieldMap(String name, int type, int index, String value) {
-        parentFrame = new JFrame();
-        
         this.dbFieldName = name;
         this.sqlType = type;
         this.dbFieldIndex = index;
@@ -49,6 +47,8 @@ public class FieldMap implements java.io.Serializable {
     public String getDbFieldName() { return this.dbFieldName; }
     public void setValueExpression(String valueExpression) { this.valueExpression = valueExpression; }
     public String getValueExpression() { return this.valueExpression; }
+    
+    public void setParentFrame(JFrame parentFrame) { this.parentFrame = parentFrame; }
     
     public static void setConnection(JDBCConnect jdbcConnect) throws SQLException {
         jdbc = jdbcConnect;
@@ -155,10 +155,9 @@ public class FieldMap implements java.io.Serializable {
                         case HOUR_TENTH:
                             realValue = record.getHours(60*6, 1);
                             break;
-                        default:
-                            realValue = record.getHours(60, 2);
+                         default:
+                             realValue = record.getHours(60, 2);
                     }
-                    
                 } else if(value.equals("BILLABLE")) {
                     switch(sqlType) {
                         case java.sql.Types.CHAR:
