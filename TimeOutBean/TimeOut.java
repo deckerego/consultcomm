@@ -17,16 +17,21 @@ public class TimeOut extends CsltCommPlugin {
     
     private native long getIdleTime();
     
+    /**
+     * Load the native library needed
+     * @todo Find a way to reload the class and still retain the system library
+     */
     static {
-        if(JarLoader.loadNativeLibrary("libtimeout.so", TimeOut.class) && JarLoader.loadNativeLibrary("timeout.dll", TimeOut.class)) {
-            try {
-                System.loadLibrary("timeout");
-                timeoutLibrary = true;
-            } catch (UnsatisfiedLinkError e) {
-                System.err.println("Couldn't find timeout library in "+System.getProperty("java.library.path"));
-                timeoutLibrary = false;
-            }
-        }
+      JarLoader.loadNativeLibrary("libtimeout.so", TimeOut.class);
+      JarLoader.loadNativeLibrary("timeout.dll", TimeOut.class);
+      try {
+        System.loadLibrary("timeout");
+        timeoutLibrary = true;
+      } catch (UnsatisfiedLinkError e) {
+        System.err.println("Couldn't find timeout library in "+System.getProperty("java.library.path"));
+        e.printStackTrace(System.err);
+        timeoutLibrary = false;
+      }
     }
     
     public TimeOut() {
