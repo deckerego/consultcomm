@@ -1,0 +1,141 @@
+<HTML>
+<BODY>
+<BR>
+<FONT Size="+1">Connecting ConsultComm to a Database</FONT>
+<P>
+<DD>Consultant Communicator can upload all of your projects and times to any
+JDBC or most ODBC compliant databases! Here's a few quick steps on how to get 
+database connectivity working:<BR>
+
+<OL>
+<A NAME="installing">
+<LI>Get a JDBC driver. Check with the company that sells your database 
+product or your local database administrator to see if they have a JDBC 
+driver you can use. Sun offers a list at <A 
+HREF="http://industry.java.sun.com/products/jdbc/drivers">http://industry.java.sun.com/products/jdbc/drivers</A>. 
+You can also use the JDBC-ODBC Bridge Driver that comes with Java 1.3 or 
+higher if you have ODBC installed (this will probably make exporting to a 
+database much slower, however). If you want to use the ODBC brige, skip to 
+step 4.
+<P>
+
+<LI>Once you have the correct JAR or ZIP files, place them in the Java 
+Runtime Environment's extensions directory (see <A HREF="$APPPATHS">Important 
+Directories You Might Need to Know</A> for the location of your extensions 
+directory).
+<P>
+
+<LI>Find out what the driver name is for the JAR or ZIP files you just placed 
+in the extensions directory. The name is usually something like 
+"com.ibm.as400.access.AS400JDBCDriver".
+<P>
+
+<LI>Find out what the database URL is. Check with our database administrator 
+if you are unsure... it usually follows the form "jdbc:as400://192.168.0.0" 
+where "as400" would be replaced by a specific driver label and 
+"//192.168.0.0" would be the IP address of a remote database (probably 
+"local" if you are using a local database).
+If you are using the JDBC-ODBC bridge just enter in the name of the data 
+source you wish to use.
+<P>
+
+<LI>Start up ConsultComm and go to Tools->JDBC Settings
+<P>
+
+<LI>Enter in all relevant information. If you are using a specific JDBC 
+driver, fill in the driver name and URL you found in steps 3 and 4 (if you 
+selected the ODBC bridge the driver name will be grayed out). Be sure and 
+enter in the database name and table name you will be exporting your times 
+to.
+<P>
+
+<LI>Hit "Test" to make sure your driver works. You will be prompted for a 
+username and password to access the database. If your verification 
+fails,double-check your settings and try again.
+<P>
+
+<A NAME="mapping">
+<LI>Go to the "Field Mappings" tab. It may take a few seconds, but soon a 
+table will pop up listing all the fields for the table you specified in step 
+6.
+<P>
+
+<LI>Fill in all the necessary values for the fields in your table. If you 
+want to export a value from ConsultComm you can type in one of the following 
+variables and ConsultComm will automatically convert it:<BR>
+  <DL>
+    <DT><CODE>$USERNAME</CODE>
+    <DD>The username you enter in when authenticating 
+    to the database
+    <DT><CODE>$PROJECT</CODE>
+    <DD>The Project Name
+    <DT><CODE>$HOURS</CODE>
+    <DD>The number of hours worked on a project
+    <DT><CODE>$DATE</CODE>
+    <DD>Today's date
+    <DT><CODE>$BILLABLE</CODE>
+    <DD>The "Billable Project" flag
+  </DL>
+All other values you type in will be interpreted literally. For example, I 
+might have the following settings in a table EMPHRS:
+<TABLE Border="1">
+<TR><TH>Field Name</TH><TH>Type</TH><TH>Value</TH></TR>
+<TR><TD>EMPNAME</TD><TD>CHAR</TD><TD>$USERNAME</TD></TR>
+<TR><TD>EMCHARGE</TD><TD>BIT</TD><TD>$BILLABLE</TD></TR>
+<TR><TD>EMHOURS</TD><TD>DECIMAL</TD><TD>$HOURS</TD></TR>
+<TR><TD>EMPROJ</TD><TD>CHAR</TD><TD>$PROJECT</TD></TR>
+<TR><TD>EMDATE</TD><TD>TIMESTAMP</TD><TD>$DATE</TD></TR>
+<TR><TD>EMLINE</TD><TD>DECIMAL</TD><TD>0</TD></TR>
+<TR><TD>EMCSLT</TD><TD>CHAR</TD><TD>Y</TD></TR>
+</TABLE>
+<P>
+
+<LI>Click on the "Options" tab. Here you can set constraints on the variables 
+that you entered in on step 9. You can select from the following choices:
+  <UL>
+    <LI>Export Hours By:
+    <UL>
+      <LI>Quarter of an hour (i.e. 1:37 becomes 1.5)
+      <LI>Tenth of an hour (i.e. 1:37 becomes 1.6)
+      <LI>Full Precision (i.e. 1:37 becomes 1.62)
+    </UL>
+    <LI>Date Type:
+    <UL>
+      <LI>SQL Date (for fields with type DATE)
+      <LI>SQL Date (for fields with type TIMESTAMP)
+      <LI>Decimal Date (i.e. 10/01/01 becomes 20011001)
+    </UL>
+    <LI>Upper Case Project:<BR>
+      If checked will make all project names UPPERCASE when exporting to a 
+table
+  </UL>
+<P>
+
+<LI>Hit OK when you're happy with the changes.
+<P>
+
+<A NAME="using">
+<LI>When you're ready to send your time to a table, go to Tools->Export to 
+Table. Hopefully everything will work fine ;)
+</OL>
+
+<DD>If you are having problems, check the project page at
+<A 
+HREF="http://sourceforge.net/projects/consultcomm">http://sourceforge.net/projects/consultcomm</A>. 
+Search through the discussion forums or the bug reports to see if your 
+problem has been addressed. If you are having problems with the ODBC Bridge 
+check Sun's JDBC-ODBC Bridge
+page at <A 
+HREF="http://java.sun.com/j2se/1.3/docs/guide/jdbc/getstart/bridge.doc.html">http://java.sun.com/j2se/1.3/docs/guide/jdbc/getstart/bridge.doc.html</A><BR>
+<DD>If you still can't find an answer you can submit a bug report for 
+ConsultComm. Be sure to include:
+<UL>
+  <LI>Your name and e-mail address
+  <LI>The name of the company/product that the JDBC driver is released under
+  <LI>The driver name
+  <LI>The database URL (masquerading any info that needs to stay secure)
+  <LI>A list of fields, types and values you have assigned to them
+  <LI>The specific error returned
+</UL>
+</BODY>
+</HTML>

@@ -1,0 +1,140 @@
+<HTML>
+<BODY>
+<LI><B>About Consultant Communicator</B><BR>
+Consultant Communicator (ConsultComm) is a program that allows anyone 
+managing multiple projects, clients or tasks to effectively keep track of 
+exactly how long they've spent on each project. 
+<P>
+<LI><B>Install</B><BR>
+Read the file <A HREF="install.html">install.html</A> for step-by-step 
+directions to install ConsultComm.
+<P>
+<LI><B>Starting Consultant Communicator</B><BR>
+If have installed ConsultComm using InstallAnywhere, just click on the icon
+that was created for you. If you have another distribution, simply 
+double-click on the "CsltComm.jar" icon. Or, at the DOS prompt 
+type:<BR>
+<CODE>> javaw -jar CsltComm.jar</CODE> (or java -jar CsltComm.jar on
+non-Windows platforms)
+<P>
+
+<LI><B>Running Consultant Communicator</B><BR>
+  Simply use the toolbar to use the following functions:
+  <UL>
+    <LI>Start - Start the clock running.
+    <LI>Pause - Stop the clock from running.
+    <LI>Project - Maintain your projects by selecting:
+    <UL>
+      <LI>Add Project - Place a new project at the end of the list
+      <LI>Delete Project - Deletes currently seleted project
+      <LI>Edit Project - Edit the currently selected project
+      <LI>Reset Timers - Reset ALL projects to have no elapsed time
+    </UL>
+    <LI>Tools - Configuration and connectivity
+    <UL>
+      <LI>Export to Table - Insert all of your projects and times into a
+          JDBC database
+      <LI>JDBC Settings - Edit settings to connect to JDBC compliant
+          databases and insert projects and times into tables. See
+          <A HREF="dbconnect.html">Connecting to a database with ConsultComm</A>
+          for more details
+      <LI>Preferences - Change how ConsultComm looks and runs to suit your
+          personal preferences
+      <UL>
+        <LI>General - General options that allow you to specify how time is
+            displayed, how animated icons are shown and how often to save your
+            information to a file
+        <UL>
+          <LI>Show time in minutes or seconds - Allow the time to be displayed
+              in minutes or in minutes and seconds
+          <LI>Show animated icons - Get rid of the running blue line at the bottom
+              of ConsultComm if it annoys the heck out of ya
+          <LI>Save info - Set how often ConsultComm saves your times and settings
+          <LI>When idle - set what happens when your session is idle for <I>x</I>
+              number of seconds. You can either have ConsultComm pause itself or
+              have it switch to an alternate project. The application restores
+              itself (either by resuming the timer or by switching back to the
+              original project) when desktop activity resumes. <B>Note:</B>
+              currently this function is only supported on Microsoft&#174; 
+              Windows&#174; and X Windows.
+        </UL>
+        <LI>Flags - What attributes a project can have.
+        <UL>
+          <LI>Show Billable Flag - Allow the "Billable Project" checkbox to
+              show up when editing or adding a project
+          <LI>Use Export to Database Flag - Allow the "Export Project to
+              Database" flag. This allows you to mark individual projects to
+              be sent or not to be sent to a database
+          <LI>Count down from <I>x</I> - Shows a countdown from <I>x</I>
+              minutes instead of a total
+          <LI>Count pay, using $<I>x</I> per hour - Counts how much dinero
+              you've earned by taking the dollar amount <I>x</I> times the
+              total/exportable/billable hours
+        </UL>
+        <LI>Skins - Change the look & feel of ConsultComm. Note that GTK
+            and KDE themes work in Windows, too.
+        <UL>
+          <LI>Use Theme Pack - The location of a SkinLF theme pack. Themes
+              are available at
+              http://javootoo.l2fprod.com/plaf/skinlf/index.php
+          <LI>Use GTK Theme - Use a GTK designed theme
+          <LI>Use KDE Theme - Use a theme generated for KDE
+        </UL>
+      </UL>
+      <LI>Help - View the help documentation
+    </UL>
+  </UL>
+
+Use the main window for the following actions:
+<UL>
+  <LI>Switching Projects<BR>
+When you are ready to switch to another project, simply click on its name
+on the list. ConsultComm automatically saves the old project's elapsed time
+and watches elapsed time on the new project.
+
+  <LI>Sorting Projects<BR>
+Just click on the title of a column to sort it in ascending order. Click it
+again to sort in decending order. New projects are automatically sorted into
+the list.
+
+  <LI>Time Summaries<BR>
+To view the different breakdowns of your project times, simply click on
+the "Total:" box at the very bottom of ConsultComm. Depending on what
+project flags you have enabled, you can scroll through the total time
+elapsed, total time spent on billable projects,total amount of time
+that will be exported to a database, the amount of time remaining and how
+much money you've earned so far. Left click to scroll forward through
+the summaries, right click to scroll backwards.
+
+  <LI>Saving Preferances<BR>
+Projects, time and preferances are automatically saved at specified
+increments specified in the preferences window and when you exit 
+Consultant Communicator.
+</UL>
+<P>
+
+<LI><B>License</B><BR>
+Copyright (C) 2000, 2001 Free Software Foundation, Inc.
+License verified on 9/24/2001 by Janet Casey <jcasey@gnu.org>
+<P>
+Permission is granted to copy, distribute, and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts. A copy of this license is included in the file COPYING.
+<P>
+If you did not receive the file COPYING, please e-mail me at
+john.ellis@ise-indy.com for a... er... copy or take a look at
+<A HREF="http://www.gnu.org/copyleft/gpl.html">
+http://www.gnu.org/copyleft/gpl.html</A>.
+<P>
+<LI><B>Report Bugs</B><BR>
+<A HREF="http://sourceforge.net/projects/consultcomm">
+http://sourceforge.net/projects/consultcomm
+</A>
+<P>
+<LI><B>Official Site</B><BR>
+<A HREF="http://consultcomm.sourceforge.net">
+http://consultcomm.sourceforge.net</A>
+</BODY>
+</HTML>
