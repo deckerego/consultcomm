@@ -1,5 +1,6 @@
 //Standard Components
 import java.io.*;
+import java.net.*;
 import java.util.prefs.*;
 //Swing/AWT Components
 import java.awt.*;
@@ -34,7 +35,8 @@ public class CsltComm extends javax.swing.JFrame {
             System.exit(0);
         }
         
-        appIcon = new ImageIcon("graphics/icon.gif").getImage();
+        appIcon = JarImage.loadImage("graphics/icon.gif");
+
         readPrefs();
         loadSkin();
         initComponents();
@@ -43,7 +45,7 @@ public class CsltComm extends javax.swing.JFrame {
         getContentPane().add(projectList);
         
         if(animateIcons) {
-            Image clockIcon = new ImageIcon("graphics/BlueBar.gif").getImage();
+            Image clockIcon = JarImage.loadImage("graphics/BlueBar.gif");
             iconPanel = new AnimatePanel(clockIcon);
             getContentPane().add(iconPanel);
             iconPanel.start();
