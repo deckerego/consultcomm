@@ -47,7 +47,6 @@ public class ClntComm extends javax.swing.JPanel {
         readPrefs();
         timerTask = new TimerThread();
         initComponents();
-        initSelectionModel();
         initColumns();
         loadPlugins();
         menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
@@ -205,6 +204,8 @@ public class ClntComm extends javax.swing.JPanel {
         add(scrollPane, java.awt.BorderLayout.CENTER);
 
         menuPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        initSelectionModel();
 
         startButton.setMnemonic(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK).getKeyCode());
         startButton.setText(timerTask.clockRunning ? "Pause" : "Start");
@@ -416,10 +417,14 @@ public void reload() {
 }
 
 private void setTimer() {
+    System.out.print("SetTimer: "+timeList.getSelectedRecord());
     if(timeList.getSelectedRecord() >= 0){
         long currTime = System.currentTimeMillis()/1000;
+        System.out.print(" @ "+currTime);
         timerTask.startTime = currTime - times.getSeconds(timeList.getSelectedRecord());
+        System.out.print(" to "+timerTask);
     }
+    System.out.print("\n");
 }
 
 /**
@@ -455,7 +460,7 @@ public void editWindow(int i){
         if(newRecord) times.add(record);
         
         timeList.setModel(new TableTreeModel(times, timeFormat));
-        //timeList.repaint();
+        initSelectionModel();
         
         changes.firePropertyChange("times", oldTimes, times);
         if(selectedIndex == -1) //Nothing selected
