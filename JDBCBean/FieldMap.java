@@ -50,8 +50,11 @@ public class FieldMap implements java.io.Serializable {
     public static void setConnection(JDBCConnect jdbcConnect) throws SQLException {
         jdbc = jdbcConnect;
         conn = jdbc.openConnection();
+        String qualifiedTable = jdbc.getProjectTable();
+        if(jdbc.getProjectDatabase() != null) 
+            qualifiedTable = jdbc.getProjectDatabase()+"."+jdbc.getProjectTable();
         String queryString = "SELECT "+jdbc.getProjectField()+" FROM "+
-        jdbc.getProjectTable()+" WHERE "+jdbc.getProjectField()+"=?";
+        qualifiedTable+" WHERE "+jdbc.getProjectField()+"=?";
         findProject = conn.prepareStatement(queryString);
     }
     
