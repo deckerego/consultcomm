@@ -1,0 +1,42 @@
+<project default="compile">
+
+  <property name="src" value="./"/>
+
+  <target name="init">
+    <tstamp/>
+  </target>
+
+  <target name="compile" depends="init">
+    <javac srcdir="${src}" optimize="on" deprecation="on">
+      <classpath>
+        <pathelement location="${src}"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="dist" depends="compile">
+    <jar jarfile="CsltComm.jar" manifest="CsltMfst">
+      <fileset dir="${src}" includes="*.class"/>
+      <fileset dir="${src}" includes="graphics/*.gif"/>
+    </jar>
+  </target>
+
+  <target name="dryrun" depends="compile">
+    <java classname="CsltComm" fork="true">
+      <classpath>
+        <pathelement location="${src}"/>
+      </classpath>
+    </java>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir="${src}" includes="*.class"/>
+    </delete>
+  </target>
+
+  <target name="realclean" depends="clean">
+    <delete file="CsltComm.jar"/>
+  </target>
+
+</project>
