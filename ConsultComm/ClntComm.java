@@ -293,6 +293,12 @@ public class ClntComm extends javax.swing.JPanel {
         selectionChanged(e);
       }
     });
+    JTableHeader timeListHeader = timeList.getTableHeader();
+    timeListHeader.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        sortColumn(evt);
+      }
+    });
     timeList.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
         editWindow(evt);
@@ -320,6 +326,14 @@ public class ClntComm extends javax.swing.JPanel {
     add(menuPanel, java.awt.BorderLayout.NORTH);
     
   }//GEN-END:initComponents
+
+  private void sortColumn(java.awt.event.MouseEvent evt) {
+    TableColumnModel columnModel = timeList.getColumnModel();
+    int viewColumn = columnModel.getColumnIndexAtX(evt.getX());
+    int column = timeList.convertColumnIndexToModel(viewColumn);
+    times.sort(column);
+    timeList.setModel(times.toTableModel());
+  }
   
   private void editWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editWindow
     if(evt.getModifiers() == java.awt.event.MouseEvent.BUTTON1_MASK) {
@@ -552,6 +566,9 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   
   private class TimeRecordSet {
     private Vector timeRecords;
+    private String[] titles = {"Project", "Time"};
+    private boolean reverseSort = false;
+    private int currColumnSorted = -1;
     
     public TimeRecordSet() {
       timeRecords = new Vector();
@@ -612,25 +629,37 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     
     public DefaultTableModel toTableModel(){
       DefaultTableModel model = new javax.swing.table.DefaultTableModel(
+      //Set to two empty columns
       new Object [][] {
       },
-      new String [] {
-        "Project", "Time"
-      }
+      titles
       ) {
-        boolean[] canEdit = new boolean [] {
-          false, false
-        };
         public boolean isCellEditable(int rowIndex, int columnIndex) {
-          return canEdit [columnIndex];
+          return false;
         }
       };
+      
       Enumeration records = timeRecords.elements();
       while (records.hasMoreElements()) {
         TimeRecord record = (TimeRecord)records.nextElement();
         model.addRow(new Object[] {record.projectName, record.toString()});
       }
       return model;
+    }
+
+    public void sort(int column) {
+      try {
+        if((currColumnSorted != column) || reverseSort) {
+          QuickSort.sort(timeRecords, titles[column]);
+          reverseSort = false;
+        } else {
+          QuickSort.revSort(timeRecords, titles[column]);
+          reverseSort = true;
+        }
+        currColumnSorted = column;
+      } catch (Exception e) {
+        System.err.println("Cannot sort by column "+column);
+      }
     }
     
     public String parseSeconds(long seconds) {
@@ -642,7 +671,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     }
   }
   
-  private class TimeRecord {
+  private class TimeRecord implements Comparable {
     long seconds;
     String projectName;
     boolean billable;
@@ -681,6 +710,12 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
     }
     public long getSeconds() {
       return seconds;
+    }
+    
+    public int compareTo(Comparable comp, String type) throws Exception {
+      TimeRecord compTo = (TimeRecord)comp;
+      if(type.equals("Time")) return (int)(seconds-compTo.seconds);
+      else return projectName.compareToIgnoreCase(compTo.projectName);
     }
   }
 }
