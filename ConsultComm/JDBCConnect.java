@@ -303,12 +303,13 @@ class JDBCConnect {
   
   void savePrefs() {
     File prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
+    File stylesheet = new File("stylesheet.xsl");
     try {
       DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
       Document doc = docBuilder.newDocument();
       Element rootNode = doc.createElement("jdbccontrolpanel");
-      rootNode.setAttribute("version", "0.1");
+      rootNode.setAttribute("version", "1.0");
       doc.appendChild(rootNode);
       
       Element newNode = doc.createElement("driver");
@@ -340,9 +341,10 @@ class JDBCConnect {
       }
       
       doc.getDocumentElement().normalize();
-      TransformerFactory fac = TransformerFactory.newInstance();
-      Transformer trans = fac.newTransformer();
-      trans.transform(new DOMSource(doc.getDocumentElement()), new StreamResult(prefs));
+      StreamSource stylesource = new StreamSource(stylesheet);
+      TransformerFactory tFactory = TransformerFactory.newInstance();
+      Transformer transformer = tFactory.newTransformer(stylesource);
+      transformer.transform(new DOMSource(doc.getDocumentElement()), new StreamResult(prefs));
     } catch (ParserConfigurationException e) {
       System.err.println("Error writing prefs file: "+e);
       e.printStackTrace(System.out);
