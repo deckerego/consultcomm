@@ -33,7 +33,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/plugins
 mkdir -p $RPM_BUILD_ROOT/usr/local/TotalTimesBean
 mkdir -p $RPM_BUILD_ROOT/usr/local/TimeOutBean
 mkdir -p $RPM_BUILD_ROOT/usr/local/JDBCBean
-mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/docs
+mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/help
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/icons
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/graphics
 mkdir -p $RPM_BUILD_ROOT/usr/local/ConsultComm/syslibs
@@ -60,6 +60,8 @@ fi
 /usr/local/ConsultComm
 
 %changelog
+* Wed Feb 3 2003 John Ellis <john.ellis@ise-indy.com>
+- Added helpfile directory
 * Wed Jan 29 2003 John Ellis <john.ellis@ise-indy.com>
 - Modified directory structure for ease in building
 * Wed Jan 22 2003 John Ellis <john.ellis@ise-indy.com>
