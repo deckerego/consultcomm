@@ -14,6 +14,8 @@
         <pathelement location="skinlf.jar"/>
       </classpath>
     </javac>
+    <ant dir="TimeOutBean" target="all" inheritAll="false"/>
+    <ant dir="JDBCBean" target="all" inheritAll="false"/>
   </target>
 
   <target name="clean">
