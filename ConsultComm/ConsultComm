@@ -29,7 +29,7 @@ fi
 cd $CSLTCOMM_HOME
 
 CSLTCOMM_ARGS="$CSLTCOMM_ARGS -Djava.library.path=$CSLTCOMM_HOME/syslibs"
-CSLTCOMM_ARGS="$CSLTCOMM_ARGS -classpath skinlf.jar:."
+CSLTCOMM_ARGS="$CSLTCOMM_ARGS -classpath skinlf.jar:jhbasic.jar:."
 
 # exec the jvm
-exec $JAVA_HOME/bin/java $CSLTCOMM_ARGS CsltComm
+exec $JAVA_HOME/bin/java $CSLTCOMM_ARGS -jar CsltComm.jar
