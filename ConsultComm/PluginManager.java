@@ -2,9 +2,11 @@ import java.io.*;
 import java.beans.*;
 import java.net.*;
 import java.util.*;
+import java.awt.event.*;
 
-public class PluginManager extends javax.swing.JFrame {
+public class PluginManager extends javax.swing.JFrame implements ActionListener {
     Vector pluginList;
+    Vector buttonList; //dt
     
     public PluginManager() {
         pluginList = new Vector();
@@ -16,6 +18,7 @@ public class PluginManager extends javax.swing.JFrame {
     
     public PluginManager(ClntComm parent) {
         pluginList = parent.getPlugins();
+        buttonList = new Vector(); //dt
         
         initComponents();
     }
@@ -54,6 +57,8 @@ public class PluginManager extends javax.swing.JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         getContentPane().add(iconsPanel, gridBagConstraints);
 
+        settingsPanel.setLayout(new java.awt.GridLayout());
+
         loadSettingsPanel(0);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
@@ -76,7 +81,9 @@ public class PluginManager extends javax.swing.JFrame {
           Class customizerClass = pluginInfo.getBeanDescriptor().getCustomizerClass();
           Customizer customizer = (Customizer)customizerClass.newInstance();
           customizer.setObject(bean);
+          settingsPanel.removeAll();//dt
           settingsPanel.add((javax.swing.JPanel)customizer);
+          settingsPanel.validate();//dt
       } catch(Exception e) {
           System.err.println("Couldn't load settings: "+e);
           e.printStackTrace(System.out);
@@ -91,6 +98,8 @@ public class PluginManager extends javax.swing.JFrame {
               java.awt.Image icon = pluginInfo.getIcon(SimpleBeanInfo.ICON_COLOR_32x32);
               button.setIcon(new javax.swing.ImageIcon(icon));
               iconListPanel.add(button);
+              buttonList.add(button);//dt
+              button.addActionListener(this);//dt
           }
       } catch(IntrospectionException e) {
           System.err.println("Couldn't load icons: "+e);
@@ -136,6 +145,12 @@ public class PluginManager extends javax.swing.JFrame {
       }
       
       return pluginList;
+  }
+  
+  //dt
+  public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
+      Object o = actionEvent.getSource();
+      loadSettingsPanel(buttonList.indexOf(o));
   }
   
     // Variables declaration - do not modify//GEN-BEGIN:variables
