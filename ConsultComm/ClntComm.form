@@ -226,10 +226,10 @@
               <Connection code="KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK).getKeyCode()" type="code"/>
             </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="timer.clockRunning ? &quot;Pause&quot; : &quot;Start&quot;" type="code"/>
+              <Connection code="timerTask.clockRunning ? &quot;Pause&quot; : &quot;Start&quot;" type="code"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="timer.clockRunning ? &quot;Pause Timer&quot; : &quot;Start Timer&quot;" type="code"/>
+              <Connection code="timerTask.clockRunning ? &quot;Pause Timer&quot; : &quot;Start Timer&quot;" type="code"/>
             </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="null"/>

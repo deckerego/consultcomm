@@ -33,7 +33,8 @@ public class ClntComm extends javax.swing.JPanel {
     private static JFrame frame = new JFrame("Consultant Manager");
     
     private CsltComm csltComm;
-    private TimerThread timer;
+    private TimerThread timerTask;
+    private java.util.Timer timer;
     private java.awt.Dimension windowSize;
     private int projColumnWidth;
     private int index, selectedIndex;
@@ -46,7 +47,7 @@ public class ClntComm extends javax.swing.JPanel {
     private String idleProject = null;
     private static boolean timeoutLibrary = false;
     private Vector plugins;
-
+    
     private TimeRecordSet times;
     
     private native long getIdleTime();
@@ -66,20 +67,22 @@ public class ClntComm extends javax.swing.JPanel {
         csltComm = parent;
         
         readPrefs();
-        timer = new TimerThread(1000);
-
+        timerTask = new TimerThread();
+        
         try{
             plugins = new Vector();
             plugins = PluginManager.getPlugins();
             for(int i=0; i<plugins.size(); i++)
-                timer.addCsltCommListener((CsltCommListener)plugins.elementAt(i));
-        } catch(Exception e) { 
-            System.err.println("Couldn't load plugins: "+e); 
+                timerTask.addCsltCommListener((CsltCommListener)plugins.elementAt(i));
+        } catch(Exception e) {
+            System.err.println("Couldn't load plugins: "+e);
         }
-    
+        
         initComponents();
         initColumns();
-        timer.start();
+
+        timer = new java.util.Timer();
+        timer.schedule(timerTask, 0, 1000);
         
         menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
         try {
@@ -256,8 +259,8 @@ public class ClntComm extends javax.swing.JPanel {
         menuPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         startButton.setMnemonic(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK).getKeyCode());
-        startButton.setText(timer.clockRunning ? "Pause" : "Start");
-        startButton.setToolTipText(timer.clockRunning ? "Pause Timer" : "Start Timer");
+        startButton.setText(timerTask.clockRunning ? "Pause" : "Start");
+        startButton.setToolTipText(timerTask.clockRunning ? "Pause Timer" : "Start Timer");
         startButton.setBorder(null);
         startButton.setBorderPainted(false);
         startButton.addActionListener(new java.awt.event.ActionListener() {
@@ -271,12 +274,12 @@ public class ClntComm extends javax.swing.JPanel {
         add(menuPanel, java.awt.BorderLayout.NORTH);
 
     }//GEN-END:initComponents
-  
-  private void initColumns() {
-      TableColumn projectColumn = timeList.getColumnModel().getColumn(0);
-      projectColumn.setPreferredWidth(projColumnWidth);
-  }
-  
+    
+    private void initColumns() {
+        TableColumn projectColumn = timeList.getColumnModel().getColumn(0);
+        projectColumn.setPreferredWidth(projColumnWidth);
+    }
+    
   private void showPrefs(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPrefs
       new PrefsPanel(this).show();
   }//GEN-LAST:event_showPrefs
@@ -284,7 +287,7 @@ public class ClntComm extends javax.swing.JPanel {
   private void showHelp(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHelp
       new HelpDisplay().show();
   }//GEN-LAST:event_showHelp
-    
+  
   private void editPlugins(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPlugins
       new PluginManager().show();
   }//GEN-LAST:event_editPlugins
@@ -317,13 +320,13 @@ public class ClntComm extends javax.swing.JPanel {
   }//GEN-LAST:event_toggleTimer
   
   void toggleTimer() {
-      if(timer.clockRunning){
-          timer.clockRunning = false;
+      if(timerTask.clockRunning){
+          timerTask.clockRunning = false;
           startButton.setToolTipText("Start Timer");
           startButton.setText("Start");
       } else {
           setTimer();
-          timer.clockRunning = true;
+          timerTask.clockRunning = true;
           startButton.setToolTipText("Pause Timer");
           startButton.setText("Pause");
       }
@@ -338,7 +341,7 @@ public class ClntComm extends javax.swing.JPanel {
       if(dialog == 0){
           int index = timeList.getSelectedRow();
           times.resetTime();
-          timer.startTime = System.currentTimeMillis()/1000;
+          timerTask.startTime = System.currentTimeMillis()/1000;
           timeList.setModel(times.toTableModel(timeFormat));
           timeList.repaint();
           refreshTotalTime();
@@ -464,7 +467,7 @@ public void reload() {
 private void setTimer() {
     if(timeList.getSelectedRow() >= 0){
         long currTime = System.currentTimeMillis()/1000;
-        timer.startTime = currTime - times.getSeconds(timeList.getSelectedRow());
+        timerTask.startTime = currTime - times.getSeconds(timeList.getSelectedRow());
     }
 }
 
@@ -493,7 +496,7 @@ public void editWindow(int i){
     
     if (edit.getValue().equals("0")) {
         long newTime = System.currentTimeMillis()/1000;
-        if (index == selectedIndex) timer.startTime = newTime-record.seconds;
+        if (index == selectedIndex) timerTask.startTime = newTime-record.seconds;
         if(newRecord) times.add(record);
         timeList.setModel(times.toTableModel(timeFormat));
         timeList.repaint();
@@ -638,7 +641,7 @@ private void savePrefs() {
 }
 
 public boolean isRunning(){
-    return timer.clockRunning;
+    return timerTask.clockRunning;
 }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -663,117 +666,101 @@ public boolean isRunning(){
     private javax.swing.JTable timeList;
     private javax.swing.JPopupMenu editMenu;
     // End of variables declaration//GEN-END:variables
-  
-  /**
-   * TimerThread updates system variables upon each tick of the clock.
-   */
-  private class TimerThread extends Thread{
-      public boolean runThread, clockRunning, asleep;
-      public int updateSeconds;
-      public long startTime;
-      private Vector listeners;
-      
-      /**
-       * Create a new timer.
-       * @parm How often to update (in milliseconds)
-       * @parm The Consultant Manager screen to update
-       */
-      public TimerThread(int update) {
-          updateSeconds = update;
-          clockRunning = false;
-          runThread = true;
-          asleep = false;
-          startTime = 0;
-          listeners = new Vector();
-      }
-      
-      public synchronized void addCsltCommListener(CsltCommListener l) {
-          listeners.addElement(l);
-      }
-      public synchronized void removeCsltCommListener(CsltCommListener l) {
-          listeners.removeElement(l);
-      }
-      public void fireAction() {
-          Vector targets;
-          synchronized (this) { targets = (Vector) listeners.clone(); }
-          CsltCommEvent actionEvt = new CsltCommEvent(this);
-          for(int i=0; i<targets.size(); i++) {
-              CsltCommListener target = (CsltCommListener)targets.elementAt(i);
-              target.clockTick(actionEvt);
-          }
-      }
-      
-      private void toggleIdle() {
-          if(idleAction == ClntComm.IDLE_PROJECT) {
-              int index = times.indexOfProject(idleProject);
-              if(index < 0) { //Not a valid project
-                  toggleTimer();
-              } else {
-                  //Set the current project to be the 'idle' project,
-                  //set the idle project to be the current
-                  int oldIndex = timeList.getSelectedRow();
-                  idleProject = times.elementAt(oldIndex).projectName;
-                  timeList.setRowSelectionInterval(index, index);
-              }
-          } else {
-              toggleTimer();
-          }
-      }
-      
-      public void run(){
-          long currTime, currSeconds;
-          int index;
-          int idleSeconds = -1;
-          
-          while(runThread){
-              try {
-                  sleep(updateSeconds);
-                  
-                  if(allowedIdle > 0 && timeoutLibrary) //0 means don't worry about idle
-                      idleSeconds = (int)(getIdleTime()/1000L);
-                  
-                  //Check and see if we're supposed to wake up the clock
-                  //after the session has been idle
-                  if(allowedIdle > 0 && idleSeconds < allowedIdle && asleep) {
-                      toggleIdle();
-                      asleep = false;
-                  }
-                  
-                  if(clockRunning){
-                      //Get the current seconds past midnight.
-                      currTime = System.currentTimeMillis()/1000;
-                      if((index = timeList.getSelectedRow()) >= 0){
-                          currSeconds = currTime - startTime;
-                          times.setSeconds(index, currSeconds);
-                          
-                          //Only repaint if the minutes (or seconds, depending on the
-                          //time format) have changed.
-                          if ((timeFormat == SECONDS) || (currSeconds % 60 == 0)){
-                              refreshTotalTime();
-                              if(timeFormat == SECONDS)
-                                  timeList.setValueAt(times.getSecondsString(index), index, 1);
-                              else
-                                  timeList.setValueAt(times.getMinutesString(index), index, 1);
-                              timeList.repaint();
-                          }
-                          
-                          //If the user requested a save now, do it
-                          if (currSeconds % saveInterval == 0) savePrefs();
-                          
-                          //Check and see if we're supposed to do something when the
-                          //user session is idle
-                          if(allowedIdle > 0 && idleSeconds >= allowedIdle && ! asleep) {
-                              toggleIdle();
-                              asleep = true;
-                          }
-                          
-                          fireAction();
-                      }
-                  }
-              } catch (InterruptedException e) {
-                  System.err.println("Sleep failed.");
-              }
-          }
-      }
-  }
+    
+    /**
+     * TimerThread updates system variables upon each tick of the clock.
+     */
+    private class TimerThread extends TimerTask {
+        public boolean clockRunning, asleep;
+        public long startTime;
+        private Vector listeners;
+        
+        public TimerThread() {
+            clockRunning = false;
+            asleep = false;
+            startTime = 0;
+            listeners = new Vector();
+        }
+        
+        public synchronized void addCsltCommListener(CsltCommListener l) {
+            listeners.addElement(l);
+        }
+        public synchronized void removeCsltCommListener(CsltCommListener l) {
+            listeners.removeElement(l);
+        }
+        public void fireAction() {
+            Vector targets;
+            synchronized (this) { targets = (Vector) listeners.clone(); }
+            CsltCommEvent actionEvt = new CsltCommEvent(this);
+            for(int i=0; i<targets.size(); i++) {
+                CsltCommListener target = (CsltCommListener)targets.elementAt(i);
+                target.clockTick(actionEvt);
+            }
+        }
+        
+        private void toggleIdle() {
+            if(idleAction == ClntComm.IDLE_PROJECT) {
+                int index = times.indexOfProject(idleProject);
+                if(index < 0) { //Not a valid project
+                    toggleTimer();
+                } else {
+                    //Set the current project to be the 'idle' project,
+                    //set the idle project to be the current
+                    int oldIndex = timeList.getSelectedRow();
+                    idleProject = times.elementAt(oldIndex).projectName;
+                    timeList.setRowSelectionInterval(index, index);
+                }
+            } else {
+                toggleTimer();
+            }
+        }
+        
+        public void run(){
+            long currTime, currSeconds;
+            int index;
+            int idleSeconds = -1;
+            
+            if(allowedIdle > 0 && timeoutLibrary) //0 means don't worry about idle
+                idleSeconds = (int)(getIdleTime()/1000L);
+            
+            //Check and see if we're supposed to wake up the clock
+            //after the session has been idle
+            if(allowedIdle > 0 && idleSeconds < allowedIdle && asleep) {
+                toggleIdle();
+                asleep = false;
+            }
+            
+            if(clockRunning){
+                //Get the current seconds past midnight.
+                currTime = System.currentTimeMillis()/1000;
+                if((index = timeList.getSelectedRow()) >= 0){
+                    currSeconds = currTime - startTime;
+                    times.setSeconds(index, currSeconds);
+                    
+                    //Only repaint if the minutes (or seconds, depending on the
+                    //time format) have changed.
+                    if ((timeFormat == SECONDS) || (currSeconds % 60 == 0)){
+                        refreshTotalTime();
+                        if(timeFormat == SECONDS)
+                            timeList.setValueAt(times.getSecondsString(index), index, 1);
+                        else
+                            timeList.setValueAt(times.getMinutesString(index), index, 1);
+                        timeList.repaint();
+                    }
+                    
+                    //If the user requested a save now, do it
+                    if (currSeconds % saveInterval == 0) savePrefs();
+                    
+                    //Check and see if we're supposed to do something when the
+                    //user session is idle
+                    if(allowedIdle > 0 && idleSeconds >= allowedIdle && ! asleep) {
+                        toggleIdle();
+                        asleep = true;
+                    }
+                    
+                    fireAction();
+                }
+            }
+        }
+    }
 }
