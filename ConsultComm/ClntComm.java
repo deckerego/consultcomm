@@ -215,13 +215,21 @@ public class ClntComm extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        setPreferredSize(new java.awt.Dimension(94, 50));
+        setMaximumSize(null);
+        setMinimumSize(null);
+        setPreferredSize(null);
+        scrollPane.setMaximumSize(null);
+        scrollPane.setMinimumSize(null);
+        scrollPane.setPreferredSize(null);
         timeList = new TableTree(new TableTreeModel(times, timeFormat));
         scrollPane.setViewportView(timeList);
         add(scrollPane, java.awt.BorderLayout.CENTER);
 
         menuPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
+        menuPanel.setMaximumSize(null);
+        menuPanel.setMinimumSize(null);
+        menuPanel.setPreferredSize(null);
         initSelectionModel();
 
         startButton.setMnemonic(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK).getKeyCode());
@@ -239,6 +247,9 @@ public class ClntComm extends javax.swing.JPanel {
 
         add(menuPanel, java.awt.BorderLayout.NORTH);
 
+        totalGUIPanel.setMaximumSize(null);
+        totalGUIPanel.setMinimumSize(null);
+        totalGUIPanel.setPreferredSize(null);
         add(totalGUIPanel, java.awt.BorderLayout.SOUTH);
 
     }//GEN-END:initComponents
