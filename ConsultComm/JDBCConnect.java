@@ -157,6 +157,7 @@ class JDBCConnect {
       }
       
       insertVector(statements);
+      worked = true;
     } catch (ProjectInvalidException e) {
       JOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
       worked = false;
@@ -213,7 +214,10 @@ class JDBCConnect {
       if(! isValid) {
         ProjectAddDialog addDialog = new ProjectAddDialog(parentFrame, project, projectField);
         addDialog.show();
-        isValid = addDialog.getValue().equals("0");
+        if(addDialog.getValue().equals("0"))
+          isValid = validateProject(project);
+        else
+          isValid = false;
       }
     } catch (SQLException e) {
       System.err.println("Couldn't attempt project validation: "+e);
