@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="all" name="SysTray">
+  <property name="src" value="./"/>
+  <property name="appsrc" value="${src}/../ConsultComm"/>
+
+  <target depends="compile" name="all"/>
+
+  <target name="init">
+    <tstamp/>
+  </target>
+
+  <target depends="init" name="compile">
+    <javac deprecation="on" optimize="on" srcdir="${src}" classpath="${src}:${appsrc}"/>
+    <jar destfile="${appsrc}/plugins/TimeOut.jar">
+      <fileset dir="${src}" includes="*.class"/>
+      <fileset dir="${src}" includes="*.gif"/>
+      <fileset dir="${src}" includes="*.so"/>
+      <fileset dir="${src}" includes="*.dll"/>
+      <manifest>
+        <attribute name="Java-Bean" value="true"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="clean">
+    <delete>
+      <fileset dir="${src}" includes="*.class"/>
+    </delete>
+    <exec dir="${Xlibdir}" executable="make">
+      <arg line="clean"/>
+    </exec>
+  </target>
+
+  <target depends="clean" name="realclean">
+    <delete>
+      <fileset dir="${src}" includes="*~"/>
+    </delete>
+  </target>
+</project>
