@@ -3,6 +3,7 @@ import java.io.*;
 import java.beans.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import java.awt.event.*;
 
 public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.beans.Customizer {
     private JDBCConnect dbConnection;
@@ -27,6 +28,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         tableLabel = new javax.swing.JLabel();
         tableField = new javax.swing.JTextField();
         odbcCheckBox = new javax.swing.JCheckBox();
+        useDatabaseCheckBox = new javax.swing.JCheckBox();
         driverButtonPanel = new javax.swing.JPanel();
         driverOK = new javax.swing.JButton();
         driverTest = new javax.swing.JButton();
@@ -59,6 +61,8 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
 
         setLayout(new java.awt.GridBagLayout());
 
+        setMaximumSize(new java.awt.Dimension(387, 254));
+        setMinimumSize(new java.awt.Dimension(387, 254));
         tabbedPane.setPreferredSize(new java.awt.Dimension(387, 254));
         driverPanel.setLayout(new java.awt.BorderLayout());
 
@@ -70,7 +74,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
 
         driverInputPanel.setLayout(new java.awt.GridBagLayout());
 
-        nameLabel.setText("Driver Name");
+        nameLabel.setText("Driver Name ");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         driverInputPanel.add(nameLabel, gridBagConstraints);
@@ -94,11 +98,13 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         driverInputPanel.add(urlField, gridBagConstraints);
 
         dbLabel.setText("Database");
+        dbLabel.setEnabled(! useDatabaseCheckBox.isSelected());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         driverInputPanel.add(dbLabel, gridBagConstraints);
 
         dbField.setText(dbConnection.getDatabase());
+        dbField.setEnabled(! useDatabaseCheckBox.isSelected());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -118,6 +124,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         odbcCheckBox.setForeground(new java.awt.Color(102, 102, 153));
         odbcCheckBox.setSelected(dbConnection.getName().equals(JDBCConnect.ODBCDRIVERNAME));
         odbcCheckBox.setText("Use ODBC Bridge");
+        odbcCheckBox.setToolTipText("Use the JDBC-ODBC bridge instead of a driver");
         odbcCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 toggleODBC(evt);
@@ -128,6 +135,21 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         driverInputPanel.add(odbcCheckBox, gridBagConstraints);
+
+        useDatabaseCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+        useDatabaseCheckBox.setSelected(dbConnection.getDatabase() == null);
+        useDatabaseCheckBox.setText("Don't Specify A Database");
+        useDatabaseCheckBox.setToolTipText("Don't use a database name in queries");
+        useDatabaseCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toggleNoDatabase(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        driverInputPanel.add(useDatabaseCheckBox, gridBagConstraints);
 
         driverPanel.add(driverInputPanel, java.awt.BorderLayout.CENTER);
 
@@ -326,6 +348,17 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
 
     }//GEN-END:initComponents
     
+    private void toggleNoDatabase(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleNoDatabase
+        if(useDatabaseCheckBox.isSelected()) {
+            dbField.setEnabled(false);
+            dbLabel.setEnabled(false);
+        } else {
+            dbField.setEnabled(true);
+            dbLabel.setEnabled(true);
+        }
+        driverInputPanel.repaint();
+    }//GEN-LAST:event_toggleNoDatabase
+    
     private void showProjectNames(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showProjectNames
         getRootPane().setDefaultButton(mapOK);
         projectMapping.setModel(dbConnection.getTableMap().toProjectNamesTableModel());
@@ -351,10 +384,6 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   }//GEN-LAST:event_applyOptions
   
   private void toggleValidateProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleValidateProject
-      toggleValidateProject();
-  }//GEN-LAST:event_toggleValidateProject
-  
-  private void toggleValidateProject() {
       if(projValidateCheckBox.isSelected()) {
           projDBField.setEnabled(true);
           projTableField.setEnabled(true);
@@ -363,7 +392,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
           projTableField.setEnabled(false);
       }
       optionInputPanel.repaint();
-  }
+  }//GEN-LAST:event_toggleValidateProject
   
   private void showDriverPanel(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showDriverPanel
       getRootPane().setDefaultButton(driverOK);
@@ -374,23 +403,23 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   }//GEN-LAST:event_showOptionPanel
   
   private void toggleODBC(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleODBC
-      toggleODBC();
-  }//GEN-LAST:event_toggleODBC
-  private void toggleODBC() {
       if(odbcCheckBox.isSelected()) {
           nameField.setText(JDBCConnect.ODBCDRIVERNAME);
           nameField.setEnabled(false);
+          nameLabel.setEnabled(false);
           urlLabel.setText("Data Source");
           int lastColon = dbConnection.getUrl().lastIndexOf(':')+1;
           urlField.setText(dbConnection.getUrl().substring(lastColon));
       } else {
           nameField.setText(dbConnection.getName());
           nameField.setEnabled(true);
+          nameLabel.setEnabled(true);
           urlLabel.setText("URL");
           urlField.setText(dbConnection.getUrl());
       }
       driverInputPanel.repaint();
-  }
+  }//GEN-LAST:event_toggleODBC
+  
   private void refreshFieldMap(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshFieldMap
       try {
           dbConnection.getTableMap().clearFieldMaps();
@@ -429,7 +458,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       dbConnection.setUrl(urlField.getText());
       if(dbConnection.getName().equals(JDBCConnect.ODBCDRIVERNAME))
           dbConnection.setUrl("jdbc:odbc:"+dbConnection.getUrl());
-      dbConnection.setDatabase(dbField.getText());
+      dbConnection.setDatabase(useDatabaseCheckBox.isSelected() ? null : dbField.getText());
       dbConnection.setTable(tableField.getText());
       dbConnection.setProjectDatabase(projDBField.getText());
       dbConnection.setProjectTable(projTableField.getText());
@@ -477,62 +506,65 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       
       exitForm();
   }//GEN-LAST:event_saveDriverSettings
-            private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
-                exitForm();
+              private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
+                  exitForm();
     }//GEN-LAST:event_exitForm
-            
-            private void exitForm() {
-                //Don't do anything - this is an embedded component
-            }
-            
-            public void setObject(Object obj) {
-                dbConnection = (JDBCConnect)obj;
-                initComponents();
-                toggleODBC();
-                toggleValidateProject();
-            }
-            
+              
+    private void exitForm() {
+        //Don't do anything - this is an embedded component
+    }
+              
+    public void setObject(Object obj) {
+        dbConnection = (JDBCConnect)obj;
+        initComponents();
+        ActionEvent evt = new ActionEvent(this, 0, "Refresh"); //Fake event
+        toggleNoDatabase(evt);
+        toggleODBC(evt);
+        toggleValidateProject(evt);
+    }
+              
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel optionButtonPanel;
-    private javax.swing.JPanel driverPanel;
-    private javax.swing.JButton optionApply;
-    private javax.swing.JButton mapOK;
-    private javax.swing.JPanel mapButtonPanel;
-    private javax.swing.JTable projectMapping;
-    private javax.swing.JTable fieldMapping;
-    private javax.swing.JLabel hourLabel;
-    private javax.swing.JPanel optionInputPanel;
-    private javax.swing.JScrollPane fieldScrollPane;
-    private javax.swing.JTextField nameField;
-    private javax.swing.JCheckBox projectCaseCheckBox;
-    private javax.swing.JPanel fieldPanel;
-    private javax.swing.JPanel driverButtonPanel;
-    private javax.swing.JLabel nameLabel;
-    private javax.swing.JPanel driverInputPanel;
-    private javax.swing.JComboBox hourComboBox;
-    private javax.swing.JTextField projDBField;
-    private javax.swing.JTextField dbField;
-    private javax.swing.JComboBox projFieldComboBox;
     private javax.swing.JButton driverTest;
-    private javax.swing.JLabel projDBLabel;
-    private javax.swing.JCheckBox odbcCheckBox;
     private javax.swing.JPanel fieldButtonPanel;
-    private javax.swing.JLabel projFieldLabel;
-    private javax.swing.JCheckBox projValidateCheckBox;
-    private javax.swing.JButton fieldOK;
-    private javax.swing.JLabel dbLabel;
-    private javax.swing.JTabbedPane tabbedPane;
-    private javax.swing.JButton optionOK;
-    private javax.swing.JScrollPane mapScrollPane;
-    private javax.swing.JPanel optionPanel;
-    private javax.swing.JTextField tableField;
-    private javax.swing.JTextField urlField;
-    private javax.swing.JTextField projTableField;
-    private javax.swing.JPanel mapPanel;
-    private javax.swing.JLabel tableLabel;
-    private javax.swing.JLabel urlLabel;
-    private javax.swing.JButton driverOK;
-    private javax.swing.JLabel projTableLabel;
+    private javax.swing.JPanel fieldPanel;
+    private javax.swing.JTextField nameField;
+    private javax.swing.JPanel driverInputPanel;
     private javax.swing.JButton fieldRefresh;
+    private javax.swing.JTable fieldMapping;
+    private javax.swing.JTextField dbField;
+    private javax.swing.JPanel driverButtonPanel;
+    private javax.swing.JCheckBox odbcCheckBox;
+    private javax.swing.JButton fieldOK;
+    private javax.swing.JButton optionApply;
+    private javax.swing.JPanel optionInputPanel;
+    private javax.swing.JLabel nameLabel;
+    private javax.swing.JButton mapOK;
+    private javax.swing.JTextField tableField;
+    private javax.swing.JTextField projTableField;
+    private javax.swing.JPanel optionPanel;
+    private javax.swing.JLabel tableLabel;
+    private javax.swing.JLabel dbLabel;
+    private javax.swing.JPanel mapButtonPanel;
+    private javax.swing.JScrollPane mapScrollPane;
+    private javax.swing.JTable projectMapping;
+    private javax.swing.JLabel projTableLabel;
+    private javax.swing.JPanel driverPanel;
+    private javax.swing.JTextField urlField;
+    private javax.swing.JButton optionOK;
+    private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JLabel projFieldLabel;
+    private javax.swing.JLabel projDBLabel;
+    private javax.swing.JLabel urlLabel;
+    private javax.swing.JCheckBox projValidateCheckBox;
+    private javax.swing.JButton driverOK;
+    private javax.swing.JComboBox projFieldComboBox;
+    private javax.swing.JTextField projDBField;
+    private javax.swing.JScrollPane fieldScrollPane;
+    private javax.swing.JLabel hourLabel;
+    private javax.swing.JComboBox hourComboBox;
+    private javax.swing.JCheckBox projectCaseCheckBox;
+    private javax.swing.JPanel optionButtonPanel;
+    private javax.swing.JCheckBox useDatabaseCheckBox;
+    private javax.swing.JPanel mapPanel;
     // End of variables declaration//GEN-END:variables
 }

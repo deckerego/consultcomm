@@ -21,12 +21,13 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     ClntComm clntComm;
     transient String password="";
     transient boolean validated;
+    private String qualifiedTable;
     
     private TableMap tableMap;
     private String name = "";
     private String url = "";
     private String userName = "";
-    private String database="";
+    private String database;
     private String table="";
     private String projectDatabase="";
     private String projectTable="";
@@ -58,9 +59,15 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     public String getUrl() { return this.url; }
     public void setUserName(String userName) { this.userName = userName; }
     public String getUserName() { return this.userName; }
-    public void setDatabase(String database) { this.database = database; }
+    public void setDatabase(String database) { 
+        this.database = database;
+        this.qualifiedTable = database == null ? table : database+"."+table;
+    }
     public String getDatabase() { return this.database; }
-    public void setTable(String table) { this.table = table; }
+    public void setTable(String table) { 
+        this.table = table;
+        this.qualifiedTable = database == null ? table : database+"."+table;
+    }
     public String getTable() { return this.table; }
     public void setProjectDatabase(String projectDatabase) { this.projectDatabase = projectDatabase; }
     public String getProjectDatabase() { return this.projectDatabase; }
@@ -87,7 +94,8 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
         menuitems[0].setText("Export to Database");
         menuitems[0].addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exportTimeRecordSet(clntComm.getTimes());
+                boolean worked = exportTimeRecordSet(clntComm.getTimes());
+                if(worked) clntComm.zeroProject();
             }
         });
         
@@ -126,7 +134,8 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
             "are installed in "+extdir+", then restart ConsultComm.";
             errorList.addElement(msgString);
         } catch (SQLException e) {
-            errorList.addElement("Could not build JDBC connection: "+e);
+            String msgString = e.toString().substring(0, 512);
+            errorList.addElement("Could not build JDBC connection: "+msgString);
         } catch (NullPointerException e) {
             errorList.addElement("One or more arguments are null");
         } catch (Exception e) {
@@ -145,7 +154,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
         if(tableMap.getFieldMaps().size() == 0) throw new SQLException("Table map is empty.");
         
         try {
-            StringBuffer queryString = new StringBuffer("INSERT INTO "+database+"."+table+" VALUES (");
+            StringBuffer queryString = new StringBuffer("INSERT INTO "+qualifiedTable+" VALUES (");
             queryString.append("?");
             for(int i=1; i<tableMap.getFieldMaps().size(); i++) queryString.append(" ,?");
             queryString.append(")");
@@ -190,7 +199,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
                 if(hours.compareTo(new java.math.BigDecimal(0.0)) <= 0) continue;
                 
                 //Find out if this project is exportable or not
-                ProjectMap project = (ProjectMap)this.tableMap.getProjectMaps().get(record.getProjectName());
+                ProjectMap project = (ProjectMap)this.tableMap.getProjectMaps().get(record.getGroupName()+"-"+record.getProjectName());
                 if(project == null || ! project.isExport()) continue;
                 
                 //Start translating the TimeRecord into a SQL statement
@@ -258,7 +267,7 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
                 DatabaseMetaData dbmeta = conn.getMetaData();
                 ResultSet cols = dbmeta.getColumns(null, database, table, null);
                 if((cols == null) || ! cols.next())
-                    JDBCOptionPane.showMessageDialog(parentFrame, "Table "+database+"."+table+" cannot be found.", "Table Not Found", JDBCOptionPane.ERROR_MESSAGE);
+                    JDBCOptionPane.showMessageDialog(parentFrame, "Table "+qualifiedTable+" cannot be found.", "Table Not Found", JDBCOptionPane.ERROR_MESSAGE);
                 else
                     JDBCOptionPane.showMessageDialog(parentFrame, "Driver connection verified.", "Driver verified", JDBCOptionPane.INFORMATION_MESSAGE);
                 if(cols != null) cols.close();
