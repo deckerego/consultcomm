@@ -89,6 +89,7 @@ class TimeRecordSet {
       else if(record.billable && criteria == ClntComm.SHOW_BILLABLE) total -= record.seconds;
       else if(criteria == ClntComm.SHOW_TOTAL) total -= record.seconds;
     }
+    if(total < 0) total = 0;
     return parseSeconds(total);
   }
   public String getPayAmount(float perHour, int criteria) {
