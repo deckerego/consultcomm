@@ -90,7 +90,10 @@ public class CsltComm extends javax.swing.JFrame {
   
   private void loadSkin() {
       Skin skin = null;
+
       try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          
           if(! kdeTheme.equals("") && ! gtkTheme.equals(""))
               skin = new CompoundSkin(SkinLookAndFeel.loadSkin(kdeTheme), SkinLookAndFeel.loadSkin(gtkTheme));
           else if(! kdeTheme.equals(""))
