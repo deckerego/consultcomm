@@ -69,7 +69,18 @@ class TimeRecord implements Comparable {
     String minuteString = minutes < 10 ? "0"+minutes : Long.toString(minutes);
     return ""+hourString+":"+minuteString;
   }
-  
+
+  public boolean equals(Object to) {
+    TimeRecord toRecord = (TimeRecord)to;
+    boolean isEqual = true;
+    isEqual = isEqual && (seconds == toRecord.seconds);
+    isEqual = isEqual && (projectName.equals(toRecord.projectName));
+    isEqual = isEqual && (alias.equals(toRecord.alias));
+    isEqual = isEqual && (billable == toRecord.billable);
+    isEqual = isEqual && (export == toRecord.export);
+    return isEqual;
+  }
+
   public int compareTo(Comparable comp, String type) throws Exception {
     TimeRecord compTo = (TimeRecord)comp;
     if(type.equals("Time")) {
