@@ -30,6 +30,7 @@
     <jar jarfile="CsltComm.jar" manifest="CsltMfst">
       <fileset dir="${src}" includes="*.class"/>
       <fileset dir="${src}" includes="graphics/*.gif"/>
+      <fileset dir="${src}" includes="stylesheet.xsl"/>
     </jar>
   </target>
 
@@ -37,8 +38,8 @@
     <copy file="CsltComm.jar" todir="/usr/local/ConsultComm"/>
   </target>
 
-  <target depends="compile" name="dryrun">
-    <java classname="CsltComm" fork="true">
+  <target depends="dist" name="dryrun">
+    <java jar="CsltComm.jar" fork="true">
       <classpath>
         <pathelement location="${src}"/>
         <pathelement location="skinlf.jar"/>
