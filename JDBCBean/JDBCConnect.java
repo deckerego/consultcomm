@@ -16,6 +16,7 @@ import javax.xml.transform.stream.*;
 
 public class JDBCConnect implements java.io.Serializable, java.beans.PropertyChangeListener, java.lang.Cloneable {
     final static String ODBCDRIVERNAME = "sun.jdbc.odbc.JdbcOdbcDriver";
+    final String TOTAL_TITLE = "To Export:";
     
     private Vector errorList;
     private JFrame parentFrame;
@@ -23,7 +24,6 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     transient String password="";
     transient boolean validated;
     private String qualifiedTable;
-    private int totalIndex;
     
     private TableMap tableMap;
     private String jarFile;
@@ -302,14 +302,9 @@ public class JDBCConnect implements java.io.Serializable, java.beans.PropertyCha
     }
     
     public void propertyChange(java.beans.PropertyChangeEvent propertyChangeEvent) {
-        if(clntComm == null) {
-            clntComm = (ClntComm)propertyChangeEvent.getSource();
-            TotalPanel totalPanel = clntComm.getTotalPanel();
-            totalIndex = totalPanel.addElement("To Export:", getTotalTime());
-        } else {
-            TotalPanel totalPanel = clntComm.getTotalPanel();
-            totalPanel.setValueAt(getTotalTime(), totalIndex);
-        }
+        if(clntComm == null) clntComm = (ClntComm)propertyChangeEvent.getSource();
+        TotalPanel totalPanel = clntComm.getTotalPanel();
+        totalPanel.setEntry("To Export:", getTotalTime());
     }
 
     private long getTotalTime() {
