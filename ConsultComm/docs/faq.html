@@ -1,0 +1,42 @@
+<HTML>
+<BODY>
+<FONT Size="+1">ConsultComm Frequently Asked Questions</FONT>
+<P>
+
+<DL>
+<DT><B>How do I backup/restore my personal settings?</B>
+<DD>Just archive both ClntComm.def and JDBCConnection.def somewhere. When you 
+need them again, just place 'em in the same directory that ConsultComm runs 
+in.
+<P>
+
+<DT><B>Nothing happens when I double-click on CsltComm.jar</B>
+<DD>Either a) the Java Runtime Environment isn't installed correctly or b) 
+your file associations are incorrect. Try uninstalling and reinstalling the 
+Java Runtime Environment and see if that helps. If not, trying invoking 
+ConsultComm from the command line by using <CODE>java -jar 
+CsltComm.jar</CODE>.
+<P>
+
+<DT><B>Can ConsultComm switch projects or automatically pause if I'm away 
+from my computer for <I>x</I> minutes?
+<DD>Not really. Currently there's no good way (that I know of) to have a Java 
+application monitor for system inactivity. It would be nice to have 
+ConsultComm automatically pause or switch to a "Lunch" project after ten 
+minutes of inactivity or so... but right now it doesn't seem possible.
+<P>
+
+<DT><B>I try to start up ConsultComm, but it keeps saying "Java API for XML 
+Processing was not found."</B>
+<DD>You might get this if you are using the Java Runtime Environment earlier 
+than 1.4 or if you haven't installed the Java XML libraries correctly. 
+Download the Java XML API at 
+<A HREF="http://java.sun.com/xml/download.html">http://java.sun.com/xml/download.html</A>
+ and install all of the .jar files that come with it into the Java Extensions 
+directory on your computer (/usr/java/jre/lib/ext in Linux, 
+C:\java\jre\lib\ext in Windows). If the JAR files aren't in the correct 
+extensions directory, ConsultComm can't load.
+<P>
+</DL>
+</BODY>
+</HTML>
