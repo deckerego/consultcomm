@@ -15,7 +15,9 @@ public class PrefsFile {
   Element rootNode;
   
   public PrefsFile(String file) throws ParserConfigurationException, SAXException, IOException {
-    prefs = new File(CsltComm.prefsDir, file);
+    File prefsDir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+    prefsDir.mkdir();
+    prefs = new File(prefsDir, file);
     DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
     DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
     docBuilder = docBuilderFactory.newDocumentBuilder();
