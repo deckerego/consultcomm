@@ -21,7 +21,12 @@
     </jar>
   </target>
 
-  <target name="dryrun" depends="compile">
+  <target name="dryrun" depends="init">
+    <javac srcdir="${src}">
+      <classpath>
+        <pathelement location="${src}"/>
+      </classpath>
+    </javac>
     <java classname="CsltComm" fork="true">
       <classpath>
         <pathelement location="${src}"/>
