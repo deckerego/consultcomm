@@ -42,7 +42,7 @@ public class TableTreeModelAdapter extends AbstractTableModel {
         for(int i=0; i<expandedPaths.size(); i++) {
             TreePath path = (TreePath)expandedPaths.elementAt(i);
             Integer rowIndex = new Integer(tree.getRowForPath(path));
-            rows.addElement(rowIndex);
+            if(rowIndex.intValue() > -1) rows.addElement(rowIndex);
         }
         return rows;
     }
