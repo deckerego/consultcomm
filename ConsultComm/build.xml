@@ -13,6 +13,7 @@
       <classpath>
         <pathelement location="skinlf.jar"/>
         <pathelement location="jhbasic.jar"/>
+        <pathelement location="nativeskin.jar"/>
       </classpath>
     </javac>
     <jar destfile="CsltComm.jar">
