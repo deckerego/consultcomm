@@ -58,7 +58,7 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         getContentPane().add(iconsPanel, gridBagConstraints);
 
-        settingsPanel.setLayout(new java.awt.GridLayout());
+        settingsPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         loadSettingsPanel(0);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -122,6 +122,7 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
       for(int i=0; i<pluginfiles.length; i++)
           pluginurls[i] = pluginfiles[i].toURL();
       ClassLoader loader = new URLClassLoader(pluginurls);
+      Thread.currentThread().setContextClassLoader(loader);
       
       Vector pluginList = new Vector(pluginurls.length);
       for(int i=0; i<pluginurls.length; i++) {
@@ -154,9 +155,9 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
   }
   
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel iconListPanel;
-    private javax.swing.JPanel settingsPanel;
     private javax.swing.JScrollPane iconScrollPane;
+    private javax.swing.JPanel settingsPanel;
+    private javax.swing.JPanel iconListPanel;
     private javax.swing.JPanel iconsPanel;
     // End of variables declaration//GEN-END:variables
   
