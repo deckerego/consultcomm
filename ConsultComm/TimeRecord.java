@@ -6,13 +6,14 @@ public class TimeRecord implements java.io.Serializable {
     private String projectName;
     private boolean billable;
     
-    TimeRecord() {
+    public TimeRecord() {
         projectName = "";
         groupName = "";
         seconds = 0L;
         billable = true;
     }
-    TimeRecord(String group, String name, long time, boolean isBillable) {
+    
+    public TimeRecord(String group, String name, long time, boolean isBillable) {
         projectName = name;
         groupName = group;
         seconds = time;
