@@ -71,12 +71,15 @@ variables and ConsultComm will automatically convert it:<BR>
     <DD>The number of hours worked on a project
     <DT><CODE>$DATE</CODE>
     <DD>Today's date
+    <DT><CODE>$BILLABLE</CODE>
+    <DD>The "Billable Project" flag
   </DL>
 All other values you type in will be interpreted literally. For example, I 
 might have the following settings in a table EMPHRS:
 <TABLE Border="1">
 <TR><TH>Field Name</TH><TH>Type</TH><TH>Value</TH></TR>
 <TR><TD>EMPNAME</TD><TD>CHAR</TD><TD>$USERNAME</TD></TR>
+<TR><TD>EMCHARGE</TD><TD>BIT</TD><TD>$BILLABLE</TD></TR>
 <TR><TD>EMHOURS</TD><TD>DECIMAL</TD><TD>$HOURS</TD></TR>
 <TR><TD>EMPROJ</TD><TD>CHAR</TD><TD>$PROJECT</TD></TR>
 <TR><TD>EMDATE</TD><TD>TIMESTAMP</TD><TD>$DATE</TD></TR>
