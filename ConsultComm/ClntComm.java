@@ -29,7 +29,6 @@ public class ClntComm extends javax.swing.JPanel {
     private CsltComm csltComm;
     private TimerThread timerTask;
     private java.util.Timer timer;
-    private int index;
     private int selectedIndex;
     private TimeRecordSet times;
     private TotalPanel totalPanel;
@@ -57,6 +56,7 @@ public class ClntComm extends javax.swing.JPanel {
     
     public void reload() {
         savePrefs();
+        this.selectedIndex = timeList.getSelectedRow();
         removeAll();
         csltComm.reload();
         totalPanel = new TotalPanel();
@@ -65,20 +65,20 @@ public class ClntComm extends javax.swing.JPanel {
         initComponents();
         loadPlugins();
         menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
+        revalidate();
+        readLayout();
         try {
-            if(times.size() != 0) timeList.setSelectedRecord(selectedIndex);
+            if(times.size() != 0) timeList.setRowSelectionInterval(this.selectedIndex, this.selectedIndex);
         } catch (IllegalArgumentException e) {
             System.err.println("Row index invalid, not setting selection.");
         }
-        revalidate();
-        readLayout();
     }
     
     public void setTimes(TimeRecordSet times) { this.times = times; }
     public TimeRecordSet getTimes() { return this.times; }
     public void setSelectedIndex(int i) {
         this.selectedIndex = i;
-        timeList.setSelectedRecord(selectedIndex);
+        timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
     }
     public int getSelectedIndex() { return this.selectedIndex; }
     public boolean isRunning(){ return timerTask.clockRunning; }
@@ -230,7 +230,6 @@ public class ClntComm extends javax.swing.JPanel {
     startButton.setText(timerTask.clockRunning ? "Pause" : "Start");
     startButton.setToolTipText(timerTask.clockRunning ? "Pause Timer" : "Start Timer");
     startButton.setBorder(null);
-    startButton.setBorderPainted(false);
     startButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         toggleTimer(evt);
@@ -262,7 +261,7 @@ public class ClntComm extends javax.swing.JPanel {
             }
         });
         timeList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
                 editWindow(evt);
             }
         });
@@ -285,20 +284,18 @@ public class ClntComm extends javax.swing.JPanel {
       int viewColumn = columnModel.getColumnIndexAtX(evt.getX());
       int column = timeList.convertColumnIndexToModel(viewColumn);
       
-      TimeRecord record = times.elementAt(selectedIndex); //find current selected record
       times.sort(column);
       timeList.setModel(new TableTreeModel(times, timeFormat));
-      setSelectedIndex(times.indexOf(record)); //restore selected record
   }
   
   private void editWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editWindow
-      int selectedRow = timeList.getSelectedRecord();
+      int selectedRow = timeList.getSelectedRecordIndex();
       this.selectedIndex = selectedRow;
       if(selectedRow != -1) {
           if(evt.getModifiers() == java.awt.event.MouseEvent.BUTTON1_MASK)
               if(evt.getClickCount() == 2) editWindow(selectedRow);
           if(evt.getModifiers() == java.awt.event.MouseEvent.BUTTON3_MASK) {
-              javax.swing.tree.TreePath selectedPath = timeList.tree.getPathForLocation(evt.getX(), evt.getY());
+              javax.swing.tree.TreePath selectedPath = timeList.tree.getClosestPathForLocation(evt.getX(), evt.getY());
               timeList.tree.setSelectionPath(selectedPath);
               editMenu.show(timeList, evt.getX(), evt.getY());
           }
@@ -338,7 +335,7 @@ public class ClntComm extends javax.swing.JPanel {
       "Zero-Out All Projects", CustomOptionPane.YES_NO_OPTION,
       CustomOptionPane.WARNING_MESSAGE, null, options, options[1]);
       if(dialog == 0){
-          int index = timeList.getSelectedRecord();
+          int index = timeList.getSelectedRecordIndex();
           TimeRecordSet oldTimes; //Copy the old timeset for the property listener
           try { oldTimes = (TimeRecordSet)times.clone(); }
           catch (CloneNotSupportedException e) { oldTimes = null; }
@@ -353,12 +350,12 @@ public class ClntComm extends javax.swing.JPanel {
   }
   
   private void editProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProject
-      editWindow(timeList.getSelectedRecord());
+      editWindow(timeList.getSelectedRecordIndex());
   }//GEN-LAST:event_editProject
   
   private void deleteProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteProject
       int len = 0;
-      int selectedIndex = timeList.getSelectedRecord();
+      int selectedIndex = timeList.getSelectedRecordIndex();
       
       if(selectedIndex > -1){
           //Warn the user
@@ -393,9 +390,9 @@ public class ClntComm extends javax.swing.JPanel {
   }
   
   private void setTimer() {
-      if(timeList.getSelectedRecord() >= 0){
+      if(timeList.getSelectedRecordIndex() >= 0){
           long currTime = System.currentTimeMillis()/1000;
-          timerTask.startTime = currTime - times.getSeconds(timeList.getSelectedRecord());
+          timerTask.startTime = currTime - times.getSeconds(timeList.getSelectedRecordIndex());
       }
   }
   
@@ -403,9 +400,8 @@ public class ClntComm extends javax.swing.JPanel {
    * Create edit project window.
    * @parm Index into the project list
    */
-  public void editWindow(int i){
-      index = i;
-      selectedIndex = timeList.getSelectedRecord();
+  public void editWindow(int index){
+      this.selectedIndex = timeList.getSelectedRow();
       TimeRecord record;
       boolean newRecord;
       
@@ -414,7 +410,7 @@ public class ClntComm extends javax.swing.JPanel {
           newRecord = false;
       } catch (ArrayIndexOutOfBoundsException e) {
           record = new TimeRecord();
-          int currSelected = timeList.getSelectedRecord();
+          int currSelected = timeList.getSelectedRecordIndex();
           if(currSelected != -1) { //Suggest a group name based on the currently selected record
               TimeRecord currRecord = times.elementAt(currSelected);
               String groupName = currRecord.getGroupName();
@@ -451,7 +447,7 @@ public class ClntComm extends javax.swing.JPanel {
           timeList.setModel(new TableTreeModel(times, timeFormat));
           setTotals();
           if(selectedIndex == -1) setSelectedIndex(index); //Nothing selected
-          else timeList.setSelectedRecord(selectedIndex);
+          else timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
           totalPanel.repaint();
       }
   }
@@ -483,7 +479,6 @@ public class ClntComm extends javax.swing.JPanel {
           changes.firePropertyChange("times", null, times); //Sync everyone on an initial clock tick
       } catch(Exception e) {
           System.err.println("Couldn't load plugins: "+e);
-          e.printStackTrace(System.err);
       }
   }
   
@@ -646,7 +641,7 @@ public class ClntComm extends javax.swing.JPanel {
             catch (CloneNotSupportedException e) { oldTimes = null; }
             
             if(clockRunning){
-                selectedIndex = timeList.getSelectedRecord();
+                int selectedIndex = timeList.getSelectedRecordIndex();
                 currTime = System.currentTimeMillis()/1000;
                 if(selectedIndex >= 0){
                     currSeconds = currTime - startTime;
