@@ -27,8 +27,6 @@ public class ClntComm extends javax.swing.JPanel {
     private CsltComm csltComm;
     private TimerThread timerTask;
     private java.util.Timer timer;
-    private java.awt.Dimension windowSize;
-    private int projColumnWidth;
     private int index;
     private int selectedIndex;
     private Vector plugins;
@@ -43,11 +41,10 @@ public class ClntComm extends javax.swing.JPanel {
     public ClntComm(CsltComm parent) {
         csltComm = parent;
         changes = new PropertyChangeSupport(this);
-        
         readPrefs();
         timerTask = new TimerThread();
         initComponents();
-        initColumns();
+        readLayout();
         loadPlugins();
         menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
         timer = new java.util.Timer();
@@ -175,7 +172,7 @@ public class ClntComm extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        setPreferredSize(windowSize);
+        setPreferredSize(new java.awt.Dimension(94, 50));
         totalPanel.setLayout(new java.awt.GridLayout(1, 2));
 
         totalText.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -223,11 +220,6 @@ public class ClntComm extends javax.swing.JPanel {
         add(menuPanel, java.awt.BorderLayout.NORTH);
 
     }//GEN-END:initComponents
-    
-    private void initColumns() {
-        TableColumn projectColumn = timeList.getColumnModel().getColumn(0);
-        projectColumn.setPreferredWidth(projColumnWidth);
-    }
     
     private void initSelectionModel() {
         ListSelectionModel rowSM = timeList.getSelectionModel();
@@ -404,7 +396,7 @@ public void reload() {
     
     readPrefs();
     initComponents();
-    initColumns();
+    readLayout();
     
     menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
     try {
@@ -490,38 +482,71 @@ private void loadPlugins() {
     }
 }
 
+private void readLayout() {
+    File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+
+    try { //Remember expanded/collapsed rows
+        File prefsFile = new File(prefsdir, "layout.xml");
+        FileInputStream inStream = new FileInputStream(prefsFile);
+        XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
+        Vector expandedRows = (Vector)d.readObject();
+        d.close();
+        TableTreeModelAdapter adapter = (TableTreeModelAdapter)timeList.getModel();
+        adapter.setExpandedRows(expandedRows);
+    } catch (Exception e) {
+        System.err.println("Cannot read layout file: "+e);
+    }
+
+    try { //Read in prefs file, close input stream
+        File prefsFile = new File(prefsdir, "CsltComm.xml");
+        FileInputStream inStream = new FileInputStream(prefsFile);
+        Preferences prefs = Preferences.userRoot().node("CsltComm");
+        prefs.importPreferences(inStream);
+        inStream.close();
+        
+        //Read dimensions
+        double width = prefs.getDouble("windowWidth", (double)256); //Get window dimensions
+        double height = prefs.getDouble("windowHeight", (double)256);
+        this.setPreferredSize(new java.awt.Dimension((int)width, (int)height));
+        int projColumnWidth = prefs.getInt("columnWidth", (int)width/2); //Get project column dimensions
+        TableColumn column = timeList.getColumnModel().getColumn(0);
+        column.setPreferredWidth(projColumnWidth);
+    } catch (Exception e) {
+        System.err.println("Cannot read prefs file: "+e);
+        times = new TimeRecordSet(); //Load default settings
+    }
+}
+
 /**
  * Read through preferances file
  */
 private void readPrefs() {
-    try {
-        //Get all projects
-        File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+    File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
+    
+    try { //Get all projects
         File prefsFile = new File(prefsdir, "projects.xml");
         FileInputStream inStream = new FileInputStream(prefsFile);
         XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
         times = (TimeRecordSet)d.readObject();
         d.close();
-        
-        //Read in prefs file, close input stream
-        prefsFile = new File(prefsdir, "CsltComm.xml");
-        inStream = new FileInputStream(prefsFile);
+    } catch (Exception e) {
+        System.err.println("Cannot read projects file: "+e);
+    }
+
+    try { //Read in prefs file, close input stream
+        File prefsFile = new File(prefsdir, "CsltComm.xml");
+        FileInputStream inStream = new FileInputStream(prefsFile);
         Preferences prefs = Preferences.userRoot().node("CsltComm");
         prefs.importPreferences(inStream);
         inStream.close();
         
         //Read prefs
-        double width = prefs.getDouble("windowWidth", (double)256); //Get window dimensions
-        double height = prefs.getDouble("windowHeight", (double)256);
-        windowSize = new java.awt.Dimension((int)width, (int)height);
-        projColumnWidth = prefs.getInt("columnWidth", (int)width/2); //Get project column dimensions
         showTotal = prefs.getInt("showTotal", SHOW_TOTAL); //Decide whether to show total time/billable time
         timeFormat = prefs.getInt("timeFormat", MINUTES); //Get time format
         saveInterval = prefs.getInt("saveInterval", 60); //Get save interval
     } catch (Exception e) {
         System.err.println("Cannot read prefs file: "+e);
-        //Load default settings
-        times = new TimeRecordSet();
+        times = new TimeRecordSet(); //Load default settings
     }
 }
 
@@ -533,6 +558,14 @@ private void savePrefs() {
         FileOutputStream outStream = new FileOutputStream(prefsFile);
         XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
         e.writeObject(times);
+        e.close();
+        
+        //Save list layout (closed/expanded rows)
+        prefsFile = new File(prefsdir, "layout.xml");
+        outStream = new FileOutputStream(prefsFile);
+        e = new XMLEncoder(new BufferedOutputStream(outStream));
+        TableTreeModelAdapter adapter = (TableTreeModelAdapter)timeList.getModel();
+        e.writeObject(adapter.getExpandedRows());
         e.close();
         
         //save prefs
