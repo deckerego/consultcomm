@@ -23,11 +23,8 @@ public class CsltComm extends javax.swing.JFrame {
   public static final String release = "ConsultComm CVS Release";
   final static File prefsDir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
   static MediaTracker iconTracker;
-  static MTPanel iconPanel;
-  public static int frameNumber;
-  public static int imageWidth = 16;
-  public static int imageHeight = 4;
-  public static int frameDelay = 10;
+  static AnimatePanel iconPanel;
+  static Timer iconTimer;
   private ClntComm projectList;
   private String themePack, gtkTheme, kdeTheme;
   protected Image appIcon;
@@ -35,12 +32,9 @@ public class CsltComm extends javax.swing.JFrame {
   
   /** Creates new form CsltComm */
   public CsltComm() {
-    frameNumber = 0;
-    Image clockIcon = getImage("graphics/BlueBar.gif");
     appIcon = getImage("graphics/icon.gif");
     Skin skin = null;
     
-    // Will this work for Java 1.4 ?
     try {
       Class.forName("javax.xml.parsers.DocumentBuilder"); // jaxp.jar
       Class.forName("org.w3c.dom.Document"); // crimson.jar
@@ -82,34 +76,12 @@ public class CsltComm extends javax.swing.JFrame {
     
     projectList = new ClntComm(this);
     getContentPane().add(projectList);
-    
+
     if(animateIcons) {
-      iconTracker = new MediaTracker(this);
-      iconTracker.addImage(clockIcon, 0);
-      
-      Timer iconTimer = new Timer(frameDelay,
-      new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          if(projectList.isRunning()){
-            try{
-              iconTracker.waitForAll();
-            }catch(InterruptedException except){
-              System.out.println("Error printing frames");
-            }
-            frameNumber++;
-            iconPanel.repaint();
-          }
-        }
-      });
-      
-      iconTimer.setInitialDelay(0);
-      iconPanel = new MTPanel(clockIcon);
-      iconPanel.setPreferredSize(new Dimension(imageWidth, imageHeight));
-      iconPanel.setMinimumSize(new Dimension(imageWidth, imageHeight));
-      iconPanel.setMaximumSize(new Dimension(1024, imageHeight));
-      
+      Image clockIcon = getImage("graphics/BlueBar.gif");
+      iconPanel = new AnimatePanel(clockIcon);      
       getContentPane().add(iconPanel);
-      iconTimer.start();
+      iconPanel.start();
     }
     
     pack();
@@ -125,8 +97,8 @@ public class CsltComm extends javax.swing.JFrame {
     getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
     
     setTitle(release);
-    setName("frame");
     setIconImage(appIcon);
+    setName("frame");
     addWindowListener(new java.awt.event.WindowAdapter() {
       public void windowClosing(java.awt.event.WindowEvent evt) {
         exitForm(evt);
@@ -143,9 +115,6 @@ public class CsltComm extends javax.swing.JFrame {
   
   public void reload() {
     Skin skin = null;
-    frameNumber = 0;
-    Image clockIcon = getImage("graphics/BlueBar.gif");
-    appIcon = getImage("graphics/icon.gif");
     
     if(iconPanel != null) remove(iconPanel);
     
@@ -172,35 +141,13 @@ public class CsltComm extends javax.swing.JFrame {
     } catch (Exception e) {
       System.err.println("Couldn't load theme! "+e);
     }
-    
+
     if(animateIcons) {
-      iconTracker = new MediaTracker(this);
-      iconTracker.addImage(clockIcon, 0);
-      
-      Timer iconTimer = new Timer(frameDelay,
-      new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          if(projectList.isRunning()){
-            try{
-              iconTracker.waitForAll();
-            }catch(InterruptedException except){
-              System.out.println("Error printing frames");
-            }
-            frameNumber++;
-            iconPanel.repaint();
-          }
-        }
-      });
-      
-      iconTimer.setInitialDelay(0);
-      iconPanel = new MTPanel(clockIcon);
-      iconPanel.setPreferredSize(new Dimension(imageWidth, imageHeight));
-      iconPanel.setMinimumSize(new Dimension(imageWidth, imageHeight));
-      iconPanel.setMaximumSize(new Dimension(1024, imageHeight));
-      
       getContentPane().add(iconPanel);
-      iconTimer.start();
+      iconPanel.start();
     }
+    
+    pack();
   }
   
   /**
@@ -288,11 +235,47 @@ public class CsltComm extends javax.swing.JFrame {
   
   // Variables declaration - do not modify//GEN-BEGIN:variables
   // End of variables declaration//GEN-END:variables
-  class MTPanel extends JPanel {
+  class AnimatePanel extends JPanel {
     Image animationFrame;
+    int frameNumber, frameDelay;
+    int imageWidth, imageHeight;
+    Timer iconTimer;
     
-    public MTPanel(Image frame) {
+    public AnimatePanel(Image frame) {
+      super();
+      
+      frameNumber = 0;
+      frameDelay = 10;
       animationFrame = frame;
+      iconTracker = new MediaTracker(this);
+      iconTracker.addImage(animationFrame, 0);
+      try{
+        iconTracker.waitForAll();
+      }catch(InterruptedException except){
+        System.out.println("Error loading animated icons");
+      }
+      imageWidth = animationFrame.getWidth(this);
+      imageHeight = animationFrame.getHeight(this);
+
+      setPreferredSize(new Dimension(imageWidth, imageHeight));
+      setMinimumSize(new Dimension(imageWidth, imageHeight));
+      setMaximumSize(new Dimension(1024, imageHeight));
+      
+      iconTimer = new Timer(frameDelay,
+      new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          if(projectList.isRunning()){
+            frameNumber++;
+            iconPanel.repaint();
+          }
+        }
+      });
+      
+      iconTimer.setInitialDelay(0);
+    }
+    
+    public void start() {
+      iconTimer.start();
     }
     
     //Draw the current frame of animation.
@@ -300,15 +283,10 @@ public class CsltComm extends javax.swing.JFrame {
       super.paintComponent(g); //paint the background
       int width = getWidth();
       int height = getHeight();
-      
-      //If not all the images are loaded,
-      //just display a status string.
-      if (!iconTracker.checkAll()) {
-        return;
-      }
+      frameNumber = frameNumber%(width+imageWidth);
       
       //Paint the frame into the image.
-      g.drawImage(animationFrame, (CsltComm.frameNumber%(width+imageWidth))-imageWidth, 0, this);
+      g.drawImage(animationFrame, (frameNumber%(width+imageWidth))-imageWidth, 0, this);
     }
   }
 }
