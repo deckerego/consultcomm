@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: skinlf.jar jhbasic.jar tray.jar
+X-COMMENT: Main-Class will be added automatically by build
+
