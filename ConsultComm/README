@@ -1,10 +1,11 @@
-Consultant Communicator 1.1
-Release 8/28/01
+Consultant Communicator 1.0.2
+Release 9/10/01
 
 ABOUT CONSULTANT COMMUNICATOR -
-Consultant Communicator (ConsultComm) is a program that allows anyone
-managing multiple projects, clients or tasks to effectively keep track
-of exactly how long they've spent on each project. 
+Consultant Communicator (ConsultComm) is a lightweight, 
+cross-platform program that allows anyone managing multiple projects, 
+clients or tasks to effectively keep track of exactly how long they've 
+spent on each project. 
 
 INSTALL -
 To install, simply ensure that the Java Runtime Environment version 1.2 (or 
@@ -47,10 +48,9 @@ CURRENT KNOWN BUGS -
 	o Report any bugs to john.ellis@ise-indy.com
 
 THINGS TO DO -
-	o Add a reminders feature that automatically switches projects
-	o Switch/Stop project timer when your computer is idle for X 
-	  minutes
+	o Switch to a project automatically at a certain time each day
 	o Add mouse wheel functionality (should be released with JRE 1.4)
+        o Allow sorting by project/time
 
 LICENSE -
 This software is released under the GNU General Public License. 
@@ -66,7 +66,7 @@ LICENSE TERMS" available on Sun's software site at
 http://java.sun.com/xml/xml_jaxp.html.
 
 REPORTING BUGS -
-	E-mail john.ellis@ise-indy.com with bug reports.
+	http://sourceforge.net/projects/consultcomm/
 
 OFFICIAL SITE -
-	http://members.tripod.com/dekr0/csltcomm/
+	http://consultcomm.sourceforge.net/
