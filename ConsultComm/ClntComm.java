@@ -522,7 +522,6 @@ public class ClntComm extends javax.swing.JPanel {
           this.setPreferredSize(new java.awt.Dimension((int)width, (int)height));
           this.setMinimumSize(new java.awt.Dimension((int)width, (int)height));
           this.setSize(new java.awt.Dimension((int)width, (int)height));
-          System.out.println("Set size to "+width+" "+height);
       } catch (Exception e) {
           System.err.println("Cannot read prefs file: "+e);
           times = new TimeRecordSet(); //Load default settings
