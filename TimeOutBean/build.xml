@@ -12,9 +12,17 @@
 
   <target depends="init" name="compile">
     <javac deprecation="on" optimize="on" srcdir="${src}"/>
+    <jar destfile="${src}/../plugins/TimeOut.jar">
+      <fileset dir="${src}" includes="*.class"/>
+      <fileset dir="${Xlibdir}" includes="*.so"/>
+      <fileset dir="${Win32libdir}" includes="*.dll"/>
+      <manifest>
+        <attribute name="Java-Bean" value="true"/>
+      </manifest>
+    </jar>
   </target>
 
-  <target depends="compile" name = "X">
+  <target depends="compile" name="X">
     <javah destdir="${Xlibdir}" class="TimeOut">
       <classpath>
         <pathelement location="${src}"/>
@@ -23,7 +31,7 @@
     <exec dir="${Xlibdir}" executable="make"/>
   </target>
 
-  <target depends="compile" name = "Win32">
+  <target depends="compile" name="Win32">
     <javah destdir="${Win32libdir}" class="TimeOut">
       <classpath>
         <pathelement location="${src}"/>
