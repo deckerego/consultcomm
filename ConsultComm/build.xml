@@ -2,6 +2,7 @@
 <project basedir="." default="all" name="ConsultComm">
   <property name="src" value="./"/>
   <property name="Xlibdir" value="X"/>
+  <property name="Win32libdir" value="Win32"/>
 
   <target depends="compile" name="all"/>
 
@@ -25,6 +26,19 @@
       </classpath>
     </javah>
     <exec dir="${Xlibdir}" executable="make"/>
+  </target>
+
+  <target depends="compile" name = "Win32">
+    <javah destdir="${Win32libdir}" class="ClntComm">
+      <classpath>
+        <pathelement location="${src}"/>
+      </classpath>
+    </javah>
+    <echo>
+      Win32 header files built, compile the DLL using the
+      included makefile (being sure to include the directory
+      for the J2SDK header files).
+    </echo>
   </target>
 
   <target depends="all" name="dist">
@@ -59,6 +73,7 @@
 
   <target depends="clean" name="realclean">
     <delete file="CsltComm.jar"/>
+    <delete file="${Win32libdir}/ClntComm.h"/>
     <exec dir="${Xlibdir}" executable="make">
       <arg line="realclean"/>
     </exec>
