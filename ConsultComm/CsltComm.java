@@ -24,11 +24,13 @@ public static int imageWidth = 16;
 public static int imageHeight = 4;
 public static int frameDelay = 10;
 private ClntComm projectList;
+protected Image appIcon;
 
   /** Creates new form CsltComm */
   public CsltComm() {
     frameNumber = 0;
     Image clockIcon = getImage("graphics/BlueBar.gif");
+    appIcon = getImage("graphics/icon.gif");
       
     initComponents ();
 
@@ -73,9 +75,9 @@ private ClntComm projectList;
     
     getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
     
-    setTitle("ConsultComm 1.0.2");
+    setTitle("ConsultComm 1.0.3");
     setName("frame");
-    setIconImage(getImage("graphics/icon.gif"));
+    setIconImage(appIcon);
     addWindowListener(new java.awt.event.WindowAdapter() {
       public void windowClosing(java.awt.event.WindowEvent evt) {
         exitForm(evt);
