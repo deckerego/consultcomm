@@ -25,6 +25,9 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   /** Creates new form JDBCControlPanel */
   public JDBCControlPanel() {
     readPrefs();
+  }
+  
+  public void initGUI() {
     initComponents();
   }
   
@@ -187,13 +190,12 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     exitForm();
   }//GEN-LAST:event_saveInput
   
-  /** Exit the Application */
     private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
       exitForm();
     }//GEN-LAST:event_exitForm
     
     private void exitForm() {
-      System.exit(0);
+      setVisible(false);
     }
     
     private void savePrefs() {
@@ -296,14 +298,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       }
       return conn;
     }
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-      new JDBCControlPanel().show();
-    }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel titleLabel;
     private javax.swing.JLabel nameLabel;
