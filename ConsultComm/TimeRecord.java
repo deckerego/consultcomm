@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class TimeRecord implements java.io.Serializable {
+public class TimeRecord implements java.lang.Cloneable, java.io.Serializable {
     private long seconds;
     private String groupName;
     private String projectName;
@@ -88,5 +88,10 @@ public class TimeRecord implements java.io.Serializable {
         isEqual = isEqual && projectName == toRecord.projectName;
         isEqual = isEqual && billable == toRecord.billable;
         return isEqual;
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        TimeRecord clone = (TimeRecord)super.clone();
+        return clone;
     }
 }

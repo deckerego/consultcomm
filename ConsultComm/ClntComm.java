@@ -19,13 +19,19 @@ public class ClntComm extends javax.swing.JPanel {
     
     private static JFrame frame = new JFrame("Consultant Manager");
     
+    /**
+     * There are currently two types of property changes:
+     * 1) 'times' which means the TimeRecordSet has been altered, or
+     * 2) 'record' when a record is edited but the TimeRecordSet stays the same
+     */
+    private PropertyChangeSupport changes;
+    
     private CsltComm csltComm;
     private TimerThread timerTask;
     private java.util.Timer timer;
     private int index;
     private int selectedIndex;
     private Vector plugins;
-    private PropertyChangeSupport changes;
     private TimeRecordSet times;
     private TotalPanel totalPanel;
     
@@ -399,23 +405,31 @@ public void editWindow(int i){
         newRecord = true;
     }
     
+    TimeRecord oldRecord; //Copy the old record for the property listener
+    try { oldRecord = (TimeRecord)record.clone(); }
+    catch (CloneNotSupportedException e) { oldRecord = null; }
+    
     ProjectEditDialog edit = new ProjectEditDialog((JFrame)this.getTopLevelAncestor(), record);
     edit.pack();
     edit.setLocationRelativeTo(this);
     edit.setVisible(true);
     
     if (edit.getValue().equals("0")) {
-        TimeRecordSet oldTimes; //Copy the old timeset for the property listener
-        try { oldTimes = (TimeRecordSet)times.clone(); }
-        catch (CloneNotSupportedException e) { oldTimes = null; }
-        
         long newTime = System.currentTimeMillis()/1000;
         if (index == selectedIndex) timerTask.startTime = newTime-record.getSeconds();
-        if(newRecord) times.add(record);
+        
+        if(newRecord) { //Send appropriate property change and add record
+            TimeRecordSet oldTimes; //Copy the old timeset for the property listener
+            try { oldTimes = (TimeRecordSet)times.clone(); }
+            catch (CloneNotSupportedException e) { oldTimes = null; }
+            changes.firePropertyChange("times", oldTimes, times);
+            times.add(record);
+        } else {
+            changes.firePropertyChange("record", oldRecord, record);
+        }
         
         times.sort();
         timeList.setModel(new TableTreeModel(times, timeFormat));
-        changes.firePropertyChange("times", oldTimes, times);
         setTotals();
         if(selectedIndex == -1) setSelectedIndex(index); //Nothing selected
         else timeList.setSelectedRecord(selectedIndex);
