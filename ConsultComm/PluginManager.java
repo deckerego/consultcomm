@@ -5,9 +5,11 @@ import java.util.*;
 import java.awt.event.*;
 
 public class PluginManager extends javax.swing.JFrame implements ActionListener {
+    public static File pluginsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"plugins");
+    public static File libsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"syslibs");
+    
     Vector pluginList;
     Vector buttonList;
-    public static File pluginsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"plugins");
 
     public PluginManager() {
         pluginList = new Vector();
@@ -154,9 +156,9 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
   }
   
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane iconScrollPane;
-    private javax.swing.JPanel settingsPanel;
     private javax.swing.JPanel iconListPanel;
+    private javax.swing.JPanel settingsPanel;
+    private javax.swing.JScrollPane iconScrollPane;
     private javax.swing.JPanel iconsPanel;
     // End of variables declaration//GEN-END:variables
   
