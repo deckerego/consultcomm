@@ -18,8 +18,7 @@ import ClntComm;
 
 public class CsltComm extends javax.swing.JFrame {
   public static final String release = "ConsultComm CVS Release";
-//  final static File prefsDir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
-  final static File prefsDir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltCommTest");
+  final static File prefsDir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
   static MediaTracker iconTracker;
   static MTPanel iconPanel;
   public static int frameNumber;
