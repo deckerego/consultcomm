@@ -15,8 +15,12 @@
       <fileset dir="${src}" includes="*.class"/>
       <fileset dir="${src}" includes="*.gif"/>
       <manifest>
+        <attribute name="Manifest-Version" value="Version 1.0"/>
         <attribute name="Java-Bean" value="true"/>
-        <attribute name="CsltComm-Version" value="3.1"/>
+        <attribute name="Specification-Version" value="3.1"/>
+        <attribute name="Implementation-Vendor-Id" value="consultcomm"/>
+        <attribute name="Extension-Name" value="TotalTimes"/>
+        <attribute name="Implementation-Version" value="1.0"/>
       </manifest>
     </jar>
   </target>
