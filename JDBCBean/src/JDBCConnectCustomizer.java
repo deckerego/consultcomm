@@ -440,6 +440,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   }//GEN-LAST:event_showDriverPanel
   
   private void showOptionPanel(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showOptionPanel
+      populate(); //Keep current database settings
       getRootPane().setDefaultButton(optionOK);
   }//GEN-LAST:event_showOptionPanel
   
@@ -472,7 +473,9 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   }//GEN-LAST:event_refreshFieldMap
   
   private void showFieldMap(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showFieldMap
+      populate(); //Keep current database settings
       getRootPane().setDefaultButton(fieldOK);
+      
       if(dbConnection.getTableMap().getFieldMaps().size() == 0) {
           try {
               dbConnection.getTableMap().clearFieldMaps();
@@ -495,6 +498,20 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
   }//GEN-LAST:event_testDriverSettings
 
   private void saveDriverSettings(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDriverSettings
+      populate();
+    
+      try {
+        PluginManager.serializeObject(dbConnection);
+      } catch (java.io.FileNotFoundException e) {
+        System.err.println("Error saving prefs for JDBC plugin");
+      }
+      
+      Object grandpa = getTopLevelAncestor();
+      if(grandpa.getClass() == PluginManager.class) ((PluginManager)grandpa).exitForm();
+      else ((JFrame)grandpa).setVisible(false);
+  }//GEN-LAST:event_saveDriverSettings
+
+  private void populate() {
       //Give the bean all its setter values
       dbConnection.setJarFile(jarField.getText());
       dbConnection.setName(nameField.getText());
@@ -533,19 +550,9 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       } //Add all the project maps listed in the JTable
       tableMap.setProjectMaps(projectMaps);
       
-      dbConnection.setTableMap(tableMap);
-      
-      try {
-        PluginManager.serializeObject(dbConnection);
-      } catch (java.io.FileNotFoundException e) {
-        System.err.println("Error saving prefs for JDBC plugin");
-      }
-      
-      Object grandpa = getTopLevelAncestor();
-      if(grandpa.getClass() == PluginManager.class) ((PluginManager)grandpa).exitForm();
-      else ((JFrame)grandpa).setVisible(false);
-  }//GEN-LAST:event_saveDriverSettings
-
+      dbConnection.setTableMap(tableMap);    
+  }
+  
   public void setObject(Object obj) {
       dbConnection = (JDBCConnect)obj;
       initComponents();
