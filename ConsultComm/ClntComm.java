@@ -349,11 +349,6 @@ public class ClntComm extends javax.swing.JPanel {
   
   private void newProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProject
       editWindow(times.size());
-      if(selectedIndex < 0) selectedIndex = 0;
-      TimeRecord record = times.elementAt(selectedIndex); //find current selected record
-      times.sort();
-      timeList.setModel(new TableTreeModel(times, timeFormat));
-      setSelectedIndex(times.indexOf(record)); //restore selected record
   }//GEN-LAST:event_newProject
   
 public void exitForm() {
@@ -386,11 +381,12 @@ public void editWindow(int i){
         newRecord = false;
     } catch (ArrayIndexOutOfBoundsException e) {
         record = new TimeRecord();
-        //Suggest a group name based on the currently selected record
         int currSelected = timeList.getSelectedRecord();
-        TimeRecord currRecord = times.elementAt(currSelected);
-        String groupName = currRecord.getGroupName();
-        record.setGroupName(groupName);
+        if(currSelected != -1) { //Suggest a group name based on the currently selected record
+            TimeRecord currRecord = times.elementAt(currSelected);
+            String groupName = currRecord.getGroupName();
+            record.setGroupName(groupName);
+        }
         newRecord = true;
     }
     
@@ -408,6 +404,7 @@ public void editWindow(int i){
         if (index == selectedIndex) timerTask.startTime = newTime-record.getSeconds();
         if(newRecord) times.add(record);
         
+        times.sort();
         timeList.setModel(new TableTreeModel(times, timeFormat));
         changes.firePropertyChange("times", oldTimes, times);
         if(selectedIndex == -1) timeList.setSelectedRecord(index); //Nothing selected
@@ -422,7 +419,7 @@ private void loadPlugins() {
         for(int i=0; i<plugins.size(); i++) {
             Object plugin = plugins.elementAt(i);
             changes.addPropertyChangeListener((PropertyChangeListener)plugin);
-
+            
             try {
                 Expression getMenuItems = new Expression(plugin, "getMenuItems", null);
                 JMenuItem[] menuItems = (JMenuItem[])getMenuItems.getValue();
@@ -437,7 +434,7 @@ private void loadPlugins() {
 
 private void readLayout() {
     File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
-
+    
     try { //Remember expanded/collapsed rows
         File prefsFile = new File(prefsdir, "layout.xml");
         FileInputStream inStream = new FileInputStream(prefsFile);
@@ -449,14 +446,14 @@ private void readLayout() {
     } catch (Exception e) {
         System.err.println("Cannot read layout file: "+e);
     }
-
+    
     try { //Read in prefs file, close input stream
         File prefsFile = new File(prefsdir, "CsltComm.xml");
         FileInputStream inStream = new FileInputStream(prefsFile);
         Preferences prefs = Preferences.userRoot().node("CsltComm");
         prefs.importPreferences(inStream);
         inStream.close();
-
+        
         //Read dimensions
         double width = prefs.getDouble("windowWidth", (double)256); //Get window dimensions
         double height = prefs.getDouble("windowHeight", (double)256);
@@ -486,7 +483,7 @@ private void readPrefs() {
     } catch (Exception e) {
         System.err.println("Cannot read projects file: "+e);
     }
-
+    
     try { //Read in prefs file, close input stream
         File prefsFile = new File(prefsdir, "CsltComm.xml");
         FileInputStream inStream = new FileInputStream(prefsFile);
@@ -529,7 +526,7 @@ private void savePrefs() {
         TableColumn projectColumn = timeList.getColumnModel().getColumn(0); //Save project column dimensions
         prefs.putInt("columnWidth", projectColumn.getPreferredWidth());
         prefs.putInt("totalIndex", totalPanel.getIndex()); //Save total panel's current selection
-
+        
         //Write to file, close output stream
         prefs.flush();
         prefsFile = new File(prefsdir, "CsltComm.xml");

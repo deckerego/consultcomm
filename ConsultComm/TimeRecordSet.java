@@ -115,14 +115,14 @@ public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable 
     public void sort() {
         if(reverseSort)
             if(currColumnSorted == 0) //Project column
-                Collections.sort(timeRecords, new ProjectComparator());
-            else
-                Collections.sort(timeRecords, new TimeComparator());
-        else
-            if(currColumnSorted == 0) //Project column
                 Collections.sort(timeRecords, new ProjectReverseComparator());
             else
                 Collections.sort(timeRecords, new TimeReverseComparator());
+        else
+            if(currColumnSorted == 0) //Project column
+                Collections.sort(timeRecords, new ProjectComparator());
+            else
+                Collections.sort(timeRecords, new TimeComparator());
     }
     
     public void sort(int column) {
