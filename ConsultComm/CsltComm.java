@@ -43,7 +43,7 @@ public class CsltComm extends javax.swing.JFrame {
       "Make sure you have downloaded the Java API at\n"+
       "http://java.sun.com/xml/download.html and have installed\n"+
       "all .jar files in "+extdir;
-      JOptionPane.showMessageDialog(this, errMsg, "JAXP Not Found", JOptionPane.ERROR_MESSAGE);
+      CustomOptionPane.showMessageDialog(this, errMsg, "JAXP Not Found", CustomOptionPane.ERROR_MESSAGE);
       System.exit(0);
     }
     

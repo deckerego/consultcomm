@@ -85,9 +85,9 @@ class JDBCConnect {
       if(conn != null) validated = true;
     } catch (ClassNotFoundException e) {
       String extdir = System.getProperty("java.ext.dirs");
-      String msgString = "Could not find JDBC driver "+name+".\n"+
-      "Make sure you have the correct driver files and that they\n"+
-      "are installed in "+extdir+",\n then restart ConsultComm.";
+      String msgString = "Could not find JDBC driver "+name+"."+
+      "Make sure you have the correct driver files and that they"+
+      "are installed in "+extdir+", then restart ConsultComm.";
       errorList.addElement(msgString);
     } catch (SQLException e) {
       errorList.addElement("Could not build JDBC connection: "+e);
@@ -97,7 +97,7 @@ class JDBCConnect {
       errorList.addElement(e.toString());
     }
     if(errorList.size() > 0)
-      JOptionPane.showMessageDialog(parentFrame, errorList.elementAt(0), "Database Connection Error", JOptionPane.ERROR_MESSAGE);
+      CustomOptionPane.showMessageDialog(parentFrame, errorList.elementAt(0), "Database Connection Error", CustomOptionPane.ERROR_MESSAGE);
     return conn;
   }
   
@@ -159,10 +159,10 @@ class JDBCConnect {
       insertVector(statements);
       worked = true;
     } catch (ProjectInvalidException e) {
-      JOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
+      CustomOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", CustomOptionPane.ERROR_MESSAGE);
       worked = false;
     } catch (SQLException e) {
-      JOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
+      CustomOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Export Error", CustomOptionPane.ERROR_MESSAGE);
       System.err.println("Could not export timelist to database: "+e);
       worked = false;
     }
@@ -185,7 +185,7 @@ class JDBCConnect {
       for(int i=0; i<names.length; i++)
         names[i] = (String)records.elementAt(i);
     } catch (SQLException e) {
-      JOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Project Error", JOptionPane.ERROR_MESSAGE);
+      CustomOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Project Error", CustomOptionPane.ERROR_MESSAGE);
       System.err.println("Could not get project list from database: "+e);
     } finally {
       try {
@@ -290,9 +290,9 @@ class JDBCConnect {
         DatabaseMetaData dbmeta = conn.getMetaData();
         ResultSet cols = dbmeta.getColumns(null, database, table, null);
         if((cols == null) || ! cols.next())
-          JOptionPane.showMessageDialog(parentFrame, "Table "+database+"."+table+" cannot be found.", "Table Not Found", JOptionPane.ERROR_MESSAGE);
+          CustomOptionPane.showMessageDialog(parentFrame, "Table "+database+"."+table+" cannot be found.", "Table Not Found", CustomOptionPane.ERROR_MESSAGE);
         else
-          JOptionPane.showMessageDialog(parentFrame, "Driver connection verified.", "Driver verified", JOptionPane.INFORMATION_MESSAGE);
+          CustomOptionPane.showMessageDialog(parentFrame, "Driver connection verified.", "Driver verified", CustomOptionPane.INFORMATION_MESSAGE);
         if(cols != null) cols.close();
         conn.close();
       }
@@ -417,7 +417,7 @@ class JDBCConnect {
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
       addWindowListener(new java.awt.event.WindowAdapter() {
         public void windowClosing(java.awt.event.WindowEvent we) {
-          optionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
+          optionPane.setValue(new Integer(CustomOptionPane.CLOSED_OPTION));
         }
       });
       
@@ -425,10 +425,10 @@ class JDBCConnect {
         public void propertyChange(java.beans.PropertyChangeEvent e) {
           String prop = e.getPropertyName();
           
-          if (isVisible() && (e.getSource() == optionPane) && (prop.equals(JOptionPane.VALUE_PROPERTY) || prop.equals(JOptionPane.INPUT_VALUE_PROPERTY))) {
+          if (isVisible() && (e.getSource() == optionPane) && (prop.equals(CustomOptionPane.VALUE_PROPERTY) || prop.equals(CustomOptionPane.INPUT_VALUE_PROPERTY))) {
             String value = optionPane.getValue().toString();
-            if (value == JOptionPane.UNINITIALIZED_VALUE) return;
-            optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
+            if (value == CustomOptionPane.UNINITIALIZED_VALUE) return;
+            optionPane.setValue(CustomOptionPane.UNINITIALIZED_VALUE);
             
             if (value.equals("0")) {
               password = new String(passField.getPassword());

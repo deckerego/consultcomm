@@ -332,10 +332,10 @@ public class ClntComm extends javax.swing.JPanel {
   
   private void zeroProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zeroProject
     Object[] options = {"OK", "Cancel"};
-    int dialog = JOptionPane.showOptionDialog(frame,
-    "All projects will be marked as having \n no elapsed time. Continue?",
-    "Zero-Out All Projects", JOptionPane.YES_NO_OPTION,
-    JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+    int dialog = CustomOptionPane.showOptionDialog(frame,
+    "All projects will be marked as having no elapsed time. Continue?",
+    "Zero-Out All Projects", CustomOptionPane.YES_NO_OPTION,
+    CustomOptionPane.WARNING_MESSAGE, null, options, options[1]);
     if(dialog == 0){
       int index = timeList.getSelectedRow();
       times.resetTime();
@@ -357,10 +357,10 @@ public class ClntComm extends javax.swing.JPanel {
     if(selectedIndex > -1){
       //Warn the user
       Object[] options = {"OK", "Cancel"};
-      int dialog = JOptionPane.showOptionDialog(frame,
+      int dialog = CustomOptionPane.showOptionDialog(frame,
       "Project will be deleted. Continue?",
-      "Delete Project", JOptionPane.YES_NO_OPTION,
-      JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+      "Delete Project", CustomOptionPane.YES_NO_OPTION,
+      CustomOptionPane.WARNING_MESSAGE, null, options, options[1]);
       if(dialog == 0){
         times.delete(selectedIndex);
         timeList.setModel(times.toTableModel(timeFormat));
