@@ -18,8 +18,8 @@
     <jar destfile="CsltComm.jar">
       <fileset dir="${src}">
         <include name="*.class"/>
-        <include name="help/*"/>
-        <exclude name="help/CVS"/>
+        <include name="${src}/help/*"/>
+        <exclude name="${src}/help/CVS"/>
       </fileset>
       <manifest>
         <attribute name="Main-Class" value="CsltComm"/>
@@ -49,6 +49,7 @@
   <target depends="clean" name="realclean">
     <delete>
       <fileset dir="${src}" includes="*~"/>
+      <fileset dir="${src}" includes="CsltComm.jar"/>
     </delete>
   </target>
 </project>
