@@ -1,5 +1,3 @@
-package JDBCBean;
-
 import java.util.*;
 import java.sql.*;
 import java.io.*;
@@ -14,7 +12,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
-class JDBCConnect {
+class JDBCConnect implements java.io.Serializable, CsltCommPlugin {
   final static int DATE_SQLDATE = 0;
   final static int DATE_SQLTIMESTAMP = 1;
   final static int DATE_CCYYMMDD = 2;
@@ -23,23 +21,25 @@ class JDBCConnect {
   final static int HOUR_TENTH = 2;
   final static String odbcDriverName = "sun.jdbc.odbc.JdbcOdbcDriver";
   
-  String name = "";
-  String url = "";
-  String userName = "";
-  String password="";
-  String database="";
-  String table="";
-  String projectDatabase="";
-  String projectTable="";
-  String projectField="";
-  boolean projectValidate;
-  int hourFormat;
-  boolean projectCase;
-  boolean useExport;
-  Vector errorList;
-  TableMap tableMap;
-  boolean validated;
-  JFrame parentFrame;
+  private Vector errorList;
+  private TableMap tableMap;
+  private JFrame parentFrame;
+  
+  private String name = "";
+  private String url = "";
+  private String userName = "";
+  private String password="";
+  private String database="";
+  private String table="";
+  private String projectDatabase="";
+  private String projectTable="";
+  private String projectField="";
+  private int hourFormat;
+  private boolean projectValidate;
+  private boolean projectCase;
+  private boolean useExport;
+  private boolean validated;
+  private Object parentObject;
   
   JDBCConnect() {
     tableMap = new TableMap();
@@ -56,9 +56,41 @@ class JDBCConnect {
     this.table = table;
   }
   
-  void setParentFrame(JFrame frame) {
-    parentFrame = frame;
-  }
+  //Setters/getters
+  public void setName(String name) { this.name = name; }
+  public String getName() { return this.name; }
+  public void setUrl(String url) { this.url = url; }
+  public String getUrl() { return this.url; }
+  public void setUserName(String userName) { this.userName = userName; }
+  public String getUserName() { return this.userName; }
+  public void setPassword(String password) { this.password = password; }
+  public String getPassword() { return this.password; }
+  public void setDatabase(String database) { this.database = database; }
+  public String getDatabase() { return this.database; }
+  public void setTable(String table) { this.table = table; }
+  public String getTable() { return this.table; }
+  public void setProjectDatabase(String projectDatabase) { this.projectDatabase = projectDatabase; }
+  public String getProjectDatabase() { return this.projectDatabase; }
+  public void setProjectTable(String projectTable) { this.projectTable = projectTable; }
+  public String getProjectTable() { return this.projectTable; }
+  public void setProjectField(String projectField) { this.projectField = projectField; }
+  public String getProjectField() { return this.projectField; }
+  public void setHourFormat(int hourFormat) { this.hourFormat = hourFormat; }
+  public int getHourFormat() { return this.hourFormat; }
+  public void setProjectValidate(boolean porjectValidate) { this.projectValidate = projectValidate; }
+  public boolean getProjectValidate() { return this.projectValidate; }
+  public boolean isProjectValidate() { return this.projectValidate; }
+  public void setProjectCase(boolean projectCase) { this.projectCase = projectCase; }
+  public boolean getProjectCase() { return this.projectCase; }
+  public boolean isProjectCase() { return this.projectCase; }
+  public void setUseExport(boolean useExport) { this.useExport = useExport; }
+  public boolean getUseExport() { return this.useExport; }
+  public boolean isUseExport() { return this.useExport; }
+  public void setValidated(boolean validated) { this.validated = validated; }
+  public boolean getValidated() { return this.validated; }
+  public boolean isValidated() { return this.validated; }
+  public void setParentObject(Object clntComm) { this.parentObject = clntComm; }
+  public Object getParentObject() { return this.parentObject; }
   
   Connection openConnection() {
     Connection conn = null;
@@ -385,7 +417,7 @@ class JDBCConnect {
 
       //Get attribute flags
       int attributes = prefs.readFirstInt("attributes", "value");
-      useExport = (ClntComm.SHOW_EXPORT ^ attributes) != (ClntComm.SHOW_EXPORT | attributes);
+//REPLACE-->      useExport = (ClntComm.SHOW_EXPORT ^ attributes) != (ClntComm.SHOW_EXPORT | attributes);
     } catch (Exception e) {
       System.err.println("Cannot read prefs file: "+e);
       e.printStackTrace(System.out);
