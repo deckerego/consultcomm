@@ -76,11 +76,11 @@ public class ClntComm extends javax.swing.JPanel {
     
     public void setTimes(TimeRecordSet times) { this.times = times; }
     public TimeRecordSet getTimes() { return this.times; }
-    public void setSelectedIndex(int i) {
-        this.selectedIndex = i;
-        timeList.setRowSelectionInterval(selectedIndex, selectedIndex);
-    }
-    public int getSelectedIndex() { return this.selectedIndex; }
+    public void setSelectedRecord(TimeRecord i) { timeList.setSelectedRecord(i); }
+    public void setSelectedIndex(int i) { timeList.setSelectedRecordIndex(i); }
+    public TimeRecord getSelectedRecord() { return timeList.getSelectedRecord(); }
+    public int getSelectedIndex() { return timeList.getSelectedRecordIndex(); }
+    
     public boolean isRunning(){ return timerTask.clockRunning; }
     public TotalPanel getTotalPanel() { return this.totalPanel; }
     //Vector getPlugins() { return this.plugins; }
@@ -280,12 +280,14 @@ public class ClntComm extends javax.swing.JPanel {
   }//GEN-LAST:event_editPlugins
   
   private void sortColumn(java.awt.event.MouseEvent evt) {
+      TimeRecord index = getSelectedRecord();
       TableColumnModel columnModel = timeList.getColumnModel();
       int viewColumn = columnModel.getColumnIndexAtX(evt.getX());
       int column = timeList.convertColumnIndexToModel(viewColumn);
       
       times.sort(column);
       timeList.setModel(new TableTreeModel(times, timeFormat));
+      setSelectedRecord(index);
   }
   
   private void editWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editWindow
