@@ -10,8 +10,8 @@ import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
 public class PrefsPanel extends javax.swing.JFrame {
-  protected int timeFormat;
-  protected boolean animateIcons;
+  protected int timeFormat = ClntComm.MINUTES;
+  protected boolean animateIcons = true;
 
   /** Creates new form PrefsPanel */
     public PrefsPanel() {
@@ -144,20 +144,28 @@ public class PrefsPanel extends javax.swing.JFrame {
         
         //Get time format
         NodeList timeFormats = doc.getElementsByTagName("timeformat");
-        Node timeFormatting = timeFormats.item(0);
-        attributes = timeFormatting.getAttributes();
-        String timeFormatString = attributes.getNamedItem("type").getNodeValue();
-        if(timeFormatString.equals("seconds")) timeFormat = ClntComm.SECONDS;
-        if(timeFormatString.equals("minutes")) timeFormat = ClntComm.MINUTES;
+        if(timeFormats.getLength() > 0) {
+          Node timeFormatting = timeFormats.item(0);
+          attributes = timeFormatting.getAttributes();
+          String timeFormatString = attributes.getNamedItem("type").getNodeValue();
+          if(timeFormatString.equals("seconds")) timeFormat = ClntComm.SECONDS;
+          if(timeFormatString.equals("minutes")) timeFormat = ClntComm.MINUTES;
+        } else {
+          timeFormat = ClntComm.MINUTES;
+        }
         
         //Get animation flag
         NodeList iconAnimations = doc.getElementsByTagName("animations");
-        Node iconAnimation = iconAnimations.item(0);
-        attributes = iconAnimation.getAttributes();
-        if(attributes.getNamedItem("display").getNodeValue().equals("true"))
+        if(iconAnimations.getLength() > 0) {
+          Node iconAnimation = iconAnimations.item(0);
+          attributes = iconAnimation.getAttributes();
+          if(attributes.getNamedItem("display").getNodeValue().equals("true"))
+            animateIcons = true;
+          else
+            animateIcons = false;
+        } else {
           animateIcons = true;
-        else
-          animateIcons = false;
+        }
       } catch (SAXParseException e) {
         System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
       } catch (SAXException e) {
@@ -177,7 +185,7 @@ public class PrefsPanel extends javax.swing.JFrame {
       DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
       Document doc;
       Element rootNode, newNode;
-
+      
       if (prefs.exists()) {
         doc = docBuilder.parse(prefs);
         rootNode = doc.getDocumentElement();
@@ -185,6 +193,7 @@ public class PrefsPanel extends javax.swing.JFrame {
         doc = docBuilder.newDocument();
         rootNode = doc.createElement("clntcomm");
         rootNode.setAttribute("version", "2.0");
+        doc.appendChild(rootNode);
       }
       rootNode.normalize();
       
@@ -221,6 +230,7 @@ public class PrefsPanel extends javax.swing.JFrame {
       System.err.println("Error writing prefs file: "+e);
     } catch (Exception e) {
       System.err.println("Cannot write to prefs file: "+e);
+      e.printStackTrace();
     }
   }
   
