@@ -38,10 +38,10 @@ public class TableTree extends JTable {
         TableTreeModelAdapter adapter;
         if(! super.getModel().getClass().equals(DefaultTableModel.class)) { //We're refreshing the model
             adapter = (TableTreeModelAdapter)super.getModel();
-            expanded = adapter.getExpandedRows(); //Save the expanded rows for the model
+            expanded = adapter.getExpandedPaths(); //Save the expanded rows for the model
         }
         adapter = new TableTreeModelAdapter(tableTreeModel, tree);
-        adapter.setExpandedRows(expanded); //Restore expanded rows
+        adapter.setExpandedPaths(expanded); //Restore expanded rows
         super.setModel(adapter); //For JTable behavior
         
         // Force the JTable and JTree to share their row selection models.
