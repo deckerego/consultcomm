@@ -341,8 +341,12 @@ public class ClntComm extends javax.swing.JPanel {
           "Delete Project", CustomOptionPane.YES_NO_OPTION,
           CustomOptionPane.WARNING_MESSAGE, null, options, options[1]);
           if(dialog == 0){
+              TimeRecordSet oldTimes; //Copy the old timeset for the property listener
+              try { oldTimes = (TimeRecordSet)times.clone(); }
+              catch (CloneNotSupportedException e) { oldTimes = null; }
               times.delete(selectedIndex);
               timeList.setModel(times.toTableModel(timeFormat));
+              changes.firePropertyChange("times", oldTimes, times);
           }
       }
   }//GEN-LAST:event_deleteProject
@@ -466,11 +470,18 @@ public void editWindow(int i){
     edit.setVisible(true);
     
     if (edit.getValue().equals("0")) {
+        TimeRecordSet oldTimes; //Copy the old timeset for the property listener
+        try { oldTimes = (TimeRecordSet)times.clone(); }
+        catch (CloneNotSupportedException e) { oldTimes = null; }
+        
         long newTime = System.currentTimeMillis()/1000;
         if (index == selectedIndex) timerTask.startTime = newTime-record.getSeconds();
         if(newRecord) times.add(record);
+        
         timeList.setModel(times.toTableModel(timeFormat));
         timeList.repaint();
+        
+        changes.firePropertyChange("times", oldTimes, times);
         if(selectedIndex == -1) //Nothing selected
             timeList.setRowSelectionInterval(index, index);
         else
@@ -673,6 +684,10 @@ public boolean isRunning(){
                 //Get the current seconds past midnight.
                 currTime = System.currentTimeMillis()/1000;
                 if((index = timeList.getSelectedRow()) >= 0){
+                    TimeRecordSet oldTimes; //Copy the old timeset for the property listener
+                    try { oldTimes = (TimeRecordSet)times.clone(); }
+                    catch (CloneNotSupportedException e) { oldTimes = null; }
+                    
                     currSeconds = currTime - startTime;
                     times.setSeconds(index, currSeconds);
                     
@@ -691,7 +706,7 @@ public boolean isRunning(){
                     if (currSeconds % saveInterval == 0) savePrefs();
                     
                     //Send out events to our plugins
-                    changes.firePropertyChange("times", null, times);
+                    changes.firePropertyChange("times", oldTimes, times);
                 }
             }
         }

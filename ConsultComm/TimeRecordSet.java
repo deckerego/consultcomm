@@ -1,7 +1,7 @@
 import java.util.*;
 import javax.swing.table.*;
 
-public class TimeRecordSet {
+public class TimeRecordSet implements java.lang.Cloneable {
     private Vector timeRecords;
     private static final String[] titles = {"Project", "Time"};
     private boolean reverseSort = false;
@@ -180,6 +180,10 @@ public class TimeRecordSet {
         minutes -= hours * 60;
         if (minutes < 10) return ""+hours+":0"+minutes;
         else return ""+hours+":"+minutes;
+    }
+    
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
     
     public class TimeComparator implements Comparator {
