@@ -7,7 +7,8 @@ import java.awt.event.*;
 public class PluginManager extends javax.swing.JFrame implements ActionListener {
     Vector pluginList;
     Vector buttonList;
-    
+    public static File pluginsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"plugins");
+
     public PluginManager() {
         pluginList = new Vector();
         buttonList = new Vector();
@@ -108,7 +109,6 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
   }
   
   public static Vector getPlugins() throws MalformedURLException, ClassNotFoundException, IOException {
-      File pluginsdir = new File(System.getProperty("user.dir")+System.getProperty("file.separator")+"plugins");
       File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
 
       System.out.println("Looking for plugins in "+pluginsdir);
@@ -121,11 +121,12 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
       URL[] pluginurls = new URL[pluginfiles.length];
       for(int i=0; i<pluginfiles.length; i++)
           pluginurls[i] = pluginfiles[i].toURL();
-      ClassLoader loader = new URLClassLoader(pluginurls);
-      Thread.currentThread().setContextClassLoader(loader);
       
-      Vector pluginList = new Vector(pluginurls.length);
-      for(int i=0; i<pluginurls.length; i++) {
+      ClassLoader loader = new URLClassLoader(pluginurls);
+      Thread.currentThread().setContextClassLoader(loader);  //Sun BugID 4676532
+      
+      Vector pluginList = new Vector(pluginfiles.length);
+      for(int i=0; i<pluginfiles.length; i++) {
           String currBean = pluginfiles[i].getName();
           currBean = currBean.substring(0, currBean.lastIndexOf(".jar"));
           

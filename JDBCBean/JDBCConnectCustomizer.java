@@ -466,6 +466,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       try { //Serialize the bean out to an XML file in the user's prefs directory
           File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
           File prefsFile = new File(prefsdir, "JDBCConnect.xml");
+          Thread.currentThread().setContextClassLoader(dbConnection.getClass().getClassLoader()); //Sun BugID 4676532
           FileOutputStream outStream = new FileOutputStream(prefsFile);
           XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
           e.writeObject(dbConnection);
