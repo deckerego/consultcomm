@@ -38,8 +38,4 @@ public class TotalTimes extends CsltCommPlugin {
         if(this.countdownTime != 0) totalPanel.setEntry(REMAINING_TITLE, getRemainingTime());
         if(this.cashAmount != 0) totalPanel.setEntry(EARNED_TITLE, getTotalCash());
     }
-    
-    public void unregister() {
-    }
-    
 }

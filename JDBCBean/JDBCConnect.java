@@ -386,9 +386,6 @@ public class JDBCConnect extends CsltCommPlugin {
         return clone;
     }
     
-    public void unregister() {
-    }
-    
     private class LoginDialog extends JDialog {
         private JOptionPane optionPane;
         

@@ -71,8 +71,4 @@ public class TimeOut extends CsltCommPlugin {
             }
         }
     }
-    
-    public void unregister() {
-    }
-    
 }

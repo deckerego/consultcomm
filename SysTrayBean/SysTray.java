@@ -7,8 +7,8 @@ import java.awt.event.*;
 
 public class SysTray extends CsltCommPlugin implements ActionListener, ItemListener {
     private static boolean systrayLibrary = false;
-    private static TrayIcon sysTrayIcon;
-    private static SystemTray tray;
+    private TrayIcon sysTrayIcon;
+    private SystemTray tray;
     private ClntComm clntComm;
     
     static {
@@ -20,18 +20,17 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
                 systrayLibrary = false;
             }
         }
-        
-        tray = SystemTray.getDefaultSystemTray();
-        ImageIcon icon = JarLoader.loadImageIcon("systray.png", SysTray.class);
-        sysTrayIcon = new TrayIcon(icon, "Consultant Communicator 3", new JPopupMenu());
-        sysTrayIcon.setIconAutoSize(true);
-        tray.addTrayIcon(sysTrayIcon);
     }
     
     public SysTray() {
         JPopupMenu menu;
         JMenuItem menuItem;
         
+        tray = SystemTray.getDefaultSystemTray();
+        ImageIcon icon = JarLoader.loadImageIcon("systray.png", SysTray.class);
+        sysTrayIcon = new TrayIcon(icon, "Consultant Communicator 3", new JPopupMenu());
+        sysTrayIcon.setIconAutoSize(true);
+        tray.addTrayIcon(sysTrayIcon);
         
         sysTrayIcon.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -69,8 +68,4 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
         String[] projectNames = recordSet.getAllProjects();
         sysTrayIcon.setCaption(projectNames[selectedIndex]);
     }
-    
-    public void unregister() {
-    }
-    
 }
