@@ -28,10 +28,8 @@ fi
 
 cd $CSLTCOMM_HOME
 
-# See if X library is installed
-if [ -x "$CSLTCOMM_HOME/X/libtimeout.so" ] ; then
-  CSLTCOMM_ARGS="$CSLTCOMM_ARGS -Djava.library.path=$CSLTCOMM_HOME/X -Djava.class.path=$CSLTCOMM_HOME/X"
-fi
+CSLTCOMM_ARGS="$CSLTCOMM_ARGS -Djava.library.path=$CSLTCOMM_HOME/syslibs"
+CSLTCOMM_ARGS="$CSLTCOMM_ARGS -classpath skinlf.jar:."
 
 # exec the jvm
-exec $JAVA_HOME/bin/java $CSLTCOMM_ARGS -jar CsltComm.jar
+exec $JAVA_HOME/bin/java $CSLTCOMM_ARGS CsltComm
