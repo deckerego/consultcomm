@@ -15,6 +15,13 @@ import com.l2fprod.gui.nativeskin.NativeSkin;
 
 public class CsltComm extends javax.swing.JFrame {
     public static final String release = "ConsultComm CVS Release";
+    public static final String copyleft = release+
+    ", Copyright (C) 2004 John Ellis\n"+
+    "ConsultComm comes with ABSOLUTELY NO WARRANTY\n" +
+    "This is free software, and you are welcome to redistribute it under \n" +
+    "certain conditions. For details go to Help(F1)->License or view\n" +
+    "the COPYING file included with this distribution\n";
+    
     static MediaTracker iconTracker;
     static AnimatePanel iconPanel;
     static javax.swing.Timer iconTimer;
@@ -143,7 +150,8 @@ public class CsltComm extends javax.swing.JFrame {
   }
   
   public static void main(String args[]) {
-      new CsltComm().show();
+    System.out.println(copyleft);
+    new CsltComm().show();
   }
   
   // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -6,7 +6,7 @@
 <map version="1.0">
 	<mapID target="top" url="index.html" />
        	<mapID target="faq" url="faq.html" />
-        <mapID target="license" url="../COPYING"/>
+        <mapID target="license" url="gpl.html"/>
         
 	<mapID target="db" url="dbconnect.html" />
 	<mapID target="db.installing" url="dbconnect.html#installing" />
