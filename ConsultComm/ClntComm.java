@@ -272,6 +272,7 @@ public class ClntComm extends javax.swing.JPanel {
 
   private void editWindow(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editWindow
       int selectedRow = timeList.getSelectedRecord();
+      this.selectedIndex = selectedRow;
       if(selectedRow != -1) {
           if(evt.getModifiers() == java.awt.event.MouseEvent.BUTTON1_MASK)
               if(evt.getClickCount() == 2) editWindow(selectedRow);
