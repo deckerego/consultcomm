@@ -1,4 +1,4 @@
-package TimeOutBean;
+//package TimeOutBean;
 
 import java.beans.*;
 
@@ -8,8 +8,7 @@ public class TimeOutBeanInfo extends SimpleBeanInfo {
     private static BeanDescriptor beanDescriptor = null;
     private static BeanDescriptor getBdescriptor(){
         //GEN-HEADEREND:BeanDescriptor
-        
-        // Here you can add code for customizing the BeanDescriptor.
+        beanDescriptor = new BeanDescriptor(TimeOut.class, TimeOutCustomizer.class);
         
         return beanDescriptor;     } //GEN-LAST:BeanDescriptor
     
@@ -17,17 +16,13 @@ public class TimeOutBeanInfo extends SimpleBeanInfo {
     // Properties information will be obtained from introspection.//GEN-FIRST:Properties
     private static PropertyDescriptor[] properties = null;
     private static PropertyDescriptor[] getPdescriptor(){//GEN-HEADEREND:Properties
-        
-        // Here you can add code for customizing the properties array.
-        
+
         return properties;     } //GEN-LAST:Properties
     
     // Event set information will be obtained from introspection.//GEN-FIRST:Events
     private static EventSetDescriptor[] eventSets = null;
     private static EventSetDescriptor[] getEdescriptor(){//GEN-HEADEREND:Events
-        
-        // Here you can add code for customizing the event sets array.
-        
+
         return eventSets;     } //GEN-LAST:Events
     
     // Method information will be obtained from introspection.//GEN-FIRST:Methods
@@ -151,6 +146,7 @@ public class TimeOutBeanInfo extends SimpleBeanInfo {
      *    return null if no suitable icon is available.
      */
     public java.awt.Image getIcon(int iconKind) {
+        iconNameC32 = "timer.gif";
         switch ( iconKind ) {
             case ICON_COLOR_16x16:
                 if ( iconNameC16 == null )
