@@ -1,105 +1,46 @@
-Consultant Communicator 3.0.3
-Release 10/23/03
+Consultant Communicator 3.1
+Released September 20, 2004
 First Released: November 1999
 
 REVISION HISTORY -
-        o 3.0.3    [10/23/03]
-                - Fixed conversion process with BILLABLE and DATE flags
-        o 3.0.2    [10/10/03]
-                - Catch ClassCastException
-                - Recompiled Win32 .dll
-        o 3.0      [07/01/03]
-                - Java 1.4 required
-                - Added JavaBeans based plugin architecture for new
-		  features and third-party extensions
-                - New GUI layout: TableTrees allow projects to be
-                  listed by group in a tree format that can be collapsed
-                  or expanded
-                - Moved help documentation to JavaHelp display
-                - Changed prefs file formatting
-                - Added ability to specify whether or not JDBC should
-                  specify the data table in the driver's URL
-                - JDBC driver (.jar or .zip) can be specified from
-                  the preferences panel instead of being explicitly
-                  defined in the classpath or extensions directory
-                - Updated to Skin Look and Feel 1.2.3
-                - Prefs for ConsultComm and plugins based in XML
-                - Projects stored in seperate XML file to query
-                - Rewrite of (nearly) the entire codebase to make things
-                  easier to understand and to fix a handfull of bugs
-        o 2.3.2    [11/05/02]
-                - Fixed bug where export flags was required for any 
-		  database exporting
-	o 2.3.1	   [09/25/02]
-		- Fixed problem where hitting OK in prefs would set the
-		  start/stop button to START whether or not the timer was
-		  actually running
-		- Fixed problem in JDBC field mapping where old field
-		  mappings weren't being deleted and replacement entries
-		  were just appended to the end of the list
-		- Fixed various bugs in Win32 code for WinXP
-		- Converted more dialog boxes to use line wrapping
-		- Updated install docs for ant build
-		- Only have to sign-on once per export (project add dialog
-		  remembers your username and password)
-	o 2.3	   [06/19/02]
-		- Added Win32 support for pausing/switching projects after
-		  mouse or keyboard has been idle
-		- Right and left mouse buttons now scroll forward and 
-		  backward through the total time indicators
-		- Upgraded release packages to use InstallAnywhere 5
-		- Dialog boxes wrap text
-	o 2.2.1	   [05/15/02]
-		- Fixed bug where upgrading to 2.2 caused the total time
-		  text at the bottom to disappear
-		- Added countdown and pay count timers
-		- Updated SkinLF to 1.2.1
-	o 2.2	   [04/11/02]
-		- Java 1.4 support (mouse wheel!)
-		- Improved JDBC support (fixed SQL type/auto-commit problems)
-		- Can now add projects that are not found when validating
-		- Added JNI support for detecting how long a session is idle
-		- Can now pause/switch projects when idle for user-definied 
-		  number of seconds in X Windows
-		- Added skins support using SkinLF (http://www.l2fprod.com)
-		- Configuration files now human modifiable XML with XSLT
-		- Random bug fixes (mainly GUI quirks)
-	o 2.1      [01/16/02]
-		- Now prefs panel automatically reloads ConsultComm (no need
-		  to restart after a prefs change)
-		- New flag, "Export to Database," used to determine whether or
-		  not project is sent to database
-		- Billable flag no longer keeps project from being exported,
-		  can be used as a parameter in JDBC field mapping
-		- Project attribute flags (export to db, billable) can be
-		  hidden
-		- Can now specify how often to save preferences and times
-		- Selection isn't lost when sorting rows
-		- New projects are automatically sorted into the list
-	o 2.0.3    [01/03/02]
-		- Added preferences menu to change icon animations
-		  and modify time formatting
-		- Updated help documentation
-		- DELETE key now used as project deletion accelerator (hotkey)
-	o 2.0.2    [11/16/01]
-		- Fixed project validation field drop-down box
-	o 2.0.1    [11/13/01]
-		- Fixed "Important Directories" page for Windows
-	o 2.0      [10/03/01]
-		- Can sort columns by clicking on their header
-		- JDBC connectivity added; can upload time to any
-		  JDBC compliant database
-		- Help system added
-	o 1.0.3    [09/11/01]
-		- Remembers window size (again)
-		- Updated for Forte CE 3.0
-	o 1.0.2    [09/10/01]
-		- Fixed bug where crash would occur if there was no
-		  prefs file
-	o 1.0.1    [08/28/01]
-		- Added icon for frame
-		- Fixed problem where adding a new project then cancelling
-		  would result in an empty project appended to the list
-	o 1.0      [07/03/01]
-		- Last selection saved to prefs file
-		- Released as first stable version
+  o 3.1      [09/20/04]
+    - Created plugin to display icon in system tray
+    - Records & prefs are saved whenever a project in the list is changed
+    - Added GUI installers for Win32 and other platforms with IzPack
+    - Added PROMPT and GLOBALPROMPT variables for JDBC plugin; allows for additional fields whose values are defined by prompting the user during database export
+    - Improved icon graphics
+    - Code cleanup for plugin architecture and extra metadata checking (version numbers, loaded status, etc.)
+    - Updated documentation
+    - Updated libraries for SkinLF and JavaHelp
+    - Fixed TableTree layout to solve problems with OS X Swing implementation
+    - Fixed interoperability with windows (tested with Windows XP SP2)
+    - Fixed bad layout on TimeOut plugin management page
+    - Fixed bug where timer would stop advancing project time after jumping in/out of a plugin
+    - Fixed plugin loader so it did not reinstantiate a plugin if it was already loaded
+    - Fixed ConsultComm crash when times total index was out of bounds
+    - Fixed JDBC plugin crash when no records were loaded
+    - Fixed rendering bugs where the time cell of the table tree didn't respond to mouse events
+  o 3.0.5    [01/02/04]
+    - Sometimes fields would be stored out-of-order, made INSERT explicity define field names
+    - Cleaned up changelog
+  o 3.0.4    [11/04/03]
+    - Fixed crash when closing standalone JDBC Customizer windows
+    - When a valid record isn't selected crashes don't occur
+    - Preemptively fixed a weird GUI resizing bug
+  o 3.0.3    [10/23/03]
+    - Fixed conversion process with BILLABLE and DATE flags
+  o 3.0.2    [10/10/03]
+    - Catch ClassCastException
+    - Recompiled Win32 .dll
+  o 3.0      [07/01/03]
+    - Java 1.4 required
+    - Added JavaBeans based plugin architecture for new features and third-party extensions
+    - New GUI layout: TableTrees allow projects to be listed by group in a tree format that can be collapsed or expanded
+    - Moved help documentation to JavaHelp display
+    - Changed prefs file formatting
+    - Added ability to specify whether or not JDBC should specify the data table in the driver's URL
+    - JDBC driver (.jar or .zip) can be specified from the preferences panel instead of being explicitly defined in the classpath or extensions directory
+    - Updated to Skin Look and Feel 1.2.3
+    - Prefs for ConsultComm and plugins based in XML
+    - Projects stored in seperate XML file to query
+    - Rewrite of (nearly) the entire codebase to make things easier to understand and to fix a handfull of bugs

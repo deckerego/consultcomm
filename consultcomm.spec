@@ -1,7 +1,7 @@
 Summary: Consultant Communicator (ConsultComm) is a program that allows anyone managing multiple projects, clients or tasks to effectively keep track of exactly how long they've spent on each project.
 Name: ConsultComm
-Version: 3.1rc2
-Release: 1
+Version: 3.1
+Release: 4
 Copyright: GPL
 Group: Applications/Productivity
 Source: ConsultComm-%{version}.src.tar
@@ -59,53 +59,44 @@ fi
 /usr/share/applications
 
 %changelog
-* Mon Sep 13 2004 John Ellis <john.ellis@ise-indy.com>
-    - Created plugin to display icon in system tray
-    - Fixed TableTree layout to solve problems with OS X Swing implementation
-    - Records & prefs are saved whenever a project in the list is changed
-    - Added GUI installers for Win32 and other platforms with IzPack
-    - Fixed interoperability with windows (tested with Windows XP SP2)
-    - Fixed bad layout on TimeOut plugin management page
-    - Fixed bug where timer would stop advancing project time after jumping 
-      in/out of a plugin
-    - Added PROMPT and GLOBALPROMPT variables for JDBC plugin; allows for 
-      additional fields whose values are defined by prompting the user during 
-      database export
-    - Improved icon graphics
-    - Code cleanup for plugin architecture and extra metadata checking (version 
-      numbers, loaded status, etc.)
-    - Fixed plugin loader so it did not reinstantiate a plugin if it was
-      already loaded
-    - Updated documentation
-    - Updated libraries for SkinLF and JavaHelp
+* Mon Sep 20 2004 John Ellis <john.ellis@ise-indy.com>
+- Created plugin to display icon in system tray
+- Records & prefs are saved whenever a project in the list is changed
+- Added GUI installers for Win32 and other platforms with IzPack
+- Added PROMPT and GLOBALPROMPT variables for JDBC plugin; allows for additional fields whose values are defined by prompting the user during database export
+- Improved icon graphics
+- Code cleanup for plugin architecture and extra metadata checking (version numbers, loaded status, etc.)
+- Updated documentation
+- Updated libraries for SkinLF and JavaHelp
+- Fixed TableTree layout to solve problems with OS X Swing implementation
+- Fixed interoperability with windows (tested with Windows XP SP2)
+- Fixed bad layout on TimeOut plugin management page
+- Fixed bug where timer would stop advancing project time after jumping in/out of a plugin
+- Fixed plugin loader so it did not reinstantiate a plugin if it was already loaded
+- Fixed ConsultComm crash when times total index was out of bounds
+- Fixed JDBC plugin crash when no records were loaded
+- Fixed rendering bugs where the time cell of the table tree didn't respond to mouse events
 * Fri Jan 02 2004 John Ellis <john.ellis@ise-indy.com>
-    - Sometimes fields would be stored out-of-order, made INSERT explicity 
-      define field names
-    - Cleaned up changelog
+- Sometimes fields would be stored out-of-order, made INSERT explicity define field names
+- Cleaned up changelog
 * Tue Nov 04 2003 John Ellis <john.ellis@ise-indy.com>
-    - Fixed crash when closing standalone JDBC Customizer windows
-    - When a valid record isn't selected crashes don't occur
-    - Preemptively fixed a weird GUI resizing bug
+- Fixed crash when closing standalone JDBC Customizer windows
+- When a valid record isn't selected crashes don't occur
+- Preemptively fixed a weird GUI resizing bug
 * Thu Oct 23 2003 John Ellis <john.ellis@ise-indy.com>
-    - Fixed conversion process with BILLABLE and DATE flags
+- Fixed conversion process with BILLABLE and DATE flags
 * Fri Oct 10 2003 John Ellis <john.ellis@ise-indy.com>
-    - Catch ClassCastException
-    - Recompiled Win32 .dll
+- Catch ClassCastException
+- Recompiled Win32 .dll
 * Tue Jul 01 2003 John Ellis <john.ellis@ise-indy.com>
-    - Java 1.4 required
-    - Added JavaBeans based plugin architecture for new features and 
-      third-party extensions
-    - New GUI layout: TableTrees allow projects to be listed by group in a tree 
-      format that can be collapsed or expanded
-    - Moved help documentation to JavaHelp display
-    - Changed prefs file formatting
-    - Added ability to specify whether or not JDBC should specify the data 
-      table in the driver's URL
-    - JDBC driver (.jar or .zip) can be specified from the preferences panel 
-      instead of being explicitly defined in the classpath or extensions 
-      directory
-    - Updated to Skin Look and Feel 1.2.3
-    - Prefs for ConsultComm and plugins based in XML
-    - Projects stored in seperate XML file to query
-    - Rewrite of (nearly) the entire codebase to make things easier to 
-      understand and to fix a handfull of bugs
+- Java 1.4 required
+- Added JavaBeans based plugin architecture for new features and third-party extensions
+- New GUI layout: TableTrees allow projects to be listed by group in a tree format that can be collapsed or expanded
+- Moved help documentation to JavaHelp display
+- Changed prefs file formatting
+- Added ability to specify whether or not JDBC should specify the data table in the driver's URL
+- JDBC driver (.jar or .zip) can be specified from the preferences panel instead of being explicitly defined in the classpath or extensions directory
+- Updated to Skin Look and Feel 1.2.3
+- Prefs for ConsultComm and plugins based in XML
+- Projects stored in seperate XML file to query
+- Rewrite of (nearly) the entire codebase to make things easier to understand and to fix a handfull of bugs

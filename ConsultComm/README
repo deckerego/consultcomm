@@ -21,24 +21,26 @@ All rights reserved. When building from source place skinlf.jar
 in the same directory as CsltComm.jar.
 
 Help system implemented using JavaHelp's jhbasic.jar
-(http://java.sun.com/products/javahelp/) Copyright 2002 Sun Microsystems, 
-Inc. All rights reserved. Use is subject to license terms. When building 
-from source place jhbasic.jar in the same directory as CsltComm.jar.
+(http://java.sun.com/products/javahelp/) Copyright 2002 Sun 
+Microsystems, Inc. All rights reserved. Use is subject to license 
+terms. When building from source place jhbasic.jar in the same 
+directory as CsltComm.jar.
 
 System tray integration is implemented using the JDesktop Integration
-Components (https://jdic.dev.java.net/) released under the Lesser General 
-Public License. When building from source place tray.jar in the same directory 
-as CsltComm.jar. The native libraries (such as libtray.so and tray.dll) should
-be placed in the SysTray directory with the other SysTray class files.
+Components (https://jdic.dev.java.net/) released under the Lesser 
+General Public License. When building from source place tray.jar in 
+the same directory as CsltComm.jar. The native libraries (such as 
+libtray.so and tray.dll) should be placed in the SysTray directory 
+with the other SysTray class files.
 
 =======================================================================
 
-If you have questions about how to install or run ConsultComm, please read 
-FAQ.html or visit http://consultcomm.sourceforge.net to read further
-documentation, ask questions or submit bug reports.
+If you have questions about how to install or run ConsultComm, please
+read FAQ.html or visit http://consultcomm.sourceforge.net to read 
+further documentation, ask questions or submit bug reports.
 
-If you are building ConsultComm from source, make sure you have Jakarta
-Ant installed and build the package using the command 'ant'. 
+If you are building ConsultComm from source, make sure you have 
+Jakarta Ant installed and build the package using the command 'ant'. 
 
 Binary packages are available for most platforms at the ConsultComm
 site http://consultcomm.sourceforge.net.
