@@ -1,1 +1,2 @@
 Main-Class: CsltComm
+Class-Path: XML/crimson.jar XML/xalan.jar XML/jaxp.jar
