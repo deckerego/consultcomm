@@ -27,12 +27,12 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private String name = "";
   private String url = "";
   private static String userName = "";
-  private static String password;
-  private static String database;
-  private static String table;
-  private static String projectDatabase;
-  private static String projectTable;
-  private static String projectField;
+  private static String password="";
+  private static String database="";
+  private static String table="";
+  private static String projectDatabase="";
+  private static String projectTable="";
+  private static String projectField="";
   private static boolean projectValidate;
   private int dateFormat;
   private int hourFormat;
@@ -500,8 +500,10 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     table = tableField.getText();
     projectDatabase = projDBField.getText();
     projectTable = projTableField.getText();
-    int projFieldIndex = projFieldComboBox.getSelectedIndex();
-    projectField = (String)projFieldComboBox.getItemAt(projFieldIndex);
+    if(projFieldComboBox.getItemCount() == 0) {
+      int projFieldIndex = projFieldComboBox.getSelectedIndex();
+      projectField = (String)projFieldComboBox.getItemAt(projFieldIndex);
+    }
     projectValidate = projValidateCheckBox.isSelected();
     hourFormat = hourComboBox.getSelectedIndex();
     dateFormat = dateComboBox.getSelectedIndex();
@@ -523,7 +525,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     }
     
     private void savePrefs() {
-      File prefs = new File("JDBCConnection.def");
+      File prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
       try {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -575,7 +577,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     }
     
     private void readPrefs() {
-      File prefs = new File("JDBCConnection.def");
+      File prefs = new File(CsltComm.prefsDir, "JDBCConnection.def");
       if (prefs.exists()) {
         try {
           DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -646,12 +648,6 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     public Connection openConnection() {
       Connection conn = null;
       errorList = new Vector();
-      if(! validated) {
-        LoginDialog prompt = new LoginDialog(this, userName);
-        prompt.pack();
-        prompt.setLocationRelativeTo(this);
-        prompt.setVisible(true);
-      }
       
       try{
 /* This code won't work... though I wish it would. It was supposed to
@@ -672,6 +668,12 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         DriverManager.registerDriver(driver);
  */
         Class.forName(name);
+        if(! validated) { //Send login dialog box
+          LoginDialog prompt = new LoginDialog(this, userName);
+          prompt.pack();
+          prompt.setLocationRelativeTo(this);
+          prompt.setVisible(true);
+        }
         Properties properties = new Properties();
         properties.put("password", password);
         properties.put("user", userName);
@@ -689,7 +691,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         String extdir = System.getProperty("java.ext.dirs");
         String msgString = "Could not find JDBC driver "+name+".\n"+
         "Make sure you have the correct driver files and that they\n"+
-        "are installed in "+extdir;
+        "are installed in "+extdir+",\n then restart ConsultComm.";
         errorList.addElement(msgString);
       } catch (SQLException e) {
         errorList.addElement("Could not build JDBC connection: "+e);
@@ -707,18 +709,18 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       Connection conn = openConnection();
       PreparedStatement insert = null;
       boolean worked = false;
-
+      
       try {
         if(tableMap.size() == 0) return false;
         String queryString = "?";
         for(int i=1; i<tableMap.size(); i++) queryString += " ,?";
         insert = conn.prepareStatement("INSERT INTO "+database+"."+table+" VALUES ("+queryString+")");
-
+        
         // Okay... we've got a problem. We want to test for errors
         // before committing changes to the database but we also
         // can't depend on the rollback() method working (not all
         // db's we want to use support transaction management).
-        // So we first load everything into a two dimensional array 
+        // So we first load everything into a two dimensional array
         // then we insert the records into the database.
         Vector statements = new Vector();
         for(int j=0; j < times.size(); j++) {
@@ -764,7 +766,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       Connection conn = openConnection();
       String[] names = null;
       ResultSet cols = null;
-
+      
       try {
         Vector records = new Vector();
         DatabaseMetaData dbmeta = conn.getMetaData();
@@ -786,7 +788,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       }
       return names;
     }
-
+    
     private boolean validateProject(String project) {
       Connection conn = openConnection();
       Statement stmt = null;
