@@ -83,7 +83,7 @@ public class CsltComm extends javax.swing.JFrame {
       readPrefs();
       loadSkin();
       if(animateIcons) {
-          getContentPane().add(iconPanel);
+          getContentPane().add(iconPanel, java.awt.BorderLayout.SOUTH);
           iconPanel.start();
       }
   }
