@@ -421,6 +421,9 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
         totalText.setText("To Export:");
         totalTime.setText(times.getExportTimeString());
         break;
+      default: //showTotal is undefined, choose default
+        showTotal = SHOW_TOTAL;
+        refreshTotalTime();
     }
     totalTime.repaint();
   }
