@@ -376,7 +376,7 @@
                       <Color blue="99" green="66" red="66" type="rgb"/>
                     </Property>
                     <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="countdown != 0" type="code"/>
+                      <Connection type="value" value="clntComm.attributeSet(ClntComm.SHOW_COUNTDOWN)" valueType="boolean"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Count down from "/>
                   </Properties>
@@ -397,7 +397,7 @@
                       <Connection code="minutesToString(countdown)" type="code"/>
                     </Property>
                     <Property name="enabled" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="countdown != 0" type="code"/>
+                      <Connection type="value" value="clntComm.attributeSet(ClntComm.SHOW_COUNTDOWN)" valueType="boolean"/>
                     </Property>
                   </Properties>
                   <Constraints>
@@ -412,7 +412,7 @@
                       <Color blue="99" green="66" red="66" type="rgb"/>
                     </Property>
                     <Property name="selected" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="countpay != 0" type="code"/>
+                      <Connection type="value" value="clntComm.attributeSet(ClntComm.SHOW_COUNTPAY)" valueType="boolean"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Count pay, using $"/>
                   </Properties>
@@ -433,7 +433,7 @@
                       <Connection code="Float.toString(countpay)" type="code"/>
                     </Property>
                     <Property name="enabled" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="countpay != 0" type="code"/>
+                      <Connection type="value" value="clntComm.attributeSet(ClntComm.SHOW_COUNTPAY)" valueType="boolean"/>
                     </Property>
                   </Properties>
                   <Constraints>

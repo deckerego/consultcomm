@@ -280,7 +280,7 @@ public class PrefsPanel extends javax.swing.JFrame {
     flagsInputPanel.add(exportCheckBox, gridBagConstraints2);
     
     countdownCheckBox.setForeground(new java.awt.Color(102, 102, 153));
-    countdownCheckBox.setSelected(countdown != 0);
+    countdownCheckBox.setSelected(clntComm.attributeSet(ClntComm.SHOW_COUNTDOWN));
     countdownCheckBox.setText("Count down from ");
     countdownCheckBox.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -294,14 +294,14 @@ public class PrefsPanel extends javax.swing.JFrame {
     
     countdownField.setColumns(6);
     countdownField.setText(minutesToString(countdown));
-    countdownField.setEnabled(countdown != 0);
+    countdownField.setEnabled(clntComm.attributeSet(ClntComm.SHOW_COUNTDOWN));
     gridBagConstraints2 = new java.awt.GridBagConstraints();
     gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
     flagsInputPanel.add(countdownField, gridBagConstraints2);
     
     payCheckBox.setForeground(new java.awt.Color(102, 102, 153));
-    payCheckBox.setSelected(countpay != 0);
+    payCheckBox.setSelected(clntComm.attributeSet(ClntComm.SHOW_COUNTPAY));
     payCheckBox.setText("Count pay, using $");
     payCheckBox.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -315,7 +315,7 @@ public class PrefsPanel extends javax.swing.JFrame {
     
     payField.setColumns(6);
     payField.setText(Float.toString(countpay));
-    payField.setEnabled(countpay != 0);
+    payField.setEnabled(clntComm.attributeSet(ClntComm.SHOW_COUNTPAY));
     gridBagConstraints2 = new java.awt.GridBagConstraints();
     gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
     flagsInputPanel.add(payField, gridBagConstraints2);
@@ -696,18 +696,16 @@ public class PrefsPanel extends javax.swing.JFrame {
         //Save animation flag
         prefs.saveFirst("animations", "display", showIconCheckBox.isSelected());
         //Save attribute flag settings
-        int attributes = 0;
+        int attributes = ClntComm.SHOW_TOTAL;
         if(billableCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_BILLABLE;
         if(exportCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_EXPORT;
+        if(countdownCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_COUNTDOWN;
+        if(payCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_COUNTPAY;
         prefs.saveFirst("attributes", "value", attributes);
         //Save countdown
-        if(countdownCheckBox.isSelected())
-          prefs.saveFirst("countdown", "minutes", stringToMinutes(countdownField.getText()));
-        else prefs.removeFirstElement("countdown");
+        prefs.saveFirst("countdown", "minutes", stringToMinutes(countdownField.getText()));
         //Save pay count
-        if(payCheckBox.isSelected())
-          prefs.saveFirst("countpay", "amount", payField.getText());
-        else prefs.removeFirstElement("countpay");
+        prefs.saveFirst("countpay", "amount", payField.getText());
         //Save save interval
         prefs.saveFirst("saveinfo", "seconds", saveField.getText());
         //Save idle info
