@@ -13,7 +13,7 @@ public class TotalPanel extends javax.swing.JPanel {
     public void removeEntry(String title) { entries.remove(title); }
     public void setEntry(String title, long value) { entries.put(title, new Long(value)); }
     public void setEntry(String title, String value) { entries.put(title, value); }
-    public int getIndex() { return timesClicked-1; }
+    public int getIndex() { return timesClicked; }
 
     public void toggleTotal(int index) {
         Object[] keySet = entries.keySet().toArray();
