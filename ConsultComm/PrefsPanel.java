@@ -14,7 +14,7 @@ public class PrefsPanel extends javax.swing.JFrame {
   protected boolean animateIcons = true;
   protected int saveInterval = 60;
   protected int allowedIdle = 0, idleAction;
-  protected int countdown;
+  protected long countdown;
   protected float countpay;
   protected String idleProject;
   private ClntComm clntComm;
@@ -651,133 +651,31 @@ public class PrefsPanel extends javax.swing.JFrame {
      */
     private void readPrefs() {
       try {
-        File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document doc;
-        
-        if(prefs.exists()) {
-          doc = docBuilder.parse(prefs);
-          doc.getDocumentElement().normalize();
-        } else {
-          doc = docBuilder.newDocument();
-          Element rootNode = doc.createElement("clntcomm");
-          rootNode.setAttribute("version", "2.2");
-          doc.appendChild(rootNode);
-        }
-      
-        NamedNodeMap attributes = null;
-        
+        PrefsFile prefs = new PrefsFile("ClntComm.def");
         //Get time format
-        NodeList timeFormats = doc.getElementsByTagName("timeformat");
-        Node timeFormatting = timeFormats.item(0);
-        if(timeFormatting != null) {
-          attributes = timeFormatting.getAttributes();
-          String timeFormatString = attributes.getNamedItem("type").getNodeValue();
-          if(timeFormatString.equals("seconds")) timeFormat = ClntComm.SECONDS;
-          if(timeFormatString.equals("minutes")) timeFormat = ClntComm.MINUTES;
-        } else {
-          timeFormat = ClntComm.MINUTES;
-        }
-        
+        String timeFormatString = prefs.readFirstString("timeformat", "type");
+        if(timeFormatString.equals("seconds")) timeFormat = ClntComm.SECONDS;
+        else timeFormat = ClntComm.MINUTES;
         //Get animation flag
-        NodeList iconAnimations = doc.getElementsByTagName("animations");
-        Node iconAnimation = iconAnimations.item(0);
-        if(iconAnimation != null) {
-          attributes = iconAnimation.getAttributes();
-          if(attributes.getNamedItem("display").getNodeValue().equals("true"))
-            animateIcons = true;
-          else
-            animateIcons = false;
-        } else {
-          animateIcons = true;
-        }
-        
+        Boolean iconAnimation = prefs.readFirstBoolean("animations", "display");
+        if(iconAnimation == null) animateIcons = true;
+        else animateIcons = iconAnimation.booleanValue();
         //Get count down interval
-        NodeList countdownInfos = doc.getElementsByTagName("countdown");
-        Node countdownInfo = countdownInfos.item(0);
-        if(countdownInfo != null) {
-          attributes = countdownInfo.getAttributes();
-          String countdownString = attributes.getNamedItem("minutes").getNodeValue();
-          countdown = Integer.parseInt(countdownString);
-        } else {
-          countdown = 0;
-        }
-        
+        countdown = prefs.readFirstLong("countdown", "minutes");
         //Get count pay amount
-        NodeList countpayInfos = doc.getElementsByTagName("countpay");
-        Node countpayInfo = countpayInfos.item(0);
-        if(countpayInfo != null) {
-          attributes = countpayInfo.getAttributes();
-          String countpayString = attributes.getNamedItem("amount").getNodeValue();
-          countpay = Float.parseFloat(countpayString);
-        } else {
-          countpay = 0;
-        }
-        
+        countpay = prefs.readFirstFloat("countpay", "amount");
         //Get save interval
-        NodeList saveInfos = doc.getElementsByTagName("saveinfo");
-        Node saveInfo = saveInfos.item(0);
-        if(saveInfo != null) {
-          attributes = saveInfo.getAttributes();
-          String saveIntervalString = attributes.getNamedItem("seconds").getNodeValue();
-          saveInterval = Integer.parseInt(saveIntervalString);
-        } else {
-          saveInterval = 60;
-        }
-        
+        saveInterval = prefs.readFirstInt("saveinfo", "seconds");
         //Get idle time settings
-        NodeList idleTimes = doc.getElementsByTagName("idle");
-        Node idleTime = idleTimes.item(0);
-        if(idleTime != null) {
-          attributes = idleTime.getAttributes();
-          String allowedIdleString = attributes.getNamedItem("seconds").getNodeValue();
-          allowedIdle = Integer.parseInt(allowedIdleString);
-          
-          Node idleActionItem = attributes.getNamedItem("action");
-          if(idleActionItem != null) {
-            String idleActionString = idleActionItem.getNodeValue();
-            if(idleActionString.equals("project"))
-              idleAction = ClntComm.IDLE_PROJECT;
-            else
-              idleAction = ClntComm.IDLE_PAUSE;
-          } else {
-            idleAction = ClntComm.IDLE_PAUSE;
-          }
-          
-          Node idleProjectItem = attributes.getNamedItem("project");
-          if(idleProjectItem != null)
-            idleProject = idleProjectItem.getNodeValue();
-          else
-            idleProject = "";
-        } else {
-          allowedIdle = 0;
-          idleAction = ClntComm.IDLE_PAUSE;
-          idleProject = "";
-        }
-        
+        allowedIdle = prefs.readFirstInt("idle", "seconds");
+        String idleActionString = prefs.readFirstString("idle", "action");
+        if(idleActionString.equals("project")) idleAction = ClntComm.IDLE_PROJECT;
+        else idleAction = ClntComm.IDLE_PAUSE;
+        idleProject = prefs.readFirstString("idle", "project");        
         //Get skins
-        NodeList skinElements = doc.getElementsByTagName("skin");
-        Node skinElement = skinElements.item(0);
-        if(skinElement != null) {
-          attributes = skinElement.getAttributes();
-          Node themePackItem = attributes.getNamedItem("theme");
-          if(themePackItem != null) themePack = themePackItem.getNodeValue();
-          else themePack = "";
-          Node kdeThemeItem = attributes.getNamedItem("kde");
-          if(kdeThemeItem != null) kdeTheme = kdeThemeItem.getNodeValue();
-          else kdeTheme = "";
-          Node gtkThemeItem = attributes.getNamedItem("gtk");
-          if(gtkThemeItem != null) gtkTheme = gtkThemeItem.getNodeValue();
-          else gtkTheme = "";
-        } else {
-          themePack = "";
-          kdeTheme = "";
-          gtkTheme = "";
-        }
-      } catch (SAXParseException e) {
-        System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
+        themePack = prefs.readFirstString("skin", "theme");
+        kdeTheme = prefs.readFirstString("skin", "kde");
+        gtkTheme = prefs.readFirstString("skin", "gtk");
       } catch (SAXException e) {
         System.err.println("Error reading prefs file: "+e);
         e.printStackTrace(System.out);
@@ -790,111 +688,41 @@ public class PrefsPanel extends javax.swing.JFrame {
     }
     
     private void savePrefs() {
-      File prefs = new File(CsltComm.prefsDir, "ClntComm.def");
       try {
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document doc;
-        Element rootNode, newNode;
-        
-        if (prefs.exists()) {
-          doc = docBuilder.parse(prefs);
-          rootNode = doc.getDocumentElement();
-        } else {
-          doc = docBuilder.newDocument();
-          rootNode = doc.createElement("clntcomm");
-          rootNode.setAttribute("version", "2.2");
-          doc.appendChild(rootNode);
-        }
-        rootNode.normalize();
-        
-        
+        PrefsFile prefs = new PrefsFile("ClntComm.def");        
         //Save time format
-        NodeList timeFormats = doc.getElementsByTagName("timeformat");
-        newNode = doc.createElement("timeformat");
-        if(secondButton.isSelected()) newNode.setAttribute("type", "seconds");
-        if(minuteButton.isSelected()) newNode.setAttribute("type", "minutes");
-        Node timeFormatting = timeFormats.item(0);
-        if(timeFormatting != null) rootNode.replaceChild(newNode, timeFormatting);
-        else rootNode.appendChild(newNode);
-        
+        if(secondButton.isSelected()) prefs.saveFirst("timeformat", "type", "seconds");
+        if(minuteButton.isSelected()) prefs.saveFirst("timeformat", "type", "minutes");
         //Save animation flag
-        NodeList iconAnimations = doc.getElementsByTagName("animations");
-        newNode = doc.createElement("animations");
-        newNode.setAttribute("display", ""+showIconCheckBox.isSelected());
-        Node iconAnimation = iconAnimations.item(0);
-        if(iconAnimation != null) rootNode.replaceChild(newNode, iconAnimation);
-        else rootNode.appendChild(newNode);
-        
+        prefs.saveFirst("animations", "display", showIconCheckBox.isSelected());
         //Save attribute flag settings
         int attributes = 0;
         if(billableCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_BILLABLE;
         if(exportCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_EXPORT;
-        
-        NodeList attributeFlags = doc.getElementsByTagName("attributes");
-        newNode = doc.createElement("attributes");
-        newNode.setAttribute("value", Integer.toString(attributes));
-        Node attributeFlag = attributeFlags.item(0);
-        if(attributeFlag != null) rootNode.replaceChild(newNode, attributeFlag);
-        else rootNode.appendChild(newNode);
-        
+        prefs.saveFirst("attributes", "value", attributes);
         //Save countdown
-        NodeList countdownInfos = doc.getElementsByTagName("countdown");
-        newNode = doc.createElement("countdown");
-        Node countdownInfo = countdownInfos.item(0);
-        if(countdownCheckBox.isSelected()) {
-          newNode.setAttribute("minutes", Long.toString(stringToMinutes(countdownField.getText())));
-          if(countdownInfo != null) rootNode.replaceChild(newNode, countdownInfo);
-          rootNode.appendChild(newNode);
-        } else {
-          if(countdownInfo != null) rootNode.removeChild(countdownInfo);
-        }
-
+        if(countdownCheckBox.isSelected())
+          prefs.saveFirst("countdown", "minutes", stringToMinutes(countdownField.getText()));
+        else prefs.removeFirstElement("countdown");
         //Save pay count
-        NodeList paycountInfos = doc.getElementsByTagName("countpay");
-        newNode = doc.createElement("countpay");
-        Node paycountInfo = paycountInfos.item(0);
-        if(payCheckBox.isSelected()) {
-          newNode.setAttribute("amount", payField.getText());
-          if(paycountInfo != null) rootNode.replaceChild(newNode, paycountInfo);
-          rootNode.appendChild(newNode);
-        } else {
-          if(paycountInfo != null) rootNode.removeChild(paycountInfo);
-        }
-
+        if(payCheckBox.isSelected())
+          prefs.saveFirst("countpay", "amount", payField.getText());
+        else prefs.removeFirstElement("countpay");
         //Save save interval
-        NodeList saveInfos = doc.getElementsByTagName("saveinfo");
-        newNode = doc.createElement("saveinfo");
-        newNode.setAttribute("seconds", saveField.getText());
-        Node saveInfo = saveInfos.item(0);
-        if(saveInfo != null) rootNode.replaceChild(newNode, saveInfo);
-        else rootNode.appendChild(newNode);
-        
+        prefs.saveFirst("saveinfo", "seconds", saveField.getText());
         //Save idle info
-        NodeList idleTimes = doc.getElementsByTagName("idle");
-        newNode = doc.createElement("idle");
-        newNode.setAttribute("seconds", idleCheckBox.isSelected() ? idleField.getText() : "0");
-        newNode.setAttribute("action", projectIdleRadioButton.isSelected() ? "project" : "pause");
-        newNode.setAttribute("project", projectIdleComboBox.getSelectedItem().toString());
-        Node idleTime = idleTimes.item(0);
-        if(idleTime != null) rootNode.replaceChild(newNode, idleTime);
-        else rootNode.appendChild(newNode);
-        
+        String[] attributelist = {"seconds", "action", "project"};
+        String[] valuelist = {idleCheckBox.isSelected() ? idleField.getText() : "0", 
+        projectIdleRadioButton.isSelected() ? "project" : "pause",
+        projectIdleComboBox.getSelectedItem().toString()};
+        prefs.saveFirst("idle", attributelist, valuelist);
         //Save skin settings
-        NodeList skinElements = doc.getElementsByTagName("skin");
-        newNode = doc.createElement("skin");
-        if(themeCheckBox.isSelected()) newNode.setAttribute("theme", themeField.getText());
-        if(kdeCheckBox.isSelected()) newNode.setAttribute("kde", kdeField.getText());
-        if(gtkCheckBox.isSelected()) newNode.setAttribute("gtk", gtkField.getText());
-        Node skinElement = skinElements.item(0);
-        if(skinElement != null) rootNode.replaceChild(newNode, skinElement);
-        else rootNode.appendChild(newNode);
+        if(themeCheckBox.isSelected()) prefs.saveFirst("skin", "theme", themeField.getText());
+        if(kdeCheckBox.isSelected()) prefs.saveFirst("skin", "kde", kdeField.getText());
+        if(gtkCheckBox.isSelected()) prefs.saveFirst("skin", "gtk", gtkField.getText());
         
         //Write to file
-        doc.getDocumentElement().normalize();
-        TransformerFactory fac = TransformerFactory.newInstance();
-        Transformer trans = fac.newTransformer();
-        trans.transform(new DOMSource(doc.getDocumentElement()), new StreamResult(prefs));
+        prefs.write();
       } catch (ParserConfigurationException e) {
         System.err.println("Error writing prefs file: "+e);
       } catch (Exception e) {
