@@ -93,10 +93,11 @@ public class TableTree extends JTable {
         TreePath path = null;
         int numRows = tree.getRowCount();
 
-        for(int row=0; row < numRows;) { //Find each matching project, then check it
+        for(int row=0, oldRow=-1; row < numRows && row != oldRow;) { //Find each matching project, then check it
             path = tree.getNextMatch(selected.getProjectName(), row, javax.swing.text.Position.Bias.Forward);
-            if(path == null) return;
+            if(path == null) return; //No matches at all
             TimeRecord record = (TimeRecord)path.getLastPathComponent();
+            oldRow = row; //Are we checking the same row over again?
             row = tree.getRowForPath(path)+1;
             if(record.getGroupName().equals(selected.getGroupName()) && record.getGroupName().equals(selected.getGroupName())) {
                 tree.setSelectionPath(path);
