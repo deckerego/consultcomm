@@ -417,14 +417,10 @@ public void reload() {
 }
 
 private void setTimer() {
-    System.out.print("SetTimer: "+timeList.getSelectedRecord());
     if(timeList.getSelectedRecord() >= 0){
         long currTime = System.currentTimeMillis()/1000;
-        System.out.print(" @ "+currTime);
         timerTask.startTime = currTime - times.getSeconds(timeList.getSelectedRecord());
-        System.out.print(" to "+timerTask);
     }
-    System.out.print("\n");
 }
 
 /**
@@ -460,13 +456,16 @@ public void editWindow(int i){
         if(newRecord) times.add(record);
         
         timeList.setModel(new TableTreeModel(times, timeFormat));
-        initSelectionModel();
+        ListSelectionModel rowSM = timeList.getSelectionModel();
+        rowSM.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent evt) {
+                selectionChanged(evt);
+            }
+        });
         
         changes.firePropertyChange("times", oldTimes, times);
-        if(selectedIndex == -1) //Nothing selected
-            timeList.setSelectedRecord(index);
-        else
-            timeList.setSelectedRecord(selectedIndex);
+        if(selectedIndex == -1) timeList.setSelectedRecord(index); //Nothing selected
+        else timeList.setSelectedRecord(selectedIndex);
         refreshTotalTime();
     }
 }
