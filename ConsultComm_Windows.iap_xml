@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- This script was automatically generated using Zero G's InstallAnywhere 5.5 Standard, Build 1983
      STATUS: Fully-Functional UNLICENSED Trial Edition
-     DATE:   Sun May 25 17:45:45 EST 2003 -->
+     DATE:   Sun Jun 08 21:15:33 EST 2003 -->
 <InstallAnywhere_Deployment_Project increments="1427">
 	<!-- ** DO NOT EDIT ** Essential authorization and configuration data ** DO NOT EDIT ** -->
 	<essentialScriptInfo>
@@ -10,7 +10,7 @@
 		<scriptID>12,42,11,85,78,76,73,67,69,78,83,69,68</scriptID>
 		<buildID>3,13,71,76,105,110,117,120,44,32,50,46,52,46,50,48,45,52,71,66,44,32,105,51,56,54,59,32,74,97,118,97,32,49,46,51,46,49,95,48,56,44,32,83,117,110,32,77,105,99,114,111,115,121,115,116,101,109,115,32,73,110,99,46,44,32,104,116,116,112,58,47,47,106,97,118,97,46,115,117,110,46,99,111,109,47,59,32,101,110,44,32,85,83,59,32,73,83,79,45,56,56,53,57,45,49</buildID>
 		<!-- The authorizationID may change between project saves and builds.  This does not effect the integrity of the project, nor do changes in this value represent changes in the actual InstallAnywhere project. -->
-		<authorizationID>1,0,0,-16,99,122,-96,-32,64,99,70,101,125,121,100,96,105,48,48,49,56,52,67,98,113,112,124,44,81,100,99,62,57,15,14,15,13,31,113,5,0,0,0</authorizationID>
+		<authorizationID>1,0,0,-16,-93,90,-64,80,64,99,70,101,125,121,100,96,105,48,48,49,56,52,67,98,113,112,124,44,81,100,99,62,57,15,14,1,12,24,122,5,0,0,0</authorizationID>
 	</essentialScriptInfo>
 	<installationObjects uniqueObjects="76">
 		<object class="com.zerog.ia.installer.Installer" objectID="9c95314cb3c9">
@@ -166,7 +166,7 @@ it will search for ones in this list]]></string>
 								</object>
 							</method>
 							<method name="addElement">
-								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="74ffaa1597dc">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="bdd0c8739731">
 									<property name="propertyValue">
 										<string><![CDATA[CsltComm]]></string>
 									</property>
@@ -175,6 +175,19 @@ it will search for ones in this list]]></string>
 									</property>
 									<property name="propertyComment">
 										<string><![CDATA[the class that contains the main method for the application]]></string>
+									</property>
+								</object>
+							</method>
+							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="a1ddbf4cb3d0">
+									<property name="propertyValue">
+										<string><![CDATA[The application either could not find a Java VM, or the Java VM on this system is too old. The application requires Java 1.1.5, Microsoft Java version 2750, or Mac OS Runtime for Java 2.0. These can be downloaded from http://java.sun.com/products/jdk/1.1/jre/ or http://www.microsoft.com/java or http://www.apple.com/java]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.nl.message.vm.not.loaded]]></string>
+									</property>
+									<property name="propertyComment">
+										<string><![CDATA[text to show the user in a dialog if NO VM can be found.]]></string>
 									</property>
 								</object>
 							</method>
@@ -189,19 +202,6 @@ it will search for ones in this list]]></string>
 									<property name="propertyComment">
 										<string><![CDATA[leave blank for no output, "console" to send to a console window,
 and any path to a file to save to the file]]></string>
-									</property>
-								</object>
-							</method>
-							<method name="addElement">
-								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="a1ddbf4cb3d0">
-									<property name="propertyValue">
-										<string><![CDATA[The application either could not find a Java VM, or the Java VM on this system is too old. The application requires Java 1.1.5, Microsoft Java version 2750, or Mac OS Runtime for Java 2.0. These can be downloaded from http://java.sun.com/products/jdk/1.1/jre/ or http://www.microsoft.com/java or http://www.apple.com/java]]></string>
-									</property>
-									<property name="propertyName">
-										<string><![CDATA[lax.nl.message.vm.not.loaded]]></string>
-									</property>
-									<property name="propertyComment">
-										<string><![CDATA[text to show the user in a dialog if NO VM can be found.]]></string>
 									</property>
 								</object>
 							</method>
@@ -823,7 +823,7 @@ Press "Done" to quit the installer.]]></string>
 				<object class="java.util.Properties">
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.project.save.last.date]]></string>
-						<string><![CDATA[Sun May 25 17:45:44 EST 2003]]></string>
+						<string><![CDATA[Sun Jun 08 21:15:33 EST 2003]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.installer.options.heap.size.max]]></string>
@@ -867,7 +867,7 @@ Press "Done" to quit the installer.]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.project.build.last.date]]></string>
-						<string><![CDATA[Sun May 25 17:45:44 EST 2003]]></string>
+						<string><![CDATA[Sun Jun 08 21:15:33 EST 2003]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.installer.options.heap.size.initial]]></string>
@@ -1028,7 +1028,7 @@ Press "Done" to quit the installer.]]></string>
 						<string><![CDATA[ConsultComm 3 Beta]]></string>
 					</property>
 					<property name="installerName">
-						<string><![CDATA[CsltComm]]></string>
+						<string><![CDATA[ConsultComm-3rc4]]></string>
 					</property>
 					<property name="productName">
 						<string><![CDATA[ConsultComm 3 Beta]]></string>
@@ -1186,6 +1186,7 @@ Press "Done" to quit the installer.]]></string>
 										<object refID="7441482d9736"/>
 									</property>
 									<installChildren>
+										<object refID="7441482d9736"/>
 										<object refID="9c953158b3c9"/>
 										<object class="com.zerog.ia.installer.actions.InstallFile" objectID="9c9531a2b3c9">
 											<property name="unixPermissions">
@@ -1472,7 +1473,6 @@ Press "Done" to quit the installer.]]></string>
 												<object refID="fbed7d6ea30f"/>
 											</visualChildren>
 										</object>
-										<object refID="7441482d9736"/>
 										<object refID="7441482e9736"/>
 									</installChildren>
 								</object>
@@ -1657,19 +1657,6 @@ it will search for ones in this list]]></string>
 														</object>
 													</method>
 													<method name="addElement">
-														<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="9c95318eb3c9">
-															<property name="propertyValue">
-																<string><![CDATA[The application either could not find a Java VM, or the Java VM on this system is too old. The application requires Java 1.1.5, Microsoft Java version 2750, or Mac OS Runtime for Java 2.0. These can be downloaded from http://java.sun.com/products/jdk/1.1/jre/ or http://www.microsoft.com/java or http://www.apple.com/java]]></string>
-															</property>
-															<property name="propertyName">
-																<string><![CDATA[lax.nl.message.vm.not.loaded]]></string>
-															</property>
-															<property name="propertyComment">
-																<string><![CDATA[text to show the user in a dialog if NO VM can be found.]]></string>
-															</property>
-														</object>
-													</method>
-													<method name="addElement">
 														<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="9c95318fb3c9">
 															<property name="propertyValue">
 																<string><![CDATA[]]></string>
@@ -1680,6 +1667,19 @@ it will search for ones in this list]]></string>
 															<property name="propertyComment">
 																<string><![CDATA[leave blank for no input, "console" to read from the console window,
 and any path to a file to read from that file]]></string>
+															</property>
+														</object>
+													</method>
+													<method name="addElement">
+														<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="9c95318eb3c9">
+															<property name="propertyValue">
+																<string><![CDATA[The application either could not find a Java VM, or the Java VM on this system is too old. The application requires Java 1.1.5, Microsoft Java version 2750, or Mac OS Runtime for Java 2.0. These can be downloaded from http://java.sun.com/products/jdk/1.1/jre/ or http://www.microsoft.com/java or http://www.apple.com/java]]></string>
+															</property>
+															<property name="propertyName">
+																<string><![CDATA[lax.nl.message.vm.not.loaded]]></string>
+															</property>
+															<property name="propertyComment">
+																<string><![CDATA[text to show the user in a dialog if NO VM can be found.]]></string>
 															</property>
 														</object>
 													</method>
