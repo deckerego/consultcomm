@@ -59,6 +59,15 @@ class TimeRecordSet {
     }
     return parseSeconds(total);
   }
+  public String getExportTimeString() {
+    long total = 0;
+    Enumeration records = timeRecords.elements();
+    while (records.hasMoreElements()) {
+      TimeRecord record = (TimeRecord)records.nextElement();
+      if(record.export) total += record.seconds;
+    }
+    return parseSeconds(total);
+  }
   public String getTotalTimeString() {
     long total = 0;
     Enumeration records = timeRecords.elements();
