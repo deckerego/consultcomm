@@ -90,6 +90,8 @@ public class TableTree extends JTable {
         TreeModel model = tree.getModel();
         TimeRecordSet times = (TimeRecordSet)model.getRoot();
         TimeRecord selected = times.elementAt(index);
+        if(selected == null) return; //Quit if we don't have a selected record
+        
         TreePath path = null;
         int numRows = tree.getRowCount();
 
@@ -117,6 +119,7 @@ public class TableTree extends JTable {
         TableTreeModel model = (TableTreeModel)tree.getModel();
         TimeRecordSet times = (TimeRecordSet)model.getRoot();
         TimeRecord selected = times.elementAt(index);
+        if(selected == null) return; //Quit if we don't have a selected record
         model.setValueAt(value, selected, column);
     }
     
