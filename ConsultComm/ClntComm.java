@@ -501,7 +501,14 @@ private void readPrefs() {
         times = (TimeRecordSet)d.readObject();
         d.close();
         
+        //Read in prefs file, close input stream
+        prefsFile = new File(prefsdir, "CsltComm.xml");
+        inStream = new FileInputStream(prefsFile);
         Preferences prefs = Preferences.userRoot().node("CsltComm");
+        prefs.importPreferences(inStream);
+        inStream.close();
+        
+        //Read prefs
         double width = prefs.getDouble("windowWidth", (double)256); //Get window dimensions
         double height = prefs.getDouble("windowHeight", (double)256);
         windowSize = new java.awt.Dimension((int)width, (int)height);
@@ -526,6 +533,7 @@ private void savePrefs() {
         e.writeObject(times);
         e.close();
         
+        //save prefs
         Preferences prefs = Preferences.userRoot().node("CsltComm");
         java.awt.Dimension size = getSize(); //Save window dimensions
         prefs.putDouble("windowWidth", size.getWidth());
@@ -533,9 +541,14 @@ private void savePrefs() {
         TableColumn projectColumn = timeList.getColumnModel().getColumn(0); //Save project column dimensions
         prefs.putInt("columnWidth", projectColumn.getPreferredWidth());
         prefs.putInt("showTotal", showTotal); //Save show billable/total time flag
-        
-        //Write to file
+
+        //Write to file, close output stream
         prefs.flush();
+        prefsFile = new File(prefsdir, "CsltComm.xml");
+        outStream = new FileOutputStream(prefsFile);
+        prefs.exportNode(outStream);
+        outStream.flush();
+        outStream.close();
     } catch (Exception e) {
         System.err.println("Cannot write to prefs file(s): "+e);
     }
