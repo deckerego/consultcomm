@@ -11,8 +11,8 @@
   <target depends="init" name="compile">
     <javac deprecation="on" optimize="on" srcdir="${src}">
       <classpath>
-        <pathelement location="skinlf.jar"/>
-        <pathelement location="jhbasic.jar"/>
+        <pathelement location="../skinlf.jar"/>
+        <pathelement location="../jhbasic.jar"/>
       </classpath>
     </javac>
     <jar destfile="CsltComm.jar">
@@ -34,11 +34,6 @@
   <target depends="compile" name="dryrun">
     <java classname="CsltComm" fork="yes">
       <jvmarg value="-Djava.library.path=syslibs"/> 
-      <classpath>
-        <pathelement location="skinlf.jar"/>
-        <pathelement location="jhbasic.jar"/>
-        <pathelement path="${src}"/>
-      </classpath>
     </java>
   </target>
 

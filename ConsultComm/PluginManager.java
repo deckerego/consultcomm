@@ -102,7 +102,7 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
 
   private void loadIcons() {
       try{
-          for(int i=0; i<pluginList.size(); i++) {
+          for(int i=0, max=pluginList.size(); i<max; i++) {
               BeanInfo pluginInfo = Introspector.getBeanInfo(pluginList.elementAt(i).getClass());
               javax.swing.JButton button = new javax.swing.JButton();
               java.awt.Image icon = pluginInfo.getIcon(SimpleBeanInfo.ICON_COLOR_32x32);
@@ -113,6 +113,8 @@ public class PluginManager extends javax.swing.JFrame implements ActionListener 
           }
       } catch(IntrospectionException e) {
           System.err.println("Couldn't load icons: "+e);
+      } catch (NullPointerException e) {
+          System.err.println("No plugins found! "+e);
       }
   }
 
