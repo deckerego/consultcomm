@@ -9,6 +9,9 @@ import java.awt.*;
  * from Java Archive Resources.
  */
 public class JarLoader {
+  public final static int FILE_OK = 0;
+  public final static int FILE_EXISTS = -1;
+  public final static int FILE_ERROR = -2;
     
     /**
      * Load an image stored within the <I>current</I> JAR file that contains
@@ -73,10 +76,11 @@ public class JarLoader {
      * library directory
      * @param path The relative path to the file stored in a Java Archive
      * @param resourceClass The Class that is relative to the JAR used for extraction
-     * @return True if the library was extracted, false if it was already present or an exception occured
+     * @return <li>FILE_EXISTS if the file exists
+     *         <li>FILE_ERRROR if there was an error extracting the file
      * @see JarLoader#loadFile(String, File, Class)
      */
-    public static boolean loadNativeLibrary(String path, Class resourceClass) {
+    public static int loadNativeLibrary(String path, Class resourceClass) {
         return loadFile(path, PluginManager.libsdir, resourceClass);
     }
     
@@ -86,14 +90,15 @@ public class JarLoader {
      * @param path The relative path to the file stored in a Java Archive
      * @param destinationPath The directory to extract the file into
      * @param resourceClass The Class that is relative to the JAR used for extraction
-     * @return True if the file was extracted, false if it was already present or an exception occured
+     * @return <li>FILE_EXISTS if the file exists
+     *         <li>FILE_ERRROR if there was an error extracting the file
      * @see JarLoader#loadFile(String, File, Class)
      */
-    public static boolean loadFile(String path, File destination, Class resourceClass) {
+    public static int loadFile(String path, File destination, Class resourceClass) {
         try{
             String fileName = path;
             File file = new File(destination, fileName);
-            if(file.exists()) return false; //Don't reload the file if it already exists
+            if(file.exists()) return FILE_EXISTS; //Don't reload the file if it already exists
             file.deleteOnExit();
             InputStream in = new BufferedInputStream(resourceClass.getResourceAsStream(path));
             OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
@@ -106,10 +111,10 @@ public class JarLoader {
             out.flush();
             out.close();
             in.close();
-            return true;
+            return FILE_OK;
         } catch(Exception e){
             System.err.println("Error loading file "+path+": "+e);
-            return false;
+            return FILE_ERROR;
         }
     }
     
