@@ -13,7 +13,8 @@ public class PrefsPanel extends javax.swing.JFrame {
   protected int timeFormat = ClntComm.MINUTES;
   protected boolean animateIcons = true;
   protected int saveInterval = 60;
-  protected int allowedIdle = 0;
+  protected int allowedIdle = 0, idleAction;
+  protected String idleProject;
   private ClntComm clntComm;
   private String themePack, kdeTheme, gtkTheme;
   private static boolean timeoutLibrary = false;
@@ -44,6 +45,7 @@ public class PrefsPanel extends javax.swing.JFrame {
    */
   private void initComponents() {//GEN-BEGIN:initComponents
     timeFormatGroup = new javax.swing.ButtonGroup();
+    idleGroup = new javax.swing.ButtonGroup();
     tabbedPane = new javax.swing.JTabbedPane();
     prefsPanel = new javax.swing.JPanel();
     prefsInputPanel = new javax.swing.JPanel();
@@ -55,9 +57,12 @@ public class PrefsPanel extends javax.swing.JFrame {
     save1Label = new javax.swing.JLabel();
     saveField = new javax.swing.JTextField();
     save2Label = new javax.swing.JLabel();
-    idle1Label = new javax.swing.JLabel();
+    idleCheckBox = new javax.swing.JCheckBox();
     idleField = new javax.swing.JTextField();
-    idle2Label = new javax.swing.JLabel();
+    idleLabel = new javax.swing.JLabel();
+    pauseIdleRadioButton = new javax.swing.JRadioButton();
+    projectIdleRadioButton = new javax.swing.JRadioButton();
+    projectIdleComboBox = new javax.swing.JComboBox(clntComm.times.getAllProjects());
     prefsButtonPanel = new javax.swing.JPanel();
     prefsOKButton = new javax.swing.JButton();
     prefsCancelButton = new javax.swing.JButton();
@@ -159,26 +164,56 @@ public class PrefsPanel extends javax.swing.JFrame {
     gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
     prefsInputPanel.add(save2Label, gridBagConstraints1);
     
-    idle1Label.setText("When idle for ");
-    idle1Label.setEnabled(timeoutLibrary);
+    idleCheckBox.setSelected(allowedIdle > 0);
+    idleCheckBox.setText("When idle for ");
+    idleCheckBox.setEnabled(timeoutLibrary);
+    idleCheckBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        toggleIdle(evt);
+      }
+    });
+    
     gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    prefsInputPanel.add(idle1Label, gridBagConstraints1);
+    gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
+    prefsInputPanel.add(idleCheckBox, gridBagConstraints1);
     
     idleField.setColumns(3);
     idleField.setText(Integer.toString(allowedIdle));
-    idleField.setEnabled(timeoutLibrary);
+    idleField.setEnabled(timeoutLibrary && idleCheckBox.isSelected());
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     prefsInputPanel.add(idleField, gridBagConstraints1);
     
-    idle2Label.setText(" seconds");
-    idle2Label.setEnabled(timeoutLibrary);
+    idleLabel.setText(" seconds");
+    idleLabel.setEnabled(timeoutLibrary);
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
     gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
     gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
-    prefsInputPanel.add(idle2Label, gridBagConstraints1);
+    prefsInputPanel.add(idleLabel, gridBagConstraints1);
+    
+    pauseIdleRadioButton.setSelected(idleAction == ClntComm.IDLE_PAUSE);
+    pauseIdleRadioButton.setText("Pause Timer");
+    idleGroup.add(pauseIdleRadioButton);
+    pauseIdleRadioButton.setEnabled(timeoutLibrary && idleCheckBox.isSelected());
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
+    prefsInputPanel.add(pauseIdleRadioButton, gridBagConstraints1);
+    
+    projectIdleRadioButton.setSelected(idleAction == ClntComm.IDLE_PROJECT);
+    projectIdleRadioButton.setText("Switch to project ");
+    idleGroup.add(projectIdleRadioButton);
+    projectIdleRadioButton.setEnabled(timeoutLibrary && idleCheckBox.isSelected());
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    prefsInputPanel.add(projectIdleRadioButton, gridBagConstraints1);
+    
+    projectIdleComboBox.setSelectedItem(idleProject);
+    projectIdleComboBox.setEnabled(timeoutLibrary && idleCheckBox.isSelected());
+    gridBagConstraints1 = new java.awt.GridBagConstraints();
+    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints1.anchor = java.awt.GridBagConstraints.WEST;
+    prefsInputPanel.add(projectIdleComboBox, gridBagConstraints1);
     
     prefsPanel.add(prefsInputPanel, java.awt.BorderLayout.CENTER);
     
@@ -262,6 +297,12 @@ public class PrefsPanel extends javax.swing.JFrame {
     tabbedPane.addTab("Flags", flagsPanel);
     
     skinsPanel.setLayout(new java.awt.BorderLayout());
+    
+    skinsPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+      public void componentShown(java.awt.event.ComponentEvent evt) {
+        showSkins(evt);
+      }
+    });
     
     skinsInputPanel.setLayout(new java.awt.GridBagLayout());
     java.awt.GridBagConstraints gridBagConstraints3;
@@ -404,6 +445,24 @@ public class PrefsPanel extends javax.swing.JFrame {
     
     pack();
   }//GEN-END:initComponents
+
+  private void toggleIdle(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleIdle
+    if(idleCheckBox.isSelected()) {
+      idleField.setEnabled(true);
+      pauseIdleRadioButton.setEnabled(true);
+      projectIdleRadioButton.setEnabled(true);
+      projectIdleComboBox.setEnabled(true);
+    } else {
+      idleField.setEnabled(false);
+      pauseIdleRadioButton.setEnabled(false);
+      projectIdleRadioButton.setEnabled(false);
+      projectIdleComboBox.setEnabled(false);
+    }
+  }//GEN-LAST:event_toggleIdle
+
+  private void showSkins(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showSkins
+    getRootPane().setDefaultButton(skinsOKButton);
+  }//GEN-LAST:event_showSkins
 
   private void findKDE(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findKDE
     final javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
@@ -574,15 +633,34 @@ public class PrefsPanel extends javax.swing.JFrame {
           saveInterval = 60;
         }
         
-        //Get allowed idle time
+        //Get idle time settings
         NodeList idleTimes = doc.getElementsByTagName("idle");
         if(idleTimes.getLength() > 0) {
           Node idleTime = idleTimes.item(0);
           attributes = idleTime.getAttributes();
           String allowedIdleString = attributes.getNamedItem("seconds").getNodeValue();
           allowedIdle = Integer.parseInt(allowedIdleString);
+          
+          Node idleActionItem = attributes.getNamedItem("action");
+          if(idleActionItem != null) {
+            String idleActionString = idleActionItem.getNodeValue();
+            if(idleActionString.equals("project"))
+              idleAction = ClntComm.IDLE_PROJECT;
+            else
+              idleAction = ClntComm.IDLE_PAUSE;
+          } else {
+            idleAction = ClntComm.IDLE_PAUSE;
+          }
+          
+          Node idleProjectItem = attributes.getNamedItem("project");
+          if(idleProjectItem != null)
+            idleProject = idleProjectItem.getNodeValue();
+          else
+            idleProject = "";
         } else {
           allowedIdle = 0;
+          idleAction = ClntComm.IDLE_PAUSE;
+          idleProject = "";
         }
         
         //Get skins
@@ -686,10 +764,12 @@ public class PrefsPanel extends javax.swing.JFrame {
           rootNode.appendChild(newNode);
         }
         
-        //Save idle time
+        //Save idle info
         NodeList idleTimes = doc.getElementsByTagName("idle");
         newNode = doc.createElement("idle");
         newNode.setAttribute("seconds", idleField.getText());
+        newNode.setAttribute("action", projectIdleRadioButton.isSelected() ? "project" : "pause");
+        newNode.setAttribute("project", projectIdleComboBox.getSelectedItem().toString());
         if(idleTimes.getLength() > 0) {
           Node idleTime = idleTimes.item(0);
           rootNode.replaceChild(newNode, idleTime);
@@ -725,6 +805,7 @@ public class PrefsPanel extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup timeFormatGroup;
+    private javax.swing.ButtonGroup idleGroup;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JPanel prefsPanel;
     private javax.swing.JPanel prefsInputPanel;
@@ -736,9 +817,12 @@ public class PrefsPanel extends javax.swing.JFrame {
     private javax.swing.JLabel save1Label;
     private javax.swing.JTextField saveField;
     private javax.swing.JLabel save2Label;
-    private javax.swing.JLabel idle1Label;
+    private javax.swing.JCheckBox idleCheckBox;
     private javax.swing.JTextField idleField;
-    private javax.swing.JLabel idle2Label;
+    private javax.swing.JLabel idleLabel;
+    private javax.swing.JRadioButton pauseIdleRadioButton;
+    private javax.swing.JRadioButton projectIdleRadioButton;
+    private javax.swing.JComboBox projectIdleComboBox;
     private javax.swing.JPanel prefsButtonPanel;
     private javax.swing.JButton prefsOKButton;
     private javax.swing.JButton prefsCancelButton;
