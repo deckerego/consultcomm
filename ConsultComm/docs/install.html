@@ -1,0 +1,81 @@
+<HTML>
+<BODY>
+<BR>
+<FONT Size="+1">To install Consultant Communicator:</FONT>
+<P>
+
+<LI><B>If you have the binary package (the file CsltComm.zip)</B>
+<OL>
+<LI>Make sure that you have Sun's Java JRE 1.3 or higher installed. To see if 
+the JRE has been installed or not, simply type:<BR>
+&#160<CODE>> java -version</CODE><BR>
+at the command line. If a "program not found" error occurs, install the Java 
+Runtime Environment, available from <A 
+HREF="http://java.sun.com/j2se/1.3/jre/">http://java.sun.com/j2se/1.3/jre/</A>
+<P>
+
+<LI><U>If you are <B>not</B> using Java 2 1.4 or higher you must download the 
+Java API for XML processing.</U> Visit <A 
+HREF="http://java.sun.com/xml/download.html">http://java.sun.com/xml/download.html</A> 
+to download the package, then place the included JAR files (jaxp.jar, 
+xalan.jar and crimson.jar) into your Java Extensions directory 
+(/usr/java/jre/lib/ext in Linux, C:\java\jre\lib\ext in Windows).
+<P>
+
+<LI>Unzip the contents of CsltComm.zip into a new folder (if you don't have a 
+utility to unzip files, check out <A 
+HREF="http://www.winzip.com">http://www.winzip.com</A>)
+<P>
+
+<LI>Double-click on the file CsltComm.jar that you just extracted.
+</OL>
+<P>
+
+<LI><B>If you want to build a version from the source pacakge 
+(CsltComm.src.tar.gz)</B>
+<OL>
+<LI>Make sure you have Sun's Java SDK 1.3 or higher installed (go to <A 
+HREF="http://java.sun.com/j2se/1.3/">http://java.sun.com/j2se/1.3/</A> if you 
+need a copy)
+<P>
+
+<LI>If you are NOT using Java 2 1.4 or higher you must download the Java API 
+for XML processing. Visit <A 
+HREF="http://java.sun.com/xml/download.html">http://java.sun.com/xml/download.html</A> 
+to download the package, then place the included JAR files (jaxp.jar, 
+xalan.jar and crimson.jar) into your Java Extensions directory 
+(/usr/java/jre/lib/ext in Linux, C:\java\jre\lib\ext in Windows).
+<P>
+
+<LI>Unzip the contents of CsltComm.src.tar.gz into a new folder
+<P>
+
+<LI>Change into the folder you extracted the files to
+<P>
+
+<LI>Run the command 'make' followed by 'make package'
+<P>
+
+<LI>Double-click on the file CsltComm.jar that should have been build by step 
+3
+</OL>
+<P>
+
+<LI><B>JDBC Connections</B>
+<P>
+<DD>If you want to use JDBC connectivity, you'll need to have a .jar or .zip 
+file that contains your JDBC database driver. I can't provide that... but Sun 
+offers a list at <A 
+HREF="http://industry.java.sun.com/products/jdbc/drivers">http://industry.java.sun.com/products/jdbc/drivers</A>  
+. You can also use the JDBC-ODBC Bridge Driver that Sun releases with the 
+Java SDK - details concerning the Sun bridge driver are available at <A 
+HREF="http://java.sun.com/j2se/1.3/docs/guide/jdbc/getstart/bridge.doc.html">http://java.sun.com/j2se/1.3/docs/guide/jdbc/getstart/bridge.doc.html</A>.<BR>
+<DD>Once you have the correct JAR or ZIP files, place them in the Java 
+Runtime Environment's extensions directory (/usr/java/jre/lib/ext in Linux, 
+C:\java\jre\lib\ext in Windows). If the driver files are in the correct ext/
+directory, ConsultComm should be able to notice them automatically.<BR>
+<DD>For more information, read over the <A 
+HREF="http://sourceforge.net/docman/display_doc.php?docid=7030&group_id=34622">
+Connecting ConsultComm to a Database</A> document.
+</BODY>
+</HTML>
