@@ -45,27 +45,28 @@ public class JDBCControlPanel extends javax.swing.JFrame {
   private void initComponents() {//GEN-BEGIN:initComponents
     tabbedPane = new javax.swing.JTabbedPane();
     driverPanel = new javax.swing.JPanel();
-    titleLabel = new javax.swing.JLabel();
+    driverInputPanel = new javax.swing.JPanel();
     nameLabel = new javax.swing.JLabel();
     nameField = new javax.swing.JTextField();
     urlLabel = new javax.swing.JLabel();
     urlField = new javax.swing.JTextField();
     dbLabel = new javax.swing.JLabel();
     dbField = new javax.swing.JTextField();
+    tableLabel = new javax.swing.JLabel();
+    tableField = new javax.swing.JTextField();
+    driverButtonPanel = new javax.swing.JPanel();
     driverOK = new javax.swing.JButton();
     driverCancel = new javax.swing.JButton();
     driverTest = new javax.swing.JButton();
-    statusLabel = new javax.swing.JLabel();
-    tableLabel = new javax.swing.JLabel();
-    tableField = new javax.swing.JTextField();
     fieldPanel = new javax.swing.JPanel();
     fieldScrollPane = new javax.swing.JScrollPane();
     fieldMapping = new javax.swing.JTable();
     fieldButtonPanel = new javax.swing.JPanel();
     fieldOK = new javax.swing.JButton();
     fieldCancel = new javax.swing.JButton();
+    fieldRefresh = new javax.swing.JButton();
     
-    getContentPane().setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
+    getContentPane().setLayout(new java.awt.GridLayout(1, 1));
     
     addWindowListener(new java.awt.event.WindowAdapter() {
       public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -73,47 +74,57 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       }
     });
     
-    driverPanel.setLayout(new java.awt.GridBagLayout());
-    java.awt.GridBagConstraints gridBagConstraints1;
+    tabbedPane.setPreferredSize(new java.awt.Dimension(387, 244));
+    driverPanel.setLayout(new java.awt.BorderLayout());
     
-    titleLabel.setText("JDBC Driver Settings");
-    titleLabel.setForeground(java.awt.Color.black);
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    driverPanel.add(titleLabel, gridBagConstraints1);
+    driverInputPanel.setLayout(new java.awt.GridBagLayout());
+    java.awt.GridBagConstraints gridBagConstraints2;
     
     nameLabel.setText("Driver Name");
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    driverPanel.add(nameLabel, gridBagConstraints1);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    driverInputPanel.add(nameLabel, gridBagConstraints2);
     
     nameField.setColumns(20);
     nameField.setText(name);
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    driverPanel.add(nameField, gridBagConstraints1);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    driverInputPanel.add(nameField, gridBagConstraints2);
     
     urlLabel.setText("URL");
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    driverPanel.add(urlLabel, gridBagConstraints1);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    driverInputPanel.add(urlLabel, gridBagConstraints2);
     
     urlField.setColumns(20);
     urlField.setText(url);
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    driverPanel.add(urlField, gridBagConstraints1);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    driverInputPanel.add(urlField, gridBagConstraints2);
     
     dbLabel.setText("Database");
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    driverPanel.add(dbLabel, gridBagConstraints1);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    driverInputPanel.add(dbLabel, gridBagConstraints2);
     
     dbField.setColumns(20);
     dbField.setText(database);
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    driverPanel.add(dbField, gridBagConstraints1);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    driverInputPanel.add(dbField, gridBagConstraints2);
+    
+    tableLabel.setText("Table");
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    driverInputPanel.add(tableLabel, gridBagConstraints2);
+    
+    tableField.setColumns(20);
+    tableField.setText(table);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    driverInputPanel.add(tableField, gridBagConstraints2);
+    
+    driverPanel.add(driverInputPanel, java.awt.BorderLayout.CENTER);
     
     driverOK.setText("OK");
     driverOK.addActionListener(new java.awt.event.ActionListener() {
@@ -122,10 +133,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       }
     });
     
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.gridx = 0;
-    gridBagConstraints1.gridy = 5;
-    driverPanel.add(driverOK, gridBagConstraints1);
+    driverButtonPanel.add(driverOK);
     
     driverCancel.setText("Cancel");
     driverCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -134,10 +142,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       }
     });
     
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.gridx = 1;
-    gridBagConstraints1.gridy = 5;
-    driverPanel.add(driverCancel, gridBagConstraints1);
+    driverButtonPanel.add(driverCancel);
     
     driverTest.setText("Test");
     driverTest.addActionListener(new java.awt.event.ActionListener() {
@@ -146,33 +151,9 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       }
     });
     
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.gridx = 2;
-    gridBagConstraints1.gridy = 5;
-    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    driverPanel.add(driverTest, gridBagConstraints1);
+    driverButtonPanel.add(driverTest);
     
-    statusLabel.setText("Hit [Test] to verify settings");
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    driverPanel.add(statusLabel, gridBagConstraints1);
-    
-    tableLabel.setText("Table");
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.gridx = 0;
-    gridBagConstraints1.gridy = 4;
-    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    driverPanel.add(tableLabel, gridBagConstraints1);
-    
-    tableField.setColumns(20);
-    tableField.setText(table);
-    gridBagConstraints1 = new java.awt.GridBagConstraints();
-    gridBagConstraints1.gridx = 1;
-    gridBagConstraints1.gridy = 4;
-    gridBagConstraints1.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-    gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    driverPanel.add(tableField, gridBagConstraints1);
+    driverPanel.add(driverButtonPanel, java.awt.BorderLayout.SOUTH);
     
     tabbedPane.addTab("Driver Settings", driverPanel);
     
@@ -184,28 +165,43 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       }
     });
     
-    fieldMapping.setModel(new javax.swing.table.DefaultTableModel(
-    new Object [][] {
-      
-    },
-    new String [] {
-      
-    }
-    ));
+    fieldMapping.setModel(tableMap.toTableModel());
     fieldScrollPane.setViewportView(fieldMapping);
     
     fieldPanel.add(fieldScrollPane, java.awt.BorderLayout.CENTER);
     
     fieldButtonPanel.setLayout(new java.awt.GridBagLayout());
-    java.awt.GridBagConstraints gridBagConstraints2;
+    java.awt.GridBagConstraints gridBagConstraints3;
     
     fieldOK.setText("OK");
-    gridBagConstraints2 = new java.awt.GridBagConstraints();
-    fieldButtonPanel.add(fieldOK, gridBagConstraints2);
+    fieldOK.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        saveDriverSettings(evt);
+      }
+    });
+    
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    fieldButtonPanel.add(fieldOK, gridBagConstraints3);
     
     fieldCancel.setText("Cancel");
-    gridBagConstraints2 = new java.awt.GridBagConstraints();
-    fieldButtonPanel.add(fieldCancel, gridBagConstraints2);
+    fieldCancel.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        cancel(evt);
+      }
+    });
+    
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    fieldButtonPanel.add(fieldCancel, gridBagConstraints3);
+    
+    fieldRefresh.setText("Refresh");
+    fieldRefresh.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        refreshFieldMap(evt);
+      }
+    });
+    
+    gridBagConstraints3 = new java.awt.GridBagConstraints();
+    fieldButtonPanel.add(fieldRefresh, gridBagConstraints3);
     
     fieldPanel.add(fieldButtonPanel, java.awt.BorderLayout.SOUTH);
     
@@ -216,8 +212,18 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     pack();
   }//GEN-END:initComponents
 
+  private void refreshFieldMap(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshFieldMap
+      try {
+        tableMap.init();
+        fieldMapping.setModel(tableMap.toTableModel());
+        fieldMapping.repaint();
+      } catch (SQLException e) {
+        System.err.println("Couldn't initialize table mapping");
+      }
+  }//GEN-LAST:event_refreshFieldMap
+  
   private void showFieldMap(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_showFieldMap
-    if(! validated) {
+    if(tableMap.size() == 0) {
       try {
         tableMap.init();
         fieldMapping.setModel(tableMap.toTableModel());
@@ -234,18 +240,14 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     database = dbField.getText();
     table = tableField.getText();
     Connection conn = openConnection();
-    String statusString = null;
     if(conn != null) {
-      statusString = "Driver connection verified.";
+      JOptionPane.showMessageDialog(this, "Driver connection verified.", "Driver verified", JOptionPane.INFORMATION_MESSAGE);
       try {
         conn.close();
       } catch (SQLException e) {
         System.err.println("Couldn't close database driver during test.");
       }
-    } else {
-      statusString = "Driver test failed: "+errorList.elementAt(0);
     }
-    statusLabel.setText(statusString);
   }//GEN-LAST:event_testDriverSettings
   
   private void cancel(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancel
@@ -257,11 +259,16 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     url = urlField.getText();
     database = dbField.getText();
     table = tableField.getText();
+    for(int i=0; i < tableMap.size(); i++) {
+      String value = (String)fieldMapping.getValueAt(i, 2);
+      FieldMap record = (FieldMap)tableMap.elementAt(i);
+      record.valueExpression = value;
+    }
     savePrefs();
     exitForm();
   }//GEN-LAST:event_saveDriverSettings
-    private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
-      exitForm();
+      private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
+        exitForm();
     }//GEN-LAST:event_exitForm
     
     private void exitForm() {
@@ -285,6 +292,17 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         newNode.setAttribute("database", database);
         newNode.setAttribute("table", table);
         rootNode.appendChild(newNode);
+        
+        //Save field mappings
+        for(int i=0; i<tableMap.size(); i++){
+          FieldMap record = tableMap.elementAt(i);
+          newNode = doc.createElement("fieldmap");
+          newNode.setAttribute("name", record.dbFieldName);
+          newNode.setAttribute("type", ""+record.sqlType);
+          newNode.setAttribute("index", ""+record.dbFieldIndex);
+          newNode.setAttribute("value", record.valueExpression);
+          rootNode.appendChild(newNode);
+        }
         
         doc.getDocumentElement().normalize();
         TransformerFactory fac = TransformerFactory.newInstance();
@@ -318,6 +336,23 @@ public class JDBCControlPanel extends javax.swing.JFrame {
           userName = attributes.getNamedItem("username").getNodeValue();
           database = attributes.getNamedItem("database").getNodeValue();
           table = attributes.getNamedItem("table").getNodeValue();
+
+          NodeList fieldMaps = doc.getElementsByTagName("fieldmap");
+          tableMap.fieldMaps.clear();
+          for(int i=0; i<fieldMaps.getLength(); i++){
+            Node fieldMap = fieldMaps.item(i);
+            attributes = fieldMap.getAttributes();
+            Node nameNode = attributes.getNamedItem("name");
+            String fieldName = nameNode.getNodeValue();
+            Node typeNode = attributes.getNamedItem("type");
+            short sqlType = Short.parseShort(typeNode.getNodeValue());
+            Node indexNode = attributes.getNamedItem("index");
+            int fieldIndex = Integer.parseInt(indexNode.getNodeValue());
+            Node valueNode = attributes.getNamedItem("value");
+            String valueExpression = valueNode.getNodeValue();
+            FieldMap record = new FieldMap(fieldName, sqlType, fieldIndex, valueExpression);
+            tableMap.fieldMaps.addElement(record);
+          }
         } catch (SAXParseException e) {
           System.err.println("Error parsing prefs file, line "+e.getLineNumber()+": "+e.getMessage());
         } catch (SAXException e) {
@@ -362,6 +397,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         Properties properties = new Properties();
         properties.put("password", password);
         properties.put("user", userName);
+        properties.put("prompt", "false");
         conn = DriverManager.getConnection(url, properties);
         if(conn.isClosed()) {
           errorList.addElement("Cannot open connection");
@@ -380,9 +416,39 @@ public class JDBCControlPanel extends javax.swing.JFrame {
       } catch (Exception e) {
         errorList.addElement(e.toString());
       }
+      if(errorList.size() > 0)
+        JOptionPane.showMessageDialog(this, errorList.elementAt(0), "Database Connection Error", JOptionPane.ERROR_MESSAGE);
       return conn;
     }
-
+    
+    public boolean exportTimeRecordSet(TimeRecordSet times) {
+      Connection conn = openConnection();
+      try {
+        if(tableMap.size() == 0) return false;
+        String queryString = "?";
+        for(int i=1; i<tableMap.size(); i++) queryString += " ,?";
+        PreparedStatement insert = conn.prepareStatement("INSERT INTO "+database+"."+table+" VALUES ("+queryString+")");
+        for(int j=0; j < times.size(); j++) {
+          TimeRecord record = times.elementAt(j);
+          if(record.seconds <= 0 || ! record.billable) continue;
+          for(int i=0; i < tableMap.size(); i++) {
+            FieldMap fieldMap = tableMap.elementAt(i);
+            Object fieldValue = fieldMap.getValue(record);
+            insert.setObject(i+1, fieldValue);
+          }
+          insert.execute();
+        }
+        conn.commit();
+        insert.close();
+        conn.close();
+        return true;
+      } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, e.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
+        System.err.println("Could not export timelist to database: "+e);
+        return false;
+      }
+    }
+    
     public static String typeString(short sqlType) {
       switch(sqlType) {
         case java.sql.Types.ARRAY:
@@ -436,25 +502,26 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JPanel driverPanel;
-    private javax.swing.JLabel titleLabel;
+    private javax.swing.JPanel driverInputPanel;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameField;
     private javax.swing.JLabel urlLabel;
     private javax.swing.JTextField urlField;
     private javax.swing.JLabel dbLabel;
     private javax.swing.JTextField dbField;
+    private javax.swing.JLabel tableLabel;
+    private javax.swing.JTextField tableField;
+    private javax.swing.JPanel driverButtonPanel;
     private javax.swing.JButton driverOK;
     private javax.swing.JButton driverCancel;
     private javax.swing.JButton driverTest;
-    private javax.swing.JLabel statusLabel;
-    private javax.swing.JLabel tableLabel;
-    private javax.swing.JTextField tableField;
     private javax.swing.JPanel fieldPanel;
     private javax.swing.JScrollPane fieldScrollPane;
     private javax.swing.JTable fieldMapping;
     private javax.swing.JPanel fieldButtonPanel;
     private javax.swing.JButton fieldOK;
     private javax.swing.JButton fieldCancel;
+    private javax.swing.JButton fieldRefresh;
     // End of variables declaration//GEN-END:variables
     
     private class LoginDialog extends JDialog {
@@ -508,13 +575,14 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     
     private class TableMap {
       Vector fieldMaps;
-      private String[] titles = {"Field Name", "Type", "Value"};
-
+      private final String[] titles = {"Field Name", "Type", "Value"};
+      
       TableMap() {
         fieldMaps = new Vector();
       }
       
       protected void init() throws java.sql.SQLException {
+        fieldMaps.clear();
         Connection conn = openConnection();
         DatabaseMetaData dbmeta = conn.getMetaData();
         ResultSet cols = dbmeta.getColumns(null, database, table, null);
@@ -523,7 +591,15 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         cols.close();
         conn.close();
       }
+
+      public int size() {
+        return fieldMaps.size();
+      }
       
+      public FieldMap elementAt(int i) {
+        return (FieldMap)fieldMaps.elementAt(i);
+      }
+
       public DefaultTableModel toTableModel(){
         DefaultTableModel model = new javax.swing.table.DefaultTableModel(
         //Set to three empty columns
@@ -559,6 +635,13 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         valueExpression = "";
       }
       
+      FieldMap(String name, short type, int index, String value) {
+        dbFieldName = name;
+        sqlType = type;
+        dbFieldIndex = index;
+        valueExpression = value;
+      }
+      
       public String toString() {
         return dbFieldName+"("+dbFieldIndex+"): "+valueExpression+" type "+typeString(sqlType);
       }
@@ -568,12 +651,21 @@ public class JDBCControlPanel extends javax.swing.JFrame {
         Object realValue = null;
         while(toker.hasMoreTokens()) {
           String value = toker.nextToken();
-          String delim = value.substring(0,1);
-          value = value.substring(1).toUpperCase();
-          if(delim.equals("$")) {
+          if(value.equals("$")) {
+            value = toker.nextToken();
             if(value.equals("PROJECT")) {
               if(sqlType != java.sql.Types.CHAR) throw new ClassCastException("Must be CHAR SQL type for project name");
               else realValue = record.projectName;
+            } else if(value.equals("DECIMALDATE")) {
+              if(sqlType != java.sql.Types.DECIMAL) throw new ClassCastException("Must be DECIMAL type for entry date");
+              else {
+                Calendar today = Calendar.getInstance();
+                int year = today.get(Calendar.YEAR);
+                int month = today.get(Calendar.MONTH)+1;
+                int date = today.get(Calendar.DATE);
+                double cymd = (year*10000)+(month*100)+date;
+                realValue = new java.math.BigDecimal(cymd);
+              }
             } else if(value.equals("SQLDATE")) {
               if(sqlType != java.sql.Types.DATE) throw new ClassCastException("Must be DATE SQL type for entry date");
               else realValue = new java.sql.Date(System.currentTimeMillis());
@@ -581,8 +673,8 @@ public class JDBCControlPanel extends javax.swing.JFrame {
               if(sqlType != java.sql.Types.TIMESTAMP) throw new ClassCastException("Must be TIMESTAMP SQL type for entry timestamp");
               else realValue = new java.sql.Timestamp(System.currentTimeMillis());
             } else if(value.equals("HOURS")) {
-              if(sqlType != java.sql.Types.DECIMAL) throw new ClassCastException("Must be CHAR SQL type for project name");
-              else realValue = new java.math.BigDecimal(((double)record.seconds)/((double)(60*60+1000)));
+              if(sqlType != java.sql.Types.DECIMAL) throw new ClassCastException("Must be DECIMAL SQL type for project name");
+              else realValue = new java.math.BigDecimal(record.getHours(60*15));
             } else {
               System.err.println("Unknown expression variable: "+value);
             }

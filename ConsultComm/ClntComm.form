@@ -73,6 +73,15 @@
             <Property name="text" type="java.lang.String" value="Tools"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="dbexportMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Export to Table"/>
+              </Properties>
+
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportToTable"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jdbcMenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="JDBC Settings"/>

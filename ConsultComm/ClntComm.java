@@ -184,6 +184,7 @@ public class ClntComm extends javax.swing.JPanel {
     editMenuItem = new javax.swing.JMenuItem();
     zeroMenuItem = new javax.swing.JMenuItem();
     toolMenu = new javax.swing.JMenu();
+    dbexportMenuItem = new javax.swing.JMenuItem();
     jdbcMenuItem = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JPopupMenu();
     editPopupItem = new javax.swing.JMenuItem();
@@ -236,6 +237,14 @@ public class ClntComm extends javax.swing.JPanel {
     projectMenu.add(zeroMenuItem);
     menuBar.add(projectMenu);
     toolMenu.setText("Tools");
+    dbexportMenuItem.setText("Export to Table");
+    dbexportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        exportToTable(evt);
+      }
+    });
+    
+    toolMenu.add(dbexportMenuItem);
     jdbcMenuItem.setText("JDBC Settings");
     jdbcMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -332,6 +341,11 @@ public class ClntComm extends javax.swing.JPanel {
     add(menuPanel, java.awt.BorderLayout.NORTH);
     
   }//GEN-END:initComponents
+
+  private void exportToTable(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportToTable
+    JDBCControlPanel panel = new JDBCControlPanel();
+    if(panel.exportTimeRecordSet(times)) zeroProject(evt);
+  }//GEN-LAST:event_exportToTable
   
   private void editJDBC(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editJDBC
     JDBCControlPanel panel = new JDBCControlPanel();
@@ -461,6 +475,7 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   private javax.swing.JMenuItem editMenuItem;
   private javax.swing.JMenuItem zeroMenuItem;
   private javax.swing.JMenu toolMenu;
+  private javax.swing.JMenuItem dbexportMenuItem;
   private javax.swing.JMenuItem jdbcMenuItem;
   private javax.swing.JPopupMenu editMenu;
   private javax.swing.JMenuItem editPopupItem;
