@@ -506,7 +506,7 @@ public class JDBCControlPanel extends javax.swing.JFrame {
     table = tableField.getText();
     projectDatabase = projDBField.getText();
     projectTable = projTableField.getText();
-    if(projFieldComboBox.getItemCount() == 0) {
+    if(projFieldComboBox.getItemCount() != 0) {
       int projFieldIndex = projFieldComboBox.getSelectedIndex();
       projectField = (String)projFieldComboBox.getItemAt(projFieldIndex);
     }
