@@ -64,10 +64,9 @@ public class ClntComm extends javax.swing.JPanel {
     csltComm = parent;
     
     readPrefs();
-    initComponents();
-    initColumns();
-    
     timer = new TimerThread(1000);
+    initComponents();
+    initColumns();    
     timer.start();
     
     menuPanel.add(menuBar, java.awt.BorderLayout.NORTH);
@@ -105,7 +104,7 @@ public class ClntComm extends javax.swing.JPanel {
     timeList = new javax.swing.JTable();
     menuPanel = new javax.swing.JPanel();
     startButton = new javax.swing.JButton();
-    
+
     menuBar.setBorder(null);
     projectMenu.setText("Project");
     addMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
@@ -115,7 +114,7 @@ public class ClntComm extends javax.swing.JPanel {
         newProject(evt);
       }
     });
-    
+
     projectMenu.add(addMenuItem);
     deleteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
     deleteMenuItem.setText("Delete Project");
@@ -124,7 +123,7 @@ public class ClntComm extends javax.swing.JPanel {
         deleteProject(evt);
       }
     });
-    
+
     projectMenu.add(deleteMenuItem);
     editMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
     editMenuItem.setText("Edit Project");
@@ -133,7 +132,7 @@ public class ClntComm extends javax.swing.JPanel {
         editProject(evt);
       }
     });
-    
+
     projectMenu.add(editMenuItem);
     zeroMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
     zeroMenuItem.setText("Reset Timers");
@@ -142,7 +141,7 @@ public class ClntComm extends javax.swing.JPanel {
         zeroProject(evt);
       }
     });
-    
+
     projectMenu.add(zeroMenuItem);
     menuBar.add(projectMenu);
     toolMenu.setText("Tools");
@@ -153,7 +152,7 @@ public class ClntComm extends javax.swing.JPanel {
         exportToTable(evt);
       }
     });
-    
+
     toolMenu.add(dbexportMenuItem);
     jdbcMenuItem.setText("JDBC Settings");
     jdbcMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -161,7 +160,7 @@ public class ClntComm extends javax.swing.JPanel {
         editJDBC(evt);
       }
     });
-    
+
     toolMenu.add(jdbcMenuItem);
     prefsMenuItem.setText("Preferences");
     prefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -169,7 +168,7 @@ public class ClntComm extends javax.swing.JPanel {
         showPrefs(evt);
       }
     });
-    
+
     toolMenu.add(prefsMenuItem);
     helpMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
     helpMenuItem.setText("Help");
@@ -178,7 +177,7 @@ public class ClntComm extends javax.swing.JPanel {
         showHelp(evt);
       }
     });
-    
+
     toolMenu.add(helpMenuItem);
     menuBar.add(toolMenu);
     editPopupItem.setText("Edit Project");
@@ -187,7 +186,7 @@ public class ClntComm extends javax.swing.JPanel {
         editProject(evt);
       }
     });
-    
+
     editMenu.add(editPopupItem);
     deletePopupItem.setText("Delete Project");
     deletePopupItem.addActionListener(new java.awt.event.ActionListener() {
@@ -195,23 +194,23 @@ public class ClntComm extends javax.swing.JPanel {
         deleteProject(evt);
       }
     });
-    
+
     editMenu.add(deletePopupItem);
-    
+
     setLayout(new java.awt.BorderLayout());
-    
+
     setPreferredSize(windowSize);
     totalPanel.setLayout(new java.awt.GridLayout(1, 2));
-    
+
     totalText.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
     totalText.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
         toggleTotals(evt);
       }
     });
-    
+
     totalPanel.add(totalText);
-    
+
     totalTime.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
     refreshTotalTime();
     totalTime.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -219,11 +218,11 @@ public class ClntComm extends javax.swing.JPanel {
         toggleTotals(evt);
       }
     });
-    
+
     totalPanel.add(totalTime);
-    
+
     add(totalPanel, java.awt.BorderLayout.SOUTH);
-    
+
     timeList.setModel(times.toTableModel(timeFormat));
     timeList.setAutoCreateColumnsFromModel(false);
     timeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -244,15 +243,16 @@ public class ClntComm extends javax.swing.JPanel {
         editWindow(evt);
       }
     });
-    
+
     scrollPane.setViewportView(timeList);
-    
+
     add(scrollPane, java.awt.BorderLayout.CENTER);
-    
+
     menuPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-    
+
     startButton.setMnemonic(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK).getKeyCode());
-    startButton.setText("Start");
+    startButton.setText(timer.clockRunning ? "Pause" : "Start");
+    startButton.setToolTipText(timer.clockRunning ? "Pause Timer" : "Start Timer");
     startButton.setBorder(null);
     startButton.setBorderPainted(false);
     startButton.addActionListener(new java.awt.event.ActionListener() {
@@ -260,11 +260,11 @@ public class ClntComm extends javax.swing.JPanel {
         toggleTimer(evt);
       }
     });
-    
+
     menuPanel.add(startButton);
-    
+
     add(menuPanel, java.awt.BorderLayout.NORTH);
-    
+
   }//GEN-END:initComponents
   
   private void initColumns() {
@@ -644,27 +644,27 @@ private void toggleTotals (java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tog
   }
   
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JMenuBar menuBar;
-  private javax.swing.JMenu projectMenu;
-  private javax.swing.JMenuItem addMenuItem;
-  private javax.swing.JMenuItem deleteMenuItem;
   private javax.swing.JMenuItem editMenuItem;
-  private javax.swing.JMenuItem zeroMenuItem;
-  private javax.swing.JMenu toolMenu;
-  private javax.swing.JMenuItem dbexportMenuItem;
-  private javax.swing.JMenuItem jdbcMenuItem;
-  private javax.swing.JMenuItem prefsMenuItem;
-  private javax.swing.JMenuItem helpMenuItem;
-  private javax.swing.JPopupMenu editMenu;
   private javax.swing.JMenuItem editPopupItem;
-  private javax.swing.JMenuItem deletePopupItem;
-  private javax.swing.JPanel totalPanel;
-  private javax.swing.JLabel totalText;
-  private javax.swing.JLabel totalTime;
-  private javax.swing.JScrollPane scrollPane;
-  private javax.swing.JTable timeList;
-  private javax.swing.JPanel menuPanel;
   private javax.swing.JButton startButton;
+  private javax.swing.JMenuItem deletePopupItem;
+  private javax.swing.JMenuBar menuBar;
+  private javax.swing.JMenuItem helpMenuItem;
+  private javax.swing.JLabel totalTime;
+  private javax.swing.JMenuItem jdbcMenuItem;
+  private javax.swing.JPanel menuPanel;
+  private javax.swing.JMenuItem dbexportMenuItem;
+  private javax.swing.JMenuItem prefsMenuItem;
+  private javax.swing.JPanel totalPanel;
+  private javax.swing.JMenuItem deleteMenuItem;
+  private javax.swing.JMenuItem zeroMenuItem;
+  private javax.swing.JMenu projectMenu;
+  private javax.swing.JMenu toolMenu;
+  private javax.swing.JScrollPane scrollPane;
+  private javax.swing.JMenuItem addMenuItem;
+  private javax.swing.JLabel totalText;
+  private javax.swing.JTable timeList;
+  private javax.swing.JPopupMenu editMenu;
   // End of variables declaration//GEN-END:variables
   
   /**
