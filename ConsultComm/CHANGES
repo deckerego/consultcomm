@@ -1,8 +1,15 @@
-Consultant Communicator - Beta 0.4.2
-Release 7/23/00
+Consultant Communicator 1.1
+Release 8/26/01
 First Released 11/99
 
 REVISION HISTORY -
+        o 1.1
+                - Added icon for frame
+                - Fixed problem where adding a new project then cancelling
+                  would result in an empty project appended to the list
+	o 1.0
+		- Last selection saved to prefs file
+		- Released as first stable version
         o 0.4.2
                 - Right-clicking on a project brings up popup menu
                 - Double-clicking allows you to edit a project
