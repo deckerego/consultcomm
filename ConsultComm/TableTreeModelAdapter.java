@@ -19,24 +19,6 @@ public class TableTreeModelAdapter extends AbstractTableModel {
 	      fireTableDataChanged(); 
 	    }
 	});
-
-	treeTableModel.addTreeModelListener(new TreeModelListener() {
-	    public void treeNodesChanged(TreeModelEvent e) {
-		delayedFireTableDataChanged();
-	    }
-
-	    public void treeNodesInserted(TreeModelEvent e) {
-		delayedFireTableDataChanged();
-	    }
-
-	    public void treeNodesRemoved(TreeModelEvent e) {
-		delayedFireTableDataChanged();
-	    }
-
-	    public void treeStructureChanged(TreeModelEvent e) {
-		delayedFireTableDataChanged();
-	    }
-	});
     }
 
     public int getColumnCount() {
@@ -70,14 +52,6 @@ public class TableTreeModelAdapter extends AbstractTableModel {
 
     public void setValueAt(Object value, int row, int column) {
 	treeTableModel.setValueAt(value, nodeForRow(row), column);
-    }
-
-    protected void delayedFireTableDataChanged() {
-	SwingUtilities.invokeLater(new Runnable() {
-	    public void run() {
-		fireTableDataChanged();
-	    }
-	});
     }
 }
 
