@@ -58,28 +58,6 @@ public class TimeRecord implements java.lang.Cloneable, java.io.Serializable {
         return this.groupName+"-"+this.projectName;
     }
     
-    public String toSecondString() {
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
-        minutes -= hours * 60;
-        long thisSeconds = seconds-(hours*60*60)-(minutes*60);
-        
-        String hourString = Long.toString(hours);
-        String minuteString = minutes < 10 ? "0"+minutes : Long.toString(minutes);
-        String secondString = thisSeconds < 10 ? "0"+thisSeconds : Long.toString(thisSeconds);
-        return ""+hourString+":"+minuteString+"."+secondString;
-    }
-    
-    public String toMinuteString() {
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
-        minutes -= hours * 60;
-        
-        String hourString = Long.toString(hours);
-        String minuteString = minutes < 10 ? "0"+minutes : Long.toString(minutes);
-        return ""+hourString+":"+minuteString;
-    }
-    
     public boolean equals(Object to) {
         try {
             TimeRecord toRecord = (TimeRecord)to;

@@ -3,6 +3,10 @@ import javax.swing.*;
 import javax.swing.tree.*;
 import javax.swing.event.*;
 
+/**
+ * Model that feeds the tree elements. This is referenced by the
+ * tree renderers
+ */
 public class TableTreeModel implements TreeModel {
     static private String[]  cNames = {"Name", "Times"};
     static private Class[]  cTypes = { TableTreeModel.class, String.class };
@@ -60,7 +64,7 @@ public class TableTreeModel implements TreeModel {
                 case 0:
                     return record.getProjectName();
                 case 1:
-                    return timeFormat == ClntComm.SECONDS ? record.toSecondString() : record.toMinuteString();
+                    return timeFormat == ClntComm.SECONDS ? ClntComm.toSecondString(record.getSeconds()) : ClntComm.toMinuteString(record.getSeconds());
             }
 
         } else if(node.getClass().equals(String.class)) {
@@ -68,7 +72,10 @@ public class TableTreeModel implements TreeModel {
                 case 0:
                     return (String)node;
                 case 1:
-                    return null;
+                    String groupName = (String)node;
+                    TimeRecordSet times = (TimeRecordSet)root;
+                    long totalSeconds = times.getGroupTotalTime(groupName);
+                    return timeFormat == ClntComm.SECONDS ? ClntComm.toSecondString(totalSeconds) : ClntComm.toMinuteString(totalSeconds);
             }
         }            
 

@@ -4,6 +4,10 @@ import javax.swing.tree.*;
 import javax.swing.event.*;
 import java.util.*;
 
+/**
+ * Model that feeds the table elements. This is referenced by the
+ * table editors and renderers
+ */
 public class TableTreeModelAdapter extends AbstractTableModel {
     private JTree tree;
     private TableTreeModel model;
@@ -70,6 +74,10 @@ public class TableTreeModelAdapter extends AbstractTableModel {
 	return treePath.getLastPathComponent();         
     }
 
+    public Object getNodeAt(int row) {
+      return nodeForRow(row);
+    }
+    
     public Object getValueAt(int row, int column) {
 	return model.getValueAt(nodeForRow(row), column);
     }

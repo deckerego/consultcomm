@@ -92,6 +92,19 @@ public class TimeRecordSet implements java.lang.Cloneable, java.io.Serializable 
         return records;
     }
     
+    public long getGroupTotalTime(String groupName) {
+        Vector group = getGroupRecords(groupName);
+        long total = 0;
+        
+        Enumeration records = group.elements();
+        while (records.hasMoreElements()) {
+            TimeRecord record = (TimeRecord)records.nextElement();
+            total += record.getSeconds();
+        }
+        
+        return total;
+    }
+    
     public TimeRecord elementAt(int index) throws java.lang.ArrayIndexOutOfBoundsException {
         if(index == -1) return null;
         return (TimeRecord)timeRecords.elementAt(index);

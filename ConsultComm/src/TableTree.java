@@ -8,6 +8,8 @@ import java.util.*;
 
 /**
  * A TableTree is a Swing layout that allows table rows to be used within a tree.
+ * Smashes together the TableTreeModel (a JTree model) and the
+ * TableTreeModelAdapter (a Table model).
  */
 public class TableTree extends JTable {
     protected TableTreeCellRenderer tree;
@@ -149,14 +151,49 @@ public class TableTree extends JTable {
     }
     
     /**
-     * Renders the individual cells as nodes of a JTree
+     * This is meant to control the table columns not under guidance by the 
+     * tree's renderer
+     * @param row The row index of the table
+     * @param column The column index of the table
+     * @return The cell renderer used to display the table's cell
+     */
+    public TableCellRenderer getCellRenderer(int row, int column) {
+        if(column == 1) { //The time column
+            TableTreeModelAdapter model = (TableTreeModelAdapter)super.getModel();
+            Object nodeObj = model.getNodeAt(row);
+
+            if(! TimeRecord.class.equals(nodeObj.getClass())) { //Do we have a project or group cell?
+                TableCellRenderer renderer = new GroupTableCellRenderer();
+                return renderer;
+            } else {
+                return super.getCellRenderer(row, column);
+            }
+        } else {
+            return super.getCellRenderer(row, column);
+        }
+    }
+
+    /**
+     * This is the default renderer, but the foreground is gray
+     * @see TableTree#getCellRenderer(int, int)
+     */
+    public class GroupTableCellRenderer extends DefaultTableCellRenderer {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component renderComponent = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            renderComponent.setForeground(new Color(192, 192, 192));
+            return renderComponent;
+        }
+    }
+    
+    /**
+     * Renders the nodes of a JTree as time record table cells
      */
     public class TableTreeCellRenderer extends JTree implements TableCellRenderer {
         private int visibleRow;
         private ListToTreeSelectionModelWrapper selectionModelWrapper;
        
         /**
-         * Creates a new renderer
+         * Creates a new renderer for the tree (i.e. project name) cells
          * @param model The TreeModel to use, based on a TableTreeModel
          */
         public TableTreeCellRenderer(TreeModel model) {
@@ -195,11 +232,12 @@ public class TableTree extends JTable {
         }
         
         /**
-         * Initialize the background to be the table's background, sync the visible row
+         * Initialize the background to be the table's background, sync the visible row.
          */
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             if(isSelected) setBackground(table.getSelectionBackground());
             else setBackground(table.getBackground());
+            
             visibleRow = row;
             return this;
         }
