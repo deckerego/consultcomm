@@ -2,7 +2,7 @@
 <project basedir="." default="dist">
   <taskdef classname="com.izforge.izpack.ant.IzPackTask" name="izpack"/>
 
-  <property name="release" value="3.1rc2"/>
+  <property name="release" value="3.1rc3"/>
   <property name="src" value="ConsultComm/"/>
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
@@ -22,7 +22,6 @@
     <ant target="zip"/>
     <ant target="rpm"/>
     <ant target="izpack"/>
-    <ant target="win32_installer"/>
   </target>
 
   <target depends="build" name="X">
@@ -76,7 +75,13 @@
         <include name="SysTrayBean/build.xml"/>
         <include name="SysTrayBean/*.dll"/>
         <include name="SysTrayBean/*.so"/>
+        <include name="EmptyBean/*.java"/>
+        <include name="EmptyBean/*.form"/>
+        <include name="EmptyBean/*.gif"/>
+        <include name="EmptyBean/build.xml"/>
+        <include name="EmptyBean/README"/>
       </tarfileset>
+      <tarfileset dir="${src}/help" includes="faq.html" fullpath="${releasename}/FAQ.html"/>
     </tar>
 
     <gzip src="${releasename}.src.tar" zipfile="${releasename}.src.tar.gz"/>
@@ -107,9 +112,6 @@
 
   <target depends="build" name="izpack">
     <izpack basedir="${src}" input="izpack_installer.xml" installerType="standard" izPackDir="${izpackdir}" output="${releasename}_Installer.jar"/>
-  </target>
-
-  <target depends="izpack" name="win32_installer">
     <zip zipfile="${releasename}_WinInstall.zip">
       <zipfileset dir="." prefix="${releasename}">
         <include name="${releasename}_Installer.jar"/>
