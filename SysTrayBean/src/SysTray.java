@@ -14,6 +14,7 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
   private ClntComm clntComm;
   private long lastClicked;
   private boolean visible;
+  private JPopupMenu menu;
       
   static {
     //Even on non-*nix platforms we load this file. Doesn't hurt, and ensures that we have a
@@ -35,7 +36,6 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
   public SysTray() {
     if(systrayLibrary) {
       try {
-        JPopupMenu menu;
         JMenuItem menuItem;
         
         tray = SystemTray.getDefaultSystemTray();
@@ -44,14 +44,15 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
         sysTrayIcon.setIconAutoSize(true);
         tray.addTrayIcon(sysTrayIcon);
         
+        //Load the plugin-specific menu options
         menu = new JPopupMenu("ConsultComm");
+        menuItem = new JMenuItem("Cancel");
+        menuItem.getAccessibleContext().setAccessibleDescription("Nevermind.");
+        menuItem.addActionListener(this);
+        menu.add(menuItem);
         menuItem = new JMenuItem("Quit", KeyEvent.VK_Q);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.ALT_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription("Quit ConsultComm");
-        menuItem.addActionListener(this);
-        menu.add(menuItem);
-        menuItem = new JMenuItem("Cancel");
-        menuItem.getAccessibleContext().setAccessibleDescription("Nevermind.");
         menuItem.addActionListener(this);
         menu.add(menuItem);
         
@@ -99,7 +100,8 @@ public class SysTray extends CsltCommPlugin implements ActionListener, ItemListe
         String[] projectNames = recordSet.getAllProjects();
         sysTrayIcon.setCaption(projectNames[selectedIndex]);
       }
-            
+      
+      // ClntComm just started up, we now can access the GUI components            
       if("opened".equals(eventName)) {
         clntComm.getTopLevelAncestor().setVisible(visible);
       }
