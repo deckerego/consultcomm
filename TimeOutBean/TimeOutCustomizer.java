@@ -124,6 +124,7 @@ public class TimeOutCustomizer extends javax.swing.JPanel implements java.beans.
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         saveTimeOutSettings();
+        ((PluginManager)getTopLevelAncestor()).exitForm();
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void enableAll(boolean enable){

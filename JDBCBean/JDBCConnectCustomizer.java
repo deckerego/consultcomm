@@ -368,7 +368,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
         add(tabbedPane, java.awt.BorderLayout.CENTER);
 
     }//GEN-END:initComponents
-
+    
     private void findJar(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findJar
         final javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
         int returnVal = fc.showOpenDialog(this);
@@ -491,7 +491,7 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       testConnection.setJarFile(jarField.getText());
       testConnection.testDriverSettings();
   }//GEN-LAST:event_testDriverSettings
-  
+
   private void saveDriverSettings(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDriverSettings
       //Give the bean all its setter values
       dbConnection.setJarFile(jarField.getText());
@@ -534,25 +534,19 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
       dbConnection.setTableMap(tableMap);
       
       JDBCConnect.saveDriverSettings(dbConnection);
-      exitForm();
+      
+      ((PluginManager)getTopLevelAncestor()).exitForm();
   }//GEN-LAST:event_saveDriverSettings
-              private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
-                  exitForm();
-    }//GEN-LAST:event_exitForm
-              
-    private void exitForm() {
-        //Don't do anything - this is an embedded component
-    }
-    
-    public void setObject(Object obj) {
-        dbConnection = (JDBCConnect)obj;
-        initComponents();
-        ActionEvent evt = new ActionEvent(this, 0, "Refresh"); //Fake event
-        toggleNoDatabase(evt);
-        toggleODBC(evt);
-        toggleValidateProject(evt);
-    }
-    
+
+  public void setObject(Object obj) {
+      dbConnection = (JDBCConnect)obj;
+      initComponents();
+      ActionEvent evt = new ActionEvent(this, 0, "Refresh"); //Fake event
+      toggleNoDatabase(evt);
+      toggleODBC(evt);
+      toggleValidateProject(evt);
+  }
+                
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton driverTest;
     private javax.swing.JPanel fieldButtonPanel;
@@ -581,8 +575,8 @@ public class JDBCConnectCustomizer extends javax.swing.JPanel implements java.be
     private javax.swing.JLabel projTableLabel;
     private javax.swing.JPanel driverPanel;
     private javax.swing.JTextField urlField;
-    javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JButton optionOK;
+    private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JLabel projFieldLabel;
     private javax.swing.JLabel projDBLabel;
     private javax.swing.JButton findJarButton;
