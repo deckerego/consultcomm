@@ -14,6 +14,8 @@ public class PrefsPanel extends javax.swing.JFrame {
   protected boolean animateIcons = true;
   protected int saveInterval = 60;
   protected int allowedIdle = 0, idleAction;
+  protected int countdown;
+  protected float countpay;
   protected String idleProject;
   private ClntComm clntComm;
   private String themePack, kdeTheme, gtkTheme;
@@ -71,6 +73,11 @@ public class PrefsPanel extends javax.swing.JFrame {
     flagLabel = new javax.swing.JLabel();
     billableCheckBox = new javax.swing.JCheckBox();
     exportCheckBox = new javax.swing.JCheckBox();
+    countdownCheckBox = new javax.swing.JCheckBox();
+    countdownField = new javax.swing.JTextField();
+    payCheckBox = new javax.swing.JCheckBox();
+    payField = new javax.swing.JTextField();
+    payLabel = new javax.swing.JLabel();
     flagsButtonPanel = new javax.swing.JPanel();
     flagsOKButton = new javax.swing.JButton();
     flagsCancelButton = new javax.swing.JButton();
@@ -272,6 +279,54 @@ public class PrefsPanel extends javax.swing.JFrame {
     gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
     flagsInputPanel.add(exportCheckBox, gridBagConstraints2);
     
+    countdownCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    countdownCheckBox.setSelected(countdown != 0);
+    countdownCheckBox.setText("Count down from ");
+    countdownCheckBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        toggleCountdown(evt);
+      }
+    });
+    
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
+    flagsInputPanel.add(countdownCheckBox, gridBagConstraints2);
+    
+    countdownField.setColumns(6);
+    countdownField.setText(minutesToString(countdown));
+    countdownField.setEnabled(countdown != 0);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
+    flagsInputPanel.add(countdownField, gridBagConstraints2);
+    
+    payCheckBox.setForeground(new java.awt.Color(102, 102, 153));
+    payCheckBox.setSelected(countpay != 0);
+    payCheckBox.setText("Count pay, using $");
+    payCheckBox.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        togglePay(evt);
+      }
+    });
+    
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
+    flagsInputPanel.add(payCheckBox, gridBagConstraints2);
+    
+    payField.setColumns(6);
+    payField.setText(Float.toString(countpay));
+    payField.setEnabled(countpay != 0);
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    flagsInputPanel.add(payField, gridBagConstraints2);
+    
+    payLabel.setForeground(new java.awt.Color(102, 102, 153));
+    payLabel.setText(" per hour");
+    gridBagConstraints2 = new java.awt.GridBagConstraints();
+    gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+    gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
+    flagsInputPanel.add(payLabel, gridBagConstraints2);
+    
     flagsPanel.add(flagsInputPanel, java.awt.BorderLayout.CENTER);
     
     flagsOKButton.setText("OK");
@@ -445,6 +500,24 @@ public class PrefsPanel extends javax.swing.JFrame {
     
     pack();
   }//GEN-END:initComponents
+
+  private void toggleCountdown(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleCountdown
+    if(countdownCheckBox.isSelected()) {
+      countdownField.setEnabled(true);
+    } else {
+      countdownField.setEnabled(false);
+      countdown = 0;
+    }
+  }//GEN-LAST:event_toggleCountdown
+
+  private void togglePay(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_togglePay
+    if(payCheckBox.isSelected()) {
+      payField.setEnabled(true);
+    } else {
+      payField.setEnabled(false);
+      countpay = 0;
+    }
+  }//GEN-LAST:event_togglePay
 
   private void toggleIdle(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleIdle
     if(idleCheckBox.isSelected()) {
@@ -621,6 +694,28 @@ public class PrefsPanel extends javax.swing.JFrame {
           animateIcons = true;
         }
         
+        //Get count down interval
+        NodeList countdownInfos = doc.getElementsByTagName("countdown");
+        Node countdownInfo = countdownInfos.item(0);
+        if(countdownInfo != null) {
+          attributes = countdownInfo.getAttributes();
+          String countdownString = attributes.getNamedItem("minutes").getNodeValue();
+          countdown = Integer.parseInt(countdownString);
+        } else {
+          countdown = 0;
+        }
+        
+        //Get count pay amount
+        NodeList countpayInfos = doc.getElementsByTagName("countpay");
+        Node countpayInfo = countpayInfos.item(0);
+        if(countpayInfo != null) {
+          attributes = countpayInfo.getAttributes();
+          String countpayString = attributes.getNamedItem("amount").getNodeValue();
+          countpay = Float.parseFloat(countpayString);
+        } else {
+          countpay = 0;
+        }
+        
         //Get save interval
         NodeList saveInfos = doc.getElementsByTagName("saveinfo");
         Node saveInfo = saveInfos.item(0);
@@ -743,6 +838,30 @@ public class PrefsPanel extends javax.swing.JFrame {
         if(attributeFlag != null) rootNode.replaceChild(newNode, attributeFlag);
         else rootNode.appendChild(newNode);
         
+        //Save countdown
+        NodeList countdownInfos = doc.getElementsByTagName("countdown");
+        newNode = doc.createElement("countdown");
+        Node countdownInfo = countdownInfos.item(0);
+        if(countdownCheckBox.isSelected()) {
+          newNode.setAttribute("minutes", Long.toString(stringToMinutes(countdownField.getText())));
+          if(countdownInfo != null) rootNode.replaceChild(newNode, countdownInfo);
+          rootNode.appendChild(newNode);
+        } else {
+          if(countdownInfo != null) rootNode.removeChild(countdownInfo);
+        }
+
+        //Save pay count
+        NodeList paycountInfos = doc.getElementsByTagName("countpay");
+        newNode = doc.createElement("countpay");
+        Node paycountInfo = paycountInfos.item(0);
+        if(payCheckBox.isSelected()) {
+          newNode.setAttribute("amount", payField.getText());
+          if(paycountInfo != null) rootNode.replaceChild(newNode, paycountInfo);
+          rootNode.appendChild(newNode);
+        } else {
+          if(paycountInfo != null) rootNode.removeChild(paycountInfo);
+        }
+
         //Save save interval
         NodeList saveInfos = doc.getElementsByTagName("saveinfo");
         newNode = doc.createElement("saveinfo");
@@ -784,52 +903,82 @@ public class PrefsPanel extends javax.swing.JFrame {
       }
     }
     
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup timeFormatGroup;
-    private javax.swing.ButtonGroup idleGroup;
-    private javax.swing.JTabbedPane tabbedPane;
-    private javax.swing.JPanel prefsPanel;
-    private javax.swing.JPanel prefsInputPanel;
-    private javax.swing.JLabel generalLabel;
-    private javax.swing.JLabel timeFormatLabel;
-    private javax.swing.JRadioButton minuteButton;
-    private javax.swing.JRadioButton secondButton;
-    private javax.swing.JCheckBox showIconCheckBox;
-    private javax.swing.JLabel save1Label;
-    private javax.swing.JTextField saveField;
-    private javax.swing.JLabel save2Label;
-    private javax.swing.JCheckBox idleCheckBox;
-    private javax.swing.JTextField idleField;
-    private javax.swing.JLabel idleLabel;
-    private javax.swing.JRadioButton pauseIdleRadioButton;
-    private javax.swing.JRadioButton projectIdleRadioButton;
-    private javax.swing.JComboBox projectIdleComboBox;
-    private javax.swing.JPanel prefsButtonPanel;
-    private javax.swing.JButton prefsOKButton;
-    private javax.swing.JButton prefsCancelButton;
-    private javax.swing.JPanel flagsPanel;
-    private javax.swing.JPanel flagsInputPanel;
-    private javax.swing.JLabel flagLabel;
-    private javax.swing.JCheckBox billableCheckBox;
-    private javax.swing.JCheckBox exportCheckBox;
-    private javax.swing.JPanel flagsButtonPanel;
-    private javax.swing.JButton flagsOKButton;
-    private javax.swing.JButton flagsCancelButton;
-    private javax.swing.JPanel skinsPanel;
-    private javax.swing.JPanel skinsInputPanel;
-    private javax.swing.JLabel skinsLabel;
-    private javax.swing.JCheckBox themeCheckBox;
-    private javax.swing.JTextField themeField;
-    private javax.swing.JButton themeBrowse;
-    private javax.swing.JCheckBox gtkCheckBox;
-    private javax.swing.JTextField gtkField;
-    private javax.swing.JButton gtkBrowse;
-    private javax.swing.JCheckBox kdeCheckBox;
-    private javax.swing.JTextField kdeField;
-    private javax.swing.JButton kdeBrowse;
-    private javax.swing.JPanel skinsButtonPanel;
-    private javax.swing.JButton skinsOKButton;
-    private javax.swing.JButton skinsCancelButton;
-    // End of variables declaration//GEN-END:variables
+  long stringToMinutes(String secs) {
+    long minutes;
+    StringTokenizer timeWords = new StringTokenizer(secs, ":");
+    // If time format is 1:30
+    if(timeWords.countTokens() == 2) {
+      minutes = Long.parseLong(timeWords.nextToken()) * 60;
+      minutes += Long.parseLong(timeWords.nextToken());
+    }
+    // If time format is 90
+    else if(timeWords.countTokens() == 1) {
+      minutes =  Long.parseLong(timeWords.nextToken());
+      // Else we have the wrong format
+    } else minutes = 0L;
+    return minutes;
+  }
+  
+  public String minutesToString(long minutes) {
+    long hours = minutes / 60L;
+    minutes -= hours * 60L;
+
+    String hourString = Long.toString(hours);
+    String minuteString = minutes < 10 ? "0"+minutes : Long.toString(minutes);
+    return ""+hourString+":"+minuteString;
+  }
+    
+  // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.ButtonGroup timeFormatGroup;
+  private javax.swing.ButtonGroup idleGroup;
+  private javax.swing.JTabbedPane tabbedPane;
+  private javax.swing.JPanel prefsPanel;
+  private javax.swing.JPanel prefsInputPanel;
+  private javax.swing.JLabel generalLabel;
+  private javax.swing.JLabel timeFormatLabel;
+  private javax.swing.JRadioButton minuteButton;
+  private javax.swing.JRadioButton secondButton;
+  private javax.swing.JCheckBox showIconCheckBox;
+  private javax.swing.JLabel save1Label;
+  private javax.swing.JTextField saveField;
+  private javax.swing.JLabel save2Label;
+  private javax.swing.JCheckBox idleCheckBox;
+  private javax.swing.JTextField idleField;
+  private javax.swing.JLabel idleLabel;
+  private javax.swing.JRadioButton pauseIdleRadioButton;
+  private javax.swing.JRadioButton projectIdleRadioButton;
+  private javax.swing.JComboBox projectIdleComboBox;
+  private javax.swing.JPanel prefsButtonPanel;
+  private javax.swing.JButton prefsOKButton;
+  private javax.swing.JButton prefsCancelButton;
+  private javax.swing.JPanel flagsPanel;
+  private javax.swing.JPanel flagsInputPanel;
+  private javax.swing.JLabel flagLabel;
+  private javax.swing.JCheckBox billableCheckBox;
+  private javax.swing.JCheckBox exportCheckBox;
+  private javax.swing.JCheckBox countdownCheckBox;
+  private javax.swing.JTextField countdownField;
+  private javax.swing.JCheckBox payCheckBox;
+  private javax.swing.JTextField payField;
+  private javax.swing.JLabel payLabel;
+  private javax.swing.JPanel flagsButtonPanel;
+  private javax.swing.JButton flagsOKButton;
+  private javax.swing.JButton flagsCancelButton;
+  private javax.swing.JPanel skinsPanel;
+  private javax.swing.JPanel skinsInputPanel;
+  private javax.swing.JLabel skinsLabel;
+  private javax.swing.JCheckBox themeCheckBox;
+  private javax.swing.JTextField themeField;
+  private javax.swing.JButton themeBrowse;
+  private javax.swing.JCheckBox gtkCheckBox;
+  private javax.swing.JTextField gtkField;
+  private javax.swing.JButton gtkBrowse;
+  private javax.swing.JCheckBox kdeCheckBox;
+  private javax.swing.JTextField kdeField;
+  private javax.swing.JButton kdeBrowse;
+  private javax.swing.JPanel skinsButtonPanel;
+  private javax.swing.JButton skinsOKButton;
+  private javax.swing.JButton skinsCancelButton;
+  // End of variables declaration//GEN-END:variables
     
 }
