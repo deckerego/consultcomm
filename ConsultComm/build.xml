@@ -34,7 +34,7 @@
   </target>
 
   <target depends="dist" name="upgrade">
-    <copy file="CsltComm.jar" todir="${user.home}/ConsultComm"/>
+    <copy file="CsltComm.jar" todir="/usr/local/ConsultComm"/>
   </target>
 
   <target depends="compile" name="dryrun">
