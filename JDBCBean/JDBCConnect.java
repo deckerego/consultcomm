@@ -1,6 +1,7 @@
 import java.util.*;
 import java.sql.*;
 import java.io.*;
+import java.beans.*;
 //GUI Componenets
 import javax.swing.*;
 import javax.swing.table.*;
@@ -29,8 +30,8 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
     private JFrame parentFrame;
     private ClntComm clntComm;
     
-    private String name = "";
-    private String url = "";
+    protected String name = "";
+    protected String url = "";
     private String userName = "";
     private String password="";
     private String database="";
@@ -47,7 +48,6 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
     public JDBCConnect() {
         tableMap = new TableMap();
         parentFrame = new JFrame();
-        readPrefs();
     }
     
     public JDBCConnect(String name, String url, String database, String table) {
@@ -108,7 +108,7 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
         return menuitems;
     }
     
-    private Connection openConnection() {
+    public Connection openConnection() {
         Connection conn = null;
         errorList = new Vector();
         
@@ -251,7 +251,7 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
     
     private boolean validateProject(String project) {
         Connection conn = openConnection();
-        Statement stmt = null;
+        java.sql.Statement stmt = null;
         ResultSet rs = null;
         boolean isValid = false;
         try {
@@ -356,86 +356,13 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
     
     void savePrefs() {
         try {
-            PrefsFile prefs = new PrefsFile("JDBCConnection.def");
-            
-            String[] driverAttributeList = {"name", "url", "username", "database", "table"};
-            String[] driverValueList = {name, url, userName, database, table};
-            prefs.saveFirst("driver", driverAttributeList, driverValueList);
-            
-            String[] optAttributeList = {"hourFormat", "projectCase", "projectValidate", "projectDatabase", "projectTable", "projectField"};
-            String[] optValueList = {Integer.toString(hourFormat), Boolean.toString(projectCase), Boolean.toString(projectValidate), projectDatabase, projectTable, projectField};
-            prefs.saveFirst("options", optAttributeList, optValueList);
-            
-            //Delete old field mappings
-            prefs.removeAllChildren("fieldmap");
-            
-            //Save field mappings
-            for(int i=0; i<tableMap.size(); i++){
-                FieldMap record = tableMap.elementAt(i);
-                Element newNode = prefs.createElement("fieldmap");
-                newNode.setAttribute("name", record.dbFieldName);
-                newNode.setAttribute("type", ""+record.sqlType);
-                newNode.setAttribute("index", ""+record.dbFieldIndex);
-                newNode.setAttribute("value", record.valueExpression);
-                prefs.appendChild(newNode);
-            }
-            
-            prefs.write();
-        } catch (ParserConfigurationException e) {
-            System.err.println("Error writing prefs file: "+e);
-            e.printStackTrace(System.out);
+            File prefsFile = new File("JDBCConnect.def");
+            FileOutputStream outStream = new FileOutputStream(prefsFile);
+            XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
+            e.writeObject(this);
+            e.close();
         } catch (Exception e) {
-            System.err.println("Cannot write prefs file: "+e);
-            e.printStackTrace(System.out);
-        }
-    }
-    
-    void readPrefs() {
-        try {
-            PrefsFile prefs = new PrefsFile("JDBCConnection.def");
-            
-            name = prefs.readFirstString("driver", "name");
-            url = prefs.readFirstString("driver", "url");
-            userName = prefs.readFirstString("driver", "username");
-            database = prefs.readFirstString("driver", "database");
-            table = prefs.readFirstString("driver", "table");
-            
-            hourFormat = prefs.readFirstInt("options", "hourFormat");
-            projectCase = prefs.readFirstBoolean("options", "projectCase").booleanValue();
-            projectValidate = prefs.readFirstBoolean("options", "projectValidate").booleanValue();
-            projectDatabase = prefs.readFirstString("options", "projectDatabase");
-            projectTable = prefs.readFirstString("options", "projectTable");
-            projectField = prefs.readFirstString("options", "projectField");
-            
-            NodeList fieldMaps = prefs.getElementsByTagName("fieldmap");
-            tableMap.fieldMaps.clear();
-            for(int i=0; i<fieldMaps.getLength(); i++){
-                Node fieldMap = fieldMaps.item(i);
-                NamedNodeMap attributes = fieldMap.getAttributes();
-                Node nameNode = attributes.getNamedItem("name");
-                String fieldName = nameNode.getNodeValue();
-                Node typeNode = attributes.getNamedItem("type");
-                short sqlType = Short.parseShort(typeNode.getNodeValue());
-                Node indexNode = attributes.getNamedItem("index");
-                int fieldIndex = Integer.parseInt(indexNode.getNodeValue());
-                Node valueNode = attributes.getNamedItem("value");
-                String valueExpression = valueNode.getNodeValue();
-                FieldMap record = new FieldMap(fieldName, sqlType, fieldIndex, valueExpression);
-                tableMap.fieldMaps.addElement(record);
-            }
-        } catch (Exception e) {
-            System.err.println("Cannot read prefs file: "+e);
-            e.printStackTrace(System.out);
-        }
-        
-        try {
-            PrefsFile prefs = new PrefsFile("ClntComm.def");
-            
-            //Get attribute flags
-            int attributes = prefs.readFirstInt("attributes", "value");
-            //REPLACE-->      useExport = (ClntComm.SHOW_EXPORT ^ attributes) != (ClntComm.SHOW_EXPORT | attributes);
-        } catch (Exception e) {
-            System.err.println("Cannot read prefs file: "+e);
+            System.err.println("Couldn't save JDBC Prefs");
             e.printStackTrace(System.out);
         }
     }
@@ -493,20 +420,23 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
             });
         }
     }
-    
+
     class TableMap {
         Vector fieldMaps;
-        private final String[] titles = {"Field Name", "Type", "Value"};
+        Hashtable projectMaps;
+        private final String[] projectNameTitles = {"Export", "Project", "Alias"};
+        private final String[] fieldValueTitles = {"Field Name", "Type", "Value"};
         
         TableMap() {
-            fieldMaps = new Vector();
+            this.fieldMaps = new Vector();
+            this.projectMaps = new Hashtable();
         }
         
         protected void init() throws java.sql.SQLException {
             fieldMaps.clear();
             Connection conn = openConnection();
             DatabaseMetaData dbmeta = conn.getMetaData();
-            ResultSet cols = dbmeta.getColumns(null, database, table, null);
+            ResultSet cols = dbmeta.getColumns(null, getDatabase(), getTable(), null);
             while(cols.next())
                 fieldMaps.addElement(new FieldMap(cols));
             cols.close();
@@ -521,12 +451,12 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
             return (FieldMap)fieldMaps.elementAt(i);
         }
         
-        public DefaultTableModel toTableModel(){
+        public DefaultTableModel toFieldValuesTableModel(){
             DefaultTableModel model = new javax.swing.table.DefaultTableModel(
             //Set to three empty columns
             new Object [][][] {
             },
-            titles
+            fieldValueTitles
             ) {
                 public boolean isCellEditable(int rowIndex, int columnIndex) {
                     boolean[] editable = {false, false, true};
@@ -537,33 +467,74 @@ public class JDBCConnect implements java.io.Serializable, CsltCommListener {
             Enumeration records = fieldMaps.elements();
             while (records.hasMoreElements()) {
                 FieldMap record = (FieldMap)records.nextElement();
-                model.addRow(new Object[] {record.dbFieldName, typeString(record.sqlType), record.valueExpression});
+                model.addRow(new Object[] {record.dbFieldName, JDBCConnect.typeString(record.sqlType), record.valueExpression});
             }
             return model;
+        }
+
+        public DefaultTableModel toProjectNamesTableModel(){
+            DefaultTableModel model = new javax.swing.table.DefaultTableModel(
+            //Set to three empty columns
+            new Object [][][] {
+            },
+            projectNameTitles
+            ) {
+                public Class getColumnClass(int columnIndex) {
+                    Class[] types = new Class[] {Boolean.class, String.class, String.class};
+                    return types[columnIndex];
+                }
+                
+                public boolean isCellEditable(int rowIndex, int columnIndex) {
+                    boolean[] editable = {true, false, true};
+                    return editable[columnIndex];
+                }
+            };
+            
+            TimeRecordSet records = clntComm.getTimes();
+            for (int i=0; i<records.size(); i++) {
+                TimeRecord record = (TimeRecord)records.elementAt(i);
+                String projectName = record.getProjectName();
+                ProjectMap projectMap = (ProjectMap)projectMaps.get(projectName);
+                if(projectMap == null) model.addRow(new Object[] {new Boolean(false), projectName, ""});
+                else model.addRow(new Object[] {new Boolean(projectMap.export), projectName, projectMap.alias});
+            }
+            return model;
+        }
+    }
+    
+    class ProjectMap {
+        String alias = "";
+        boolean export;
+        
+        ProjectMap(String alias, boolean export) {
+            this.alias = alias;
+            this.export = export;
         }
     }
     
     class FieldMap {
         int sqlType;
         int dbFieldIndex;
+        boolean exportable;
         String dbFieldName;
-        String valueExpression = "";
+        String valueExpression;
         
         FieldMap(ResultSet rs) throws java.sql.SQLException {
-            dbFieldName = rs.getString(4);
-            sqlType = rs.getShort(5);
-            dbFieldIndex = rs.getInt(17);
+            this.dbFieldName = rs.getString(4);
+            this.sqlType = rs.getShort(5);
+            this.dbFieldIndex = rs.getInt(17);
+            this.valueExpression = "";
         }
         
         FieldMap(String name, int type, int index, String value) {
-            dbFieldName = name;
-            sqlType = type;
-            dbFieldIndex = index;
-            valueExpression = value;
+            this.dbFieldName = name;
+            this.sqlType = type;
+            this.dbFieldIndex = index;
+            this.valueExpression = value;
         }
-        
+
         public String toString() {
-            return dbFieldName+"("+dbFieldIndex+"): "+valueExpression+" type "+typeString(sqlType);
+            return dbFieldName+"("+dbFieldIndex+"): "+valueExpression+" type "+JDBCConnect.typeString(sqlType);
         }
         
         protected Object getValue(TimeRecord record) throws ClassCastException, ProjectInvalidException {

@@ -31,8 +31,6 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         inputPanel = new javax.swing.JPanel();
         projLabel = new javax.swing.JLabel();
         projField = new javax.swing.JTextField();
-        aliasLabel = new javax.swing.JLabel();
-        aliasField = new javax.swing.JTextField();
         timeLabel = new javax.swing.JLabel();
         timeField = new javax.swing.JTextField();
         billable = new javax.swing.JCheckBox();
@@ -62,19 +60,6 @@ public class ProjectEditDialog extends javax.swing.JDialog {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         inputPanel.add(projField, gridBagConstraints);
-
-        aliasLabel.setText("Alias: ");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        inputPanel.add(aliasLabel, gridBagConstraints);
-
-        aliasField.setColumns(15);
-        aliasField.setText(record.getAlias());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        inputPanel.add(aliasField, gridBagConstraints);
 
         timeLabel.setText("Time: ");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -125,8 +110,6 @@ public class ProjectEditDialog extends javax.swing.JDialog {
   private void save(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_save
     record.setProjectName(projField.getText());
     record.setSeconds(timeField.getText());
-    if(aliasField.getText().length() > 0) record.setAlias(aliasField.getText());
-    else record.setAlias(null);
     record.setBillable(billable.isSelected());
     value = "0";
     closeDialog();
@@ -156,17 +139,15 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField aliasField;
-    private javax.swing.JLabel projLabel;
-    private javax.swing.JCheckBox billable;
-    private javax.swing.JButton okButton;
-    private javax.swing.JLabel timeLabel;
-    private javax.swing.JButton cancelButton;
     private javax.swing.JPanel buttonPanel;
-    private javax.swing.JLabel aliasLabel;
-    private javax.swing.JPanel inputPanel;
+    private javax.swing.JButton okButton;
     private javax.swing.JTextField timeField;
+    private javax.swing.JLabel timeLabel;
+    private javax.swing.JCheckBox billable;
     private javax.swing.JTextField projField;
+    private javax.swing.JPanel inputPanel;
+    private javax.swing.JLabel projLabel;
+    private javax.swing.JButton cancelButton;
     // End of variables declaration//GEN-END:variables
     
 }

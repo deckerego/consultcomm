@@ -28,8 +28,8 @@
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Driver Settings" toolTip="Change JDBC Driver Settings">
-                <Property name="tabTitle" type="java.lang.String" value="Driver Settings"/>
+              <JTabbedPaneConstraints tabName="JDBC Driver" toolTip="Change JDBC Driver Settings">
+                <Property name="tabTitle" type="java.lang.String" value="JDBC Driver"/>
                 <Property name="tabToolTip" type="java.lang.String" value="Change JDBC Driver Settings"/>
               </JTabbedPaneConstraints>
             </Constraint>
@@ -168,7 +168,7 @@
               <SubComponents>
                 <Component class="javax.swing.JButton" name="driverOK">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="OK"/>
+                    <Property name="text" type="java.lang.String" value="Save"/>
                   </Properties>
 
                   <Events>
@@ -195,8 +195,8 @@
           </Events>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Field Mappings" toolTip="Define values for table fields">
-                <Property name="tabTitle" type="java.lang.String" value="Field Mappings"/>
+              <JTabbedPaneConstraints tabName="Field Values" toolTip="Define values for table fields">
+                <Property name="tabTitle" type="java.lang.String" value="Field Values"/>
                 <Property name="tabToolTip" type="java.lang.String" value="Define values for table fields"/>
               </JTabbedPaneConstraints>
             </Constraint>
@@ -216,7 +216,7 @@
                 <Component class="javax.swing.JTable" name="fieldMapping">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="dbConnection.tableMap.toTableModel()" type="code"/>
+                      <Connection code="dbConnection.tableMap.toFieldValuesTableModel()" type="code"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -233,7 +233,7 @@
               <SubComponents>
                 <Component class="javax.swing.JButton" name="fieldOK">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="OK"/>
+                    <Property name="text" type="java.lang.String" value="Save"/>
                   </Properties>
 
                   <Events>
@@ -247,6 +247,61 @@
 
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="refreshFieldMap"/>
+                  </Events>
+                </Component>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="mapPanel">
+
+          <Events>
+            <EventHandler event="componentShown" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="showProjectNames"/>
+          </Events>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+              <JTabbedPaneConstraints tabName="Project Names">
+                <Property name="tabTitle" type="java.lang.String" value="Project Names"/>
+              </JTabbedPaneConstraints>
+            </Constraint>
+          </Constraints>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+          <SubComponents>
+            <Container class="javax.swing.JScrollPane" name="mapScrollPane">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                  <BorderConstraints direction="Center"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTable" name="projectMapping">
+                  <Properties>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="dbConnection.tableMap.toProjectNamesTableModel()" type="code"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="mapButtonPanel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                  <BorderConstraints direction="South"/>
+                </Constraint>
+              </Constraints>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="mapOK">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Save"/>
+                  </Properties>
+
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveDriverSettings"/>
                   </Events>
                 </Component>
               </SubComponents>
@@ -425,7 +480,7 @@
               <SubComponents>
                 <Component class="javax.swing.JButton" name="optionOK">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="OK"/>
+                    <Property name="text" type="java.lang.String" value="Save"/>
                   </Properties>
 
                   <Events>

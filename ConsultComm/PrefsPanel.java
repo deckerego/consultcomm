@@ -78,7 +78,6 @@ public class PrefsPanel extends javax.swing.JFrame {
         flagsInputPanel = new javax.swing.JPanel();
         flagLabel = new javax.swing.JLabel();
         billableCheckBox = new javax.swing.JCheckBox();
-        exportCheckBox = new javax.swing.JCheckBox();
         countdownCheckBox = new javax.swing.JCheckBox();
         countdownField = new javax.swing.JTextField();
         payCheckBox = new javax.swing.JCheckBox();
@@ -269,14 +268,6 @@ public class PrefsPanel extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         flagsInputPanel.add(billableCheckBox, gridBagConstraints);
-
-        exportCheckBox.setForeground(new java.awt.Color(102, 102, 153));
-        exportCheckBox.setSelected(clntComm.attributeSet(ClntComm.SHOW_EXPORT));
-        exportCheckBox.setText("Use Export to Database Flag");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        flagsInputPanel.add(exportCheckBox, gridBagConstraints);
 
         countdownCheckBox.setForeground(new java.awt.Color(102, 102, 153));
         countdownCheckBox.setSelected(clntComm.attributeSet(ClntComm.SHOW_COUNTDOWN));
@@ -693,7 +684,6 @@ public class PrefsPanel extends javax.swing.JFrame {
         //Save attribute flag settings
         int attributes = ClntComm.SHOW_TOTAL;
         if(billableCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_BILLABLE;
-        if(exportCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_EXPORT;
         if(countdownCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_COUNTDOWN;
         if(payCheckBox.isSelected()) attributes = attributes | ClntComm.SHOW_COUNTPAY;
         prefs.saveFirst("attributes", "value", attributes);
@@ -756,7 +746,6 @@ public class PrefsPanel extends javax.swing.JFrame {
     private javax.swing.JTextField saveField;
     private javax.swing.JPanel skinsButtonPanel;
     private javax.swing.JTextField gtkField;
-    private javax.swing.JCheckBox exportCheckBox;
     private javax.swing.JCheckBox countdownCheckBox;
     private javax.swing.JButton flagsCancelButton;
     private javax.swing.JCheckBox kdeCheckBox;

@@ -6,16 +6,20 @@ import java.util.*;
 public class PluginManager extends javax.swing.JFrame {
     Vector pluginList;
     
-    /** Creates new form PluginManager */
     public PluginManager() {
         pluginList = new Vector();
-        
         try { pluginList = getPlugins(); } 
         catch (Exception e) { System.err.println("Couldn't load all the plugins: "+e); }
         
         initComponents();
     }
     
+    public PluginManager(ClntComm parent) {
+        pluginList = parent.getPlugins();
+        
+        initComponents();
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -75,6 +79,7 @@ public class PluginManager extends javax.swing.JFrame {
           settingsPanel.add((javax.swing.JPanel)customizer);
       } catch(Exception e) {
           System.err.println("Couldn't load settings: "+e);
+          e.printStackTrace(System.out);
       }
   }
   
@@ -109,7 +114,7 @@ public class PluginManager extends javax.swing.JFrame {
       for(int i=0; i<pluginurls.length; i++) {
           String currBean = pluginfiles[i].getName();
           currBean = currBean.substring(0, currBean.lastIndexOf(".jar"));
-          System.out.println("Loading plugin "+currBean);
+          System.out.println("Loading plugin "+currBean+" from "+pluginfiles[i].getName());
           Object plugin = Beans.instantiate(loader, currBean);
           pluginList.addElement(plugin);
       }

@@ -20,12 +20,14 @@ import javax.swing.event.*;
  * Created on May 19, 2000, 7:37 PM
  */
 public class ClntComm extends javax.swing.JPanel {
-    protected static final int SHOW_TOTAL = 0;
-    protected static final int SHOW_BILLABLE = 1;
-    protected static final int SHOW_COUNTDOWN = 4;
-    protected static final int SHOW_COUNTPAY = 8;
-    protected static final int SECONDS = 0;
-    protected static final int MINUTES = 1;
+    public static final int SHOW_TOTAL = 0;
+    public static final int SHOW_BILLABLE = 1;
+    public static final int SHOW_COUNTDOWN = 4;
+    public static final int SHOW_COUNTPAY = 8;
+    public static final int SECONDS = 0;
+    public static final int MINUTES = 1;
+    public static final int IDLE_PAUSE = 5;
+    public static final int IDLE_PROJECT = 6;
     
     private static long totalSeconds, billableSeconds, countdownMinutes;
     private static JFrame frame = new JFrame("Consultant Manager");
@@ -67,6 +69,7 @@ public class ClntComm extends javax.swing.JPanel {
     
     public void setTimes(TimeRecordSet times) { this.times = times; }
     public TimeRecordSet getTimes() { return this.times; }
+    public Vector getPlugins() { return this.plugins; }
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -262,7 +265,7 @@ public class ClntComm extends javax.swing.JPanel {
   }//GEN-LAST:event_showHelp
   
   private void editPlugins(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPlugins
-      new PluginManager().show();
+      new PluginManager(this).show();
   }//GEN-LAST:event_editPlugins
   
   private void sortColumn(java.awt.event.MouseEvent evt) {
@@ -498,6 +501,7 @@ private void loadPlugins() {
         timerTask.fireAction(); //Sync everyone on an initial clock tick
     } catch(Exception e) {
         System.err.println("Couldn't load plugins: "+e);
+        e.printStackTrace(System.out);
     }
 }
 
@@ -530,7 +534,7 @@ private void readPrefs() {
             Node selectedNode = attributes.getNamedItem("selected");
             if(selectedNode != null && selectedNode.getNodeValue().equals("true"))
                 selectedIndex = i;
-            TimeRecord record = new TimeRecord(name, alias, seconds, billable, export);
+            TimeRecord record = new TimeRecord(name, seconds, billable);
             times.add(record);
         }
         
@@ -594,7 +598,6 @@ private void savePrefs() {
             TimeRecord record = times.elementAt(i);
             Element newNode = projs.createElement("project");
             newNode.setAttribute("name", record.getProjectName());
-            if(record.getAlias() != null) newNode.setAttribute("alias", record.getAlias());
             newNode.setAttribute("seconds", Long.toString(record.getSeconds()));
             newNode.setAttribute("billable", record.isBillable() ? "true" : "false");
             if(i == selectedIndex)
@@ -679,6 +682,7 @@ public boolean isRunning(){
             CsltCommEvent actionEvt = getCsltCommEvent();
             for(int i=0; i<targets.size(); i++) {
                 CsltCommListener target = (CsltCommListener)targets.elementAt(i);
+                System.out.println("Sending action event to "+target.getClass().getName());
                 target.clockTick(actionEvt);
             }
         }

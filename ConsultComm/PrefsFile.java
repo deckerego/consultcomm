@@ -339,7 +339,7 @@ public class PrefsFile {
         Node selectedNode = attributes.getNamedItem("selected");
         if(selectedNode != null && selectedNode.getNodeValue().equals("true"))
           selectedIndex = i;
-        TimeRecord record = new TimeRecord(name, alias, seconds, billable, export);
+        TimeRecord record = new TimeRecord(name, seconds, billable);
         times.add(record);
       }
 
@@ -351,12 +351,9 @@ public class PrefsFile {
       for(int i=0; i<times.size(); i++){
         TimeRecord record = times.elementAt(i);
         Element newNode = projs.createElement("project");
-        newNode.setAttribute("name", record.projectName);
-        if(record.alias != null)
-          newNode.setAttribute("alias", record.alias);
-        newNode.setAttribute("seconds", Long.toString(record.seconds));
-        newNode.setAttribute("billable", record.billable ? "true" : "false");
-        newNode.setAttribute("export", record.export ? "true" : "false");
+        newNode.setAttribute("name", record.getProjectName());
+        newNode.setAttribute("seconds", Long.toString(record.getSeconds()));
+        newNode.setAttribute("billable", record.isBillable() ? "true" : "false");
         if(i == selectedIndex) newNode.setAttribute("selected", "true");
         projs.appendChild(newNode);
       }
