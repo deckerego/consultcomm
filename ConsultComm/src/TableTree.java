@@ -54,6 +54,7 @@ public class TableTree extends JTable {
         int projColumnWidth = projectColumn.getPreferredWidth();
         ListToTreeSelectionModelWrapper selectionWrapper = (ListToTreeSelectionModelWrapper)tree.getSelectionModel();
         EventListener[] listeners = selectionWrapper.getListSelectionModelListeners(ListSelectionListener.class);
+        boolean showGroupTime = getGroupTime();
 
         //Setup new model
         tree = new TableTreeCellRenderer(tableTreeModel); //Make the hybrid row elements
@@ -69,6 +70,8 @@ public class TableTree extends JTable {
         selectionWrapper.setListSelectionModelListeners(listeners);
         tree.setSelectionModel(selectionWrapper); //Set to override DefaultTreeSelectionModel actions
         setSelectionModel(selectionWrapper.getListSelectionModel()); //Set to catch cell options and update JTree accordingly
+        
+        setGroupTime(showGroupTime);
         
         setDefaultRenderer(TableTreeModel.class, tree); //Print the cell in the tree correctly        
         setDefaultEditor(TableTreeModel.class, new TableTreeCellEditor()); //Collapse and expand trees
