@@ -101,6 +101,7 @@ public class ProjectEditDialog extends javax.swing.JDialog {
     
     getContentPane().add(inputPanel, java.awt.BorderLayout.CENTER);
     
+    getRootPane().setDefaultButton(okButton);
     okButton.setText("OK");
     okButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
