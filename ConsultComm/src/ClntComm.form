@@ -109,6 +109,14 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editProject"/>
           </Events>
         </MenuItem>
+        <MenuItem class="javax.swing.JMenuItem" name="resetPopupItem">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Reset Time"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resetProject"/>
+          </Events>
+        </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="deletePopupItem">
           <Properties>
             <Property name="text" type="java.lang.String" value="Delete Project"/>

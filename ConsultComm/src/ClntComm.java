@@ -103,6 +103,7 @@ public class ClntComm extends javax.swing.JPanel {
     helpMenuItem = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JPopupMenu();
     editPopupItem = new javax.swing.JMenuItem();
+    resetPopupItem = new javax.swing.JMenuItem();
     deletePopupItem = new javax.swing.JMenuItem();
     addPopupItem = new javax.swing.JMenuItem();
     scrollPane = new javax.swing.JScrollPane();
@@ -194,6 +195,15 @@ public class ClntComm extends javax.swing.JPanel {
 
     editMenu.add(editPopupItem);
 
+    resetPopupItem.setText("Reset Time");
+    resetPopupItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        resetProject(evt);
+      }
+    });
+
+    editMenu.add(resetPopupItem);
+
     deletePopupItem.setText("Delete Project");
     deletePopupItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -246,6 +256,28 @@ public class ClntComm extends javax.swing.JPanel {
     add(totalGUIPanel, java.awt.BorderLayout.SOUTH);
 
   }//GEN-END:initComponents
+
+  private void resetProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetProject
+    Object[] options = {"OK", "Cancel"};
+    int dialog = CustomOptionPane.showOptionDialog(frame,
+      "Project will be marked as having no elapsed time. Continue?",
+      "Zero-Out Project", CustomOptionPane.YES_NO_OPTION,
+      CustomOptionPane.WARNING_MESSAGE, null, options, options[1]);
+      
+    if(dialog == 0){
+      int index = timeList.getSelectedRecordIndex();
+      TimeRecordSet oldTimes; //Copy the old timeset for the property listener
+      try { oldTimes = (TimeRecordSet)times.clone(); }
+      catch (CloneNotSupportedException e) { oldTimes = null; }
+      times.resetTime(index);
+      changes.firePropertyChange("times", oldTimes, times);
+      savePrefs();
+      setTotals();
+      timerTask.startTime = System.currentTimeMillis()/1000;
+      timeList.repaint();
+      totalPanel.repaint();
+    }
+  }//GEN-LAST:event_resetProject
     
     private void initSelectionModel() {
         ListSelectionModel rowSM = timeList.getSelectionModel();
@@ -337,7 +369,6 @@ public class ClntComm extends javax.swing.JPanel {
       "Zero-Out All Projects", CustomOptionPane.YES_NO_OPTION,
       CustomOptionPane.WARNING_MESSAGE, null, options, options[1]);
       if(dialog == 0){
-          int index = timeList.getSelectedRecordIndex();
           TimeRecordSet oldTimes; //Copy the old timeset for the property listener
           try { oldTimes = (TimeRecordSet)times.clone(); }
           catch (CloneNotSupportedException e) { oldTimes = null; }
@@ -611,6 +642,7 @@ public class ClntComm extends javax.swing.JPanel {
   private javax.swing.JMenuItem pluginsMenuItem;
   private javax.swing.JMenuItem prefsMenuItem;
   private javax.swing.JMenu projectMenu;
+  private javax.swing.JMenuItem resetPopupItem;
   private javax.swing.JScrollPane scrollPane;
   private javax.swing.JButton startButton;
   private javax.swing.JMenu toolMenu;
