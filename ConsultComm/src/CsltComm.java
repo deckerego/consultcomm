@@ -130,23 +130,24 @@ public class CsltComm extends javax.swing.JFrame {
    * Read through preferances file
    */
   private void readPrefs() {
+      Preferences prefs = Preferences.userRoot().node("CsltComm");
+    
       try {
           //Read in prefs file, close input stream
           File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"CsltComm");
           File prefsFile = new File(prefsdir, "CsltComm.xml");
           InputStream inStream = new FileInputStream(prefsFile);
-          Preferences prefs = Preferences.userRoot().node("CsltComm");
           prefs.importPreferences(inStream);
           inStream.close();
-          
+      } catch(Exception e) {
+          System.err.println("Couldn't read prefs: "+e);
+      } finally {
           //Read prefs
           animateIcons = prefs.getBoolean("animations", true); //Get animation flag
           themePack = prefs.get("theme", ""); //Get skins
           kdeTheme = prefs.get("kde", "");
           gtkTheme = prefs.get("gtk", "");
           lookAndFeel = prefs.get("lookandfeel", UIManager.getSystemLookAndFeelClassName());
-      } catch(Exception e) {
-          System.err.println("Couldn't read prefs: "+e);
       }
   }
   

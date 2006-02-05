@@ -564,6 +564,8 @@ public class ClntComm extends javax.swing.JPanel implements ClipboardOwner {
   }
   
   void loadPlugins() {
+      changes = new PropertyChangeSupport(this);
+      
       try{
           //Deregister our old plugins, if they exist
           Iterator plugins = PluginManager.getPluginList().iterator();
@@ -574,7 +576,6 @@ public class ClntComm extends javax.swing.JPanel implements ClipboardOwner {
           //Get our new plugins and activate them
           PluginManager.getPlugins();
           plugins = PluginManager.getPluginList().iterator();
-          changes = new PropertyChangeSupport(this);
           while(plugins.hasNext()) {
               CsltCommPlugin plugin = (CsltCommPlugin)plugins.next();
               changes.addPropertyChangeListener((PropertyChangeListener)plugin);
