@@ -1,11 +1,13 @@
 import javax.swing.*;
 import java.io.*;
+import java.util.*;
+import java.text.*;
 
 public class TotalTimes extends CsltCommPlugin {
     final String REMAINING_TITLE = "Remaining:";
     final String EARNED_TITLE = "Earned:";
     
-    private static java.text.NumberFormat dollarFormat = java.text.NumberFormat.getInstance();
+    private static NumberFormat dollarFormat = NumberFormat.getCurrencyInstance();
     
     private ClntComm clntComm;
     private long countdownTime;
@@ -29,7 +31,7 @@ public class TotalTimes extends CsltCommPlugin {
     public String getTotalCash() {
         double hours = ((double)clntComm.getTimes().getTotalTime()) / ((double)(60*60));
         double cash = this.cashAmount * hours;
-        return "$"+dollarFormat.format(cash);
+        return dollarFormat.format(cash);
     }
     
     public void propertyChange(java.beans.PropertyChangeEvent propertyChangeEvent) {
