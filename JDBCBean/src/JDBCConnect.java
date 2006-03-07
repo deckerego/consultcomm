@@ -42,6 +42,7 @@ public class JDBCConnect extends CsltCommPlugin {
     private int hourFormat;
     private boolean projectValidate;
     private boolean projectCase;
+    private boolean use;
     
     public JDBCConnect() {
         tableMap = new TableMap();
@@ -94,8 +95,13 @@ public class JDBCConnect extends CsltCommPlugin {
     public boolean isProjectCase() { return this.projectCase; }
     public void setTableMap(TableMap tableMap) { this.tableMap = tableMap; }
     public TableMap getTableMap() { return this.tableMap; }
+    public void setUse(boolean use) { this.use = use; }
+    public boolean getUse() { return this.use; }
+    public boolean isUse() { return this.use; }
     
     public javax.swing.JMenuItem[] getMenuItems() {
+        if(! use) return null; // Nevermind.
+        
         javax.swing.JMenuItem menuitems[] = new javax.swing.JMenuItem[1];
         
         menuitems[0] = new javax.swing.JMenuItem();
@@ -112,6 +118,8 @@ public class JDBCConnect extends CsltCommPlugin {
     }
     
     public javax.swing.JMenuItem[] getPopupMenuItems() {
+        if(! use) return null; // Nevermind.
+        
         javax.swing.JMenuItem menuitems[] = new javax.swing.JMenuItem[1];
         
         menuitems[0] = new javax.swing.JMenuItem();
@@ -346,7 +354,7 @@ public class JDBCConnect extends CsltCommPlugin {
             this.parentFrame = (JFrame)clntComm.getTopLevelAncestor();
         }
         
-        if("record".equals(eventName)) { //Edited a project
+        if("record".equals(eventName) && use) { //Edited a project
             TimeRecord newRecord = (TimeRecord)propertyChangeEvent.getNewValue();
             TimeRecord oldRecord = (TimeRecord)propertyChangeEvent.getOldValue();
             
@@ -364,7 +372,7 @@ public class JDBCConnect extends CsltCommPlugin {
             }
         }
 
-        if(propertyChangeEvent.getPropertyName().equals("times")) { //Timelist has changed
+        if(propertyChangeEvent.getPropertyName().equals("times") && use) { //Timelist has changed
             TimeRecordSet newTimes = (TimeRecordSet)propertyChangeEvent.getNewValue();
             TimeRecordSet oldTimes = (TimeRecordSet)propertyChangeEvent.getOldValue();
             
