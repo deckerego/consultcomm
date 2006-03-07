@@ -11,7 +11,7 @@ public class TimeOut extends CsltCommPlugin {
     private ClntComm clntComm;
     
     private int idleAction = IDLE_PAUSE;
-    private boolean use = true;
+    private boolean use = false;
     private int seconds = 0;
     private TimeRecord project;
     

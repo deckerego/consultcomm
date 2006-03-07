@@ -114,7 +114,7 @@
       </exec>
     </target>
     
-    <target depends="Win32,X" name="-pre-jar">
+    <target name="-pre-jar">
       <copy todir="${build.classes.dir}">
         <fileset dir="." includes="*.png"/>
         <fileset dir="." includes="*.gif"/>
