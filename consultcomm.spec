@@ -1,6 +1,6 @@
 Summary: Consultant Communicator (ConsultComm) is a program that allows anyone managing multiple projects, clients or tasks to effectively keep track of exactly how long they've spent on each project.
 Name: ConsultComm
-Version: 3.2beta1
+Version: 3.1.2
 Release: 1
 Copyright: GPL
 Group: Applications/Productivity
@@ -61,6 +61,9 @@ fi
 /usr/share/applications
 
 %changelog
+* Sun Apr 29 2006 John Ellis <jtellis@users.sourceforge.net>
+- Added toggle to turn JDBC plugin on/off
+- Made sure all currency followed Java locale
 * Mon Feb 28 2005 John Ellis <jtellis@users.sourceforge.net>
 - Added group time total in project list
 - Added antialiasing preference for fonts in project list
