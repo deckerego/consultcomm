@@ -2,7 +2,7 @@
 <project basedir="." default="dist">
   <taskdef classname="com.izforge.izpack.ant.IzPackTask" name="izpack" classpath="/usr/local/IzPack/lib/compiler.jar"/>
             
-  <property name="release" value="3.1.2"/>
+  <property name="release" value="3.1.2beta1"/>
   <property name="releasename" value="ConsultComm-${release}"/>
   <property name="rpmdir" value="/usr/src/packages"/>
   <property name="izpackdir" value="/usr/local/IzPack"/>

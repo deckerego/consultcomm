@@ -1,6 +1,6 @@
 Summary: Consultant Communicator (ConsultComm) is a program that allows anyone managing multiple projects, clients or tasks to effectively keep track of exactly how long they've spent on each project.
 Name: ConsultComm
-Version: 3.1.2
+Version: 3.1.2beta1
 Release: 1
 License: GPL
 Group: Applications/Productivity
@@ -25,6 +25,8 @@ all you want.
 %setup
 
 %build
+ant -f TimeOutBean/build.xml
+ant -f TimeOutBean/build.xml X
 ant build
 
 %install
