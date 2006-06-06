@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Class-Path: lib/skinlf.jar lib/jhbasic.jar lib/tray.jar
+Class-Path: lib/skinlf.jar lib/jhbasic.jar lib/jdic.jar lib/jdic_stub.jar
 X-COMMENT: Main-Class will be added automatically by build
 
