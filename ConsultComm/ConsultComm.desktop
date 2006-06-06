@@ -1,8 +1,9 @@
 [Desktop Entry]
-Comment=ConsultComm Project Timekeeper
+Comment=Consultant Communicator 3
 Exec='/usr/bin/ConsultComm'
-GenericName=ConsultComm 3.1
-Icon=/usr/share/ConsultComm/icons/ConsultComm.xpm
+GenericName=Project Time Tracking
+Icon=/usr/share/ConsultComm/icons/ConsultComm_48.png
+Categories=Application;Java;Utility;Clock;ProjectManagement;
 Name=ConsultComm
 Path=
 StartupNotify=false

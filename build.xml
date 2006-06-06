@@ -26,8 +26,6 @@
   <target name="tarball">
     <tar tarfile="${releasename}.src.tar">
       <tarfileset dir="." prefix="${releasename}">
-        <exclude name="**/CVS"/>
-        <exclude name="**/private"/>
         <exclude name="**/*~"/>
         <include name="build.xml"/>
 	<include name="consultcomm.spec"/>
@@ -36,6 +34,7 @@
         <include name="ConsultComm/ConsultComm.bat"/>
         <include name="ConsultComm/ConsultComm.desktop"/>
         <include name="ConsultComm/nbproject/*"/>
+        <include name="ConsultComm/nbproject/private/*"/>
         <include name="ConsultComm/build.xml"/>
         <include name="ConsultComm/manifest.mf"/>
         <include name="ConsultComm/lib/*"/>

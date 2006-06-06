@@ -33,6 +33,10 @@ the same directory as CsltComm.jar. The native libraries (such as
 libtray.so and tray.dll) should be placed in the SysTray directory 
 with the other SysTray class files.
 
+ConsultComm icon kindly provided by tomasio (http://tomasio.at), 
+released under the Creative Commons Attribution-NonCommercial-NoDerivs 
+2.0 Austria License.
+
 =======================================================================
 
 If you have questions about how to install or run ConsultComm, please

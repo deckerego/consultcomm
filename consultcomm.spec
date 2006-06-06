@@ -2,7 +2,7 @@ Summary: Consultant Communicator (ConsultComm) is a program that allows anyone m
 Name: ConsultComm
 Version: 3.1.2
 Release: 1
-Copyright: GPL
+License: GPL
 Group: Applications/Productivity
 Source: ConsultComm-%{version}.src.tar
 BuildRoot: /var/tmp/%{name}-buildroot
@@ -38,7 +38,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/share/applications
 mkdir -p $RPM_BUILD_ROOT/usr/bin
 
 install ConsultComm/ConsultComm $RPM_BUILD_ROOT/usr/bin
-install ConsultComm/graphics/*.xpm $RPM_BUILD_ROOT/usr/share/ConsultComm/icons
+install ConsultComm/graphics/*.png $RPM_BUILD_ROOT/usr/share/ConsultComm/icons
 install ConsultComm/plugins/*.jar $RPM_BUILD_ROOT/usr/share/ConsultComm/plugins
 install ConsultComm/lib/*.jar $RPM_BUILD_ROOT/usr/share/ConsultComm/lib
 install ConsultComm/*.jar $RPM_BUILD_ROOT/usr/share/ConsultComm
@@ -61,9 +61,12 @@ fi
 /usr/share/applications
 
 %changelog
-* Sun Apr 29 2006 John Ellis <jtellis@users.sourceforge.net>
+* Fri Jun 9 2006 John Ellis <jtellis@users.sourceforge.net>
 - Added toggle to turn JDBC plugin on/off
 - Made sure all currency followed Java locale
+- Fixed .spec file to remove deprecated "Copyright" tag
+- Fixed tarball to include NetBeans generated properties
+- Added tomasio's jazzy new ConsultComm icon
 * Mon Feb 28 2005 John Ellis <jtellis@users.sourceforge.net>
 - Added group time total in project list
 - Added antialiasing preference for fonts in project list
