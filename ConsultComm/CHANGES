@@ -1,14 +1,16 @@
-Consultant Communicator 3.1.1
-Released November 2, 2004
+Consultant Communicator 3.2
+Released July 31, 2006
 First Released: November 1999
 
 REVISION HISTORY -
-  o 3.1.2    [06/09/06]
+  o 3.2    [07/31/06]
     - Added toggle to turn JDBC plugin on/off
     - Made sure all currency followed Java locale
     - Fixed .spec file to remove deprecated "Copyright" tag
     - Fixed tarball to include NetBeans generated properties
     - Added tomasio's jazzy new ConsultComm icon
+    - Moved some dialog boxes to Sun's new absolute layout
+    - Made TimeTracker plugin default to uninstalled in Windows
   o 3.1.1    [11/02/04]
     - Fixed bug where adding a new project while the timer was running would reset the selected project's elapsed time
     - Added project name to $PROMPT dialog in JDBC plugin
