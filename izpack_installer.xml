@@ -74,7 +74,7 @@
                 <include name="plugins/TimeOut.jar"/>
             </fileset>
         </pack>
-        <pack name="Elapsed Time Tracker" required="no">
+        <pack name="Elapsed Time Tracker" required="no" preselected="no">
             <description>Keeps track of elapsed or remaining time</description>
             <fileset dir="." targetdir="$INSTALL_PATH">
                 <include name="plugins/TotalTimes.jar"/>
