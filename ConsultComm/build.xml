@@ -66,13 +66,4 @@
     nbproject/build-impl.xml file. 
 
     -->
-    <target name="-pre-jar">
-      <copy todir="${build.classes.dir}/graphics">
-        <fileset file="graphics/BlueBar.gif"/>
-        <fileset file="graphics/ConsultComm_16.png"/>
-      </copy>
-      <copy todir="${build.classes.dir}/help">
-        <fileset file="help/*" excludes="**/*~"/>
-      </copy>
-    </target>
 </project>
