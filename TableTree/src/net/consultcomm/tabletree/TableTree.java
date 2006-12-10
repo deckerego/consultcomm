@@ -40,6 +40,8 @@ public class TableTree extends JTable {
     tree = new TableTreeCellRenderer(model);
     
     super.setModel(new TableTreeModelAdapter(model, tree));
+    
+    setDefaultRenderer(TableTreeModel.class, tree);
   }
   
 }

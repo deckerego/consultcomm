@@ -18,7 +18,7 @@ public class SampleTableTree extends javax.swing.JFrame {
   public SampleTableTree() {
     initComponents();
     
-    add(new TableTree(new SampleModel()));
+    scrollPane.add(new TableTree(new SampleModel()));
     pack();
   }
   
@@ -29,19 +29,12 @@ public class SampleTableTree extends javax.swing.JFrame {
    */
   // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
   private void initComponents() {
+    scrollPane = new javax.swing.JScrollPane();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setTitle("JTable & JTree");
-    org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
-    getContentPane().setLayout(layout);
-    layout.setHorizontalGroup(
-      layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 400, Short.MAX_VALUE)
-    );
-    layout.setVerticalGroup(
-      layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 300, Short.MAX_VALUE)
-    );
+    getContentPane().add(scrollPane, java.awt.BorderLayout.CENTER);
+
     pack();
   }// </editor-fold>//GEN-END:initComponents
   
@@ -57,6 +50,7 @@ public class SampleTableTree extends javax.swing.JFrame {
   }
   
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JScrollPane scrollPane;
   // End of variables declaration//GEN-END:variables
   
 }

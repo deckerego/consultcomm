@@ -54,6 +54,7 @@ implements TableCellRenderer {
   }
   
   public void paint(Graphics g) {
+    System.out.println("Printing at "+ (-visibleRow * getRowHeight()));
     g.translate(0, -visibleRow * getRowHeight());
     super.paint(g);
   }
