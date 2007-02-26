@@ -51,6 +51,8 @@ public class TableTreeModelAdapter extends AbstractTableModel {
 
   public Object getValueAt(int row, int column) {
     //Traverse the JTree and get its component instead
+    System.out.println("TableTreeModelAdapter.getValueAt Getting "+row+", "+column);
+    System.out.println("\tpathForRow: "+tree.getPathForRow(row));
     return model.getValueAt(tree.getPathForRow(row).getLastPathComponent(), column);
   }
 }

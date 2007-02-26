@@ -34,6 +34,7 @@ public class TableTree extends JTable {
   protected TableTreeCellRenderer tree;
   
   /** Creates a new instance of TableTree */
+  //TODO Shouldn't this be done with setModel instead of in the constructor?
   public TableTree(TableTreeModel model) {
     super();
     
