@@ -42,6 +42,9 @@ implements TableCellRenderer {
   
   public TableTreeCellRenderer(TreeModel model) {
     super(model);
+    
+    //We don't want the model adapter invoking getValueAt for the root (parent) node
+    setRootVisible(false);
   }
   
   public Component getTableCellRendererComponent(JTable jTable, Object object, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -54,7 +57,6 @@ implements TableCellRenderer {
   }
   
   public void paint(Graphics g) {
-    System.out.println("Printing at "+ (-visibleRow * getRowHeight()));
     g.translate(0, -visibleRow * getRowHeight());
     super.paint(g);
   }

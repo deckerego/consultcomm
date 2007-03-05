@@ -45,7 +45,7 @@ public class SampleModel extends AbstractTableTreeModel implements TableTreeMode
   }
 
   public Object getValueAt(Object cell, int column) {
-    return cell.toString() + column;
+    return cell.toString() + " #" + column;
   }
 
   public Object getChild(Object object, int i) {

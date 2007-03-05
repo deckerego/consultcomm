@@ -26,6 +26,7 @@ package net.consultcomm.tabletree;
 
 import javax.swing.JTree;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.tree.TreePath;
 
 /**
  *
@@ -49,10 +50,12 @@ public class TableTreeModelAdapter extends AbstractTableModel {
     return model.getColumnCount();
   }
 
+  //Traverse the JTree and get its component instead
   public Object getValueAt(int row, int column) {
-    //Traverse the JTree and get its component instead
-    System.out.println("TableTreeModelAdapter.getValueAt Getting "+row+", "+column);
-    System.out.println("\tpathForRow: "+tree.getPathForRow(row));
-    return model.getValueAt(tree.getPathForRow(row).getLastPathComponent(), column);
+    //The root node for the tree will have no parent and is the first element
+    TreePath selectedPath = tree.getPathForRow(row);
+    
+    //Have the model interpret the value for us based on the component & column #
+    return model.getValueAt(selectedPath.getLastPathComponent(), column);
   }
 }
