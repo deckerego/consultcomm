@@ -6,16 +6,32 @@
 
 package consultcomm;
 
+import java.util.ArrayList;
+import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
+
 /**
  *
  * @author  jellis
  */
 public class ConsultComm extends javax.swing.JFrame
 {
+  ArrayList<ProjectGroup> groups;
   
   /** Creates new form ConsultComm */
   public ConsultComm()
   {
+    groups = new ArrayList<ProjectGroup>();
+    
+    ProjectGroup groupOne = new ProjectGroup("Group One");
+    groupOne.projects.add(new Project("Project1", "00:01"));
+    groupOne.projects.add(new Project("Project2", "00:02"));
+    this.groups.add(groupOne);
+    
+    ProjectGroup groupTwo = new ProjectGroup("Group Two");
+    groupTwo.projects.add(new Project("Project3", "00:03"));
+    groupTwo.projects.add(new Project("Project4", "00:04"));
+    this.groups.add(groupTwo);
+    
     initComponents();
   }
   
@@ -45,6 +61,7 @@ public class ConsultComm extends javax.swing.JFrame
     aboutMenuItem = new javax.swing.JMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    projectTreeTable.setTreeTableModel(new ProjectTreeTableModel(groups));
     projectScrollPane.setViewportView(projectTreeTable);
 
     getContentPane().add(projectScrollPane, java.awt.BorderLayout.CENTER);
