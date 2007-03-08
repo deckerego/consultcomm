@@ -10,6 +10,7 @@ import consultcomm.*;
 import consultcomm.project.Project;
 import consultcomm.project.ProjectGroup;
 import java.util.List;
+import java.util.ResourceBundle;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
 /**
@@ -20,10 +21,9 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
  */
 public class ProjectTreeTableModel extends DefaultTreeTableModel
 {
-  //TODO Make the column names i18n-ized
-  public static final String[] COLUMNS = {"Project", "Time"};
-  
-  List<ProjectGroup> groups;
+  private static final ResourceBundle messages = ResourceBundle.getBundle("MessagesBundle");
+  private static final String[] COLUMNS = {messages.getString("Project"), messages.getString("Time")};
+  private List<ProjectGroup> groups;
   
   /**
    * Creates a new instance of ProjectTreeTableModel 

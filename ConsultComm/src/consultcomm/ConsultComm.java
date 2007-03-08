@@ -65,7 +65,6 @@ public class ConsultComm extends javax.swing.JFrame
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setTitle("ConsultComm 4");
-    projectTreeTable.setPreferredSize(new java.awt.Dimension(200, 400));
     projectTreeTable.setTreeTableModel(new ProjectTreeTableModel(groups));
     projectScrollPane.setViewportView(projectTreeTable);
 
