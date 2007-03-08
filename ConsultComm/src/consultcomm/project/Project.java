@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-package consultcomm;
+package consultcomm.project;
 
 /**
  *

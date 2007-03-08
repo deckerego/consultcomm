@@ -6,6 +6,9 @@
 
 package consultcomm;
 
+import consultcomm.project.Project;
+import consultcomm.project.ProjectGroup;
+import consultcomm.treetable.ProjectTreeTableModel;
 import java.util.ArrayList;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
@@ -61,6 +64,8 @@ public class ConsultComm extends javax.swing.JFrame
     aboutMenuItem = new javax.swing.JMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    setTitle("ConsultComm 4");
+    projectTreeTable.setPreferredSize(new java.awt.Dimension(200, 400));
     projectTreeTable.setTreeTableModel(new ProjectTreeTableModel(groups));
     projectScrollPane.setViewportView(projectTreeTable);
 

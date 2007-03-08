@@ -7,8 +7,11 @@
  * and open the template in the editor.
  */
 
-package consultcomm;
+package consultcomm.treetable;
 
+import consultcomm.*;
+import consultcomm.project.Project;
+import consultcomm.project.ProjectGroup;
 import java.util.ArrayList;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
@@ -18,7 +21,8 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
  */
 public class ProjectTreeTableModel extends DefaultTreeTableModel
 {
-  public static final int COLUMN_COUNT = 2;
+  //TODO Make the column names i18n-ized
+  public static final String[] COLUMNS = {"Project", "Time"};
   
   ArrayList<ProjectGroup> groups;
   
@@ -120,7 +124,7 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
    */
   public int getColumnCount()
   {
-    return COLUMN_COUNT;
+    return COLUMNS.length;
   }
   
   /**
@@ -128,17 +132,10 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
    * @param index The index number of the column
    * @return The name of the column
    */
-  //TODO Make the column names i18n-ized
   public String getColumnName(int index)
   {
-    assert index < COLUMN_COUNT;
-    
-    switch(index) {
-      case 0:
-        return "Project";
-      default:
-        return "Time";
-    }
+    assert index < getColumnCount();
+    return COLUMNS[index];
   }
   
   /**
@@ -149,7 +146,7 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
    */
   public Object getValueAt(Object node, int column)
   {
-    assert column < COLUMN_COUNT;
+    assert column < getColumnCount();
 
     if(node.getClass() == ProjectGroup.class)
     { // This is the main list of groups
