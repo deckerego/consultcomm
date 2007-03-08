@@ -2,21 +2,18 @@
  * Project.java
  *
  * Created on March 6, 2007, 8:53 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package consultcomm.project;
 
 /**
- *
+ * A POJO for projects
  * @author jellis
  */
 public class Project
 {
-  public String name;
-  public String time;
+  private String name;
+  private String time;
   
   /** 
    * Creates a new instance of Project 
@@ -36,5 +33,37 @@ public class Project
   public String toString()
   {
     return this.name;
+  }
+  
+  /**
+   * @param name The name of the project
+   */
+  public void setName(String name)
+  {
+    this.name = name;
+  }
+  
+  /**
+   * @param time The elapsed time of the project
+   */
+  public void setTime(String time)
+  {
+    this.time = time;
+  }
+  
+  /**
+   * @return The name of the project
+   */
+  public String getName()
+  {
+    return this.name;
+  }
+  
+  /**
+   * @return The time elapsed for the project
+   */
+  public String getTime()
+  {
+    return this.time;
   }
 }

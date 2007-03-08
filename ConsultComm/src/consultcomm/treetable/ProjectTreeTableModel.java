@@ -2,9 +2,6 @@
  * ProjectTreeTableModel.java
  *
  * Created on March 6, 2007, 8:50 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package consultcomm.treetable;
@@ -12,10 +9,12 @@ package consultcomm.treetable;
 import consultcomm.*;
 import consultcomm.project.Project;
 import consultcomm.project.ProjectGroup;
-import java.util.ArrayList;
+import java.util.List;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
 /**
+ * This is a model implementing the JXTreeTable default model. Used to
+ * group projects together & display as hiearchy.
  *
  * @author jellis
  */
@@ -24,12 +23,12 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
   //TODO Make the column names i18n-ized
   public static final String[] COLUMNS = {"Project", "Time"};
   
-  ArrayList<ProjectGroup> groups;
+  List<ProjectGroup> groups;
   
   /**
    * Creates a new instance of ProjectTreeTableModel 
    */
-  public ProjectTreeTableModel(ArrayList<ProjectGroup> groups)
+  public ProjectTreeTableModel(List<ProjectGroup> groups)
   {
     this.groups = groups;
   }
@@ -48,11 +47,15 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
       return model.groups.get(index);
     }
     
-    else
-    { //Assume we should instead use the list of projects
-      assert parent.getClass() == ProjectGroup.class;
+    if(parent.getClass() == ProjectGroup.class)
+    { //We should instead use the list of projects
       ProjectGroup group = (ProjectGroup) parent;
-      return group.projects.get(index);
+      return group.getProjects().get(index);
+    }
+    
+    else
+    { //Nevermind
+      return super.getChild(parent, index);
     }
   }
   
@@ -69,11 +72,15 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
       return model.groups.size();
     }
     
-    else
-    { //Assume we should instead use the list of projects
-      assert parent.getClass() == ProjectGroup.class;
+    if(parent.getClass() == ProjectGroup.class)
+    { //We should instead use the list of projects
       ProjectGroup group = (ProjectGroup) parent;
-      return group.projects.size();
+      return group.getProjects().size();
+    }
+    
+    else
+    { //Nevermind
+      return super.getChildCount(parent);
     }
   }
   
@@ -91,11 +98,15 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
       return model.groups.indexOf(child);
     }
     
-    else
-    { //Assume we should instead use the list of projects
-      assert parent.getClass() == ProjectGroup.class;
+    if(parent.getClass() == ProjectGroup.class)
+    { //We should instead use the list of projects
       ProjectGroup group = (ProjectGroup) parent;
-      return group.projects.indexOf(child);
+      return group.getProjects().indexOf(child);
+    }
+    
+    else
+    { //Nevermind
+      return super.getIndexOfChild(parent, child);
     }
   }
   
@@ -149,28 +160,87 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
     assert column < getColumnCount();
 
     if(node.getClass() == ProjectGroup.class)
-    { // This is the main list of groups
+    { // This is a group node
       ProjectGroup group = (ProjectGroup) node;
       
       switch(column) {
         case 0:
-          return group.name;
+          return group.getName();
         default:
           return null;
       }
     }
     
-    else
-    { //Assume we should instead use the list of projects
-      assert node.getClass() == Project.class;
+    if(node.getClass() == Project.class)
+    { //We should instead use the list of projects
       Project project = (Project) node;
       
       switch(column) {
         case 0:
-          return project.name;
+          return project.getName();
         default:
-          return project.time;
+          return project.getTime();
       }
+    }
+    
+    else
+    { //Nevermind
+      return super.getValueAt(node, column);
+    }
+  }
+
+  /**
+   * TreeTable interface method for rendering JXTreeTables
+   * @param node The tree node that serves as the "record" of the table
+   * @param column The index of the node's record
+   * @return Return false if this is the "time" column of a ProjectGroup, true otherwise
+   */
+  public boolean isCellEditable(Object node, int column)
+  {
+    //It doesn't make sense to edit the right-most column of a ProjectGroup record,
+    //since there's nothing there to begin with.
+    return node.getClass() != ProjectGroup.class || column == 0;
+  }
+  
+  /**
+   * TreeTable interface method for rendering JXTreeTables
+   * @param value The new value that is submitted from an editable cell
+   * @param node The tree node that serves as the "record" of the table
+   * @param column The index of the node's record
+   */
+  public void setValueAt(Object value, Object node, int column)
+  {
+    assert column < getColumnCount();
+    assert value.getClass() == String.class;
+
+    if(node.getClass() == ProjectGroup.class)
+    { // This is a group node
+      ProjectGroup group = (ProjectGroup) node;
+      
+      switch(column) {
+        case 0:
+          group.setName((String) value);
+          break;
+      }
+    }
+    
+    if(node.getClass() == Project.class)
+    { //We should instead use the list of projects
+      Project project = (Project) node;
+      
+      switch(column) {
+        case 0:
+          project.setName((String) value);
+          break;
+        case 1:
+          project.setTime((String) value);
+          break;
+      }
+    }
+    
+    else
+    {
+      super.setValueAt(value, node, column);
     }
   }
 }
