@@ -1,10 +1,9 @@
 ConsultComm Project Timekeeper
-Copyright (C) 2004 John T. Ellis <jtellis@users.sourceforge.net>
+Copyright (C) 2004, 2007 John T. Ellis <jtellis@users.sourceforge.net>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+the Free Software Foundation; version 2 of the License.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,24 +14,6 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-This product includes software developed by L2FProd.com 
-(http://www.L2FProd.com/), Copyright (c) 2000-2002 L2FProd.com. 
-All rights reserved. When building from source place skinlf.jar
-in the same directory as CsltComm.jar.
-
-Help system implemented using JavaHelp's jhbasic.jar
-(http://java.sun.com/products/javahelp/) Copyright 2002 Sun 
-Microsystems, Inc. All rights reserved. Use is subject to license 
-terms. When building from source place jhbasic.jar in the same 
-directory as CsltComm.jar.
-
-System tray integration is implemented using the JDesktop Integration
-Components (https://jdic.dev.java.net/) released under the Lesser 
-General Public License. When building from source place tray.jar in 
-the same directory as CsltComm.jar. The native libraries (such as 
-libtray.so and tray.dll) should be placed in the SysTray directory 
-with the other SysTray class files.
-
 ConsultComm icon kindly provided by tomasio (http://tomasio.at), 
 released under the Creative Commons Attribution-NonCommercial-NoDerivs 
 2.0 Austria License.
@@ -42,9 +23,6 @@ released under the Creative Commons Attribution-NonCommercial-NoDerivs
 If you have questions about how to install or run ConsultComm, please
 read FAQ.html or visit http://consultcomm.sourceforge.net to read 
 further documentation, ask questions or submit bug reports.
-
-If you are building ConsultComm from source, make sure you have 
-Jakarta Ant installed and build the package using the command 'ant'. 
 
 Binary packages are available for most platforms at the ConsultComm
 site http://consultcomm.sourceforge.net.
