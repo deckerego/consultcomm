@@ -9,7 +9,15 @@ package consultcomm;
 import consultcomm.project.Project;
 import consultcomm.project.ProjectGroup;
 import consultcomm.treetable.ProjectTreeTableModel;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.prefs.Preferences;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
 /**
@@ -18,26 +26,57 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
  */
 public class ConsultComm extends javax.swing.JFrame
 {
-  ArrayList<ProjectGroup> groups;
+  ProjectTreeTableModel projectList;
   
   /** Creates new form ConsultComm */
   public ConsultComm()
   {
-    groups = new ArrayList<ProjectGroup>();
-    
-    ProjectGroup groupOne = new ProjectGroup("Group One");
-    groupOne.getProjects().add(new Project("Project1", "00:01"));
-    groupOne.getProjects().add(new Project("Project2", "00:02"));
-    this.groups.add(groupOne);
-    
-    ProjectGroup groupTwo = new ProjectGroup("Group Two");
-    groupTwo.getProjects().add(new Project("Project3", "00:03"));
-    groupTwo.getProjects().add(new Project("Project4", "00:04"));
-    this.groups.add(groupTwo);
-    
+    loadPrefs();
     initComponents();
   }
   
+  private void loadPrefs()
+  {
+    //TODO: Make Windows-specific directories
+    File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+".consultcomm");
+    if(! prefsdir.exists()) prefsdir.mkdir();
+    
+    try
+    { //Get all projects
+      File prefsFile = new File(prefsdir, "projects.xml");
+      if(! prefsFile.exists()) prefsFile.createNewFile();
+      FileInputStream inStream = new FileInputStream(prefsFile);
+      XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
+      projectList = (ProjectTreeTableModel) d.readObject();
+      d.close();
+    }
+    catch (Exception e)
+    {
+      System.err.println("Cannot read projects file: "+e);
+      projectList = new ProjectTreeTableModel();
+    }
+  }
+  
+  private void savePrefs()
+  {
+    //TODO: Make Windows-specific directories
+    File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+".consultcomm");
+    if(! prefsdir.exists()) prefsdir.mkdir();
+    
+    try
+    { //Save projects
+      File prefsFile = new File(prefsdir, "projects.xml");
+      FileOutputStream outStream = new FileOutputStream(prefsFile);
+      XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
+      e.writeObject(projectList);
+      e.close();
+    }
+    catch (Exception e)
+    {
+      System.err.println("Cannot read projects file: "+e);
+    }
+  }
+ 
   /** This method is called from within the constructor to
    * initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is
@@ -65,7 +104,16 @@ public class ConsultComm extends javax.swing.JFrame
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setTitle("ConsultComm 4");
-    projectTreeTable.setTreeTableModel(new ProjectTreeTableModel(groups));
+    addWindowListener(new java.awt.event.WindowAdapter()
+    {
+      public void windowClosing(java.awt.event.WindowEvent evt)
+      {
+        formWindowClosing(evt);
+      }
+    });
+
+    projectTreeTable.setPreferredScrollableViewportSize(new java.awt.Dimension(400, 200));
+    projectTreeTable.setTreeTableModel(projectList);
     projectScrollPane.setViewportView(projectTreeTable);
 
     getContentPane().add(projectScrollPane, java.awt.BorderLayout.CENTER);
@@ -121,6 +169,11 @@ public class ConsultComm extends javax.swing.JFrame
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
+
+  private void formWindowClosing(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosing
+  {//GEN-HEADEREND:event_formWindowClosing
+    savePrefs();
+  }//GEN-LAST:event_formWindowClosing
   
   private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_exitMenuItemActionPerformed
   {

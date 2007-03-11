@@ -6,11 +6,14 @@
 
 package consultcomm.project;
 
+import java.io.Serializable;
+
 /**
  * A POJO for projects
  * @author jellis
  */
 public class Project
+    implements Serializable
 {
   private String name;
   private String time;

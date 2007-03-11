@@ -9,6 +9,10 @@ package consultcomm.treetable;
 import consultcomm.*;
 import consultcomm.project.Project;
 import consultcomm.project.ProjectGroup;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
@@ -19,16 +23,46 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
  *
  * @author jellis
  */
-public class ProjectTreeTableModel extends DefaultTreeTableModel
+public class ProjectTreeTableModel
+    extends DefaultTreeTableModel
+    implements Serializable
 {
-  private static final ResourceBundle messages = ResourceBundle.getBundle("MessagesBundle");
-  private static final String[] COLUMNS = {messages.getString("Project"), messages.getString("Time")};
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("MessagesBundle");
+  private static String[] columns = {MESSAGES.getString("Project"), MESSAGES.getString("Time")};
+  
   private List<ProjectGroup> groups;
   
+  public ProjectTreeTableModel()
+  {
+    ArrayList<Project> projects = new ArrayList<Project>();
+    projects.add(new Project(MESSAGES.getString("Default Project"), "00:00"));
+    
+    this.groups = new ArrayList<ProjectGroup>();
+    this.groups.add(new ProjectGroup(MESSAGES.getString("Default Group"), projects));
+  }
+  
   /**
-   * Creates a new instance of ProjectTreeTableModel 
+   * Creates a new instance of ProjectTreeTableModel
    */
   public ProjectTreeTableModel(List<ProjectGroup> groups)
+  {
+    assert groups != null;
+    
+    this.groups = groups;
+  }
+  
+  /**
+   * @return The list of ProjectGroup objects
+   */
+  public List<ProjectGroup> getGroups()
+  {
+    return this.groups;
+  }
+  
+  /**
+   * @param groups The list of ProjectGroup objects to display
+   */
+  public void setGroups(List<ProjectGroup> groups)
   {
     this.groups = groups;
   }
@@ -39,7 +73,7 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
    * @param index The index of the nested child object
    * @return The child object at the given index
    */
-  public Object getChild(Object parent, int index) 
+  public Object getChild(Object parent, int index)
   {
     if(parent.getClass() == ProjectTreeTableModel.class)
     { // This is the main list of groups
@@ -90,7 +124,7 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
    * @param child The child object to search for
    * @return The index of the child object within the parent's list of children
    */
-  public int getIndexOfChild(Object parent, Object child) 
+  public int getIndexOfChild(Object parent, Object child)
   {
     if(parent.getClass() == ProjectTreeTableModel.class)
     { // This is the main list of groups
@@ -135,7 +169,7 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
    */
   public int getColumnCount()
   {
-    return COLUMNS.length;
+    return columns.length;
   }
   
   /**
@@ -146,7 +180,7 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
   public String getColumnName(int index)
   {
     assert index < getColumnCount();
-    return COLUMNS[index];
+    return columns[index];
   }
   
   /**
@@ -158,12 +192,13 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
   public Object getValueAt(Object node, int column)
   {
     assert column < getColumnCount();
-
+    
     if(node.getClass() == ProjectGroup.class)
     { // This is a group node
       ProjectGroup group = (ProjectGroup) node;
       
-      switch(column) {
+      switch(column)
+      {
         case 0:
           return group.getName();
         default:
@@ -175,7 +210,8 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
     { //We should instead use the list of projects
       Project project = (Project) node;
       
-      switch(column) {
+      switch(column)
+      {
         case 0:
           return project.getName();
         default:
@@ -188,7 +224,7 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
       return super.getValueAt(node, column);
     }
   }
-
+  
   /**
    * TreeTable interface method for rendering JXTreeTables
    * @param node The tree node that serves as the "record" of the table
@@ -212,12 +248,13 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
   {
     assert column < getColumnCount();
     assert value.getClass() == String.class;
-
+    
     if(node.getClass() == ProjectGroup.class)
     { // This is a group node
       ProjectGroup group = (ProjectGroup) node;
       
-      switch(column) {
+      switch(column)
+      {
         case 0:
           group.setName((String) value);
           break;
@@ -228,7 +265,8 @@ public class ProjectTreeTableModel extends DefaultTreeTableModel
     { //We should instead use the list of projects
       Project project = (Project) node;
       
-      switch(column) {
+      switch(column)
+      {
         case 0:
           project.setName((String) value);
           break;
