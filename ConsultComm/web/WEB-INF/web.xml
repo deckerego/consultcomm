@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC '-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN' 'http://java.sun.com/j2ee/dtds/web-app_2_2.dtd'>
+
+<web-app>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>
+            index.jsp
+        </welcome-file>
+    </welcome-file-list>
+  <servlet>
+       <servlet-name>
+            JnlpDownloadServlet
+       </servlet-name>
+       <servlet-class>
+            jnlp.sample.servlet.JnlpDownloadServlet
+       </servlet-class>   
+  </servlet>
+  
+
+  <servlet-mapping>
+      <servlet-name>JnlpDownloadServlet</servlet-name>
+      <url-pattern>*.jnlp</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+      <servlet-name>JnlpDownloadServlet</servlet-name>
+      <url-pattern>*.jar</url-pattern>
+  </servlet-mapping>
+
+</web-app>
