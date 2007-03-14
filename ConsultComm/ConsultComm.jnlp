@@ -15,13 +15,13 @@
     <all-permissions/>
   </security>
   <resources locale="" os="">
-    <jar download="eager" href="dist/ConsultComm.jar" main="false" version=""/>
+    <jar download="eager" href="http://prdownloads.sourceforge.net/consultcomm/ConsultComm.jar" main="false" version=""/>
   </resources>
   <resources locale="" os="">
     <j2se href="http://java.sun.com/products/autodl/j2se" version="1.5+"/>
   </resources>
   <resources locale="" os="">
-    <jar download="eager" href="dist/lib/swinglabs-0.8.0.jar" main="false" version=""/>
+    <jar download="eager" href="http://prdownloads.sourceforge.net/consultcomm/swinglabs-0.8.0.jar" main="false" version=""/>
   </resources>
   <application-desc main-class="consultcomm.ConsultComm"/>
 </jnlp>
