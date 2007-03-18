@@ -48,6 +48,8 @@ public class Project
   }
   
   /**
+   * Sets the project's name. If an empty string is provided,
+   * the default project name is used instead.
    * @param name The name of the project
    */
   public void setName(String name)

@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.prefs.Preferences;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -32,17 +33,15 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
  */
 public class ConsultComm extends javax.swing.JFrame
 {
-  private ProjectTreeTableModel projectList;
   private static final String WHOAMI = "ConsultComm 4";
-  //TODO: Make Windows-specific directories
-  private static final File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+".consultcomm");
-  private static enum ClientProperties { CLICKED_RECORD };
+  private static final File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+".consultcomm"); //TODO: Make Windows-specific directories
+  private static enum ClientProperties { CLICKED_TREEPATH };
   
   /** Creates new form ConsultComm */
   public ConsultComm()
   {
-    loadPrefs();
     initComponents();
+    loadPrefs();
   }
   
   private void loadPrefs()
@@ -52,16 +51,23 @@ public class ConsultComm extends javax.swing.JFrame
     try
     { //Get all projects
       File prefsFile = new File(prefsdir, "projects.xml");
-      if(! prefsFile.exists()) prefsFile.createNewFile();
-      FileInputStream inStream = new FileInputStream(prefsFile);
-      XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
-      projectList = (ProjectTreeTableModel) d.readObject();
-      d.close();
+      
+      if(! prefsFile.exists()) 
+      { //Create new preferences file
+        prefsFile.createNewFile();
+        projectTreeTable.setTreeTableModel(new ProjectTreeTableModel());
+      }
+      else
+      { //Read in existing preferences file
+        FileInputStream inStream = new FileInputStream(prefsFile);
+        XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
+        projectTreeTable.setTreeTableModel((ProjectTreeTableModel) d.readObject());
+        d.close();
+      }
     }
     catch (Exception e)
     {
       System.err.println("Cannot read projects file: "+e);
-      projectList = new ProjectTreeTableModel();
     }
   }
   
@@ -74,7 +80,7 @@ public class ConsultComm extends javax.swing.JFrame
       File prefsFile = new File(prefsdir, "projects.xml");
       FileOutputStream outStream = new FileOutputStream(prefsFile);
       XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
-      e.writeObject(projectList);
+      e.writeObject(projectTreeTable.getTreeTableModel());
       e.close();
     }
     catch (Exception e)
@@ -102,23 +108,31 @@ public class ConsultComm extends javax.swing.JFrame
     projectTreeTable = new org.jdesktop.swingx.JXTreeTable();
     menuBar = new javax.swing.JMenuBar();
     fileMenu = new javax.swing.JMenu();
-    openMenuItem = new javax.swing.JMenuItem();
-    saveMenuItem = new javax.swing.JMenuItem();
-    saveAsMenuItem = new javax.swing.JMenuItem();
     exitMenuItem = new javax.swing.JMenuItem();
-    editMenu = new javax.swing.JMenu();
-    cutMenuItem = new javax.swing.JMenuItem();
-    copyMenuItem = new javax.swing.JMenuItem();
-    pasteMenuItem = new javax.swing.JMenuItem();
-    deleteMenuItem = new javax.swing.JMenuItem();
     helpMenu = new javax.swing.JMenu();
     contentsMenuItem = new javax.swing.JMenuItem();
     aboutMenuItem = new javax.swing.JMenuItem();
 
     renameProject.setText("Rename Project");
+    renameProject.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        renameProject(evt);
+      }
+    });
+
     projectMenu.add(renameProject);
 
     deleteProject.setText("Delete Project");
+    deleteProject.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        deleteProject(evt);
+      }
+    });
+
     projectMenu.add(deleteProject);
 
     addProject.setText("Add Project");
@@ -133,9 +147,25 @@ public class ConsultComm extends javax.swing.JFrame
     groupMenu.add(addProject);
 
     renameGroup.setText("Rename Group");
+    renameGroup.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        renameGroup(evt);
+      }
+    });
+
     groupMenu.add(renameGroup);
 
     deleteGroup.setText("Delete Group");
+    deleteGroup.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        deleteGroup(evt);
+      }
+    });
+
     groupMenu.add(deleteGroup);
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -150,7 +180,6 @@ public class ConsultComm extends javax.swing.JFrame
 
     projectTreeTable.setPreferredScrollableViewportSize(new java.awt.Dimension(400, 200));
     projectTreeTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    projectTreeTable.setTreeTableModel(projectList);
     projectTreeTable.addMouseListener(new java.awt.event.MouseAdapter()
     {
       public void mouseClicked(java.awt.event.MouseEvent evt)
@@ -164,15 +193,6 @@ public class ConsultComm extends javax.swing.JFrame
     getContentPane().add(projectScrollPane, java.awt.BorderLayout.CENTER);
 
     fileMenu.setText("File");
-    openMenuItem.setText("Open");
-    fileMenu.add(openMenuItem);
-
-    saveMenuItem.setText("Save");
-    fileMenu.add(saveMenuItem);
-
-    saveAsMenuItem.setText("Save As ...");
-    fileMenu.add(saveAsMenuItem);
-
     exitMenuItem.setText("Exit");
     exitMenuItem.addActionListener(new java.awt.event.ActionListener()
     {
@@ -185,21 +205,6 @@ public class ConsultComm extends javax.swing.JFrame
     fileMenu.add(exitMenuItem);
 
     menuBar.add(fileMenu);
-
-    editMenu.setText("Edit");
-    cutMenuItem.setText("Cut");
-    editMenu.add(cutMenuItem);
-
-    copyMenuItem.setText("Copy");
-    editMenu.add(copyMenuItem);
-
-    pasteMenuItem.setText("Paste");
-    editMenu.add(pasteMenuItem);
-
-    deleteMenuItem.setText("Delete");
-    editMenu.add(deleteMenuItem);
-
-    menuBar.add(editMenu);
 
     helpMenu.setText("Help");
     contentsMenuItem.setText("Contents");
@@ -215,15 +220,70 @@ public class ConsultComm extends javax.swing.JFrame
     pack();
   }// </editor-fold>//GEN-END:initComponents
 
+  private void deleteGroup(java.awt.event.ActionEvent evt)//GEN-FIRST:event_deleteGroup
+  {//GEN-HEADEREND:event_deleteGroup
+    assert groupMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH) != null;
+    ProjectTreeTableModel projectList = (ProjectTreeTableModel) projectTreeTable.getTreeTableModel();
+    
+    if(projectList.getGroups().size() == 1)
+    { //If this is the last group, don't get rid of it
+      //TODO send the user a warning
+    }
+    
+    else
+    {
+      TreePath clickedPath = (TreePath) groupMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH);
+      ProjectGroup projectGroup = (ProjectGroup) clickedPath.getLastPathComponent();
+    
+      projectList.getGroups().remove(projectGroup);
+    
+      projectTreeTable.updateUI(); //TODO We may be able to omit this line after property change listeners are fixed in 0.9      
+    }
+  }//GEN-LAST:event_deleteGroup
+
+  private void renameGroup(java.awt.event.ActionEvent evt)//GEN-FIRST:event_renameGroup
+  {//GEN-HEADEREND:event_renameGroup
+    assert groupMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH) != null;
+    TreePath clickedPath = (TreePath) groupMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH);
+    int row = projectTreeTable.getRowForPath(clickedPath);
+    projectTreeTable.editCellAt(row, 0);
+  }//GEN-LAST:event_renameGroup
+
+  private void renameProject(java.awt.event.ActionEvent evt)//GEN-FIRST:event_renameProject
+  {//GEN-HEADEREND:event_renameProject
+    assert projectMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH) != null;
+    TreePath clickedPath = (TreePath) projectMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH);
+    int row = projectTreeTable.getRowForPath(clickedPath);
+    projectTreeTable.editCellAt(row, 0);
+  }//GEN-LAST:event_renameProject
+
+  private void deleteProject(java.awt.event.ActionEvent evt)//GEN-FIRST:event_deleteProject
+  {//GEN-HEADEREND:event_deleteProject
+    assert projectMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH) != null;
+    TreePath clickedPath = (TreePath) projectMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH);
+    Project project = (Project) clickedPath.getLastPathComponent();
+    
+    TreePath parentPath = clickedPath.getParentPath();
+    ProjectGroup projectGroup = (ProjectGroup) parentPath.getLastPathComponent();
+    
+    projectGroup.getProjects().remove(project);
+    
+    projectTreeTable.updateUI(); //TODO We may be able to omit this line after property change listeners are fixed in 0.9
+  }//GEN-LAST:event_deleteProject
+
   private void addProject(java.awt.event.ActionEvent evt)//GEN-FIRST:event_addProject
   {//GEN-HEADEREND:event_addProject
-    assert groupMenu.getClientProperty(ClientProperties.CLICKED_RECORD).getClass() == TreePath.class;
-    TreePath clickedPath = (TreePath) groupMenu.getClientProperty(ClientProperties.CLICKED_RECORD);
-    
-    assert clickedPath.getLastPathComponent().getClass() == ProjectGroup.class;
+    assert groupMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH) != null;
+    TreePath clickedPath = (TreePath) groupMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH);
     ProjectGroup projectGroup = (ProjectGroup) clickedPath.getLastPathComponent();
     
-    projectGroup.getProjects().add(new Project());
+    Project project = new Project();
+    projectGroup.getProjects().add(project);
+    
+    projectTreeTable.updateUI(); //TODO We may be able to omit this line after property change listeners are fixed in 0.9
+    
+    int row = projectTreeTable.getRowForPath(clickedPath.pathByAddingChild(project));
+    projectTreeTable.editCellAt(row, 0);
   }//GEN-LAST:event_addProject
 
   private void projectTreeTableMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_projectTreeTableMouseClicked
@@ -237,13 +297,13 @@ public class ConsultComm extends javax.swing.JFrame
         
         if(clickedPath.getLastPathComponent().getClass() == Project.class)
         { //Show the project pop-up menu
-          projectMenu.putClientProperty(ClientProperties.CLICKED_RECORD, clickedPath);
+          projectMenu.putClientProperty(ClientProperties.CLICKED_TREEPATH, clickedPath);
           projectMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
         
         if(clickedPath.getLastPathComponent().getClass() == ProjectGroup.class)
         { //Show the group pop-up menu
-          groupMenu.putClientProperty(ClientProperties.CLICKED_RECORD, clickedPath);
+          groupMenu.putClientProperty(ClientProperties.CLICKED_TREEPATH, clickedPath);
           groupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
         
@@ -281,26 +341,18 @@ public class ConsultComm extends javax.swing.JFrame
   private javax.swing.JMenuItem aboutMenuItem;
   private javax.swing.JMenuItem addProject;
   private javax.swing.JMenuItem contentsMenuItem;
-  private javax.swing.JMenuItem copyMenuItem;
-  private javax.swing.JMenuItem cutMenuItem;
   private javax.swing.JMenuItem deleteGroup;
-  private javax.swing.JMenuItem deleteMenuItem;
   private javax.swing.JMenuItem deleteProject;
-  private javax.swing.JMenu editMenu;
   private javax.swing.JMenuItem exitMenuItem;
   private javax.swing.JMenu fileMenu;
   private javax.swing.JPopupMenu groupMenu;
   private javax.swing.JMenu helpMenu;
   private javax.swing.JMenuBar menuBar;
-  private javax.swing.JMenuItem openMenuItem;
-  private javax.swing.JMenuItem pasteMenuItem;
   private javax.swing.JPopupMenu projectMenu;
   private javax.swing.JScrollPane projectScrollPane;
   private org.jdesktop.swingx.JXTreeTable projectTreeTable;
   private javax.swing.JMenuItem renameGroup;
   private javax.swing.JMenuItem renameProject;
-  private javax.swing.JMenuItem saveAsMenuItem;
-  private javax.swing.JMenuItem saveMenuItem;
   // End of variables declaration//GEN-END:variables
   
 }
