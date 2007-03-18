@@ -9,6 +9,8 @@ package consultcomm;
 import consultcomm.project.Project;
 import consultcomm.project.ProjectGroup;
 import consultcomm.treetable.ProjectTreeTableModel;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -18,6 +20,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.ListSelectionModel;
+import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
 /**
@@ -26,7 +32,11 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
  */
 public class ConsultComm extends javax.swing.JFrame
 {
-  ProjectTreeTableModel projectList;
+  private ProjectTreeTableModel projectList;
+  private static final String WHOAMI = "ConsultComm 4";
+  //TODO: Make Windows-specific directories
+  private static final File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+".consultcomm");
+  private static enum ClientProperties { CLICKED_RECORD };
   
   /** Creates new form ConsultComm */
   public ConsultComm()
@@ -37,8 +47,6 @@ public class ConsultComm extends javax.swing.JFrame
   
   private void loadPrefs()
   {
-    //TODO: Make Windows-specific directories
-    File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+".consultcomm");
     if(! prefsdir.exists()) prefsdir.mkdir();
     
     try
@@ -59,8 +67,6 @@ public class ConsultComm extends javax.swing.JFrame
   
   private void savePrefs()
   {
-    //TODO: Make Windows-specific directories
-    File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+".consultcomm");
     if(! prefsdir.exists()) prefsdir.mkdir();
     
     try
@@ -85,6 +91,13 @@ public class ConsultComm extends javax.swing.JFrame
   // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
   private void initComponents()
   {
+    projectMenu = new javax.swing.JPopupMenu();
+    renameProject = new javax.swing.JMenuItem();
+    deleteProject = new javax.swing.JMenuItem();
+    groupMenu = new javax.swing.JPopupMenu();
+    addProject = new javax.swing.JMenuItem();
+    renameGroup = new javax.swing.JMenuItem();
+    deleteGroup = new javax.swing.JMenuItem();
     projectScrollPane = new javax.swing.JScrollPane();
     projectTreeTable = new org.jdesktop.swingx.JXTreeTable();
     menuBar = new javax.swing.JMenuBar();
@@ -102,8 +115,31 @@ public class ConsultComm extends javax.swing.JFrame
     contentsMenuItem = new javax.swing.JMenuItem();
     aboutMenuItem = new javax.swing.JMenuItem();
 
+    renameProject.setText("Rename Project");
+    projectMenu.add(renameProject);
+
+    deleteProject.setText("Delete Project");
+    projectMenu.add(deleteProject);
+
+    addProject.setText("Add Project");
+    addProject.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        addProject(evt);
+      }
+    });
+
+    groupMenu.add(addProject);
+
+    renameGroup.setText("Rename Group");
+    groupMenu.add(renameGroup);
+
+    deleteGroup.setText("Delete Group");
+    groupMenu.add(deleteGroup);
+
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-    setTitle("ConsultComm 4");
+    setTitle(WHOAMI);
     addWindowListener(new java.awt.event.WindowAdapter()
     {
       public void windowClosing(java.awt.event.WindowEvent evt)
@@ -113,7 +149,16 @@ public class ConsultComm extends javax.swing.JFrame
     });
 
     projectTreeTable.setPreferredScrollableViewportSize(new java.awt.Dimension(400, 200));
+    projectTreeTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     projectTreeTable.setTreeTableModel(projectList);
+    projectTreeTable.addMouseListener(new java.awt.event.MouseAdapter()
+    {
+      public void mouseClicked(java.awt.event.MouseEvent evt)
+      {
+        projectTreeTableMouseClicked(evt);
+      }
+    });
+
     projectScrollPane.setViewportView(projectTreeTable);
 
     getContentPane().add(projectScrollPane, java.awt.BorderLayout.CENTER);
@@ -170,6 +215,44 @@ public class ConsultComm extends javax.swing.JFrame
     pack();
   }// </editor-fold>//GEN-END:initComponents
 
+  private void addProject(java.awt.event.ActionEvent evt)//GEN-FIRST:event_addProject
+  {//GEN-HEADEREND:event_addProject
+    assert groupMenu.getClientProperty(ClientProperties.CLICKED_RECORD).getClass() == TreePath.class;
+    TreePath clickedPath = (TreePath) groupMenu.getClientProperty(ClientProperties.CLICKED_RECORD);
+    
+    assert clickedPath.getLastPathComponent().getClass() == ProjectGroup.class;
+    ProjectGroup projectGroup = (ProjectGroup) clickedPath.getLastPathComponent();
+    
+    projectGroup.getProjects().add(new Project());
+  }//GEN-LAST:event_addProject
+
+  private void projectTreeTableMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_projectTreeTableMouseClicked
+  {//GEN-HEADEREND:event_projectTreeTableMouseClicked
+    switch(evt.getButton())
+    {
+      case MouseEvent.BUTTON1: //Left mouse click
+        break;
+      case MouseEvent.BUTTON3: //Right mouse click
+        TreePath clickedPath = projectTreeTable.getPathForLocation(evt.getX(), evt.getY());
+        
+        if(clickedPath.getLastPathComponent().getClass() == Project.class)
+        { //Show the project pop-up menu
+          projectMenu.putClientProperty(ClientProperties.CLICKED_RECORD, clickedPath);
+          projectMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+        
+        if(clickedPath.getLastPathComponent().getClass() == ProjectGroup.class)
+        { //Show the group pop-up menu
+          groupMenu.putClientProperty(ClientProperties.CLICKED_RECORD, clickedPath);
+          groupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+        
+        break;
+      case MouseEvent.BUTTON2: //Middle mouse click
+        break;
+    }
+  }//GEN-LAST:event_projectTreeTableMouseClicked
+
   private void formWindowClosing(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosing
   {//GEN-HEADEREND:event_formWindowClosing
     savePrefs();
@@ -196,19 +279,26 @@ public class ConsultComm extends javax.swing.JFrame
   
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuItem aboutMenuItem;
+  private javax.swing.JMenuItem addProject;
   private javax.swing.JMenuItem contentsMenuItem;
   private javax.swing.JMenuItem copyMenuItem;
   private javax.swing.JMenuItem cutMenuItem;
+  private javax.swing.JMenuItem deleteGroup;
   private javax.swing.JMenuItem deleteMenuItem;
+  private javax.swing.JMenuItem deleteProject;
   private javax.swing.JMenu editMenu;
   private javax.swing.JMenuItem exitMenuItem;
   private javax.swing.JMenu fileMenu;
+  private javax.swing.JPopupMenu groupMenu;
   private javax.swing.JMenu helpMenu;
   private javax.swing.JMenuBar menuBar;
   private javax.swing.JMenuItem openMenuItem;
   private javax.swing.JMenuItem pasteMenuItem;
+  private javax.swing.JPopupMenu projectMenu;
   private javax.swing.JScrollPane projectScrollPane;
   private org.jdesktop.swingx.JXTreeTable projectTreeTable;
+  private javax.swing.JMenuItem renameGroup;
+  private javax.swing.JMenuItem renameProject;
   private javax.swing.JMenuItem saveAsMenuItem;
   private javax.swing.JMenuItem saveMenuItem;
   // End of variables declaration//GEN-END:variables

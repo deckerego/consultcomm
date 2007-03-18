@@ -2,6 +2,42 @@
 
 <Form version="1.0" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
+    <Menu class="javax.swing.JPopupMenu" name="projectMenu">
+      <SubComponents>
+        <MenuItem class="javax.swing.JMenuItem" name="renameProject">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Rename Project"/>
+          </Properties>
+        </MenuItem>
+        <MenuItem class="javax.swing.JMenuItem" name="deleteProject">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Delete Project"/>
+          </Properties>
+        </MenuItem>
+      </SubComponents>
+    </Menu>
+    <Menu class="javax.swing.JPopupMenu" name="groupMenu">
+      <SubComponents>
+        <MenuItem class="javax.swing.JMenuItem" name="addProject">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Add Project"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addProject"/>
+          </Events>
+        </MenuItem>
+        <MenuItem class="javax.swing.JMenuItem" name="renameGroup">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Rename Group"/>
+          </Properties>
+        </MenuItem>
+        <MenuItem class="javax.swing.JMenuItem" name="deleteGroup">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Delete Group"/>
+          </Properties>
+        </MenuItem>
+      </SubComponents>
+    </Menu>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="fileMenu">
@@ -83,7 +119,9 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="title" type="java.lang.String" value="ConsultComm 4"/>
+    <Property name="title" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+      <Connection code="WHOAMI" type="code"/>
+    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBar"/>
@@ -94,6 +132,7 @@
   </Events>
   <AuxValues>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="2"/>
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
@@ -117,10 +156,16 @@
             <Property name="preferredScrollableViewportSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[400, 200]"/>
             </Property>
+            <Property name="selectionMode" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection type="value" value="ListSelectionModel.SINGLE_SELECTION" valueType="int"/>
+            </Property>
             <Property name="treeTableModel" type="org.jdesktop.swingx.treetable.TreeTableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="projectList" type="code"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="projectTreeTableMouseClicked"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

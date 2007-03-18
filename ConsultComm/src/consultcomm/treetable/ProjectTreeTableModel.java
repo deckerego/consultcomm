@@ -32,13 +32,13 @@ public class ProjectTreeTableModel
   
   private List<ProjectGroup> groups;
   
+  /**
+   * Creates a new instance of ProjectTreeTableModel with a starter group
+   */
   public ProjectTreeTableModel()
   {
-    ArrayList<Project> projects = new ArrayList<Project>();
-    projects.add(new Project(MESSAGES.getString("Default Project"), "00:00"));
-    
     this.groups = new ArrayList<ProjectGroup>();
-    this.groups.add(new ProjectGroup(MESSAGES.getString("Default Group"), projects));
+    this.groups.add(new ProjectGroup(MESSAGES.getString("Default Group"), new ArrayList<Project>()));
   }
   
   /**
@@ -271,7 +271,7 @@ public class ProjectTreeTableModel
           project.setName((String) value);
           break;
         case 1:
-          project.setTime((String) value);
+          project.setTime((Long) value);
           break;
       }
     }

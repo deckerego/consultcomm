@@ -7,6 +7,7 @@
 package consultcomm.project;
 
 import java.io.Serializable;
+import java.util.ResourceBundle;
 
 /**
  * A POJO for projects
@@ -15,15 +16,23 @@ import java.io.Serializable;
 public class Project
     implements Serializable
 {
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("MessagesBundle");
+  
   private String name;
-  private String time;
+  private Long time;
+  
+  public Project()
+  {
+    this.name=MESSAGES.getString("Default Project");
+    this.time = 0L;
+  }
   
   /** 
    * Creates a new instance of Project 
    * @param name The project name
    * @param time The elapsed time for the project
    */
-  public Project(String name, String time)
+  public Project(String name, Long time)
   {
     this.name = name;
     this.time = time;
@@ -47,9 +56,9 @@ public class Project
   }
   
   /**
-   * @param time The elapsed time of the project
+   * @param time The elapsed time of the project (in seconds)
    */
-  public void setTime(String time)
+  public void setTime(Long time)
   {
     this.time = time;
   }
@@ -65,7 +74,7 @@ public class Project
   /**
    * @return The time elapsed for the project
    */
-  public String getTime()
+  public Long getTime()
   {
     return this.time;
   }

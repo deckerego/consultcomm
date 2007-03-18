@@ -75,7 +75,7 @@ public class ProjectGroup
   }
   
   /**
-   * @param The list of projects within this group
+   * @param projects The list of projects within this group
    */
   public void setProjects(List<Project> projects)
   {
