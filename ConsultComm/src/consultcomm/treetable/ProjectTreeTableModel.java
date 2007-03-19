@@ -12,9 +12,13 @@ import consultcomm.project.ProjectGroup;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
 /**
@@ -75,13 +79,13 @@ public class ProjectTreeTableModel
    */
   public Object getChild(Object parent, int index)
   {
-    if(parent.getClass() == ProjectTreeTableModel.class)
+    if(parent instanceof ProjectTreeTableModel)
     { // This is the main list of groups
       ProjectTreeTableModel model = (ProjectTreeTableModel) parent;
       return model.groups.get(index);
     }
     
-    if(parent.getClass() == ProjectGroup.class)
+    if(parent instanceof ProjectGroup)
     { //We should instead use the list of projects
       ProjectGroup group = (ProjectGroup) parent;
       return group.getProjects().get(index);
@@ -100,13 +104,13 @@ public class ProjectTreeTableModel
    */
   public int getChildCount(Object parent)
   {
-    if(parent.getClass() == ProjectTreeTableModel.class)
+    if(parent instanceof ProjectTreeTableModel)
     { // This is the main list of groups
       ProjectTreeTableModel model = (ProjectTreeTableModel) parent;
       return model.groups.size();
     }
     
-    if(parent.getClass() == ProjectGroup.class)
+    if(parent instanceof ProjectGroup)
     { //We should instead use the list of projects
       ProjectGroup group = (ProjectGroup) parent;
       return group.getProjects().size();
@@ -126,13 +130,13 @@ public class ProjectTreeTableModel
    */
   public int getIndexOfChild(Object parent, Object child)
   {
-    if(parent.getClass() == ProjectTreeTableModel.class)
+    if(parent instanceof ProjectTreeTableModel)
     { // This is the main list of groups
       ProjectTreeTableModel model = (ProjectTreeTableModel) parent;
       return model.groups.indexOf(child);
     }
     
-    if(parent.getClass() == ProjectGroup.class)
+    if(parent instanceof ProjectGroup)
     { //We should instead use the list of projects
       ProjectGroup group = (ProjectGroup) parent;
       return group.getProjects().indexOf(child);
@@ -151,7 +155,7 @@ public class ProjectTreeTableModel
    */
   public boolean isLeaf(Object node)
   {
-    return node.getClass() == Project.class;
+    return node instanceof Project;
   }
   
   /**
@@ -193,7 +197,7 @@ public class ProjectTreeTableModel
   {
     assert column < getColumnCount();
     
-    if(node.getClass() == ProjectGroup.class)
+    if(node instanceof ProjectGroup)
     { // This is a group node
       ProjectGroup group = (ProjectGroup) node;
       
@@ -206,7 +210,7 @@ public class ProjectTreeTableModel
       }
     }
     
-    if(node.getClass() == Project.class)
+    if(node instanceof Project)
     { //We should instead use the list of projects
       Project project = (Project) node;
       
@@ -215,7 +219,14 @@ public class ProjectTreeTableModel
         case 0:
           return project.getName();
         default:
-          return project.getTime();
+          //Does the below look idiotic? It is. I attempted to create my own
+          //custom TimeFormat class, but the format classes in the Java
+          //packages are so locked down that this proved untenable. I still
+          //may create a custom DecimalFormat or the like, but until then I'll
+          //just create a Date object that's set to a 0-offset time zone.
+          DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+          timeFormat.setTimeZone(new SimpleTimeZone(0, "NONE"));
+          return timeFormat.format(project.getTime());
       }
     }
     
@@ -235,7 +246,7 @@ public class ProjectTreeTableModel
   {
     //It doesn't make sense to edit the right-most column of a ProjectGroup record,
     //since there's nothing there to begin with.
-    return node.getClass() != ProjectGroup.class || column == 0;
+    return node instanceof ProjectGroup || column == 0;
   }
   
   /**
@@ -247,9 +258,9 @@ public class ProjectTreeTableModel
   public void setValueAt(Object value, Object node, int column)
   {
     assert column < getColumnCount();
-    assert value.getClass() == String.class;
+    assert value instanceof String;
     
-    if(node.getClass() == ProjectGroup.class)
+    if(node instanceof ProjectGroup)
     { // This is a group node
       ProjectGroup group = (ProjectGroup) node;
       
@@ -261,7 +272,7 @@ public class ProjectTreeTableModel
       }
     }
     
-    if(node.getClass() == Project.class)
+    if(node instanceof Project)
     { //We should instead use the list of projects
       Project project = (Project) node;
       

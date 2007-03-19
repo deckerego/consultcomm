@@ -295,13 +295,13 @@ public class ConsultComm extends javax.swing.JFrame
       case MouseEvent.BUTTON3: //Right mouse click
         TreePath clickedPath = projectTreeTable.getPathForLocation(evt.getX(), evt.getY());
         
-        if(clickedPath.getLastPathComponent().getClass() == Project.class)
+        if(clickedPath.getLastPathComponent() instanceof Project)
         { //Show the project pop-up menu
           projectMenu.putClientProperty(ClientProperties.CLICKED_TREEPATH, clickedPath);
           projectMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
         
-        if(clickedPath.getLastPathComponent().getClass() == ProjectGroup.class)
+        if(clickedPath.getLastPathComponent() instanceof ProjectGroup)
         { //Show the group pop-up menu
           groupMenu.putClientProperty(ClientProperties.CLICKED_TREEPATH, clickedPath);
           groupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
