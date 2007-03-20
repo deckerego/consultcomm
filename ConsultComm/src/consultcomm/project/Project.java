@@ -1,9 +1,3 @@
-/*
- * Project.java
- *
- * Created on March 6, 2007, 8:53 PM
- */
-
 package consultcomm.project;
 
 import java.io.Serializable;
@@ -19,12 +13,12 @@ public class Project
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("MessagesBundle");
   
   private String name;
-  private Long time;
+  private Time time;
   
   public Project()
   {
     this.name=MESSAGES.getString("Default Project");
-    this.time = 0L;
+    this.time = new Time();
   }
   
   /** 
@@ -35,7 +29,7 @@ public class Project
   public Project(String name, Long time)
   {
     this.name = name;
-    this.time = time;
+    this.time = new Time(time);
   }
   
   /**
@@ -60,7 +54,15 @@ public class Project
   /**
    * @param time The elapsed time of the project (in seconds)
    */
-  public void setTime(Long time)
+  public void setElapsedTime(Long time)
+  {
+    this.time = new Time(time * 1000);
+  }
+  
+  /**
+   * @param time The elapsed time of the project
+   */
+  public void setTime(Time time)
   {
     this.time = time;
   }
@@ -74,9 +76,17 @@ public class Project
   }
   
   /**
+   * @return The time elapsed for the project (in seconds)
+   */
+  public Long getElapsedTime()
+  {
+    return this.time.getElapsed() / 1000;
+  }
+  
+  /**
    * @return The time elapsed for the project
    */
-  public Long getTime()
+  public Time getTime()
   {
     return this.time;
   }

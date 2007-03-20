@@ -1,14 +1,10 @@
-/*
- * ConsultComm.java
- *
- * Created on March 5, 2007, 10:29 PM
- */
-
 package consultcomm;
 
 import consultcomm.project.Project;
 import consultcomm.project.ProjectGroup;
+import consultcomm.project.Time;
 import consultcomm.treetable.ProjectTreeTableModel;
+import consultcomm.treetable.TimeRenderer;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.beans.XMLDecoder;
@@ -180,6 +176,8 @@ public class ConsultComm extends javax.swing.JFrame
 
     projectTreeTable.setPreferredScrollableViewportSize(new java.awt.Dimension(400, 200));
     projectTreeTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    projectTreeTable.sizeColumnsToFit(0);
+    projectTreeTable.setDefaultRenderer(Time.class, new TimeRenderer());
     projectTreeTable.addMouseListener(new java.awt.event.MouseAdapter()
     {
       public void mouseClicked(java.awt.event.MouseEvent evt)

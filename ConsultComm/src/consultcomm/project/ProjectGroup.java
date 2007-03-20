@@ -1,9 +1,3 @@
-/*
- * ProjectGroup.java
- *
- * Created on March 6, 2007, 9:09 PM
- */
-
 package consultcomm.project;
 
 import java.io.Serializable;

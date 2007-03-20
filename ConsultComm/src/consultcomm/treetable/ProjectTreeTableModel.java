@@ -1,9 +1,3 @@
-/*
- * ProjectTreeTableModel.java
- *
- * Created on March 6, 2007, 8:50 PM
- */
-
 package consultcomm.treetable;
 
 import consultcomm.*;
@@ -186,6 +180,26 @@ public class ProjectTreeTableModel
     assert index < getColumnCount();
     return columns[index];
   }
+
+  /**
+   * Return the column class for a Project record that is based
+   * on what type of value will actually be returned (not just its
+   * String representation)
+   * @param column The column number
+   * @return The Class of the returned values in this column
+   */
+  public Class getColumnClass(int column) 
+  {
+    if(column == 0)
+    { //This is the crazy JTree column - leave it alone
+      return super.getColumnClass(column);
+    }
+    
+    else
+    { //Return what a Project record's value is, not it's toString() return value 
+      return getValueAt(new Project(), column).getClass();
+    }
+  }
   
   /**
    * TreeTable interface method for rendering JXTreeTables
@@ -219,14 +233,7 @@ public class ProjectTreeTableModel
         case 0:
           return project.getName();
         default:
-          //Does the below look idiotic? It is. I attempted to create my own
-          //custom TimeFormat class, but the format classes in the Java
-          //packages are so locked down that this proved untenable. I still
-          //may create a custom DecimalFormat or the like, but until then I'll
-          //just create a Date object that's set to a 0-offset time zone.
-          DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-          timeFormat.setTimeZone(new SimpleTimeZone(0, "NONE"));
-          return timeFormat.format(project.getTime());
+          return project.getTime();
       }
     }
     
@@ -282,7 +289,7 @@ public class ProjectTreeTableModel
           project.setName((String) value);
           break;
         case 1:
-          project.setTime((Long) value);
+          project.setElapsedTime((Long) value);
           break;
       }
     }
