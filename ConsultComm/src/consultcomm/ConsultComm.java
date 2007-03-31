@@ -5,6 +5,7 @@ import consultcomm.project.ProjectGroup;
 import consultcomm.project.Time;
 import consultcomm.treetable.ProjectTreeTableModel;
 import consultcomm.treetable.TimeRenderer;
+import consultcomm.treetable.TimeEditor;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.beans.XMLDecoder;
@@ -178,6 +179,7 @@ public class ConsultComm extends javax.swing.JFrame
     projectTreeTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     projectTreeTable.sizeColumnsToFit(0);
     projectTreeTable.setDefaultRenderer(Time.class, new TimeRenderer());
+    projectTreeTable.setDefaultEditor(Time.class, new TimeEditor());
     projectTreeTable.addMouseListener(new java.awt.event.MouseAdapter()
     {
       public void mouseClicked(java.awt.event.MouseEvent evt)

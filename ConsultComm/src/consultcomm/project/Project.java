@@ -56,7 +56,9 @@ public class Project
    */
   public void setElapsedTime(Long time)
   {
-    this.time = new Time(time * 1000);
+    assert this.time != null;
+    
+    this.time.setElapsed(time * 1000);
   }
   
   /**

@@ -28,7 +28,7 @@ public class Time
    */
   public Time(Long elapsed)
   {
-    this.setElapsed(0L);
+    this.setElapsed(elapsed);
   }
   
   /**

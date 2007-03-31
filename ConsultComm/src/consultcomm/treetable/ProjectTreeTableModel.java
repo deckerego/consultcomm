@@ -3,6 +3,7 @@ package consultcomm.treetable;
 import consultcomm.*;
 import consultcomm.project.Project;
 import consultcomm.project.ProjectGroup;
+import consultcomm.project.Time;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -253,7 +254,7 @@ public class ProjectTreeTableModel
   {
     //It doesn't make sense to edit the right-most column of a ProjectGroup record,
     //since there's nothing there to begin with.
-    return node instanceof ProjectGroup || column == 0;
+    return ! (node instanceof ProjectGroup && column != 0);
   }
   
   /**
@@ -265,7 +266,6 @@ public class ProjectTreeTableModel
   public void setValueAt(Object value, Object node, int column)
   {
     assert column < getColumnCount();
-    assert value instanceof String;
     
     if(node instanceof ProjectGroup)
     { // This is a group node
@@ -289,7 +289,7 @@ public class ProjectTreeTableModel
           project.setName((String) value);
           break;
         case 1:
-          project.setElapsedTime((Long) value);
+          project.setTime((Time) value);
           break;
       }
     }
