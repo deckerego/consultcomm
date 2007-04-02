@@ -3,13 +3,11 @@ package consultcomm.treetable;
 import consultcomm.project.Time;
 import java.awt.Component;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.SimpleTimeZone;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JFormattedTextField;
-import javax.swing.JTable;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 
@@ -21,20 +19,18 @@ import javax.swing.text.DefaultFormatterFactory;
 public class TimeEditor
     extends DefaultCellEditor
 {
-  private DateFormat numberFormat;
-  private DateFormatter numberFormatter;
   
   /** Creates a new instance of TimeEditor */
   public TimeEditor()
   {
     super(new JFormattedTextField());
     
-    this.numberFormat = new SimpleDateFormat("HH:mm:ss");
-    this.numberFormat.setTimeZone(new SimpleTimeZone(0, "NONE"));
+    DateFormat numberFormat = new SimpleDateFormat("HH:mm:ss");
+    numberFormat.setTimeZone(new SimpleTimeZone(0, "NONE"));
     
-    this.numberFormatter = new DateFormatter(numberFormat);
+    DateFormatter numberFormatter = new DateFormatter(numberFormat);
     
-    ((JFormattedTextField) getComponent()).setFormatterFactory(new DefaultFormatterFactory(this.numberFormatter));
+    ((JFormattedTextField) getComponent()).setFormatterFactory(new DefaultFormatterFactory(numberFormatter));
   }
   
   /**
