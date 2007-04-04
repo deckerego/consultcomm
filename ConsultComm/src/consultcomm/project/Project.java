@@ -54,11 +54,11 @@ public class Project
   /**
    * @param time The elapsed time of the project (in seconds)
    */
-  public void setElapsedTime(Long time)
+  public void generateElapsedtime(Long time)
   {
     assert this.time != null;
     
-    this.time.setElapsed(time * 1000);
+    this.time.generateElapsed(time * 1000);
   }
   
   /**
@@ -80,9 +80,9 @@ public class Project
   /**
    * @return The time elapsed for the project (in seconds)
    */
-  public Long getElapsedTime()
+  public Long calculateElapsedTime()
   {
-    return this.time.getElapsed() / 1000;
+    return this.time.calculateElapsed() / 1000;
   }
   
   /**

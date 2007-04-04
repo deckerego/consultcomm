@@ -28,7 +28,7 @@ public class Time
    */
   public Time(Long elapsed)
   {
-    this.setElapsed(elapsed);
+    this.generateElapsed(elapsed);
   }
   
   /**
@@ -50,7 +50,7 @@ public class Time
   /**
    * @return The total elapsed time
    */
-  public Long getElapsed()
+  public Long calculateElapsed()
   {
     return this.end - this.begin;
   }
@@ -74,7 +74,7 @@ public class Time
   /**
    * @param elapsed Set the elapsed time
    */
-  public void setElapsed(Long elapsed)
+  public void generateElapsed(Long elapsed)
   {
     this.end = Calendar.getInstance().getTime().getTime();
     this.begin = this.end - elapsed;
@@ -92,6 +92,6 @@ public class Time
     //just create a Date object that's set to a 0-offset time zone.
     DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
     timeFormat.setTimeZone(new SimpleTimeZone(0, "NONE"));
-    return timeFormat.format(getElapsed());
+    return timeFormat.format(calculateElapsed());
   }
 }
