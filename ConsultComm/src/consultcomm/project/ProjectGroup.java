@@ -1,5 +1,8 @@
 package consultcomm.project;
 
+import consultcomm.PlainOldJavaObject;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +12,7 @@ import java.util.List;
  * @author jellis
  */
 public class ProjectGroup
-    implements Serializable
+    extends PlainOldJavaObject
 {
   private String name;
   private List<Project> projects;
@@ -20,6 +23,7 @@ public class ProjectGroup
    */
   public ProjectGroup(String name)
   {
+    super();
     this.name = name;
     this.projects = new ArrayList<Project>();
   }
@@ -74,5 +78,9 @@ public class ProjectGroup
   public void setProjects(List<Project> projects)
   {
     this.projects = projects;
+  }
+
+  public void propertyChange(PropertyChangeEvent evt)
+  {
   }
 }

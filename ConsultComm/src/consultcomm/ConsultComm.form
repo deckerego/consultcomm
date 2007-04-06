@@ -134,7 +134,7 @@
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="projectTreeTableMouseClicked"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="projectTreeTable.sizeColumnsToFit(0);&#xa;projectTreeTable.setDefaultRenderer(Time.class, new TimeRenderer());&#xa;projectTreeTable.setDefaultEditor(Time.class, new TimeEditor());"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="projectTreeTable.sizeColumnsToFit(0);&#xa;projectTreeTable.setDefaultRenderer(Time.class, new TimeRenderer());&#xa;projectTreeTable.setDefaultEditor(Time.class, new TimeEditor());&#xa;projectTreeTable.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener()&#xa;{&#xa;  public void valueChanged(javax.swing.event.TreeSelectionEvent evt)&#xa;  {&#xa;    selectionChanged(evt);&#xa;  }&#xa;});"/>
           </AuxValues>
         </Component>
       </SubComponents>

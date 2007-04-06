@@ -1,5 +1,8 @@
 package consultcomm.project;
 
+import consultcomm.PlainOldJavaObject;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.ResourceBundle;
 
@@ -8,7 +11,7 @@ import java.util.ResourceBundle;
  * @author jellis
  */
 public class Project
-    implements Serializable
+    extends PlainOldJavaObject
 {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("MessagesBundle");
   
@@ -17,8 +20,11 @@ public class Project
   
   public Project()
   {
+    super();
     this.name=MESSAGES.getString("Default Project");
     this.time = new Time();
+    
+    this.time.addListener(this);
   }
   
   /** 
@@ -28,8 +34,11 @@ public class Project
    */
   public Project(String name, Long time)
   {
+    super();
     this.name = name;
     this.time = new Time(time);
+        
+    this.time.addListener(this);
   }
   
   /**
@@ -52,16 +61,6 @@ public class Project
   }
   
   /**
-   * @param time The elapsed time of the project (in seconds)
-   */
-  public void generateElapsedtime(Long time)
-  {
-    assert this.time != null;
-    
-    this.time.generateElapsed(time * 1000);
-  }
-  
-  /**
    * @param time The elapsed time of the project
    */
   public void setTime(Time time)
@@ -78,18 +77,15 @@ public class Project
   }
   
   /**
-   * @return The time elapsed for the project (in seconds)
-   */
-  public Long calculateElapsedTime()
-  {
-    return this.time.calculateElapsed() / 1000;
-  }
-  
-  /**
    * @return The time elapsed for the project
    */
   public Time getTime()
   {
     return this.time;
+  }
+
+  public void propertyChange(PropertyChangeEvent evt)
+  {
+    Time newTime = (Time) evt.getNewValue();
   }
 }

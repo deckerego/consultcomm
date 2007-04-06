@@ -1,9 +1,11 @@
 package consultcomm.project;
 
+import consultcomm.PlainOldJavaObject;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.SimpleTimeZone;
 
 /**
@@ -11,15 +13,14 @@ import java.util.SimpleTimeZone;
  * @author jellis
  */
 public class Time
-    implements Serializable
+    extends PlainOldJavaObject
 {
-  private Long begin;
-  private Long end;
+  private Long elapsed;
   
   /** Creates a new instance of Time */
   public Time()
   {
-    this.begin = this.end = Calendar.getInstance().getTime().getTime();
+    this.elapsed = 0L;
   }
   
   /**
@@ -28,56 +29,46 @@ public class Time
    */
   public Time(Long elapsed)
   {
-    this.generateElapsed(elapsed);
-  }
-  
-  /**
-   * @return The point at which the time counter began
-   */
-  public Long getBegin()
-  {
-    return this.begin;
-  }
-  
-  /**
-   * @return The point at which the time counter stopped
-   */
-  public Long getEnd()
-  {
-    return this.end;
+    this.setElapsed(elapsed);
   }
   
   /**
    * @return The total elapsed time
    */
-  public Long calculateElapsed()
+  public Long getElapsed()
   {
-    return this.end - this.begin;
-  }
-  
-  /**
-   * @param end The point at which the time counter begain
-   */
-  public void setBegin(Long begin)
-  {
-    this.begin = begin;
-  }
-  
-  /**
-   * @param end The point at which the time counter stopped
-   */
-  public void setEnd(Long end)
-  {
-    this.end = end;
+    return this.elapsed;
   }
   
   /**
    * @param elapsed Set the elapsed time
    */
-  public void generateElapsed(Long elapsed)
+  public void setElapsed(Long elapsed)
   {
-    this.end = Calendar.getInstance().getTime().getTime();
-    this.begin = this.end - elapsed;
+    Object thisClone = null;
+    
+    try
+    {
+      thisClone = this.clone();
+    }
+
+    catch(CloneNotSupportedException e)
+    {
+      e.printStackTrace(System.err);
+      thisClone = null;
+    }
+    
+    this.elapsed = elapsed;
+    
+    firePropertyChange(thisClone);
+  }
+  
+  /**
+   * @param elapsed Add the elapsed time to the current total
+   */
+  public void addElapsed(Long diff)
+  {
+    this.setElapsed(this.getElapsed() + diff);
   }
   
   /**
@@ -92,6 +83,10 @@ public class Time
     //just create a Date object that's set to a 0-offset time zone.
     DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
     timeFormat.setTimeZone(new SimpleTimeZone(0, "NONE"));
-    return timeFormat.format(calculateElapsed());
+    return timeFormat.format(getElapsed());
+  }
+
+  public void propertyChange(PropertyChangeEvent evt)
+  {
   }
 }

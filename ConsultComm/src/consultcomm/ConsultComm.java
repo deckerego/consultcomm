@@ -8,6 +8,8 @@ import consultcomm.treetable.TimeRenderer;
 import consultcomm.treetable.TimeEditor;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -17,6 +19,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -28,17 +33,26 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
  * The main instance that invokes ConsultComm
  * @author  jellis
  */
-public class ConsultComm extends javax.swing.JFrame
+public class ConsultComm 
+    extends javax.swing.JFrame
+    implements PropertyChangeListener
 {
   private static final String WHOAMI = "ConsultComm 4";
   private static final File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+".consultcomm"); //TODO: Make Windows-specific directories
   private static enum ClientProperties { CLICKED_TREEPATH };
+  private static final ScheduledExecutorService clockService = Executors.newSingleThreadScheduledExecutor();
+  private static Project selected;
   
   /** Creates new form ConsultComm */
   public ConsultComm()
   {
     initComponents();
     loadPrefs();
+    
+    //Add the virutal clock
+    Clock clock = new Clock();
+    clock.addClockListener(this);
+    this.clockService.scheduleAtFixedRate(clock, 0, 1, TimeUnit.SECONDS);
   }
   
   private void loadPrefs()
@@ -180,46 +194,62 @@ public class ConsultComm extends javax.swing.JFrame
     projectTreeTable.sizeColumnsToFit(0);
     projectTreeTable.setDefaultRenderer(Time.class, new TimeRenderer());
     projectTreeTable.setDefaultEditor(Time.class, new TimeEditor());
-    projectTreeTable.addMouseListener(new java.awt.event.MouseAdapter()
-    {
-      public void mouseClicked(java.awt.event.MouseEvent evt)
+    projectTreeTable.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener()
       {
-        projectTreeTableMouseClicked(evt);
-      }
-    });
-
-    projectScrollPane.setViewportView(projectTreeTable);
-
-    getContentPane().add(projectScrollPane, java.awt.BorderLayout.CENTER);
-
-    fileMenu.setText("File");
-    exitMenuItem.setText("Exit");
-    exitMenuItem.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
+        public void valueChanged(javax.swing.event.TreeSelectionEvent evt)
+        {
+          selectionChanged(evt);
+        }
+      });
+      projectTreeTable.addMouseListener(new java.awt.event.MouseAdapter()
       {
-        exitMenuItemActionPerformed(evt);
-      }
-    });
+        public void mouseClicked(java.awt.event.MouseEvent evt)
+        {
+          projectTreeTableMouseClicked(evt);
+        }
+      });
 
-    fileMenu.add(exitMenuItem);
+      projectScrollPane.setViewportView(projectTreeTable);
 
-    menuBar.add(fileMenu);
+      getContentPane().add(projectScrollPane, java.awt.BorderLayout.CENTER);
 
-    helpMenu.setText("Help");
-    contentsMenuItem.setText("Contents");
-    helpMenu.add(contentsMenuItem);
+      fileMenu.setText("File");
+      exitMenuItem.setText("Exit");
+      exitMenuItem.addActionListener(new java.awt.event.ActionListener()
+      {
+        public void actionPerformed(java.awt.event.ActionEvent evt)
+        {
+          exitMenuItemActionPerformed(evt);
+        }
+      });
 
-    aboutMenuItem.setText("About");
-    helpMenu.add(aboutMenuItem);
+      fileMenu.add(exitMenuItem);
 
-    menuBar.add(helpMenu);
+      menuBar.add(fileMenu);
 
-    setJMenuBar(menuBar);
+      helpMenu.setText("Help");
+      contentsMenuItem.setText("Contents");
+      helpMenu.add(contentsMenuItem);
 
-    pack();
-  }// </editor-fold>//GEN-END:initComponents
+      aboutMenuItem.setText("About");
+      helpMenu.add(aboutMenuItem);
 
+      menuBar.add(helpMenu);
+
+      setJMenuBar(menuBar);
+
+      pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+  private void selectionChanged(javax.swing.event.TreeSelectionEvent evt)
+  {
+    TreePath selectedPath = evt.getPath();
+    if(selectedPath.getLastPathComponent() instanceof Project)
+    { //Switch timer to a new project
+      this.selected = (Project) selectedPath.getLastPathComponent();
+    }
+  }
+  
   private void deleteGroup(java.awt.event.ActionEvent evt)//GEN-FIRST:event_deleteGroup
   {//GEN-HEADEREND:event_deleteGroup
     assert groupMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH) != null;
@@ -322,6 +352,21 @@ public class ConsultComm extends javax.swing.JFrame
   {
     System.exit(0);
   }//GEN-LAST:event_exitMenuItemActionPerformed
+
+  public void propertyChange(PropertyChangeEvent evt)
+  {
+    if(evt.getPropertyName() == Clock.NOTIFICATION_NAME)
+    {
+      assert evt.getOldValue() instanceof Long;
+      assert evt.getNewValue() instanceof Long;
+    
+      if(this.selected != null)
+      { //Increment project's timer
+        Long diffTime = (Long) evt.getNewValue() - (Long) evt.getOldValue();
+        this.selected.getTime().addElapsed(diffTime);
+      }
+    }
+  }
   
   /**
    * @param args the command line arguments
