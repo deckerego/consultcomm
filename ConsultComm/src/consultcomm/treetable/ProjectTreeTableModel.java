@@ -83,7 +83,7 @@ public class ProjectTreeTableModel
     if(parent instanceof ProjectGroup)
     { //We should instead use the list of projects
       ProjectGroup group = (ProjectGroup) parent;
-      return group.getProjects().get(index);
+      return group.get(index);
     }
     
     else
@@ -108,7 +108,7 @@ public class ProjectTreeTableModel
     if(parent instanceof ProjectGroup)
     { //We should instead use the list of projects
       ProjectGroup group = (ProjectGroup) parent;
-      return group.getProjects().size();
+      return group.size();
     }
     
     else
@@ -133,8 +133,9 @@ public class ProjectTreeTableModel
     
     if(parent instanceof ProjectGroup)
     { //We should instead use the list of projects
+      assert child instanceof Project;
       ProjectGroup group = (ProjectGroup) parent;
-      return group.getProjects().indexOf(child);
+      return group.indexOf((Project) child);
     }
     
     else

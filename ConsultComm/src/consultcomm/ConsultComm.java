@@ -296,7 +296,7 @@ public class ConsultComm
     TreePath parentPath = clickedPath.getParentPath();
     ProjectGroup projectGroup = (ProjectGroup) parentPath.getLastPathComponent();
     
-    projectGroup.getProjects().remove(project);
+    projectGroup.remove(project);
     
     projectTreeTable.updateUI(); //TODO We may be able to omit this line after property change listeners are fixed in 0.9
   }//GEN-LAST:event_deleteProject
@@ -308,7 +308,7 @@ public class ConsultComm
     ProjectGroup projectGroup = (ProjectGroup) clickedPath.getLastPathComponent();
     
     Project project = new Project();
-    projectGroup.getProjects().add(project);
+    projectGroup.add(project);
     
     projectTreeTable.updateUI(); //TODO We may be able to omit this line after property change listeners are fixed in 0.9
     

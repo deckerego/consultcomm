@@ -3,6 +3,7 @@ package consultcomm.project;
 import consultcomm.PlainOldJavaObject;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.ResourceBundle;
 
@@ -15,16 +16,16 @@ public class Project
 {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("MessagesBundle");
   
+  private PropertyChangeSupport notifications;
   private String name;
   private Time time;
   
   public Project()
   {
     super();
-    this.name=MESSAGES.getString("Default Project");
-    this.time = new Time();
-    
-    this.time.addListener(this);
+    this.notifications = new PropertyChangeSupport(this);
+    this.setName(MESSAGES.getString("Default Project"));
+    this.setTime(new Time());
   }
   
   /** 
@@ -35,10 +36,9 @@ public class Project
   public Project(String name, Long time)
   {
     super();
-    this.name = name;
-    this.time = new Time(time);
-        
-    this.time.addListener(this);
+    this.notifications = new PropertyChangeSupport(this);
+    this.setName(name);
+    this.setTime(new Time(time));
   }
   
   /**
@@ -58,6 +58,7 @@ public class Project
   public void setName(String name)
   {
     this.name = name;
+    firePropertyChange();
   }
   
   /**
@@ -66,6 +67,8 @@ public class Project
   public void setTime(Time time)
   {
     this.time = time;
+    this.time.addListener(this);
+    firePropertyChange();
   }
   
   /**
@@ -84,8 +87,28 @@ public class Project
     return this.time;
   }
 
+  /**
+   * Adds a property change listener
+   * @param listener The property change listener that will receive event notifications
+   */
+  public void addListener(PropertyChangeListener listener)
+  {
+    assert this.notifications != null;
+    this.notifications.addPropertyChangeListener(listener);
+  }
+
+  /**
+   * A POJO-specific implementation of the property change notifier. This one
+   * stops infinite cascades of reflection when cloning objects.
+   */
+  protected void firePropertyChange()
+  {
+    this.notifications.firePropertyChange(this.getClass().getName(), null, this);
+  }
+  
   public void propertyChange(PropertyChangeEvent evt)
   {
-    Time newTime = (Time) evt.getNewValue();
+    firePropertyChange();
+    System.out.println("Project");
   }
 }

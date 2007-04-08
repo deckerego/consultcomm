@@ -3,6 +3,7 @@ package consultcomm.project;
 import consultcomm.PlainOldJavaObject;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,11 +16,14 @@ import java.util.SimpleTimeZone;
 public class Time
     extends PlainOldJavaObject
 {
+  private PropertyChangeSupport notifications;
   private Long elapsed;
   
   /** Creates a new instance of Time */
   public Time()
   {
+    super();
+    this.notifications = new PropertyChangeSupport(this);
     this.elapsed = 0L;
   }
   
@@ -29,6 +33,8 @@ public class Time
    */
   public Time(Long elapsed)
   {
+    super();
+    this.notifications = new PropertyChangeSupport(this);
     this.setElapsed(elapsed);
   }
   
@@ -45,22 +51,8 @@ public class Time
    */
   public void setElapsed(Long elapsed)
   {
-    Object thisClone = null;
-    
-    try
-    {
-      thisClone = this.clone();
-    }
-
-    catch(CloneNotSupportedException e)
-    {
-      e.printStackTrace(System.err);
-      thisClone = null;
-    }
-    
     this.elapsed = elapsed;
-    
-    firePropertyChange(thisClone);
+    firePropertyChange();
   }
   
   /**
@@ -86,7 +78,28 @@ public class Time
     return timeFormat.format(getElapsed());
   }
 
+  /**
+   * Adds a property change listener
+   * @param listener The property change listener that will receive event notifications
+   */
+  public void addListener(PropertyChangeListener listener)
+  {
+    assert this.notifications != null;
+    this.notifications.addPropertyChangeListener(listener);
+  }
+
+  /**
+   * A POJO-specific implementation of the property change notifier. This one
+   * stops infinite cascades of reflection when cloning objects.
+   */
+  protected void firePropertyChange()
+  {
+    this.notifications.firePropertyChange(this.getClass().getName(), null, this);
+  }
+  
   public void propertyChange(PropertyChangeEvent evt)
   {
+    firePropertyChange();
+    System.out.println("Time");
   }
 }
