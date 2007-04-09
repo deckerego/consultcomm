@@ -19,8 +19,8 @@ public class ProjectGroup
   private String name;
   private List<Project> projects;
   
-  /** 
-   * Creates a new instance of ProjectGroup 
+  /**
+   * Creates a new instance of ProjectGroup
    * @param The group's name
    */
   public ProjectGroup(String name)
@@ -31,8 +31,8 @@ public class ProjectGroup
     this.setProjects(new ArrayList<Project>());
   }
   
-  /** 
-   * Creates a new instance of ProjectGroup 
+  /**
+   * Creates a new instance of ProjectGroup
    * @param The group's name
    * @param The initial project list
    */
@@ -96,7 +96,7 @@ public class ProjectGroup
     
     firePropertyChange();
   }
-
+  
   /**
    * @param index The index into the list of projects
    * @return The listed Project at the given index
@@ -151,7 +151,7 @@ public class ProjectGroup
     assert this.notifications != null;
     this.notifications.addPropertyChangeListener(listener);
   }
-
+  
   /**
    * A POJO-specific implementation of the property change notifier. This one
    * stops infinite cascades of reflection when cloning objects.
@@ -161,9 +161,14 @@ public class ProjectGroup
     this.notifications.firePropertyChange(this.getClass().getName(), null, this);
   }
 
+  /**
+   * Fire off an event
+   * @param evt The event that has caused the change
+   */
   public void propertyChange(PropertyChangeEvent evt)
   {
     firePropertyChange();
     System.out.println("ProjectGroup");
   }
+  
 }

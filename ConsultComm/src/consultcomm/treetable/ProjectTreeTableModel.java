@@ -5,6 +5,7 @@ import consultcomm.project.Project;
 import consultcomm.project.ProjectGroup;
 import consultcomm.project.Time;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -300,4 +301,16 @@ public class ProjectTreeTableModel
       super.setValueAt(value, node, column);
     }
   }
+  
+  private void readObject(ObjectInputStream in) 
+  throws IOException, ClassNotFoundException
+  {
+    in.defaultReadObject();
+    
+    //Attach each project to event listeners
+    for(ProjectGroup group : this.groups)
+      for(Project project : group.getProjects())
+        project.addListener(group);
+  }
+  
 }
