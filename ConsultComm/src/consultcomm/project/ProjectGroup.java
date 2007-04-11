@@ -1,9 +1,12 @@
 package consultcomm.project;
 
 import consultcomm.PlainOldJavaObject;
+import java.beans.DefaultPersistenceDelegate;
+import java.beans.Encoder;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.beans.Statement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,19 +71,6 @@ public class ProjectGroup
   public String getName()
   {
     return this.name;
-  }
-  
-  /**
-   * This is used for object serialization - but bear in mind this list
-   * <b>should be considered immutable</b>. Modifications to this list
-   * will royally bork up the event notification chain. I wish Java had
-   * a C-like const modifier on returned objects, I'd use it. I marked
-   * the method as final just to underline my point.
-   * @return The list of projects within this group
-   */
-  public final List<Project> getProjects()
-  {
-    return this.projects;
   }
   
   /**
@@ -160,7 +150,7 @@ public class ProjectGroup
   {
     this.notifications.firePropertyChange(this.getClass().getName(), null, this);
   }
-
+  
   /**
    * Fire off an event
    * @param evt The event that has caused the change
@@ -168,7 +158,22 @@ public class ProjectGroup
   public void propertyChange(PropertyChangeEvent evt)
   {
     firePropertyChange();
-    System.out.println("ProjectGroup");
   }
   
+  public static class ProjectGroupPersistenceDelegate extends DefaultPersistenceDelegate
+  {
+    protected void initialize(Class objectType, Object oldObject, Object newObject, Encoder encoder)
+    {
+      super.initialize(objectType, oldObject, newObject, encoder);
+      
+      assert oldObject instanceof ProjectGroup;
+      ProjectGroup projectGroup = (ProjectGroup) oldObject;
+      
+      for (int i = 0, max = projectGroup.size(); i < max; i++)
+      {
+        encoder.writeStatement(new Statement(oldObject, "add", new Object[] { projectGroup.get(i) }));
+      }
+    }
+  }
 }
+

@@ -91,6 +91,8 @@ public class ConsultComm
       File prefsFile = new File(prefsdir, "projects.xml");
       FileOutputStream outStream = new FileOutputStream(prefsFile);
       XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
+      //TODO I'm not entirely thrilled with having to manually attach a delegate
+      e.setPersistenceDelegate(ProjectGroup.class, new ProjectGroup.ProjectGroupPersistenceDelegate());
       e.writeObject(projectTreeTable.getTreeTableModel());
       e.close();
     }

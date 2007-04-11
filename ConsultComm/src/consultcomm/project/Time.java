@@ -104,6 +104,5 @@ public class Time
   public void propertyChange(PropertyChangeEvent evt)
   {
     firePropertyChange();
-    System.out.println("Time");
   }
 }

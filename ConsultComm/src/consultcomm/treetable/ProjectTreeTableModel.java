@@ -302,15 +302,4 @@ public class ProjectTreeTableModel
     }
   }
   
-  private void readObject(ObjectInputStream in) 
-  throws IOException, ClassNotFoundException
-  {
-    in.defaultReadObject();
-    
-    //Attach each project to event listeners
-    for(ProjectGroup group : this.groups)
-      for(Project project : group.getProjects())
-        project.addListener(group);
-  }
-  
 }

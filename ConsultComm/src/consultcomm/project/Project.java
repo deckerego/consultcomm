@@ -113,6 +113,5 @@ public class Project
   public void propertyChange(PropertyChangeEvent evt)
   {
     firePropertyChange();
-    System.out.println("Project");
   }
 }
