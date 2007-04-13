@@ -376,9 +376,6 @@ public class ConsultComm
     { //Increment project's timer
       Long diffTime = (Long) evt.getNewValue() - (Long) evt.getOldValue();
       this.selected.getTime().addElapsed(diffTime);
-      
-      //Refresh the table's cell
-      this.projectTreeTable.repaint();
     }
   }
   

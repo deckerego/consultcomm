@@ -118,6 +118,6 @@ public class Project
    */
   public void timeChange(PropertyChangeEvent evt)
   {
-    firePropertyChange();
+    this.notifications.firePropertyChange(evt);
   }
 }

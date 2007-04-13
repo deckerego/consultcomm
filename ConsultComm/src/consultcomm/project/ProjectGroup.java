@@ -171,7 +171,7 @@ public class ProjectGroup
    */
   public void projectChange(PropertyChangeEvent evt)
   {
-    firePropertyChange();
+    this.notifications.firePropertyChange(evt);
   }
   
   public static class ProjectGroupPersistenceDelegate extends DefaultPersistenceDelegate
