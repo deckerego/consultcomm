@@ -8,8 +8,6 @@ import consultcomm.treetable.TimeRenderer;
 import consultcomm.treetable.TimeEditor;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -35,7 +33,6 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
  */
 public class ConsultComm 
     extends javax.swing.JFrame
-    implements PropertyChangeListener
 {
   private static final String WHOAMI = "ConsultComm 4";
   private static final File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+".consultcomm"); //TODO: Make Windows-specific directories
@@ -51,7 +48,13 @@ public class ConsultComm
     
     //Add the virutal clock
     Clock clock = new Clock();
-    clock.addClockListener(this);
+    clock.addClockListener(new java.beans.PropertyChangeListener()
+    {
+      public void propertyChange(java.beans.PropertyChangeEvent evt)
+      {
+        clockTick(evt);
+      }
+    });
     this.clockService.scheduleAtFixedRate(clock, 0, 1, TimeUnit.SECONDS);
   }
   
@@ -66,7 +69,7 @@ public class ConsultComm
       if(! prefsFile.exists()) 
       { //Create new preferences file
         prefsFile.createNewFile();
-        projectTreeTable.setTreeTableModel(new ProjectTreeTableModel());
+        projectTreeTable.setTreeTableModel(new ProjectTreeTableModel(new ProjectGroup()));
       }
       else
       { //Read in existing preferences file
@@ -93,6 +96,7 @@ public class ConsultComm
       XMLEncoder e = new XMLEncoder(new BufferedOutputStream(outStream));
       //TODO I'm not entirely thrilled with having to manually attach a delegate
       e.setPersistenceDelegate(ProjectGroup.class, new ProjectGroup.ProjectGroupPersistenceDelegate());
+      e.setPersistenceDelegate(ProjectTreeTableModel.class, new ProjectTreeTableModel.ProjectTreeTableModelPersistenceDelegate());
       e.writeObject(projectTreeTable.getTreeTableModel());
       e.close();
     }
@@ -355,18 +359,16 @@ public class ConsultComm
     System.exit(0);
   }//GEN-LAST:event_exitMenuItemActionPerformed
 
-  public void propertyChange(PropertyChangeEvent evt)
+  public void clockTick(java.beans.PropertyChangeEvent evt)
   {
-    if(evt.getPropertyName() == Clock.NOTIFICATION_NAME)
-    {
-      assert evt.getOldValue() instanceof Long;
-      assert evt.getNewValue() instanceof Long;
+    assert evt.getPropertyName() == Clock.NOTIFICATION_NAME;
+    assert evt.getOldValue() instanceof Long;
+    assert evt.getNewValue() instanceof Long;
     
-      if(this.selected != null)
-      { //Increment project's timer
-        Long diffTime = (Long) evt.getNewValue() - (Long) evt.getOldValue();
-        this.selected.getTime().addElapsed(diffTime);
-      }
+    if(this.selected != null)
+    { //Increment project's timer
+      Long diffTime = (Long) evt.getNewValue() - (Long) evt.getOldValue();
+      this.selected.getTime().addElapsed(diffTime);
     }
   }
   

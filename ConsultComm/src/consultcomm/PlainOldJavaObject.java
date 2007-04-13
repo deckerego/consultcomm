@@ -15,13 +15,8 @@ import java.lang.reflect.Method;
  * @author jellis
  */
 public abstract class PlainOldJavaObject
-    implements Serializable, PropertyChangeListener, Cloneable
+    implements Serializable, Cloneable
 {
-  
-  /** Creates a new instance of PlainOldJavaObject */
-  public PlainOldJavaObject()
-  {
-  }
   
   /**
    * Adds a property change listener

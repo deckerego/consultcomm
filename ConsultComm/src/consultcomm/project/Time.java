@@ -96,13 +96,4 @@ public class Time
   {
     this.notifications.firePropertyChange(this.getClass().getName(), null, this);
   }
-  
-  /**
-   * Fire off an event
-   * @param evt The event that has caused the change
-   */
-  public void propertyChange(PropertyChangeEvent evt)
-  {
-    firePropertyChange();
-  }
 }

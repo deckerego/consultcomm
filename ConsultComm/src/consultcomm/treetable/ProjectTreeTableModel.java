@@ -4,6 +4,11 @@ import consultcomm.*;
 import consultcomm.project.Project;
 import consultcomm.project.ProjectGroup;
 import consultcomm.project.Time;
+import java.beans.DefaultPersistenceDelegate;
+import java.beans.Encoder;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.Statement;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -15,6 +20,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
+import javax.swing.tree.TreeNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
 /**
@@ -38,17 +44,16 @@ public class ProjectTreeTableModel
   public ProjectTreeTableModel()
   {
     this.groups = new ArrayList<ProjectGroup>();
-    this.groups.add(new ProjectGroup(MESSAGES.getString("Default Group"), new ArrayList<Project>()));
   }
   
   /**
-   * Creates a new instance of ProjectTreeTableModel
+   * Creates a new instance of ProjectTreeTableModel with a starter group
+   * @param projectGroup The initial project group to use
    */
-  public ProjectTreeTableModel(List<ProjectGroup> groups)
+  public ProjectTreeTableModel(ProjectGroup projectGroup)
   {
-    assert groups != null;
-    
-    this.groups = groups;
+    this.groups = new ArrayList<ProjectGroup>();
+    this.add(projectGroup);
   }
   
   /**
@@ -60,11 +65,35 @@ public class ProjectTreeTableModel
   }
   
   /**
-   * @param groups The list of ProjectGroup objects to display
+   * @param projectGroup The group to add to the current list
    */
-  public void setGroups(List<ProjectGroup> groups)
+  public void add(ProjectGroup projectGroup)
   {
-    this.groups = groups;
+    groups.add(projectGroup);
+    projectGroup.addListener(new java.beans.PropertyChangeListener()
+    {
+      public void propertyChange(java.beans.PropertyChangeEvent evt)
+      {
+        projectGroupChange(evt);
+      }
+    });
+  }
+  
+  /**
+   * @param index The index into the list of groups
+   * @return The listed ProjectGroup at the given index
+   */
+  public ProjectGroup get(int index)
+  {
+    return this.groups.get(index);
+  }
+  
+  /**
+   * @return The size of the list of groups within this group
+   */
+  public int size()
+  {
+    return this.groups.size();
   }
   
   /**
@@ -301,5 +330,28 @@ public class ProjectTreeTableModel
       super.setValueAt(value, node, column);
     }
   }
+
+  public void projectGroupChange(PropertyChangeEvent evt)
+  {
+    assert evt.getNewValue() instanceof ProjectGroup;
+    
+    ProjectGroup projectGroup = (ProjectGroup) evt.getNewValue();
+    System.out.println(projectGroup.toString()+" changed.");
+  }
   
+  public static class ProjectTreeTableModelPersistenceDelegate extends DefaultPersistenceDelegate
+  {
+    protected void initialize(Class objectType, Object oldObject, Object newObject, Encoder encoder)
+    {
+      super.initialize(objectType, oldObject, newObject, encoder);
+      
+      assert oldObject instanceof ProjectTreeTableModel;
+      ProjectTreeTableModel model = (ProjectTreeTableModel) oldObject;
+      
+      for (int i = 0, max = model.size(); i < max; i++)
+      {
+        encoder.writeStatement(new Statement(oldObject, "add", new Object[] { model.get(i) }));
+      }
+    }
+  }
 }

@@ -10,6 +10,7 @@ import java.beans.Statement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * A POJO that groups together lists of projects
@@ -18,19 +19,20 @@ import java.util.List;
 public class ProjectGroup
     extends PlainOldJavaObject
 {
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("MessagesBundle");
+  
   private PropertyChangeSupport notifications;
   private String name;
   private List<Project> projects;
   
   /**
    * Creates a new instance of ProjectGroup
-   * @param The group's name
    */
-  public ProjectGroup(String name)
+  public ProjectGroup()
   {
     super();
     this.notifications = new PropertyChangeSupport(this);
-    this.setName(name);
+    this.setName(MESSAGES.getString("Default Group"));
     this.setProjects(new ArrayList<Project>());
   }
   
@@ -82,7 +84,13 @@ public class ProjectGroup
     
     //Attach each project to event listeners
     for(Project project : this.projects)
-      project.addListener(this);
+      project.addListener(new java.beans.PropertyChangeListener()
+      {
+        public void propertyChange(java.beans.PropertyChangeEvent evt)
+        {
+          projectChange(evt);
+        }
+      });
     
     firePropertyChange();
   }
@@ -127,7 +135,13 @@ public class ProjectGroup
    */
   public void add(Project project)
   {
-    project.addListener(this);
+    project.addListener(new java.beans.PropertyChangeListener()
+    {
+      public void propertyChange(java.beans.PropertyChangeEvent evt)
+      {
+        projectChange(evt);
+      }
+    });
     this.projects.add(project);
     firePropertyChange();
   }
@@ -155,7 +169,7 @@ public class ProjectGroup
    * Fire off an event
    * @param evt The event that has caused the change
    */
-  public void propertyChange(PropertyChangeEvent evt)
+  public void projectChange(PropertyChangeEvent evt)
   {
     firePropertyChange();
   }

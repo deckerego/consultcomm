@@ -67,7 +67,13 @@ public class Project
   public void setTime(Time time)
   {
     this.time = time;
-    this.time.addListener(this);
+    this.time.addListener(new java.beans.PropertyChangeListener()
+    {
+      public void propertyChange(java.beans.PropertyChangeEvent evt)
+      {
+        timeChange(evt);
+      }
+    });;
     firePropertyChange();
   }
   
@@ -110,7 +116,7 @@ public class Project
    * Fire off an event
    * @param evt The event that has caused the change
    */
-  public void propertyChange(PropertyChangeEvent evt)
+  public void timeChange(PropertyChangeEvent evt)
   {
     firePropertyChange();
   }
