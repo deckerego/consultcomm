@@ -45,8 +45,12 @@ public class ConsultComm
   {
     initComponents();
     loadPrefs();
-    
-    //Add the virutal clock
+    loadClock();
+  }
+  
+  private void loadClock()
+  {
+    //Create the clock
     Clock clock = new Clock();
     clock.addClockListener(new java.beans.PropertyChangeListener()
     {
@@ -55,6 +59,8 @@ public class ConsultComm
         clockTick(evt);
       }
     });
+    
+    //Add the virutal clock
     this.clockService.scheduleAtFixedRate(clock, 0, 1, TimeUnit.SECONDS);
   }
   
@@ -365,10 +371,14 @@ public class ConsultComm
     assert evt.getOldValue() instanceof Long;
     assert evt.getNewValue() instanceof Long;
     
+    //TODO Should more of this logic be moved into the model?
     if(this.selected != null)
     { //Increment project's timer
       Long diffTime = (Long) evt.getNewValue() - (Long) evt.getOldValue();
       this.selected.getTime().addElapsed(diffTime);
+      
+      //Refresh the table's cell
+      this.projectTreeTable.repaint();
     }
   }
   

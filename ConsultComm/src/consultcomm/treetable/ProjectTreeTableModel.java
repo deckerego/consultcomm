@@ -333,10 +333,8 @@ public class ProjectTreeTableModel
 
   public void projectGroupChange(PropertyChangeEvent evt)
   {
+    //TODO Can the model repaint itself? I'd rather have the model repaint a cell
     assert evt.getNewValue() instanceof ProjectGroup;
-    
-    ProjectGroup projectGroup = (ProjectGroup) evt.getNewValue();
-    System.out.println(projectGroup.toString()+" changed.");
   }
   
   public static class ProjectTreeTableModelPersistenceDelegate extends DefaultPersistenceDelegate
