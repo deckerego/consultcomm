@@ -8,6 +8,7 @@ import java.beans.DefaultPersistenceDelegate;
 import java.beans.Encoder;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.beans.Statement;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -37,12 +38,14 @@ public class ProjectTreeTableModel
   private static String[] columns = {MESSAGES.getString("Project"), MESSAGES.getString("Time")};
   
   private List<ProjectGroup> groups;
+  private PropertyChangeSupport notifications;
   
   /**
    * Creates a new instance of ProjectTreeTableModel with a starter group
    */
   public ProjectTreeTableModel()
   {
+    this.notifications = new PropertyChangeSupport(this);
     this.groups = new ArrayList<ProjectGroup>();
   }
   
@@ -52,6 +55,7 @@ public class ProjectTreeTableModel
    */
   public ProjectTreeTableModel(ProjectGroup projectGroup)
   {
+    this.notifications = new PropertyChangeSupport(this);
     this.groups = new ArrayList<ProjectGroup>();
     this.add(projectGroup);
   }
@@ -331,11 +335,31 @@ public class ProjectTreeTableModel
     }
   }
 
+  /**
+   * Adds a property change listener
+   * @param listener The property change listener that will receive event notifications
+   */
+  public void addListener(PropertyChangeListener listener)
+  {
+    assert this.notifications != null;
+    this.notifications.addPropertyChangeListener(listener);
+  }
+
+  /**
+   * Process a change in the project group
+   * @param evt The property change event transmitted by the project group
+   */
   public void projectGroupChange(PropertyChangeEvent evt)
   {
-    fireTreeNodesChanged(this, new Object[] { evt.getNewValue() }, null, null);
+    //This needs to change in the JXTable instead; the model has no access to
+    //the TreeTable implemementation
+    this.notifications.firePropertyChange(evt);
   }
   
+  /**
+   * A persistence delegate that more accurately writes list objects instead of
+   * using the getter and setter pattern
+   */
   public static class ProjectTreeTableModelPersistenceDelegate extends DefaultPersistenceDelegate
   {
     protected void initialize(Class objectType, Object oldObject, Object newObject, Encoder encoder)

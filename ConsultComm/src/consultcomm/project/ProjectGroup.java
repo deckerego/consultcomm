@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
  * @author jellis
  */
 public class ProjectGroup
-    extends PlainOldJavaObject
+    implements Serializable
 {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("MessagesBundle");
   

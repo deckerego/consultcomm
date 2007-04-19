@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
  * @author jellis
  */
 public class Project
-    extends PlainOldJavaObject
+    implements Serializable
 {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("MessagesBundle");
   

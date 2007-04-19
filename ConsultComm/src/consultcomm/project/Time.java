@@ -14,7 +14,7 @@ import java.util.SimpleTimeZone;
  * @author jellis
  */
 public class Time
-    extends PlainOldJavaObject
+    implements Serializable
 {
   private PropertyChangeSupport notifications;
   private Long elapsed;

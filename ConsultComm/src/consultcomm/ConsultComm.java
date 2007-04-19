@@ -24,6 +24,7 @@ import java.util.prefs.Preferences;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.TableModelEvent;
 import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
@@ -67,6 +68,7 @@ public class ConsultComm
   private void loadPrefs()
   {
     if(! prefsdir.exists()) prefsdir.mkdir();
+    ProjectTreeTableModel projectModel;
     
     try
     { //Get all projects
@@ -75,20 +77,34 @@ public class ConsultComm
       if(! prefsFile.exists()) 
       { //Create new preferences file
         prefsFile.createNewFile();
-        projectTreeTable.setTreeTableModel(new ProjectTreeTableModel(new ProjectGroup()));
+        projectModel = new ProjectTreeTableModel(new ProjectGroup());
       }
+      
       else
       { //Read in existing preferences file
         FileInputStream inStream = new FileInputStream(prefsFile);
         XMLDecoder d = new XMLDecoder(new BufferedInputStream(inStream));
-        projectTreeTable.setTreeTableModel((ProjectTreeTableModel) d.readObject());
+        projectModel = (ProjectTreeTableModel) d.readObject();
         d.close();
       }
     }
+    
     catch (Exception e)
-    {
+    { //Create a new instance anyway
       System.err.println("Cannot read projects file: "+e);
+      projectModel = new ProjectTreeTableModel(new ProjectGroup());
     }
+    
+    //Add the property listeners no matter what
+    projectModel.addListener(new java.beans.PropertyChangeListener()
+    {
+      public void propertyChange(java.beans.PropertyChangeEvent evt)
+      {
+        projectChanged(evt);
+      }
+    });
+        
+    projectTreeTable.setTreeTableModel(projectModel);
   }
   
   private void savePrefs()
@@ -365,13 +381,19 @@ public class ConsultComm
     System.exit(0);
   }//GEN-LAST:event_exitMenuItemActionPerformed
 
-  public void clockTick(java.beans.PropertyChangeEvent evt)
+  private void projectChanged(java.beans.PropertyChangeEvent evt) 
   {
+    //Repaint the currently selected row
+    projectTreeTable.tableChanged(new TableModelEvent(projectTreeTable.getModel(), projectTreeTable.getSelectedRow()));
+  }
+  
+  private void clockTick(java.beans.PropertyChangeEvent evt)
+  {
+    //TODO Should more of this logic be moved into the model?
     assert evt.getPropertyName() == Clock.NOTIFICATION_NAME;
     assert evt.getOldValue() instanceof Long;
     assert evt.getNewValue() instanceof Long;
     
-    //TODO Should more of this logic be moved into the model?
     if(this.selected != null)
     { //Increment project's timer
       Long diffTime = (Long) evt.getNewValue() - (Long) evt.getOldValue();
