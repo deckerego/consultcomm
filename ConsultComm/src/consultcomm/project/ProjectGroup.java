@@ -1,6 +1,5 @@
 package consultcomm.project;
 
-import consultcomm.PlainOldJavaObject;
 import java.beans.DefaultPersistenceDelegate;
 import java.beans.Encoder;
 import java.beans.PropertyChangeEvent;
