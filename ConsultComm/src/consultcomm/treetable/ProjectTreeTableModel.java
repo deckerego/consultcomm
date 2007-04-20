@@ -351,8 +351,6 @@ public class ProjectTreeTableModel
    */
   public void projectGroupChange(PropertyChangeEvent evt)
   {
-    //This needs to change in the JXTable instead; the model has no access to
-    //the TreeTable implemementation
     this.notifications.firePropertyChange(evt);
   }
   

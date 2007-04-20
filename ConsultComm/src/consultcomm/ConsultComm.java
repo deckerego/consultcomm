@@ -20,7 +20,6 @@ import java.util.Enumeration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.prefs.Preferences;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
@@ -29,14 +28,17 @@ import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
 /**
- * The main instance that invokes ConsultComm
+ * The main instance that invokes ConsultComm<br>
+ * This class should be the organizer & message hub of all objects
+ * that compose the interface. Clock ticks, property changes and UI
+ * events are all patrolled through this class.
  * @author  jellis
  */
 public class ConsultComm 
     extends javax.swing.JFrame
 {
   private static final String WHOAMI = "ConsultComm 4";
-  private static final File prefsdir = new File(System.getProperty("user.home")+System.getProperty("file.separator")+".consultcomm"); //TODO: Make Windows-specific directories
+  private static final File prefsdir = Preferences.getPrefsDir();
   private static enum ClientProperties { CLICKED_TREEPATH };
   private static final ScheduledExecutorService clockService = Executors.newSingleThreadScheduledExecutor();
   private static Project selected;
@@ -294,8 +296,6 @@ public class ConsultComm
       ProjectGroup projectGroup = (ProjectGroup) clickedPath.getLastPathComponent();
     
       projectList.getGroups().remove(projectGroup);
-    
-      projectTreeTable.updateUI(); //TODO We may be able to omit this line after property change listeners are fixed in 0.9      
     }
   }//GEN-LAST:event_deleteGroup
 
@@ -325,8 +325,6 @@ public class ConsultComm
     ProjectGroup projectGroup = (ProjectGroup) parentPath.getLastPathComponent();
     
     projectGroup.remove(project);
-    
-    projectTreeTable.updateUI(); //TODO We may be able to omit this line after property change listeners are fixed in 0.9
   }//GEN-LAST:event_deleteProject
 
   private void addProject(java.awt.event.ActionEvent evt)//GEN-FIRST:event_addProject
@@ -337,8 +335,6 @@ public class ConsultComm
     
     Project project = new Project();
     projectGroup.add(project);
-    
-    projectTreeTable.updateUI(); //TODO We may be able to omit this line after property change listeners are fixed in 0.9
     
     int row = projectTreeTable.getRowForPath(clickedPath.pathByAddingChild(project));
     projectTreeTable.editCellAt(row, 0);
@@ -384,12 +380,12 @@ public class ConsultComm
   private void projectChanged(java.beans.PropertyChangeEvent evt) 
   {
     //Repaint the currently selected row
+    projectTreeTable.updateUI();
     projectTreeTable.tableChanged(new TableModelEvent(projectTreeTable.getModel(), projectTreeTable.getSelectedRow()));
   }
   
   private void clockTick(java.beans.PropertyChangeEvent evt)
   {
-    //TODO Should more of this logic be moved into the model?
     assert evt.getPropertyName() == Clock.NOTIFICATION_NAME;
     assert evt.getOldValue() instanceof Long;
     assert evt.getNewValue() instanceof Long;
@@ -400,7 +396,7 @@ public class ConsultComm
       this.selected.getTime().addElapsed(diffTime);
     }
   }
-  
+
   /**
    * @param args the command line arguments
    */
