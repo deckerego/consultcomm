@@ -24,6 +24,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
@@ -441,7 +443,14 @@ public class ConsultComm
   private void projectChanged(java.beans.PropertyChangeEvent evt) 
   {
     projectTreeTable.tableChanged(new TableModelEvent(projectTreeTable.getModel(), projectTreeTable.getSelectedRow()));
-    //TODO currently this refreshes a project's record, but doesn't refresh the tree should something change
+    
+    //TODO Why don't I just push this into the model itself?
+    assert projectTreeTable.getTreeTableModel() instanceof ProjectTreeTableModel;
+    ProjectTreeTableModel model = (ProjectTreeTableModel) projectTreeTable.getTreeTableModel();
+    for (TreeModelListener listener : model.getTreeModelListeners())
+    {
+      listener.treeStructureChanged(new TreeModelEvent(evt.getNewValue(), projectTreeTable.getPathForRow(0)));
+    }
   }
   
   /**
