@@ -36,14 +36,14 @@ import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
  * events are all patrolled through this class.
  * @author  jellis
  */
-public class ConsultComm 
+public class ConsultComm
     extends javax.swing.JFrame
 {
   private static final String WHOAMI = "ConsultComm 4";
   private static final File prefsdir = Preferences.getPrefsDir();
-  private static enum ClientProperties { CLICKED_TREEPATH };
+  private static enum ClientProperties
+  { CLICKED_TREEPATH };
   private static final ScheduledExecutorService clockService = Executors.newSingleThreadScheduledExecutor();
-  private static Project selected;
   
   /** Creates new form ConsultComm */
   public ConsultComm()
@@ -71,7 +71,7 @@ public class ConsultComm
     //Add the virutal clock
     this.clockService.scheduleAtFixedRate(clock, 0, 1, TimeUnit.SECONDS);
   }
-
+  
   /**
    * Deserialize the TreeTable's model from disk if it exists, create a new
    * one otherwise. Attach appropriate PropertyChange listeners to the model.
@@ -85,7 +85,7 @@ public class ConsultComm
     { //Get all projects
       File prefsFile = new File(prefsdir, "projects.xml");
       
-      if(! prefsFile.exists()) 
+      if(! prefsFile.exists())
       { //Create new preferences file
         prefsFile.createNewFile();
         projectModel = new ProjectTreeTableModel(new ProjectGroup());
@@ -114,7 +114,7 @@ public class ConsultComm
         projectChanged(evt);
       }
     });
-        
+    
     projectTreeTable.setTreeTableModel(projectModel);
   }
   
@@ -141,7 +141,7 @@ public class ConsultComm
       System.err.println("Cannot read projects file: "+e);
     }
   }
- 
+  
   /** This method is called from within the constructor to
    * initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is
@@ -236,66 +236,45 @@ public class ConsultComm
     projectTreeTable.sizeColumnsToFit(0);
     projectTreeTable.setDefaultRenderer(Time.class, new TimeRenderer());
     projectTreeTable.setDefaultEditor(Time.class, new TimeEditor());
-    projectTreeTable.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener()
+    projectTreeTable.addMouseListener(new java.awt.event.MouseAdapter()
+    {
+      public void mouseClicked(java.awt.event.MouseEvent evt)
       {
-        public void valueChanged(javax.swing.event.TreeSelectionEvent evt)
-        {
-          selectionChanged(evt);
-        }
-      });
-      projectTreeTable.addMouseListener(new java.awt.event.MouseAdapter()
+        projectTreeTableMouseClicked(evt);
+      }
+    });
+
+    projectScrollPane.setViewportView(projectTreeTable);
+
+    getContentPane().add(projectScrollPane, java.awt.BorderLayout.CENTER);
+
+    fileMenu.setText("File");
+    exitMenuItem.setText("Exit");
+    exitMenuItem.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
       {
-        public void mouseClicked(java.awt.event.MouseEvent evt)
-        {
-          projectTreeTableMouseClicked(evt);
-        }
-      });
+        exitMenuItemActionPerformed(evt);
+      }
+    });
 
-      projectScrollPane.setViewportView(projectTreeTable);
+    fileMenu.add(exitMenuItem);
 
-      getContentPane().add(projectScrollPane, java.awt.BorderLayout.CENTER);
+    menuBar.add(fileMenu);
 
-      fileMenu.setText("File");
-      exitMenuItem.setText("Exit");
-      exitMenuItem.addActionListener(new java.awt.event.ActionListener()
-      {
-        public void actionPerformed(java.awt.event.ActionEvent evt)
-        {
-          exitMenuItemActionPerformed(evt);
-        }
-      });
+    helpMenu.setText("Help");
+    contentsMenuItem.setText("Contents");
+    helpMenu.add(contentsMenuItem);
 
-      fileMenu.add(exitMenuItem);
+    aboutMenuItem.setText("About");
+    helpMenu.add(aboutMenuItem);
 
-      menuBar.add(fileMenu);
+    menuBar.add(helpMenu);
 
-      helpMenu.setText("Help");
-      contentsMenuItem.setText("Contents");
-      helpMenu.add(contentsMenuItem);
+    setJMenuBar(menuBar);
 
-      aboutMenuItem.setText("About");
-      helpMenu.add(aboutMenuItem);
-
-      menuBar.add(helpMenu);
-
-      setJMenuBar(menuBar);
-
-      pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-  /**
-   * The row currently selected in the table has changed - update the
-   * "current project" likewise.
-   * @param evt The selection event that caused the change
-   */
-  private void selectionChanged(javax.swing.event.TreeSelectionEvent evt)
-  {
-    TreePath selectedPath = evt.getPath();
-    if(selectedPath.getLastPathComponent() instanceof Project)
-    { //Switch timer to a new project
-      this.selected = (Project) selectedPath.getLastPathComponent();
-    }
-  }
+    pack();
+  }// </editor-fold>//GEN-END:initComponents
   
   /**
    * Delete a group of projects from the TreeTable. The user should always
@@ -317,11 +296,11 @@ public class ConsultComm
     {
       TreePath clickedPath = (TreePath) groupMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH);
       ProjectGroup projectGroup = (ProjectGroup) clickedPath.getLastPathComponent();
-    
+      
       projectList.getGroups().remove(projectGroup);
     }
   }//GEN-LAST:event_deleteGroup
-
+  
   /**
    * Rename a project group
    * @param evt The UI action that caused the event
@@ -333,7 +312,7 @@ public class ConsultComm
     int row = projectTreeTable.getRowForPath(clickedPath);
     projectTreeTable.editCellAt(row, 0);
   }//GEN-LAST:event_renameGroup
-
+  
   /**
    * Rename an individual project
    * @param evt The UI action that caused the event
@@ -345,7 +324,7 @@ public class ConsultComm
     int row = projectTreeTable.getRowForPath(clickedPath);
     projectTreeTable.editCellAt(row, 0);
   }//GEN-LAST:event_renameProject
-
+  
   /**
    * Delete an individual project
    * @param evt The UI action that caused the event
@@ -361,7 +340,7 @@ public class ConsultComm
     
     projectGroup.remove(project);
   }//GEN-LAST:event_deleteProject
-
+  
   /**
    * Add a new project to a project group
    * @param evt The UI action that caused the event
@@ -378,7 +357,7 @@ public class ConsultComm
     int row = projectTreeTable.getRowForPath(clickedPath.pathByAddingChild(project));
     projectTreeTable.editCellAt(row, 0);
   }//GEN-LAST:event_addProject
-
+  
   /**
    * If a user right-clicks on an object within the table tree, offer a context-
    * specific menu with corresponding options. The corresponding TreePath
@@ -412,7 +391,7 @@ public class ConsultComm
         break;
     }
   }//GEN-LAST:event_projectTreeTableMouseClicked
-
+  
   /**
    * User closed the window - save out and exit nicely.
    * @param evt The UI action that caused the event
@@ -428,28 +407,35 @@ public class ConsultComm
    */
   private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_exitMenuItemActionPerformed
   {
+    savePrefs();
+    dispose();
     System.exit(0);
   }//GEN-LAST:event_exitMenuItemActionPerformed
-
+  
   /**
    * The tree table's model has changed - refresh the tree table likewise.
-   * While the treetable object extends a regular "table", its model represents 
+   * While the treetable object extends a regular "table", its model represents
    * the "tree" side of the component. "Table" changes, such as refreshing the
    * row or column, need the attention of the treetable object. "Tree" changes,
    * such as adding a project group or project, need the attention of the
    * treetable model.
    * @param evt The JavaBean property change that invoked this event
    */
-  private void projectChanged(java.beans.PropertyChangeEvent evt) 
+  private void projectChanged(java.beans.PropertyChangeEvent evt)
   {
-    projectTreeTable.tableChanged(new TableModelEvent(projectTreeTable.getModel(), projectTreeTable.getSelectedRow()));
+    if(Time.class.getName().equals(evt.getPropertyName()))
+    { //The time has incremented on the project, tell the table to redraw
+      projectTreeTable.tableChanged(new TableModelEvent(projectTreeTable.getModel(), projectTreeTable.getSelectedRow()));
+    }
     
-    //TODO Why don't I just push this into the model itself?
-    assert projectTreeTable.getTreeTableModel() instanceof ProjectTreeTableModel;
-    ProjectTreeTableModel model = (ProjectTreeTableModel) projectTreeTable.getTreeTableModel();
-    for (TreeModelListener listener : model.getTreeModelListeners())
-    {
-      listener.treeStructureChanged(new TreeModelEvent(evt.getNewValue(), projectTreeTable.getPathForRow(0)));
+    if(ProjectGroup.class.getName().equals(evt.getPropertyName()))
+    { //The group list has changed, tell the tree to redraw
+      assert projectTreeTable.getTreeTableModel() instanceof ProjectTreeTableModel;
+      ProjectTreeTableModel model = (ProjectTreeTableModel) projectTreeTable.getTreeTableModel();
+      for (TreeModelListener listener : model.getTreeModelListeners())
+      { //Notify every single tree listener that something has changed
+        listener.treeStructureChanged(new TreeModelEvent(evt.getNewValue(), projectTreeTable.getPathForRow(0)));
+      }
     }
   }
   
@@ -464,13 +450,16 @@ public class ConsultComm
     assert evt.getOldValue() instanceof Long;
     assert evt.getNewValue() instanceof Long;
     
-    if(this.selected != null)
-    { //Increment project's timer
+    TreePath selectedPath = projectTreeTable.getPathForRow(projectTreeTable.getSelectedRow());
+    
+    if(selectedPath != null && selectedPath.getLastPathComponent() instanceof Project)
+    { //The path currently selected is a project, increment project's timer
       Long diffTime = (Long) evt.getNewValue() - (Long) evt.getOldValue();
-      this.selected.getTime().addElapsed(diffTime);
+      Project selectedProject = (Project) selectedPath.getLastPathComponent();
+      selectedProject.getTime().addElapsed(diffTime);
     }
   }
-
+  
   /**
    * Create and display the ConsultComm window as its own stand-alone thread.
    * @param args the command line arguments
