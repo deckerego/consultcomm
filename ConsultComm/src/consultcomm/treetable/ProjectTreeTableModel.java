@@ -73,7 +73,6 @@ public class ProjectTreeTableModel
    */
   public void add(ProjectGroup projectGroup)
   {
-    groups.add(projectGroup);
     projectGroup.addListener(new java.beans.PropertyChangeListener()
     {
       public void propertyChange(java.beans.PropertyChangeEvent evt)
@@ -81,6 +80,20 @@ public class ProjectTreeTableModel
         projectGroupChange(evt);
       }
     });
+    groups.add(projectGroup);
+    
+    this.notifications.fireIndexedPropertyChange(this.getClass().getName(), groups.size(), null, groups);
+  }
+  
+  /**
+   * @param projectGroup The group to remove from the current list
+   */
+  public void remove(ProjectGroup projectGroup)
+  {
+    int index = groups.indexOf(projectGroup);
+    groups.remove(index);
+    
+    this.notifications.fireIndexedPropertyChange(this.getClass().getName(), index, null, groups);
   }
   
   /**

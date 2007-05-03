@@ -43,7 +43,7 @@ public class ConsultComm
   private static final File prefsdir = Preferences.getPrefsDir();
   private static enum ClientProperties
   { CLICKED_TREEPATH };
-  private static final ScheduledExecutorService clockService = Executors.newSingleThreadScheduledExecutor();
+  private static final Clock clock = new Clock();
   
   /** Creates new form ConsultComm */
   public ConsultComm()
@@ -59,7 +59,6 @@ public class ConsultComm
   private void loadClock()
   {
     //Create the clock
-    Clock clock = new Clock();
     clock.addClockListener(new java.beans.PropertyChangeListener()
     {
       public void propertyChange(java.beans.PropertyChangeEvent evt)
@@ -69,7 +68,8 @@ public class ConsultComm
     });
     
     //Add the virutal clock
-    this.clockService.scheduleAtFixedRate(clock, 0, 1, TimeUnit.SECONDS);
+    ScheduledExecutorService clockService = Executors.newSingleThreadScheduledExecutor();
+    clockService.scheduleAtFixedRate(clock, 0, 1, TimeUnit.SECONDS);
   }
   
   /**
@@ -162,6 +162,9 @@ public class ConsultComm
     menuBar = new javax.swing.JMenuBar();
     fileMenu = new javax.swing.JMenu();
     exitMenuItem = new javax.swing.JMenuItem();
+    taskMenu = new javax.swing.JMenu();
+    pauseMenuItem = new javax.swing.JCheckBoxMenuItem();
+    addGroupMenuItem = new javax.swing.JMenuItem();
     helpMenu = new javax.swing.JMenu();
     contentsMenuItem = new javax.swing.JMenuItem();
     aboutMenuItem = new javax.swing.JMenuItem();
@@ -249,6 +252,7 @@ public class ConsultComm
     getContentPane().add(projectScrollPane, java.awt.BorderLayout.CENTER);
 
     fileMenu.setText("File");
+    exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
     exitMenuItem.setText("Exit");
     exitMenuItem.addActionListener(new java.awt.event.ActionListener()
     {
@@ -262,10 +266,29 @@ public class ConsultComm
 
     menuBar.add(fileMenu);
 
+    taskMenu.setText("Tasks");
+    pauseMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
+    pauseMenuItem.setText("Paused");
+    taskMenu.add(pauseMenuItem);
+
+    addGroupMenuItem.setText("Add Group");
+    addGroupMenuItem.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        addGroup(evt);
+      }
+    });
+
+    taskMenu.add(addGroupMenuItem);
+
+    menuBar.add(taskMenu);
+
     helpMenu.setText("Help");
     contentsMenuItem.setText("Contents");
     helpMenu.add(contentsMenuItem);
 
+    aboutMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
     aboutMenuItem.setText("About");
     helpMenu.add(aboutMenuItem);
 
@@ -275,6 +298,12 @@ public class ConsultComm
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
+
+  private void addGroup(java.awt.event.ActionEvent evt)//GEN-FIRST:event_addGroup
+  {//GEN-HEADEREND:event_addGroup
+    ProjectTreeTableModel projectList = (ProjectTreeTableModel) projectTreeTable.getTreeTableModel();
+    projectList.add(new ProjectGroup());
+  }//GEN-LAST:event_addGroup
   
   /**
    * Delete a group of projects from the TreeTable. The user should always
@@ -297,7 +326,7 @@ public class ConsultComm
       TreePath clickedPath = (TreePath) groupMenu.getClientProperty(ClientProperties.CLICKED_TREEPATH);
       ProjectGroup projectGroup = (ProjectGroup) clickedPath.getLastPathComponent();
       
-      projectList.getGroups().remove(projectGroup);
+      projectList.remove(projectGroup);
     }
   }//GEN-LAST:event_deleteGroup
   
@@ -426,16 +455,38 @@ public class ConsultComm
     if(Time.class.getName().equals(evt.getPropertyName()))
     { //The time has incremented on the project, tell the table to redraw
       projectTreeTable.tableChanged(new TableModelEvent(projectTreeTable.getModel(), projectTreeTable.getSelectedRow()));
+      
+      return;
     }
     
     if(ProjectGroup.class.getName().equals(evt.getPropertyName()))
     { //The group list has changed, tell the tree to redraw
       assert projectTreeTable.getTreeTableModel() instanceof ProjectTreeTableModel;
       ProjectTreeTableModel model = (ProjectTreeTableModel) projectTreeTable.getTreeTableModel();
+      
       for (TreeModelListener listener : model.getTreeModelListeners())
       { //Notify every single tree listener that something has changed
-        listener.treeStructureChanged(new TreeModelEvent(evt.getNewValue(), projectTreeTable.getPathForRow(0)));
+        for (int i = 0, max = projectTreeTable.getRowCount(); i < max; i++)
+        { //Notify each listener that every single row has changed (just in case)
+          listener.treeStructureChanged(new TreeModelEvent(evt.getNewValue(), projectTreeTable.getPathForRow(i)));
+        }
       }
+      
+      return;
+    }
+    
+    if(ProjectTreeTableModel.class.getName().equals(evt.getPropertyName()))
+    { //The model has changed, reload it
+      assert projectTreeTable.getTreeTableModel() instanceof ProjectTreeTableModel;
+      ProjectTreeTableModel model = (ProjectTreeTableModel) projectTreeTable.getTreeTableModel();
+      int lastRow = projectTreeTable.getRowCount();
+      
+      for (TreeModelListener listener : model.getTreeModelListeners())
+      { //Notify every single tree listener that something has changed
+        listener.treeStructureChanged(new TreeModelEvent(evt.getNewValue(), projectTreeTable.getPathForRow(lastRow)));
+      }
+      
+      return;
     }
   }
   
@@ -446,6 +497,8 @@ public class ConsultComm
    */
   private void clockTick(java.beans.PropertyChangeEvent evt)
   {
+    if(pauseMenuItem.isSelected()) return; //Nevermind if we're paused
+    
     assert evt.getPropertyName() == Clock.NOTIFICATION_NAME;
     assert evt.getOldValue() instanceof Long;
     assert evt.getNewValue() instanceof Long;
@@ -477,6 +530,7 @@ public class ConsultComm
   
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuItem aboutMenuItem;
+  private javax.swing.JMenuItem addGroupMenuItem;
   private javax.swing.JMenuItem addProject;
   private javax.swing.JMenuItem contentsMenuItem;
   private javax.swing.JMenuItem deleteGroup;
@@ -486,11 +540,13 @@ public class ConsultComm
   private javax.swing.JPopupMenu groupMenu;
   private javax.swing.JMenu helpMenu;
   private javax.swing.JMenuBar menuBar;
+  private javax.swing.JCheckBoxMenuItem pauseMenuItem;
   private javax.swing.JPopupMenu projectMenu;
   private javax.swing.JScrollPane projectScrollPane;
   private org.jdesktop.swingx.JXTreeTable projectTreeTable;
   private javax.swing.JMenuItem renameGroup;
   private javax.swing.JMenuItem renameProject;
+  private javax.swing.JMenu taskMenu;
   // End of variables declaration//GEN-END:variables
   
 }
