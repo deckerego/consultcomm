@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
@@ -169,7 +170,8 @@ public class ConsultComm
     contentsMenuItem = new javax.swing.JMenuItem();
     aboutMenuItem = new javax.swing.JMenuItem();
 
-    renameProject.setText("Rename Project");
+    java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("MessagesBundle"); // NOI18N
+    renameProject.setText(bundle.getString("ConsultComm.renameProject.text")); // NOI18N
     renameProject.addActionListener(new java.awt.event.ActionListener()
     {
       public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -180,7 +182,7 @@ public class ConsultComm
 
     projectMenu.add(renameProject);
 
-    deleteProject.setText("Delete Project");
+    deleteProject.setText(bundle.getString("ConsultComm.deleteProject.text")); // NOI18N
     deleteProject.addActionListener(new java.awt.event.ActionListener()
     {
       public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -191,7 +193,7 @@ public class ConsultComm
 
     projectMenu.add(deleteProject);
 
-    addProject.setText("Add Project");
+    addProject.setText(bundle.getString("ConsultComm.addProject.text")); // NOI18N
     addProject.addActionListener(new java.awt.event.ActionListener()
     {
       public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -202,7 +204,7 @@ public class ConsultComm
 
     groupMenu.add(addProject);
 
-    renameGroup.setText("Rename Group");
+    renameGroup.setText(bundle.getString("ConsultComm.renameGroup.text")); // NOI18N
     renameGroup.addActionListener(new java.awt.event.ActionListener()
     {
       public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -213,7 +215,7 @@ public class ConsultComm
 
     groupMenu.add(renameGroup);
 
-    deleteGroup.setText("Delete Group");
+    deleteGroup.setText(bundle.getString("ConsultComm.deleteGroup.text")); // NOI18N
     deleteGroup.addActionListener(new java.awt.event.ActionListener()
     {
       public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -226,6 +228,7 @@ public class ConsultComm
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setTitle(WHOAMI);
+    setIconImage(new ImageIcon(getClass().getResource("/icon.gif")).getImage());
     addWindowListener(new java.awt.event.WindowAdapter()
     {
       public void windowClosing(java.awt.event.WindowEvent evt)
@@ -251,9 +254,9 @@ public class ConsultComm
 
     getContentPane().add(projectScrollPane, java.awt.BorderLayout.CENTER);
 
-    fileMenu.setText("File");
+    fileMenu.setText(bundle.getString("ConsultComm.fileMenu.text")); // NOI18N
     exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
-    exitMenuItem.setText("Exit");
+    exitMenuItem.setText(bundle.getString("ConsultComm.exitMenuItem.text")); // NOI18N
     exitMenuItem.addActionListener(new java.awt.event.ActionListener()
     {
       public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -266,12 +269,12 @@ public class ConsultComm
 
     menuBar.add(fileMenu);
 
-    taskMenu.setText("Tasks");
+    taskMenu.setText(bundle.getString("ConsultComm.taskMenu.text")); // NOI18N
     pauseMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
-    pauseMenuItem.setText("Paused");
+    pauseMenuItem.setText(bundle.getString("ConsultComm.pauseMenuItem.text")); // NOI18N
     taskMenu.add(pauseMenuItem);
 
-    addGroupMenuItem.setText("Add Group");
+    addGroupMenuItem.setText(bundle.getString("ConsultComm.addGroupMenuItem.text")); // NOI18N
     addGroupMenuItem.addActionListener(new java.awt.event.ActionListener()
     {
       public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -284,12 +287,12 @@ public class ConsultComm
 
     menuBar.add(taskMenu);
 
-    helpMenu.setText("Help");
-    contentsMenuItem.setText("Contents");
+    helpMenu.setText(bundle.getString("ConsultComm.helpMenu.text")); // NOI18N
+    contentsMenuItem.setText(bundle.getString("ConsultComm.contentsMenuItem.text")); // NOI18N
     helpMenu.add(contentsMenuItem);
 
     aboutMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-    aboutMenuItem.setText("About");
+    aboutMenuItem.setText(bundle.getString("ConsultComm.aboutMenuItem.text")); // NOI18N
     helpMenu.add(aboutMenuItem);
 
     menuBar.add(helpMenu);

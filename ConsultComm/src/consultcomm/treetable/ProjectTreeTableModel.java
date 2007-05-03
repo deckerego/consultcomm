@@ -35,7 +35,7 @@ public class ProjectTreeTableModel
     implements Serializable
 {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("MessagesBundle");
-  private static String[] columns = {MESSAGES.getString("Project"), MESSAGES.getString("Time")};
+  private static String[] columns = {MESSAGES.getString("Project.text"), MESSAGES.getString("Time.text")};
   
   private List<ProjectGroup> groups;
   private PropertyChangeSupport notifications;

@@ -23,7 +23,7 @@ public class Project
   {
     super();
     this.notifications = new PropertyChangeSupport(this);
-    this.setName(MESSAGES.getString("Default Project"));
+    this.setName(MESSAGES.getString("Default Project.text"));
     this.setTime(new Time());
   }
   

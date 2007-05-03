@@ -31,7 +31,7 @@ public class ProjectGroup
   {
     super();
     this.notifications = new PropertyChangeSupport(this);
-    this.setName(MESSAGES.getString("Default Group"));
+    this.setName(MESSAGES.getString("Default Group.text"));
     this.setProjects(new ArrayList<Project>());
   }
   
