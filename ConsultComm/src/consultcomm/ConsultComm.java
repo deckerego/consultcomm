@@ -480,14 +480,8 @@ public class ConsultComm
     
     if(ProjectTreeTableModel.class.getName().equals(evt.getPropertyName()))
     { //The model has changed, reload it
-      assert projectTreeTable.getTreeTableModel() instanceof ProjectTreeTableModel;
-      ProjectTreeTableModel model = (ProjectTreeTableModel) projectTreeTable.getTreeTableModel();
-      int lastRow = projectTreeTable.getRowCount();
-      
-      for (TreeModelListener listener : model.getTreeModelListeners())
-      { //Notify every single tree listener that something has changed
-        listener.treeStructureChanged(new TreeModelEvent(evt.getNewValue(), projectTreeTable.getPathForRow(lastRow)));
-      }
+      //TODO This isn't what this method was intended for - I need to replace it. Maybe move it inside the model?
+      projectTreeTable.updateUI();
       
       return;
     }
